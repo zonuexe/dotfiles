@@ -1,0 +1,10 @@
+[user]
+	name = USAMI Kenta
+	email = tadsan@zonu.me
+[alias]
+	s = status
+	l = log --graph --pretty=oneline
+	d = diff
+	c = checkout
+[core]
+	excludesfile = /Users/megurine/.gitexclude
