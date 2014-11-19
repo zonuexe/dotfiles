@@ -1,16 +1,16 @@
-;;; init.el --- zonuexe's .emacs -*- Coding: utf-8 ; lexical-binding: t -*-
+;;; init.el --- zonuexe's .emacs -*- coding: utf-8 ; lexical-binding: t -*-
 
 ;; Filename: init.el
 ;; Description: zonuexe's .emacs
 ;; Package-Requires: ((emacs "24.3"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
-;; Modified: 2014-11-18
+;; Modified: 2014-11-22
 ;; Version: 10.10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
 ;; Namespace: my/
-;; URL: https://github.com/zonuexe/dotfiles/.emacs.d/init.el
+;; URL: https://github.com/zonuexe/dotfiles/blob/master/.emacs.d/init.el
 
 (load-theme 'manoj-dark t)
 
@@ -20,10 +20,6 @@
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-
-(custom-set-variables
-  '(init-loader-show-log-after-init t)
-  '(inhibit-startup-message nil))
 
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
@@ -43,6 +39,13 @@
 (use-package pallet
   :init (pallet-mode t))
 
+(use-package nyan-mode
+  :config
+  (progn
+    (custom-set-variables
+     '(nyan-bar-length 16))
+    (nyan-mode t)))
+
 ;;; Environment:
 
 ;; PATH
@@ -52,15 +55,14 @@
     (exec-path-from-shell-initialize)))
 
 ;;; Coding:
+(setq-default indent-tabs-mode nil)
 
 ;; White space
-(use-package whitespace-mode
-  :config
-  (progn
-    (custom-set-variables
-     '(whitespace-style (lines-tail))
-     '(whitespace-space-regexp "\\(\u3000+\\)"))
-    (global-whitespace-mode t)))
+(setq-default show-trailing-whitespace t)
+
+;; Uniquify
+(use-package uniquify
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Show paren
 (show-paren-mode t)
@@ -90,7 +92,7 @@
 (use-package helm-gtags
   :config
   (progn
-    (bind-key "M-." 'helm-gtags-find-tag helm-gtags-mode-map)
+    (bind-key "M-."   'helm-gtags-find-tag  helm-gtags-mode-map)
     (bind-key "C-M-." 'helm-gtags-find-rtag helm-gtags-mode-map)))
 
 ;; Auto-Complete
@@ -99,17 +101,27 @@
   (progn
     (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
     (require 'auto-complete-config)
-    (ac-config-default)))
+    (ac-config-default)
+    (global-auto-complete-mode t)))
 
 ;; Magit
 (use-package magit
   :config
   (progn
+    (setq vc-handled-backends '())
+    (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
     (bind-key "C-x m" 'magit-status)
     (bind-key "C-c l" 'magit-blame-mode)))
 
 ;; Flycheck
 (use-package flycheck)
+
+;; Smartparens
+(use-package smartparens
+  :config
+  (progn
+    (use-package smartparens-config)
+    (smartparens-global-mode t)))
 
 ;;; Languages:
 
@@ -118,8 +130,9 @@
 (use-package php-mode
   :config
   (progn
+    (use-package php-auto-yasnippets)
     (defun my/php-mode-hook ()
-      )
+      (payas/ac-setup))
     (add-hook 'php-mode-hook 'my/php-mode-hook)
     (add-hook 'php-mode-hook 'helm-gtags-mode)))
 
@@ -138,13 +151,16 @@
   :interpreter ("python" . python-mode))
 
 ;; Lisp
+(setq my/elisp-mode-hooks
+      '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
+(--each my/elisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
+
 (use-package paredit
   :config
   (progn
     (bind-key "C-<right>" 'right-word paredit-mode-map)
     (bind-key "C-<left>"  'left-word  paredit-mode-map)
-    (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-    (add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)))
+    (--each my/elisp-mode-hooks (add-hook it 'enable-paredit-mode))))
 
 ;; Scala
 (use-package scala-mode2
@@ -163,18 +179,26 @@
 (use-package markdown-mode
   :mode ("\\.md\\'" . gfm-mode))
 
-;;; Recentf
+;;; Others:
+
+;; Recentf
 (use-package recentf
   :config
   (progn
     (recentf-mode t)
-    (bind-key "C-c r" 'helm-recentf)
-    (bind-key "C-c C-r" 'helm-recentf)))
+    (bind-key "C-c r" 'helm-recentf)))
 
-;;; Undo Tree
+;; Undo Tree
 (use-package undo-tree
   :config
   (global-undo-tree-mode))
+
+;; expand-region.el
+(use-package expand-region
+  :config
+  (progn
+    (bind-key "C-@"   'er/expand-region)
+    (bind-key "C-M-@" 'er/contract-region)))
 
 ;;; Tools:
 
@@ -183,6 +207,7 @@
   :config
   (progn
     (use-package term+key-intercept)
+    (use-package term+mux)
     (require 'xterm-256color)))
 
 ;; Open junk file
@@ -195,6 +220,31 @@
 ;; w3m
 (use-package w3m)
 
+;; navi2ch
+(use-package navi2ch
+  :config
+  (progn
+    (use-package navi2ch-mona)
+    (custom-set-variables
+     '(navi2ch-article-use-jit t)
+     '(navi2ch-article-exist-message-range nil)
+     '(navi2ch-article-new-message-range nil)
+     '(navi2ch-mona-use-ipa-mona t)
+     '(navi2ch-mona-ipa-mona-font-family-name "mona-izmg16"))
+    (navi2ch-mona-setup)))
+
+;; ElScreen
+(use-package elscreen
+  :config
+  (progn
+    (custom-set-variables
+     '(elscreen-prefix-key (kbd "C-w"))
+     '(elscreen-display-tab nil)
+     '(elscreen-tab-display-kill-screen nil)
+     '(elscreen-tab-display-control nil))
+    (elscreen-start)
+    (bind-key "C-w p" 'helm-elscreen)))
+
 ;;; Server:
 (use-package edit-server
   :if window-system
@@ -202,3 +252,18 @@
   (progn
     (add-hook 'after-init-hook 'server-start t)
     (add-hook 'after-init-hook 'edit-server-start t)))
+
+;;; Variables:
+(setq my/hidden-minor-modes
+      '(undo-tree-mode
+        eldoc-mode
+        auto-complete-mode
+        magit-auto-revert-mode
+        abbrev-mode
+        smartparens-mode
+        helm-mode))
+(--each my/hidden-minor-modes
+  (setq minor-mode-alist
+        (cons (list it "") (assq-delete-all it minor-mode-alist))))
+
+;;; init.el ends here
