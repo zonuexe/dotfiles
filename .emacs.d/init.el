@@ -26,6 +26,10 @@
   '(inhibit-startup-message nil))
 
 ;;; Font:
+;;;     |いろはにほへと　ちりぬるを|
+;;;     |わかよたれそ　　つねならむ|
+;;;     |うゐのおくやま　けふこえて|
+;;;     |あさきゆめみし　ゑひもせす|
 
 (when (and window-system (>= emacs-major-version 23))
   (set-default-font "Migu 2M-15.5"))
@@ -65,11 +69,12 @@
 (use-package bind-key
   :config
   (progn
-    (bind-key "M-ESC ESC"   'keyboard-quit)
-    (bind-key "C-c <left>"  'windmove-left)
-    (bind-key "C-c <down>"  'windmove-down)
-    (bind-key "C-c <up>"    'windmove-up)
-    (bind-key "C-c <right>" 'windmove-right))
+    (bind-key  "M-ESC ESC"   'keyboard-quit)
+    (bind-key  "C-c R"       'revert-buffer)
+    (bind-key* "C-c <left>"  'windmove-left)
+    (bind-key* "C-c <down>"  'windmove-down)
+    (bind-key* "C-c <up>"    'windmove-up)
+    (bind-key* "C-c <right>" 'windmove-right))
   (cond
    ((eq window-system 'ns)
     (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
@@ -88,6 +93,14 @@
     (bind-key "M-." 'helm-gtags-find-tag helm-gtags-mode-map)
     (bind-key "C-M-." 'helm-gtags-find-rtag helm-gtags-mode-map)))
 
+;; Auto-Complete
+(use-package auto-complete
+  :config
+  (progn
+    (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
+    (require 'auto-complete-config)
+    (ac-config-default)))
+
 ;; Magit
 (use-package magit
   :config
@@ -105,6 +118,9 @@
 (use-package php-mode
   :config
   (progn
+    (defun my/php-mode-hook ()
+      )
+    (add-hook 'php-mode-hook 'my/php-mode-hook)
     (add-hook 'php-mode-hook 'helm-gtags-mode)))
 
 ;; Ruby
@@ -113,6 +129,7 @@
   :interpreter "ruby"
   :config
   (progn
+    (use-package rhtml-mode)
     (setq-default enh-ruby-not-insert-magic-comment t)))
 
 ;; Python
@@ -136,6 +153,12 @@
   :init
   (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
 
+;; JSON
+(use-package json-mode)
+
+;; YAML
+(use-package yaml-mode)
+
 ;; Markdown Mode
 (use-package markdown-mode
   :mode ("\\.md\\'" . gfm-mode))
@@ -145,7 +168,13 @@
   :config
   (progn
     (recentf-mode t)
+    (bind-key "C-c r" 'helm-recentf)
     (bind-key "C-c C-r" 'helm-recentf)))
+
+;;; Undo Tree
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
 
 ;;; Tools:
 
@@ -155,6 +184,13 @@
   (progn
     (use-package term+key-intercept)
     (require 'xterm-256color)))
+
+;; Open junk file
+(use-package open-junk-file
+  :config
+  (progn
+    (setq open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S.")
+    (bind-key "C-c j" 'open-junk-file)))
 
 ;; w3m
 (use-package w3m)
