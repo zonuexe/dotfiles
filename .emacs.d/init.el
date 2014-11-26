@@ -82,6 +82,16 @@
     (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
     (global-set-key (kbd "¥")   (lambda () (interactive) (insert "\\"))))))
 
+(use-package sequential-command
+  :config
+  (progn
+    (define-sequential-command my/seq-home
+      beginning-of-line beginning-of-line beginning-of-defun beginning-of-buffer seq-return)
+    (define-sequential-command my/seq-end
+      end-of-line end-of-line end-of-defun end-of-buffer seq-return)
+    (bind-key "C-a" 'my/seq-home)
+    (bind-key "C-e" 'my/seq-end)))
+
 ;; Helm
 (use-package helm
   :config
@@ -94,6 +104,8 @@
   (progn
     (bind-key "M-."   'helm-gtags-find-tag  helm-gtags-mode-map)
     (bind-key "C-M-." 'helm-gtags-find-rtag helm-gtags-mode-map)))
+
+(use-package helm-ag)
 
 ;; Auto-Complete
 (use-package auto-complete
@@ -229,6 +241,7 @@
      '(navi2ch-article-use-jit t)
      '(navi2ch-article-exist-message-range nil)
      '(navi2ch-article-new-message-range nil)
+     '(navi2ch-mona-enable t)
      '(navi2ch-mona-use-ipa-mona t)
      '(navi2ch-mona-ipa-mona-font-family-name "mona-izmg16"))
     (navi2ch-mona-setup)))
@@ -238,12 +251,20 @@
   :config
   (progn
     (custom-set-variables
-     '(elscreen-prefix-key (kbd "C-w"))
+     '(elscreen-prefix-key (kbd "C-t"))
      '(elscreen-display-tab nil)
      '(elscreen-tab-display-kill-screen nil)
      '(elscreen-tab-display-control nil))
     (elscreen-start)
-    (bind-key "C-w p" 'helm-elscreen)))
+    (bind-key "C-t p" 'helm-elscreen)))
+
+;; Calfw
+(use-package calfw)
+
+;; Wdired
+(use-package wdired)
+
+(use-package moccure-edit)
 
 ;;; Server:
 (use-package edit-server
