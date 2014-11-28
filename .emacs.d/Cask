@@ -22,6 +22,7 @@
 (depends-on "helm-gtags")
 (depends-on "htmlize")
 (depends-on "idle-highlight-mode")
+(depends-on "inf-ruby")
 (depends-on "json-mode")
 (depends-on "key-combo")
 (depends-on "load-theme-buffer-local")

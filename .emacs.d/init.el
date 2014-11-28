@@ -5,7 +5,7 @@
 ;; Package-Requires: ((emacs "24.3"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
-;; Modified: 2014-11-22
+;; Modified: 2014-11-27
 ;; Version: 10.10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
@@ -20,6 +20,8 @@
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8)
+(setq make-backup-files nil)
+(setq delete-auto-save-files t)
 
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
@@ -156,6 +158,14 @@
   (progn
     (use-package rhtml-mode)
     (setq-default enh-ruby-not-insert-magic-comment t)))
+
+(use-package inf-ruby
+  :config
+  (progn
+    (custom-set-variables
+     '(inf-ruby-default-implementation "pry")
+     '(inf-ruby-eval-binding "Pry.toplevel_binding"))
+    (add-hook 'inf-ruby-mode-hook 'ansi-color-for-comint-mode-on)))
 
 ;; Python
 (use-package python
