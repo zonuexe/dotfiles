@@ -74,6 +74,9 @@
 ;; Show paren
 (show-paren-mode t)
 
+;; Column mode
+(column-number-mode t)
+
 ;; Key config
 (use-package bind-key
   :config
@@ -279,10 +282,25 @@
 ;; Calfw
 (use-package calfw)
 
+;; moccur
+(use-package color-moccur)
+(use-package moccur-edit)
+
+;; dired-k
+(use-package direx)
+(use-package dired-k
+  :config
+  (progn
+    (add-hook 'dired-initial-position-hook 'dired-k)
+    (bind-key "K" 'dired-k dired-mode-map)
+    (bind-key "M-C-\\" 'direx-project:jump-to-project-root-other-window)
+    (bind-key "M-C-¥"  'direx-project:jump-to-project-root-other-window)))
+
 ;; Wdired
 (use-package wdired)
 
-(use-package moccure-edit)
+;; UCS Utility
+(use-package ucs-utils)
 
 ;;; Games:
 (use-package gnugo)
