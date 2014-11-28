@@ -1,5 +1,7 @@
 ;;; init.el --- zonuexe's .emacs -*- coding: utf-8 ; lexical-binding: t -*-
 
+;;; Commentary:
+
 ;; Filename: init.el
 ;; Description: zonuexe's .emacs
 ;; Package-Requires: ((emacs "24.3"))
@@ -12,6 +14,9 @@
 ;; Namespace: my/
 ;; URL: https://github.com/zonuexe/dotfiles/blob/master/.emacs.d/init.el
 
+;;; Code:
+
+;;; Color-theme:
 (load-theme 'manoj-dark t)
 
 ;;; Variables:
@@ -30,7 +35,7 @@
 ;;;     |あさきゆめみし　ゑひもせす|
 
 (when (and window-system (>= emacs-major-version 23))
-  (set-default-font "Migu 2M-15.5"))
+  (set-frame-font "Migu 2M-15.5"))
 
 ;;; Packages:
 
@@ -128,7 +133,10 @@
     (bind-key "C-c l" 'magit-blame-mode)))
 
 ;; Flycheck
-(use-package flycheck)
+(use-package flycheck
+  :config
+  (progn
+    (global-flycheck-mode t)))
 
 ;; Smartparens
 (use-package smartparens
@@ -173,7 +181,7 @@
   :interpreter ("python" . python-mode))
 
 ;; Lisp
-(setq my/elisp-mode-hooks
+(defvar my/elisp-mode-hooks
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 (--each my/elisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
 
@@ -276,6 +284,9 @@
 
 (use-package moccure-edit)
 
+;;; Games:
+(use-package gnugo)
+
 ;;; Server:
 (use-package edit-server
   :if window-system
@@ -285,7 +296,7 @@
     (add-hook 'after-init-hook 'edit-server-start t)))
 
 ;;; Variables:
-(setq my/hidden-minor-modes
+(defvar my/hidden-minor-modes
       '(undo-tree-mode
         eldoc-mode
         auto-complete-mode

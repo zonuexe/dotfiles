@@ -17,6 +17,7 @@
 (depends-on "f")
 (depends-on "flycheck")
 (depends-on "flycheck-cask")
+(depends-on "gnugo")
 (depends-on "helm")
 (depends-on "helm-ag")
 (depends-on "helm-gtags")
