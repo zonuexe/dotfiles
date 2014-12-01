@@ -174,6 +174,9 @@
     (use-package smartparens-config)
     (smartparens-global-mode t)))
 
+;; smartchr
+(use-package smartchr)
+
 ;;; Languages:
 
 ;; PHP
@@ -183,7 +186,10 @@
   (progn
     (use-package php-auto-yasnippets)
     (defun my/php-mode-hook ()
+      (subword-mode t)
       (payas/ac-setup))
+    (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
+    (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
     (add-hook 'php-mode-hook 'my/php-mode-hook)
     (add-hook 'php-mode-hook 'helm-gtags-mode)))
 
@@ -347,7 +353,8 @@
         magit-auto-revert-mode
         abbrev-mode
         smartparens-mode
-        helm-mode))
+        helm-mode
+        helm-gtags-mode))
 (--each my/hidden-minor-modes
   (setq minor-mode-alist
         (cons (list it "") (assq-delete-all it minor-mode-alist))))

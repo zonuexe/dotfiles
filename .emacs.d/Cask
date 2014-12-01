@@ -49,6 +49,8 @@
 (depends-on "s")
 (depends-on "sequential-command")
 (depends-on "slime")
+(depends-on "smart-newline")
+(depends-on "smartchr" :git "git@github.com:imakado/emacs-smartchr.git")
 (depends-on "smartparens")
 (depends-on "smex")
 (depends-on "term+")
