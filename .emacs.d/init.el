@@ -78,6 +78,8 @@
 (use-package exec-path-from-shell
   :config
   (progn
+    (custom-set-variables
+      '(exec-path-from-shell-variables ("PATH" "MANPATH" "GOROOT" "GOPATH")))
     (exec-path-from-shell-initialize)))
 
 ;;; Coding:
@@ -134,7 +136,7 @@
     (bind-key "M-."   'helm-gtags-find-tag  helm-gtags-mode-map)
     (bind-key "C-M-." 'helm-gtags-find-rtag helm-gtags-mode-map)))
 
-(use-package helm-ag)
+(use-package helm-ag :defer t)
 
 ;; Auto-Complete
 (use-package auto-complete
@@ -177,11 +179,17 @@
 ;; smartchr
 (use-package smartchr)
 
+;; smart-newline
+(use-package smart-newline
+  :config
+  (progn
+    (bind-key "C-m" 'smart-newline)))
+
 ;;; Languages:
 
 ;; PHP
 (require 'cl)
-(use-package php-mode
+(use-package php-mode :defer t
   :config
   (progn
     (use-package php-auto-yasnippets)
@@ -194,7 +202,7 @@
     (add-hook 'php-mode-hook 'helm-gtags-mode)))
 
 ;; Ruby
-(use-package enh-ruby-mode
+(use-package enh-ruby-mode :defer t
   :mode "\\.rb\\'"
   :interpreter "ruby"
   :config
@@ -202,7 +210,7 @@
     (use-package rhtml-mode)
     (setq-default enh-ruby-not-insert-magic-comment t)))
 
-(use-package inf-ruby
+(use-package inf-ruby :defer t
   :config
   (progn
     (custom-set-variables
@@ -211,7 +219,7 @@
     (add-hook 'inf-ruby-mode-hook 'ansi-color-for-comint-mode-on)))
 
 ;; Python
-(use-package python
+(use-package python :defer t
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python" . python-mode))
 
@@ -228,20 +236,26 @@
     (--each my/elisp-mode-hooks (add-hook it 'enable-paredit-mode))))
 
 ;; Scala
-(use-package scala-mode2
+(use-package scala-mode2 :defer t
   :config
   (use-package ensime)
   :init
   (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
 
+;; Go
+(use-package go-mode :defer t)
+
+;; FSharp
+(use-package fsharp-mode :defer t)
+
 ;; JSON
-(use-package json-mode)
+(use-package json-mode :defer t)
 
 ;; YAML
-(use-package yaml-mode)
+(use-package yaml-mode :defer t)
 
 ;; Markdown Mode
-(use-package markdown-mode
+(use-package markdown-mode :defer t
   :mode ("\\.md\\'" . gfm-mode))
 
 ;;; Others:
@@ -250,6 +264,8 @@
 (use-package recentf
   :config
   (progn
+    (custom-set-variables
+     '(recentf-max-saved-items 50))
     (recentf-mode t)
     (bind-key "C-c r" 'helm-recentf)))
 
@@ -283,10 +299,10 @@
     (bind-key "C-c j" 'open-junk-file)))
 
 ;; w3m
-(use-package w3m)
+(use-package w3m :defer t)
 
 ;; navi2ch
-(use-package navi2ch
+(use-package navi2ch :defer t
   :config
   (progn
     (use-package navi2ch-mona)
@@ -332,10 +348,10 @@
 (use-package wdired)
 
 ;; UCS Utility
-(use-package ucs-utils)
+(use-package ucs-utils :defer t)
 
 ;;; Games:
-(use-package gnugo)
+(use-package gnugo :defer t)
 
 ;;; Server:
 (use-package edit-server

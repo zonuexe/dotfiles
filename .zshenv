@@ -33,3 +33,12 @@ if [ -f $HOME/.phpbrew/bashrc ]
 then
     . $HOME/.phpbrew/bashrc
 fi
+
+export GOROOT=/usr/local/opt/go/libexec
+export GOPATH=$HOME/.go
+
+if type launchctl > /dev/null
+then
+    launchctl setenv GOROOT $GOROOT
+    launchctl setenv GOPATH $GOPATH
+fi
