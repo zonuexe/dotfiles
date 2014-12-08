@@ -47,6 +47,8 @@
 (setq make-backup-files nil)
 (setq delete-auto-save-files t)
 
+(add-to-list 'load-path (locate-user-emacs-file "./site-lisp"))
+
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
 ;;;     |わかよたれそ　　つねならむ|
@@ -204,11 +206,21 @@
 ;; Ruby
 (use-package enh-ruby-mode :defer t
   :mode "\\.rb\\'"
-  :interpreter "ruby"
+  :interpreter "pry"
   :config
   (progn
-    (use-package rhtml-mode)
-    (setq-default enh-ruby-not-insert-magic-comment t)))
+    (use-package robe)
+    (defun my/enh-ruby-mode-hook ()
+      (set (make-local-variable 'ac-ignore-case) t))
+    (add-to-list 'ac-modes 'enh-ruby-mode)
+    (custom-set-variables
+     '(ruby-deep-indent-paren-style nil))
+    (setq-default enh-ruby-not-insert-magic-comment t)
+    (add-hook 'robe-mode-hook 'ac-robe-setup)))
+
+;; rhtml
+(use-package rhtml-mode :defer t)
+
 
 (use-package inf-ruby :defer t
   :config
@@ -241,6 +253,22 @@
   (use-package ensime)
   :init
   (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
+
+;; JavaScript
+(use-package js2-mode :defer t
+  :mode "\\.js\\'")
+
+;; TypeScript
+(use-package typescript :defer t
+  :mode ("\\.ts\\'" . typescript-mode)
+  :config
+  (progn
+    (use-package tss)
+    (custom-set-variables
+     '(tss-popup-help-key "C-:")
+     '(tss-jump-to-definition-key "C->")
+     '(tss-implement-definition-key "C-c i"))
+    (tss-config-default)))
 
 ;; Go
 (use-package go-mode :defer t)
