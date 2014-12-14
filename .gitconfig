@@ -3,8 +3,9 @@
 	email = tadsan@zonu.me
 [alias]
 	s = status
-	l = log --graph --pretty=oneline
+	l = log --graph
 	d = diff
 	c = checkout
+	b = branch
 [core]
 	excludesfile = /Users/megurine/.gitexclude

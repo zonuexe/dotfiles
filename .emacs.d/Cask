@@ -63,6 +63,7 @@
 (depends-on "term+key-intercept")
 (depends-on "term+mux")
 (depends-on "tss")
+(depends-on "twittering-mode")
 (depends-on "ucs-utils")
 (depends-on "undo-tree")
 (depends-on "use-package")

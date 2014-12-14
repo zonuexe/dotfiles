@@ -35,6 +35,10 @@
 ;;
 ;;; Code:
 
+(if window-system
+    (tool-bar-mode -1)
+  (menu-bar-mode -1))
+
 ;;; Color-theme:
 (load-theme 'manoj-dark t)
 
@@ -112,8 +116,10 @@
     (bind-key* "C-c <right>" 'windmove-right))
   (cond
    ((eq window-system 'ns)
-    (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
-    (global-set-key (kbd "¥")   (lambda () (interactive) (insert "\\"))))))
+    (setq ns-command-modifier 'meta)
+    (setq ns-alternate-modifier 'meta)
+    (bind-key "M-¥" (lambda () (interactive) (insert "¥")))
+    (bind-key "¥"   (lambda () (interactive) (insert "\\"))))))
 
 (use-package sequential-command
   :config
@@ -150,8 +156,8 @@
     (global-auto-complete-mode t)))
 
 ;; Magit
-(use-package magit
-  :config
+(use-package magit :defer t
+  :init
   (progn
     (setq vc-handled-backends '())
     (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
@@ -179,13 +185,18 @@
     (smartparens-global-mode t)))
 
 ;; smartchr
-(use-package smartchr)
+(use-package smartchr :defer t
+  :commands smartchr)
 
 ;; smart-newline
-(use-package smart-newline
-  :config
+(use-package smart-newline :defer t
+  :init
   (progn
     (bind-key "C-m" 'smart-newline)))
+
+;; YASnippets
+(use-package yasnippet
+  :init (yas-global-mode t))
 
 ;;; Languages:
 
@@ -200,12 +211,14 @@
       (payas/ac-setup))
     (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
     (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
+    (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
     (add-hook 'php-mode-hook 'my/php-mode-hook)
     (add-hook 'php-mode-hook 'helm-gtags-mode)))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
-  :mode "\\.rb\\'"
+  :mode (("\\.rb\\'"   . enh-ruby-mode)
+         ("\\.rake\\'" . enh-ruby-mode))
   :interpreter "pry"
   :config
   (progn
@@ -240,19 +253,20 @@
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 (--each my/elisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
 
-(use-package paredit
+(use-package paredit :defer t
+  :init
+  (--each my/elisp-mode-hooks (add-hook it 'enable-paredit-mode))
   :config
   (progn
     (bind-key "C-<right>" 'right-word paredit-mode-map)
-    (bind-key "C-<left>"  'left-word  paredit-mode-map)
-    (--each my/elisp-mode-hooks (add-hook it 'enable-paredit-mode))))
+    (bind-key "C-<left>"  'left-word  paredit-mode-map)))
 
 ;; Scala
 (use-package scala-mode2 :defer t
-  :config
-  (use-package ensime)
   :init
-  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
+  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+  :config
+  (use-package ensime))
 
 ;; JavaScript
 (use-package js2-mode :defer t
@@ -295,6 +309,7 @@
     (custom-set-variables
      '(recentf-max-saved-items 50))
     (recentf-mode t)
+    (bind-key "C-c っ" 'helm-recentf)
     (bind-key "C-c r" 'helm-recentf)))
 
 ;; Undo Tree
@@ -303,8 +318,8 @@
   (global-undo-tree-mode))
 
 ;; expand-region.el
-(use-package expand-region
-  :config
+(use-package expand-region :defer t
+  :init
   (progn
     (bind-key "C-@"   'er/expand-region)
     (bind-key "C-M-@" 'er/contract-region)))
@@ -321,9 +336,10 @@
 
 ;; Open junk file
 (use-package open-junk-file
-  :config
+  :init
   (progn
-    (setq open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S.")
+    (custom-set-variables
+     '(open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S."))
     (bind-key "C-c j" 'open-junk-file)))
 
 ;; w3m
@@ -362,15 +378,19 @@
 (use-package color-moccur)
 (use-package moccur-edit)
 
-;; dired-k
-(use-package direx)
-(use-package dired-k
-  :config
+;; direx
+(use-package direx :defer t
+  :init
   (progn
-    (add-hook 'dired-initial-position-hook 'dired-k)
-    (bind-key "K" 'dired-k dired-mode-map)
     (bind-key "M-C-\\" 'direx-project:jump-to-project-root-other-window)
     (bind-key "M-C-¥"  'direx-project:jump-to-project-root-other-window)))
+
+;; dired-k
+(use-package dired-k :defer t
+  :init
+  (progn
+    (add-hook 'dired-initial-position-hook 'dired-k)
+    (bind-key "K" 'dired-k dired-mode-map)))
 
 ;; Wdired
 (use-package wdired)
@@ -380,6 +400,13 @@
 
 ;;; Games:
 (use-package gnugo :defer t)
+
+;;; Communication:
+(use-package twittering-mode :defer t
+  :config
+  (progn
+    (custom-set-variables
+     '(twittering-use-master-password t))))
 
 ;;; Server:
 (use-package edit-server
@@ -391,14 +418,16 @@
 
 ;;; Variables:
 (defvar my/hidden-minor-modes
-      '(undo-tree-mode
-        eldoc-mode
-        auto-complete-mode
-        magit-auto-revert-mode
-        abbrev-mode
-        smartparens-mode
-        helm-mode
-        helm-gtags-mode))
+  '(abbrev-mode
+    auto-complete-mode
+    eldoc-mode
+    helm-gtags-mode
+    helm-mode
+    magit-auto-revert-mode
+    smart-newline-mode
+    smartparens-mode
+    undo-tree-mode
+    yas-minor-mode))
 (--each my/hidden-minor-modes
   (setq minor-mode-alist
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
