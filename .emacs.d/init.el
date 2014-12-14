@@ -231,6 +231,17 @@
     (setq-default enh-ruby-not-insert-magic-comment t)
     (add-hook 'robe-mode-hook 'ac-robe-setup)))
 
+;;; begin enh-ruby-mode patch
+;;; http://qiita.com/vzvu3k6k/items/acec84d829a3dbe1427a
+(defadvice enh-ruby-mode-set-encoding (around stop-enh-ruby-mode-set-encoding)
+  "If enh-ruby-not-insert-magic-comment is true, stops enh-ruby-mode-set-encoding."
+  (if (and (boundp 'enh-ruby-not-insert-magic-comment)
+           (not enh-ruby-not-insert-magic-comment))
+      ad-do-it))
+(ad-activate 'enh-ruby-mode-set-encoding)
+(setq-default enh-ruby-not-insert-magic-comment t)
+;;; enh-ruby-mode patch ends here
+
 ;; rhtml
 (use-package rhtml-mode :defer t)
 
