@@ -96,6 +96,7 @@
 
 ;; Uniquify
 (use-package uniquify
+  :config
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Show paren
@@ -132,13 +133,13 @@
     (bind-key "C-e" 'my/seq-end)))
 
 ;; Helm
-(use-package helm
+(use-package helm :defer t
   :config
   (progn
     (require 'helm-config)
     (helm-mode t)))
 
-(use-package helm-gtags
+(use-package helm-gtags :defer t
   :config
   (progn
     (bind-key "M-."   'helm-gtags-find-tag  helm-gtags-mode-map)
@@ -201,7 +202,6 @@
 ;;; Languages:
 
 ;; PHP
-(require 'cl)
 (use-package php-mode :defer t
   :config
   (progn
@@ -272,6 +272,8 @@
     (bind-key "C-<right>" 'right-word paredit-mode-map)
     (bind-key "C-<left>"  'left-word  paredit-mode-map)))
 
+(use-package slime :defer t)
+
 ;; Scala
 (use-package scala-mode2 :defer t
   :init
@@ -315,7 +317,7 @@
 
 ;; Recentf
 (use-package recentf
-  :config
+  :init
   (progn
     (custom-set-variables
      '(recentf-max-saved-items 50))
@@ -325,7 +327,7 @@
 
 ;; Undo Tree
 (use-package undo-tree
-  :config
+  :init
   (global-undo-tree-mode))
 
 ;; expand-region.el
@@ -346,7 +348,7 @@
     (require 'xterm-256color)))
 
 ;; Open junk file
-(use-package open-junk-file
+(use-package open-junk-file :defer t
   :init
   (progn
     (custom-set-variables
@@ -383,7 +385,7 @@
     (bind-key "C-t p" 'helm-elscreen)))
 
 ;; Calfw
-(use-package calfw)
+(use-package calfw :defer t)
 
 ;; moccur
 (use-package color-moccur)
