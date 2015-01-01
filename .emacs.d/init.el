@@ -111,6 +111,7 @@
   (progn
     (bind-key  "M-ESC ESC"   'keyboard-quit)
     (bind-key  "C-c R"       'revert-buffer)
+    (bind-key  "C-x お"      'other-window)
     (bind-key* "C-c <left>"  'windmove-left)
     (bind-key* "C-c <down>"  'windmove-down)
     (bind-key* "C-c <up>"    'windmove-up)
@@ -245,7 +246,7 @@
 ;; rhtml
 (use-package rhtml-mode :defer t)
 
-
+;; inf-ruby
 (use-package inf-ruby :defer t
   :config
   (progn
@@ -298,20 +299,28 @@
     (tss-config-default)))
 
 ;; Go
-(use-package go-mode :defer t)
+;(use-package go-mode :defer t)
 
 ;; FSharp
-(use-package fsharp-mode :defer t)
+;(use-package fsharp-mode :defer t)
 
 ;; JSON
-(use-package json-mode :defer t)
+;(use-package json-mode :defer t)
 
 ;; YAML
-(use-package yaml-mode :defer t)
+;(use-package yaml-mode :defer t)
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
   :mode ("\\.md\\'" . gfm-mode))
+
+;; Web
+(use-package web-mode :defer t
+  :mode "\\.html\\'"
+  :mode "\\.tpl\\'")
+
+;; pixiv Novel
+;(use-package pixiv-novel-mode :defer t)
 
 ;;; Others:
 
@@ -348,15 +357,19 @@
     (require 'xterm-256color)))
 
 ;; Open junk file
-(use-package open-junk-file :defer t
+(use-package open-junk-file
   :init
   (progn
     (custom-set-variables
      '(open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S."))
     (bind-key "C-c j" 'open-junk-file)))
 
+;; restclient.el
+(use-package restclient :defer t
+  :mode ("\\.http\\'" . restclient-mode))
+
 ;; w3m
-(use-package w3m :defer t)
+;(use-package w3m :defer t)
 
 ;; navi2ch
 (use-package navi2ch :defer t
@@ -377,12 +390,12 @@
   :config
   (progn
     (custom-set-variables
-     '(elscreen-prefix-key (kbd "C-t"))
+     '(elscreen-prefix-key (kbd "C-z"))
      '(elscreen-display-tab nil)
      '(elscreen-tab-display-kill-screen nil)
      '(elscreen-tab-display-control nil))
     (elscreen-start)
-    (bind-key "C-t p" 'helm-elscreen)))
+    (bind-key "C-z p" 'helm-elscreen)))
 
 ;; Calfw
 (use-package calfw :defer t)
@@ -409,7 +422,7 @@
 (use-package wdired)
 
 ;; UCS Utility
-(use-package ucs-utils :defer t)
+;(use-package ucs-utils :defer t)
 
 ;;; Games:
 (use-package gnugo :defer t)
