@@ -9,3 +9,5 @@
 	b = branch
 [core]
 	excludesfile = /Users/megurine/.gitexclude
+[push]
+	default = simple
