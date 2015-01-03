@@ -35,6 +35,8 @@
 ;;
 ;;; Code:
 
+(setq gc-cons-threshold (* 1024 1024 1024))
+
 (if window-system
     (tool-bar-mode -1)
   (menu-bar-mode -1))
@@ -474,5 +476,7 @@
 (--each my/hidden-minor-modes
   (setq minor-mode-alist
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
+
+(setq gc-cons-threshold (* 8 1024 1024))
 
 ;;; init.el ends here
