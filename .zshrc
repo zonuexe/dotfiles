@@ -34,3 +34,4 @@ then
   alias vim=/Applications/MacVim.app/Contents/MacOS/Vim
 fi
 
+SHELLY_HOME=/Users/megurine/.shelly; [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
