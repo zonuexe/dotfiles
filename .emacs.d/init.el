@@ -216,7 +216,8 @@
     (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
     (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
     (add-hook 'php-mode-hook 'my/php-mode-hook)
-    (add-hook 'php-mode-hook 'helm-gtags-mode)))
+    ;(add-hook 'php-mode-hook 'helm-gtags-mode)
+    ))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t

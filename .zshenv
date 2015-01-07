@@ -7,8 +7,15 @@ path=(
     ~/.linuxbrew/bin(N-/)
     /usr/local/bin(N-/)
     /usr/bin(N-/)
+    /usr/local/opt/coreutils/libexec/gnubin(N-/)
     $path
 )
+
+manpath=(
+    /usr/local/opt/coreutils/libexec/gnuman(N-/)
+    $manpath
+)
+typeset -gxU manpath
 
 if type vim > /dev/null > /dev/null
 then
