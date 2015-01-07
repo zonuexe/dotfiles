@@ -31,7 +31,12 @@ zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'c
 
 case "${OSTYPE}" in
 freebsd*|darwin*)
-  alias ls="ls -G -w"
+    if [[ $(which ls | grep gnubin) ]]
+    then
+        alias ls="ls --color"
+    else
+        alias ls="ls -G -w"
+    fi
   ;;
 linux*)
   alias ls="ls --color"
