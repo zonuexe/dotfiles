@@ -126,4 +126,7 @@ then
   alias vim=/Applications/MacVim.app/Contents/MacOS/Vim
 fi
 
+alias Emacs="emacs"
+alias emacs="emacs -nw"
+
 SHELLY_HOME=$HOME/.shelly; [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
