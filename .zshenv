@@ -51,12 +51,18 @@ then
     launchctl setenv GOPATH $GOPATH
 fi
 
+if [ -d /usr/local/opt/openssl ]
+then
+    export CPPFLAGS="-I/usr/local/opt/openssl/include"
+fi
+
 [ -z "$ld_library_path" ] && typeset -xT LD_LIBRARY_PATH ld_library_path
 [ -z "$include" ] && typeset -xT INCLUDE include
 typeset -U path cdpath fpath manpath ld_library_path include
 
 ld_library_path=(
     $HOME/.linuxbrew/lib(N-/)
+    /usr/local/opt/openssl/lib(N-/)
     $ld_library_path
 )
 #include=(${HOME}/include(N-/) $include)
