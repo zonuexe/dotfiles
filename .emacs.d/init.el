@@ -120,8 +120,8 @@
     (bind-key* "C-c <right>" 'windmove-right))
   (cond
    ((eq window-system 'ns)
-    (defvar ns-command-modifier 'meta)
-    (defvar ns-alternate-modifier 'meta)
+    (setq ns-command-modifier 'meta)
+    (setq ns-alternate-modifier 'meta)
     (bind-key "M-¥" (lambda () (interactive) (insert "¥")))
     (bind-key "¥"   (lambda () (interactive) (insert "\\"))))))
 
