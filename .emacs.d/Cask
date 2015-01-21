@@ -31,7 +31,6 @@
 (depends-on "go-mode")
 (depends-on "helm")
 (depends-on "helm-ag")
-(depends-on "helm-gtags")
 (depends-on "helm-projectile")
 (depends-on "htmlize")
 (depends-on "http")
