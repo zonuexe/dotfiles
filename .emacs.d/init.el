@@ -485,6 +485,14 @@
   (setq minor-mode-alist
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
 
+(defun reload-major-mode ()
+  "Reload current major mode."
+  (interactive)
+  (let ((current-mode major-mode))
+    (fundamental-mode)
+    (funcall current-mode)
+    current-mode))
+
 (setq gc-cons-threshold (* 8 1024 1024))
 
 ;;; init.el ends here
