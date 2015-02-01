@@ -125,6 +125,16 @@
     (bind-key "M-¥" (lambda () (interactive) (insert "¥")))
     (bind-key "¥"   (lambda () (interactive) (insert "\\"))))))
 
+(use-package key-chord
+  :init
+  (progn
+    (custom-set-variables
+     '(key-chord-two-keys-delay 0.05))
+    (key-chord-mode 1)
+    (key-chord-define-global "df" 'find-function)
+    (key-chord-define-global "ip" 'package-install)
+    (key-chord-define-global "m," 'reload-major-mode)))
+
 (use-package sequential-command
   :config
   (progn
@@ -451,6 +461,9 @@
 ;; UCS Utility
 ;(use-package ucs-utils :defer t)
 
+;; Font Utility
+;(use-package font-utils)
+
 ;;; Games:
 (use-package gnugo :defer t)
 
@@ -485,6 +498,7 @@
   (setq minor-mode-alist
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
 
+;;; My Functions:
 (defun reload-major-mode ()
   "Reload current major mode."
   (interactive)
@@ -493,6 +507,7 @@
     (funcall current-mode)
     current-mode))
 
+;; pick up after
 (setq gc-cons-threshold (* 8 1024 1024))
 
 ;;; init.el ends here
