@@ -42,7 +42,8 @@
   (menu-bar-mode -1))
 
 ;;; Color-theme:
-(load-theme 'manoj-dark t)
+(defvar my/load-themes '(manoj-dark tango))
+(load-theme (car my/load-themes) t)
 
 ;;; Variables:
 
@@ -133,6 +134,7 @@
     (key-chord-mode 1)
     (key-chord-define-global "df" 'find-function)
     (key-chord-define-global "ip" 'package-install)
+    (key-chord-define-global "rt" 'toggle-load-theme)
     (key-chord-define-global "m," 'reload-major-mode)))
 
 (use-package sequential-command
@@ -506,6 +508,14 @@
     (fundamental-mode)
     (funcall current-mode)
     current-mode))
+
+(defun toggle-load-theme ()
+  "Toggle `load-theme'."
+  (interactive)
+  (let ((current-theme (car custom-enabled-themes)))
+    (load-theme
+     (car (or (cdr (member current-theme my/load-themes))
+              my/load-themes)))))
 
 ;; pick up after
 (setq gc-cons-threshold (* 8 1024 1024))
