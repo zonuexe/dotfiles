@@ -154,12 +154,6 @@
     (require 'helm-config)
     (helm-mode t)))
 
-(use-package helm-gtags :defer t
-  :config
-  (progn
-    (bind-key "M-."   'helm-gtags-find-tag  helm-gtags-mode-map)
-    (bind-key "C-M-." 'helm-gtags-find-rtag helm-gtags-mode-map)))
-
 (use-package helm-ag :defer t)
 
 ;; Auto-Complete
@@ -227,9 +221,7 @@
     (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
     (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
     (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
-    (add-hook 'php-mode-hook 'my/php-mode-hook)
-    ;(add-hook 'php-mode-hook 'helm-gtags-mode)
-    ))
+    (add-hook 'php-mode-hook 'my/php-mode-hook)))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
@@ -348,8 +340,10 @@
 
 ;; Web
 (use-package web-mode :defer t
-  :mode "\\.html\\'"
-  :mode "\\.tpl\\'")
+  :init
+  (progn
+    (--each '("\\.html\\'" "\\.tpl\\'")
+      (add-to-list 'auto-mode-alist (cons it 'web-mode)))))
 
 ;; Emmet-mode
 (use-package emmet-mode :defer t
@@ -400,7 +394,7 @@
   :init
   (progn
     (custom-set-variables
-     '(open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S."))
+     '(open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
     (bind-key "C-c j" 'open-junk-file)))
 
 ;; restclient.el
@@ -426,15 +420,17 @@
 
 ;; ElScreen
 (use-package elscreen
-  :config
+  :init
   (progn
     (custom-set-variables
      '(elscreen-prefix-key (kbd "C-z"))
      '(elscreen-display-tab nil)
      '(elscreen-tab-display-kill-screen nil)
      '(elscreen-tab-display-control nil))
-    (elscreen-start)
-    (bind-key "C-z p" 'helm-elscreen)))
+    (bind-key "C-z p" 'helm-elscreen)
+    (bind-key "C-<tab>" 'elscreen-next)
+    (bind-key "<C-iso-lefttab>" 'elscreen-previous)
+    (elscreen-start)))
 
 ;; Calfw
 (use-package calfw :defer t)
@@ -489,7 +485,6 @@
   '(abbrev-mode
     auto-complete-mode
     eldoc-mode
-    helm-gtags-mode
     helm-mode
     magit-auto-revert-mode
     smart-newline-mode
