@@ -481,11 +481,16 @@
     (add-hook 'after-init-hook 'edit-server-start t)))
 
 ;;; Variables:
+(custom-set-variables
+ '(eldoc-minor-mode-string "")
+ '(shr-max-image-proportion 2.5))
+
 (defvar my/hidden-minor-modes
   '(abbrev-mode
     auto-complete-mode
     eldoc-mode
     helm-mode
+    paredit-mode
     magit-auto-revert-mode
     smart-newline-mode
     smartparens-mode
@@ -494,6 +499,14 @@
 (--each my/hidden-minor-modes
   (setq minor-mode-alist
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
+
+(defvar my/disable-trailing-modes
+  '(eww-mode
+    comint-mode
+    twittering-mode))
+(--each my/disable-trailing-modes
+  (add-hook (intern (concat (symbol-name it) "-hook"))
+            'my/disable-trailing-mode-hook))
 
 ;;; My Functions:
 (defun reload-major-mode ()
@@ -511,6 +524,10 @@
     (load-theme
      (car (or (cdr (member current-theme my/load-themes))
               my/load-themes)))))
+
+(defun my/disable-trailing-mode-hook ()
+  "Disable show tail whitespace."
+  (setq show-trailing-whitespace nil))
 
 ;; pick up after
 (setq gc-cons-threshold (* 8 1024 1024))
