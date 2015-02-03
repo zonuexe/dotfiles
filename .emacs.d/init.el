@@ -217,6 +217,8 @@
     (use-package php-auto-yasnippets)
     (defun my/php-mode-hook ()
       (subword-mode t)
+      (setq show-trailing-whitespace t)
+      (c-set-style "psr2")
       (payas/ac-setup))
     (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
     (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
@@ -501,8 +503,10 @@
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
 
 (defvar my/disable-trailing-modes
-  '(eww-mode
-    comint-mode
+  '(comint-mode
+    eshell-mode
+    eww-mode
+    term-mode
     twittering-mode))
 (--each my/disable-trailing-modes
   (add-hook (intern (concat (symbol-name it) "-hook"))
