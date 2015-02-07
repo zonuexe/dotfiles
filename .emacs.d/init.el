@@ -410,7 +410,7 @@
 (use-package navi2ch :defer t
   :config
   (progn
-    (use-package navi2ch-mona)
+    (require 'navi2ch-mona)
     (custom-set-variables
      '(navi2ch-article-use-jit t)
      '(navi2ch-article-exist-message-range nil)
@@ -484,6 +484,7 @@
 
 ;;; Variables:
 (custom-set-variables
+ '(ac-ignore-case nil)
  '(eldoc-minor-mode-string "")
  '(shr-max-image-proportion 2.5))
 

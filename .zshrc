@@ -1,5 +1,4 @@
 bindkey -e
-autoload -U compinit; compinit
 
 setopt auto_cd
 setopt auto_pushd
@@ -27,6 +26,7 @@ setopt share_history
 setopt extended_history
 
 autoload -U compinit && compinit
+
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
 
 case "${OSTYPE}" in
@@ -42,8 +42,6 @@ linux*)
   alias ls="ls --color"
   ;;
 esac
-
-bindkey -e
 
 autoload colors && colors
 
