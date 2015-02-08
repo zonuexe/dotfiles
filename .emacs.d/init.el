@@ -134,6 +134,7 @@
     (key-chord-mode 1)
     (key-chord-define-global "df" 'find-function)
     (key-chord-define-global "ip" 'package-install)
+    (key-chord-define-global "kl" 'align-regexp)
     (key-chord-define-global "rt" 'toggle-load-theme)
     (key-chord-define-global "m," 'reload-major-mode)))
 
