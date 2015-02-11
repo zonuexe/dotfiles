@@ -64,6 +64,7 @@ ld_library_path=(
     $HOME/.linuxbrew/lib(N-/)
     /usr/local/opt/openssl/lib(N-/)
     /usr/local/opt/sqlite/lib(N-/)
+    /usr/local/opt/icu4c/lib(N-/)
     $ld_library_path
 )
 #include=(${HOME}/include(N-/) $include)
