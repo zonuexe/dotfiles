@@ -62,12 +62,21 @@
 ;;;     |うゐのおくやま　けふこえて|
 ;;;     |あさきゆめみし　ゑひもせす|
 
+(defconst my/default-display-font-family "Migu 2M")
+(defconst my/display-font-size-by-hostname-alist
+  '(("MegurineUbu1410"  . 12.5)
+    ("tadsan-ret.local" . 17.5)))
+
 (when (and window-system (>= emacs-major-version 23))
-  (set-frame-font "Migu 2M-15.5"))
+  (set-frame-font
+   (format "%s-%.1f"
+           my/default-display-font-family
+           (or (cdr (assoc (system-name) my/display-font-size-by-hostname-alist))
+               15.5))))
 
 ;;; Packages:
-
-(when (require 'cask "~/.cask/cask.el" t)
+(when (or (require 'cask "~/.cask/cask.el" t)
+	  (require 'cask nil t))
   (cask-initialize))
 
 (require 'use-package)

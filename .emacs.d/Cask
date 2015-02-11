@@ -81,6 +81,7 @@
 (depends-on "undercover")
 (depends-on "undo-tree")
 (depends-on "use-package")
+(depends-on "vimrc-mode")
 (depends-on "w3m")
 (depends-on "web-mode")
 (depends-on "yaml-mode")
