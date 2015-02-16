@@ -62,6 +62,7 @@ typeset -U path cdpath fpath manpath ld_library_path include
 
 ld_library_path=(
     $HOME/.linuxbrew/lib(N-/)
+    /usr/local/opt/curl/lib(N-/)
     /usr/local/opt/openssl/lib(N-/)
     /usr/local/opt/sqlite/lib(N-/)
     /usr/local/opt/icu4c/lib(N-/)

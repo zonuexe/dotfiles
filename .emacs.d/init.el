@@ -311,6 +311,11 @@
     (add-hook 'slime-mode-hook 'set-up-slime-ac)
     (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)))
 
+(use-package haskell-mode :defer t
+  :init
+  (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+
 ;; Scala
 (use-package scala-mode2 :defer t
   :init
