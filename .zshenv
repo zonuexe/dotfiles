@@ -57,8 +57,8 @@ then
 fi
 
 [ -z "$ld_library_path" ] && typeset -xT LD_LIBRARY_PATH ld_library_path
-[ -z "$include" ] && typeset -xT INCLUDE include
-typeset -U path cdpath fpath manpath ld_library_path include
+[ -z "$include" ] && (typeset -xT INCLUDE include; typeset -U include)
+typeset -U path cdpath fpath manpath ld_library_path
 
 ld_library_path=(
     $HOME/.linuxbrew/lib(N-/)
@@ -69,3 +69,5 @@ ld_library_path=(
     $ld_library_path
 )
 #include=(${HOME}/include(N-/) $include)
+
+MY_ZSHENV=MY_ZSHENV

@@ -1,3 +1,5 @@
+[[ "$MY_ZSHENV" = MY_ZSHENV ]] && . ~/.zshenv
+
 bindkey -e
 
 setopt auto_cd
