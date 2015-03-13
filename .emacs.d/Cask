@@ -4,6 +4,7 @@
 (depends-on "2048-game")
 (depends-on "ac-slime")
 (depends-on "anaphora")
+(depends-on "apache-mode")
 (depends-on "auto-complete")
 (depends-on "bind-key")
 (depends-on "calfw")

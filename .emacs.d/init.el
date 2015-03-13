@@ -356,11 +356,26 @@
   :mode ("\\.md\\'" . gfm-mode))
 
 ;; Web
+(defun my/web-mode-hook ()
+  (custom-set-variables
+   '(web-mode-enable-auto-pairing nil)))
+
+(defun sp-web-mode-is-code-context (id action context)
+  "http://web-mode.org/"
+  (when (and (eq action 'insert)
+             (not (or (get-text-property (point) 'part-side)
+                      (get-text-property (point) 'block-side))))
+    t))
+
 (use-package web-mode :defer t
   :init
   (progn
-    (--each '("\\.html\\'" "\\.tpl\\'")
-      (add-to-list 'auto-mode-alist (cons it 'web-mode)))))
+    (add-hook 'web-mode-hook 'my/web-mode-hook)
+    (--each '("\\.html\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'")
+      (add-to-list 'auto-mode-alist (cons it 'web-mode))))
+  :config
+  (progn
+    (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))))
 
 ;; Emmet-mode
 (use-package emmet-mode :defer t
