@@ -8,6 +8,5 @@
 	c = checkout
 	b = branch
 [core]
-	excludesfile = /Users/megurine/.gitexclude
+	excludesfile = ~/.gitexclude
 [push]
-	default = simple

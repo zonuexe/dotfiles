@@ -5,7 +5,7 @@ PWD  = Dir.pwd
 
 dotfiles = %w(
   .gitconfig
-  .gitexclue
+  .gitexclude
   .profile
   .zshenv
   .zshrc
