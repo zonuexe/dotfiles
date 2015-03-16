@@ -497,7 +497,7 @@
 ;(use-package font-utils)
 
 ;;; Games:
-(use-package gnugo :defer t)
+;(use-package gnugo :defer t)
 
 ;;; Communication:
 (use-package twittering-mode :defer t

@@ -8,6 +8,7 @@ path=(
     /usr/local/bin(N-/)
     /usr/bin(N-/)
     /usr/local/opt/coreutils/libexec/gnubin(N-/)
+    /usr/local/heroku/bin(N-/)
     $path
 )
 
