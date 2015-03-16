@@ -226,6 +226,8 @@
   (progn
     (use-package php-auto-yasnippets)
     (defun my/php-mode-hook ()
+      (when (require 'php-eldoc nil t)
+        (php-eldoc-enable))
       (subword-mode t)
       (setq show-trailing-whitespace t)
       (c-set-style "psr2")
@@ -459,7 +461,7 @@
      '(elscreen-display-tab nil)
      '(elscreen-tab-display-kill-screen nil)
      '(elscreen-tab-display-control nil))
-    (bind-key "C-z p" 'helm-elscreen)
+    ;(bind-key "C-t p" 'helm-elscreen)
     (bind-key "C-<tab>" 'elscreen-next)
     (bind-key "<C-iso-lefttab>" 'elscreen-previous)
     (elscreen-start)))

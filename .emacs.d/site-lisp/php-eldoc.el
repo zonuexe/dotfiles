@@ -1584,6 +1584,7 @@
             ("array_keys" "$arg" "[$search_value]" "[$strict]")
             ("array_values" "$arg")
             ("array_count_values" "$arg")
+            ("array_column" "array $array" "mixed $column_key" "[mixed $index_key = null]")
             ("array_reverse" "$input" "[$preserve_keys]")
             ("array_reduce" "$arg" "$callback" "[$initial]")
             ("array_pad" "$arg" "$pad_size" "$pad_value")
