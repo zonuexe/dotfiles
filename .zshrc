@@ -130,3 +130,7 @@ alias Emacs=$(which emacs)
 alias emacs="emacs -nw"
 
 SHELLY_HOME=$HOME/.shelly; [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
+
+phptags(){
+    ctags -e --php-types=c+i+d+f $(git ls-files | grep -E '\.php$' | grep -v vendor)
+}
