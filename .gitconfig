@@ -10,3 +10,4 @@
 [core]
 	excludesfile = ~/.gitexclude
 [push]
+	default = tracking
