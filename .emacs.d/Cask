@@ -3,6 +3,7 @@
 
 (depends-on "2048-game")
 (depends-on "ac-slime")
+(depends-on "ag")
 (depends-on "anaphora")
 (depends-on "apache-mode")
 (depends-on "auto-complete")
@@ -56,7 +57,6 @@
 (depends-on "pallet")
 (depends-on "paredit")
 (depends-on "php-auto-yasnippets")
-(depends-on "php-eldoc")
 (depends-on "php-mode")
 (depends-on "pixiv-novel-mode")
 (depends-on "popwin")
@@ -86,5 +86,7 @@
 (depends-on "vimrc-mode")
 (depends-on "w3m")
 (depends-on "web-mode")
+(depends-on "wgrep")
+(depends-on "wgrep-ag")
 (depends-on "yaml-mode")
 (depends-on "yasnippet")

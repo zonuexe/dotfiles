@@ -471,7 +471,22 @@
 
 ;; moccur
 (use-package color-moccur)
-(use-package moccur-edit)
+;(use-package moccur-edit)
+
+(use-package ag
+  :init
+  (progn
+    (custom-set-variables
+     '(ag-highlight-search t)
+     '(ag-reuse-window 'nil)
+     '(ag-reuse-buffers 'nil))
+    (require 'wgrep-ag)
+    (autoload 'wgrep-ag-setup "wgrep-ag")
+    (add-hook 'ag-mode-hook 'wgrep-ag-setup)
+    (bind-key "C-:" 'ag))
+  :config
+  (progn
+    (bind-key "r" 'wgrep-change-to-wgrep-mode ag-mode-map)))
 
 ;; direx
 (use-package direx :defer t
@@ -520,6 +535,9 @@
  '(eldoc-minor-mode-string "")
  '(shr-max-image-proportion 2.5))
 
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
+;;; Functions:
 (defvar my/hidden-minor-modes
   '(abbrev-mode
     auto-complete-mode
