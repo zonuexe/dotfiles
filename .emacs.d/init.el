@@ -505,6 +505,9 @@
 ;; Wdired
 (use-package wdired)
 
+;; Visual
+(bind-key "M-%" 'vr/query-replace)
+
 ;; UCS Utility
 ;(use-package ucs-utils :defer t)
 
