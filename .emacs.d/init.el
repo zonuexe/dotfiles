@@ -232,10 +232,13 @@
       (setq show-trailing-whitespace t)
       (c-set-style "psr2")
       (payas/ac-setup))
+    (custom-set-variables
+     '(php-refactor-keymap-prefix (kbd "C-c v")))
     (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
     (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
     (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
-    (add-hook 'php-mode-hook 'my/php-mode-hook)))
+    (add-hook 'php-mode-hook 'my/php-mode-hook)
+    (add-hook 'php-mode-hook 'php-refactor-mode)))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
