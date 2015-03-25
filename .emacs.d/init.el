@@ -124,6 +124,8 @@
     (bind-key  "M-ESC ESC"   'keyboard-quit)
     (bind-key  "C-c R"       'revert-buffer)
     (bind-key  "C-x お"      'other-window)
+    (bind-key  "M-："        'eval-expression)
+    (bind-key  "M-ESC ："    'eval-expression)
     (bind-key* "C-c <left>"  'windmove-left)
     (bind-key* "C-c <down>"  'windmove-down)
     (bind-key* "C-c <up>"    'windmove-up)
@@ -362,6 +364,7 @@
 
 ;; Web
 (defun my/web-mode-hook ()
+  "Set variables for web-mode."
   (custom-set-variables
    '(web-mode-enable-auto-pairing nil)))
 
@@ -393,6 +396,11 @@
 ;(use-package pixiv-novel-mode :defer t)
 
 ;;; Others:
+
+;; back-button
+(use-package back-button
+  :init
+  (back-button-mode t))
 
 ;; Recentf
 (use-package recentf
@@ -470,7 +478,8 @@
     (elscreen-start)))
 
 ;; Calfw
-(use-package calfw :defer t)
+(use-package calfw)
+(use-package calfw-git)
 
 ;; moccur
 (use-package color-moccur)
@@ -564,7 +573,8 @@
     eshell-mode
     eww-mode
     term-mode
-    twittering-mode))
+    twittering-mode
+    cfw:calendar-mode))
 (--each my/disable-trailing-modes
   (add-hook (intern (concat (symbol-name it) "-hook"))
             'my/disable-trailing-mode-hook))
