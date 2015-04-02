@@ -449,6 +449,9 @@
 ;; w3m
 ;(use-package w3m :defer t)
 
+;; Org-IO Slide
+(require 'ox-ioslide-helper)
+
 ;; navi2ch
 (use-package navi2ch :defer t
   :config
@@ -480,6 +483,9 @@
 ;; Calfw
 (use-package calfw)
 (use-package calfw-git)
+(use-package calfw-syobocal
+  :init
+  (require 'syobo))
 
 ;; moccur
 (use-package color-moccur)
@@ -569,12 +575,13 @@
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
 
 (defvar my/disable-trailing-modes
-  '(comint-mode
+  '(cfw:calendar-mode
+    comint-mode
     eshell-mode
+    package-menu-mode
     eww-mode
     term-mode
-    twittering-mode
-    cfw:calendar-mode))
+    twittering-mode))
 (--each my/disable-trailing-modes
   (add-hook (intern (concat (symbol-name it) "-hook"))
             'my/disable-trailing-mode-hook))
