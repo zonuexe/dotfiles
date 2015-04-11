@@ -299,24 +299,12 @@
     (bind-key "C-<right>" 'right-word paredit-mode-map)
     (bind-key "C-<left>"  'left-word  paredit-mode-map)))
 
-(use-package slime :defer t
-  :config
+(use-package sly :defer t
+  :init
   (progn
-    (custom-set-variables
-     '(inferior-lisp-program "sbcl"))
-    (use-package popwin)
-    (push '("*slime-apropos*") popwin:special-display-config)
-    (push '("*slime-macroexpansion*") popwin:special-display-config)
-    (push '("*slime-description*") popwin:special-display-config)
-    (push '("*slime-compilation*" :noselect t) popwin:special-display-config)
-    (push '("*slime-xref*") popwin:special-display-config)
-    (push '(sldb-mode :stick t) popwin:special-display-config)
-    (push '(slime-repl-mode) popwin:special-display-config)
-    (push '(slime-connection-list-mode) popwin:special-display-config)
-
-    (require 'ac-slime)
-    (add-hook 'slime-mode-hook 'set-up-slime-ac)
-    (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)))
+    (require 'sly-autoloads))
+  (custom-set-variables
+   '(inferior-lisp-program "sbcl")))
 
 (use-package haskell-mode :defer t
   :init
@@ -396,11 +384,6 @@
 ;(use-package pixiv-novel-mode :defer t)
 
 ;;; Others:
-
-;; back-button
-(use-package back-button
-  :init
-  (back-button-mode t))
 
 ;; Recentf
 (use-package recentf
