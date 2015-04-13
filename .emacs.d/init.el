@@ -135,7 +135,10 @@
     (--each '(ns-command-modifier ns-alternate-modifier)
       (when (boundp it) (set it 'meta)))
     (bind-key "M-¥" (lambda () (interactive) (insert "¥")))
-    (bind-key "¥"   (lambda () (interactive) (insert "\\"))))))
+    (bind-key "¥"   (lambda () (interactive) (insert "\\"))))
+   ((eq window-system 'x)
+    (--each '(x-meta-keysym x-super-keysym)
+      (when (boundp it) (set it 'meta))))))
 
 (use-package key-chord
   :init
