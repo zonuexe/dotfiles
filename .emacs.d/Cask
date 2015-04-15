@@ -62,6 +62,7 @@
 (depends-on "ox-ioslide")
 (depends-on "pallet")
 (depends-on "paredit")
+(depends-on "pdf-tools")
 (depends-on "php-auto-yasnippets")
 (depends-on "php-mode")
 (depends-on "php-refactor-mode")

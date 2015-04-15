@@ -537,7 +537,8 @@
   :config
   (progn
     (custom-set-variables
-     '(twittering-use-master-password t))))
+     '(twittering-use-master-password t))
+    (twittering-icon-mode)))
 
 ;;; Server:
 (use-package edit-server
