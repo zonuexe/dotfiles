@@ -184,6 +184,8 @@
 (use-package magit :defer t
   :init
   (progn
+    (setq-default magit-last-seen-setup-instructions "1.4.0")
+    (setq-default magit-auto-revert-mode nil)
     (setq vc-handled-backends '())
     (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
     (bind-key "C-x m" 'magit-status)
@@ -513,11 +515,13 @@
 (bind-key "M-%" 'vr/query-replace)
 
 ;; image-mode
-(progn
-  (bind-key "<wheel-up>"    'image-previous-line    image-mode-map)
-  (bind-key "<wheel-down>"  'image-next-line        image-mode-map)
-  (bind-key "<wheel-right>" 'image-forward-hscroll  image-mode-map)
-  (bind-key "<wheel-left>"  'image-backward-hscroll image-mode-map))
+(use-package image-mode :defer t
+  :config
+  (progn
+    (bind-key "<wheel-up>"    'image-previous-line    image-mode-map)
+    (bind-key "<wheel-down>"  'image-next-line        image-mode-map)
+    (bind-key "<wheel-right>" 'image-forward-hscroll  image-mode-map)
+    (bind-key "<wheel-left>"  'image-backward-hscroll image-mode-map)))
 
 ;; UCS Utility
 ;(use-package ucs-utils :defer t)
