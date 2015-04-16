@@ -372,7 +372,7 @@
   :init
   (progn
     (add-hook 'web-mode-hook 'my/web-mode-hook)
-    (--each '("\\.html\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'")
+    (--each '("\\.html\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'")
       (add-to-list 'auto-mode-alist (cons it 'web-mode))))
   :config
   (progn
