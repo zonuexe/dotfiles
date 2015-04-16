@@ -51,6 +51,7 @@
 (depends-on "json-mode")
 (depends-on "key-chord")
 (depends-on "key-combo")
+(depends-on "less-css-mode")
 (depends-on "load-theme-buffer-local")
 (depends-on "magit")
 (depends-on "markdown-mode+")
