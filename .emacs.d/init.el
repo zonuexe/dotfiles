@@ -196,7 +196,11 @@
   :config
   (progn
     (use-package helm-projectile)
-    (projectile-global-mode t)))
+    (custom-set-variables
+     '(projectile-completion-system 'helm))
+    (projectile-global-mode t)
+    (helm-projectile-on)
+    (add-hook 'projectile-mode-hook 'projectile-rails-on)))
 
 ;; Flycheck
 (use-package flycheck
@@ -398,7 +402,7 @@
      '(recentf-max-saved-items 50))
     (recentf-mode t)
     (bind-key "C-c っ" 'helm-recentf)
-    (bind-key "C-c r" 'helm-recentf)))
+    (bind-key "C-c t" 'helm-recentf)))
 
 ;; Undo Tree
 (use-package undo-tree
