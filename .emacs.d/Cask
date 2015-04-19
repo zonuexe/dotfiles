@@ -90,6 +90,7 @@
 (depends-on "term+key-intercept")
 (depends-on "term+mux")
 (depends-on "tss")
+(depends-on "twittering-plus" :git "git@github.com:zonuexe/twittering-plus.git")
 (depends-on "twittering-mode")
 (depends-on "ucs-utils")
 (depends-on "undercover")

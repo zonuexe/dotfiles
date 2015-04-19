@@ -542,6 +542,7 @@
   (progn
     (custom-set-variables
      '(twittering-use-master-password t))
+    (twittering+tern-on-yorufukurou)
     (twittering-icon-mode)))
 
 ;;; Server:
