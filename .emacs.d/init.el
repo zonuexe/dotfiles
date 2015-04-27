@@ -610,6 +610,22 @@
   "Disable show tail whitespace."
   (setq show-trailing-whitespace nil))
 
+;; Original: http://qiita.com/ShingoFukuyama/items/e0be9497723b01905813
+(defun my-outdent-dwim ()
+  (interactive)
+  (let* ((x-times (or current-prefix-arg 1))
+         (mode-offset (if (boundp 'c-basic-offset) c-basic-offset 2))
+         (offset (- (* mode-offset x-times))))
+    (if mark-active
+        (indent-rigidly
+         (save-excursion (goto-char (region-beginning)) (point-at-bol))
+         (save-excursion (goto-char (region-end)) (point-at-eol))
+         offset)
+      (indent-rigidly (point-at-bol) (point-at-eol) offset))))
+
+(bind-key "<S-tab>" 'my-outdent-dwim)
+;;; my-outdent-dwim ends here.
+
 ;; pick up after
 (setq gc-cons-threshold (* 8 1024 1024))
 
