@@ -357,7 +357,10 @@
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
-  :mode ("\\.md\\'" . gfm-mode))
+  :mode ("\\.md\\'" . gfm-mode)
+  :config
+  (progn
+    (visual-line-mode nil)))
 
 ;; Web
 (defun my/web-mode-hook ()
