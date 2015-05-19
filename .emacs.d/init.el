@@ -362,6 +362,8 @@
   (progn
     (visual-line-mode nil)))
 
+;(use-package 'realtime-preview :defer t)
+
 ;; Web
 (defun my/web-mode-hook ()
   "Set variables for web-mode."
