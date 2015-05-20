@@ -296,13 +296,18 @@
   :interpreter ("python" . python-mode))
 
 ;; Lisp
-(defvar my/elisp-mode-hooks
+(defvar my/lisp-mode-hooks
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
-(--each my/elisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
+(--each my/lisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
+
+(use-package lispxmp :defer t
+  :init
+  (progn
+    (bind-key "C-c C-e" 'lispxmp emacs-lisp-mode-map)))
 
 (use-package paredit :defer t
   :init
-  (--each my/elisp-mode-hooks (add-hook it 'enable-paredit-mode))
+  (--each my/lisp-mode-hooks (add-hook it 'enable-paredit-mode))
   :config
   (progn
     (bind-key "C-<right>" 'right-word paredit-mode-map)
