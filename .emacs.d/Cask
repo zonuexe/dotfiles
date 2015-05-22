@@ -77,6 +77,7 @@
 (depends-on "prodigy")
 (depends-on "projectile")
 (depends-on "projectile-rails")
+(depends-on "rainbow-mode")
 (depends-on "realtime-preview" :git "git@github.com:zonuexe/realtime-preview.el.git")
 (depends-on "request-deferred")
 (depends-on "restclient")
