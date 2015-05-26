@@ -405,12 +405,15 @@
 ;;; Others:
 
 ;; Recentf
-(use-package recentf
+(use-package recentf-ext
   :init
   (progn
     (custom-set-variables
-     '(recentf-max-saved-items 50))
+     '(recentf-max-saved-items 2000)
+     '(recentf-auto-cleanup 100)
+     (list 'recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list)))
     (recentf-mode t)
+    (add-hook 'after-init-hook 'helm-recentf)
     (bind-key "C-c っ" 'helm-recentf)
     (bind-key "C-c t" 'helm-recentf)))
 
