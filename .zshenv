@@ -5,6 +5,7 @@ path=(
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
     ~/.linuxbrew/bin(N-/)
+    /usr/local/sbin(N-/)
     /usr/local/bin(N-/)
     /usr/bin(N-/)
     /usr/local/opt/coreutils/libexec/gnubin(N-/)
