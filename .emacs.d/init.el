@@ -145,11 +145,12 @@
   (progn
     (custom-set-variables
      '(key-chord-two-keys-delay 0.05))
-    (key-chord-mode 1)
+    (key-chord-mode t)
     (key-chord-define-global "df" 'find-function)
     (key-chord-define-global "ip" 'package-install)
     (key-chord-define-global "kl" 'align-regexp)
     (key-chord-define-global "rt" 'toggle-load-theme)
+    (key-chord-define-global "wr" 'writeroom-mode)
     (key-chord-define-global "m," 'reload-major-mode)))
 
 (use-package sequential-command
@@ -591,7 +592,8 @@
         (cons (list it "") (assq-delete-all it minor-mode-alist))))
 
 (defvar my/disable-trailing-modes
-  '(cfw:calendar-mode
+  '(Buffer-menu-mode
+    cfw:calendar-mode
     comint-mode
     eshell-mode
     package-menu-mode
