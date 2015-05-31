@@ -25,6 +25,7 @@
 (depends-on "enh-ruby-mode")
 (depends-on "ensime")
 (depends-on "ert-runner")
+(depends-on "emoji-fontset" :git "git@github.com:zonuexe/emoji-fontset.el.git")
 (depends-on "ess")
 (depends-on "eval-in-repl")
 (depends-on "exec-path-from-shell")

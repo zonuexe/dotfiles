@@ -56,14 +56,21 @@
 
 (add-to-list 'load-path (locate-user-emacs-file "./site-lisp"))
 
+;; http://ergoemacs.org/emacs/emacs_n_unicode.html
+;; set Unicode data file location. (used by what-cursor-position and describe-char)
+(let ((file "~/emacs.d/UnicodeData.txt"))
+  (when (file-exists-p file)
+    (custom-set-variables
+     (list 'describe-char-unicodedata-file file))))
+
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
 ;;;     |わかよたれそ　　つねならむ|
 ;;;     |うゐのおくやま　けふこえて|
 ;;;     |あさきゆめみし　ゑひもせす|
 
-(defconst my/default-display-font-family "Migu 2M")
-(defconst my/display-font-size-by-hostname-alist
+(defvar my/default-display-font-family "Migu 2M")
+(defvar my/display-font-size-by-hostname-alist
   '(("MegurineUbu1410"  . 12.5)
     ("tadsan-ret.local" . 17.5)))
 
@@ -547,6 +554,10 @@
 ;; Font Utility
 ;(use-package font-utils)
 
+(use-package emoji-fontset
+  :init
+  (emoji-fontset/turn-on "Symbola"))
+
 ;;; Games:
 ;(use-package gnugo :defer t)
 
@@ -627,6 +638,7 @@
 
 ;; Original: http://qiita.com/ShingoFukuyama/items/e0be9497723b01905813
 (defun my-outdent-dwim ()
+  "Outdent!"
   (interactive)
   (let* ((x-times (or current-prefix-arg 1))
          (mode-offset (if (boundp 'c-basic-offset) c-basic-offset 2))
