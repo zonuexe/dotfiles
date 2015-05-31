@@ -419,6 +419,7 @@
     (custom-set-variables
      '(recentf-max-saved-items 2000)
      '(recentf-auto-cleanup 100)
+     '(recentf-exclude '(".recentf" "COMMIT_EDITMSG" "TAGS"))
      (list 'recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list)))
     (recentf-mode t)
     (add-hook 'after-init-hook 'helm-recentf)
