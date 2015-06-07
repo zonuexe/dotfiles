@@ -239,6 +239,30 @@
 
 ;;; Languages:
 
+
+;; Web
+(defun my/web-mode-hook ()
+  "Set variables for web-mode."
+  (custom-set-variables
+   '(web-mode-enable-auto-pairing nil)))
+
+(defun sp-web-mode-is-code-context (id action context)
+  "This snippet is derived from http://web-mode.org/ ."
+  (when (and (eq action 'insert)
+             (not (or (get-text-property (point) 'part-side)
+                      (get-text-property (point) 'block-side))))
+    t))
+
+(use-package web-mode :defer t
+  :init
+  (progn
+    (add-hook 'web-mode-hook 'my/web-mode-hook)
+    (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'")
+      (add-to-list 'auto-mode-alist (cons it 'web-mode))))
+  :config
+  (progn
+    (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))))
+
 ;; PHP
 (use-package php-mode :defer t
   :config
@@ -344,6 +368,28 @@
 (use-package js2-mode :defer t
   :mode "\\.js\\'")
 
+;; Facebook JSX
+(defadvice web-mode-highlight-part (around tweak-jsx activate)
+  "This snippet is derived from https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/ ."
+  (if (equal web-mode-content-type "jsx")
+      (let ((web-mode-enable-part-face nil))
+        ad-do-it)
+    ad-do-it))
+
+(flycheck-define-checker jsxhint-checker
+  "A JSX syntax and style checker based on JSXHint."
+
+  :command ("jsxhint" source)
+  :error-patterns
+  ((error line-start (1+ nonl) ": line " line ", col " column ", " (message) line-end))
+  :modes (web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (equal web-mode-content-type "jsx")
+              ;; enable flycheck
+              (flycheck-select-checker 'jsxhint-checker)
+              (flycheck-mode))))
+
 ;; TypeScript
 (use-package typescript :defer t
   :mode ("\\.ts\\'" . typescript-mode)
@@ -376,29 +422,6 @@
     (visual-line-mode nil)))
 
 ;(use-package 'realtime-preview :defer t)
-
-;; Web
-(defun my/web-mode-hook ()
-  "Set variables for web-mode."
-  (custom-set-variables
-   '(web-mode-enable-auto-pairing nil)))
-
-(defun sp-web-mode-is-code-context (id action context)
-  "http://web-mode.org/"
-  (when (and (eq action 'insert)
-             (not (or (get-text-property (point) 'part-side)
-                      (get-text-property (point) 'block-side))))
-    t))
-
-(use-package web-mode :defer t
-  :init
-  (progn
-    (add-hook 'web-mode-hook 'my/web-mode-hook)
-    (--each '("\\.html\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'")
-      (add-to-list 'auto-mode-alist (cons it 'web-mode))))
-  :config
-  (progn
-    (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))))
 
 ;; Emmet-mode
 (use-package emmet-mode :defer t
