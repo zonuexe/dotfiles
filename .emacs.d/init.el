@@ -352,6 +352,19 @@
   (custom-set-variables
    '(inferior-lisp-program "sbcl")))
 
+;; Clojure
+(use-package clojure-mode :defer t
+  :mode (("\\.boot\\'" . clojure-mode)
+         ("\\.clj[csx]?)\\'"))
+  :config
+  (progn
+    (use-package clojure-mode-extra-font-locking)
+    (use-package inf-clojure)
+    (use-package align-cljlet :defer t
+      :init
+      (bind-key "C-c j a l" 'align-cljlet clojure-mode-map))))
+
+;; Haskell
 (use-package haskell-mode :defer t
   :init
   (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
