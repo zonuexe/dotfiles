@@ -53,6 +53,7 @@
 (set-keyboard-coding-system 'utf-8)
 (setq make-backup-files nil)
 (setq delete-auto-save-files t)
+(setq use-dialog-box nil)
 
 (add-to-list 'load-path (locate-user-emacs-file "./site-lisp"))
 
