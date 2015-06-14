@@ -330,8 +330,10 @@
 
 ;; Lisp
 (defvar my/lisp-mode-hooks
-      '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
+      '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook xah-elisp-mode-hook))
 (--each my/lisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
+
+;(use-package xah-elisp-mode)
 
 (use-package lispxmp :defer t
   :init
@@ -459,8 +461,15 @@
 (use-package expand-region :defer t
   :init
   (progn
-    (bind-key "C-@"   'er/expand-region)
-    (bind-key "C-M-@" 'er/contract-region)))
+    (bind-key "C-@" 'er/expand-region)
+    (bind-key "C-`" 'er/contract-region)))
+
+;; Annotate.el
+(use-package annotate :defer t
+  :init
+  (progn
+    (bind-key "M-@"   'annotate-annotate)
+    (bind-key "C-M-@" 'annotate-clear-annotations)))
 
 ;;; Tools:
 
@@ -556,6 +565,12 @@
   :config
   (progn
     (bind-key "r" 'wgrep-change-to-wgrep-mode ag-mode-map)))
+
+;; Swoop
+(use-package helm-swoop
+  :init
+  (progn
+    (bind-key "C-;" 'helm-swoop)))
 
 ;; direx
 (use-package direx :defer t
