@@ -504,6 +504,19 @@
      '(navi2ch-mona-ipa-mona-font-family-name "mona-izmg16"))
     (navi2ch-mona-setup)))
 
+;; EMMS http://www.emacswiki.org/emacs/EMMS
+(use-package emms :defer t
+  :config
+  (progn
+    (require 'emms)
+    (use-package emms-player-mpv)
+    (add-to-list 'emms-player-list 'emms-player-mpv)
+    (use-package emms-player-mpv-jp-radios)
+    (let ((default-directory (file-name-directory (find-lisp-object-file-name 'emms-player-mpv-jp-radios-add 'defun))))
+      (add-to-list 'load-path default-directory)
+      (normal-top-level-add-subdirs-to-load-path))
+    (emms-player-mpv-jp-radios-add-all)))
+
 ;; ElScreen
 (use-package elscreen
   :init
