@@ -258,6 +258,7 @@
   :init
   (progn
     (add-hook 'web-mode-hook 'my/web-mode-hook)
+    (add-hook 'web-mode-hook 'emmet-mode)
     (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'")
       (add-to-list 'auto-mode-alist (cons it 'web-mode))))
   :config
@@ -570,7 +571,8 @@
 (use-package helm-swoop
   :init
   (progn
-    (bind-key "C-;" 'helm-swoop)))
+    (bind-key "C-;" 'helm-swoop)
+    (bind-key "M-C-;" 'helm-multi-swoop)))
 
 ;; direx
 (use-package direx :defer t
