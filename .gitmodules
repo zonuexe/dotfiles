@@ -1,0 +1,3 @@
+[submodule ".emacs.d/site-lisp/php-extras"]
+	path = .emacs.d/site-lisp/php-extras
+	url = git@github.com:arnested/php-extras.git

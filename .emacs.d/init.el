@@ -55,7 +55,9 @@
 (setq delete-auto-save-files t)
 (setq use-dialog-box nil)
 
-(add-to-list 'load-path (locate-user-emacs-file "./site-lisp"))
+(let ((default-directory (locate-user-emacs-file "./site-lisp")))
+  (add-to-list 'load-path default-directory)
+  (normal-top-level-add-subdirs-to-load-path))
 
 ;; http://ergoemacs.org/emacs/emacs_n_unicode.html
 ;; set Unicode data file location. (used by what-cursor-position and describe-char)
@@ -269,6 +271,8 @@
 (use-package php-mode :defer t
   :config
   (progn
+    (require 'php-extras)
+    ;(php-extras-eldoc-documentation-function)
     (use-package php-auto-yasnippets)
     (defun my/php-mode-hook ()
       (when (require 'php-eldoc nil t)
