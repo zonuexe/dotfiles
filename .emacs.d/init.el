@@ -152,7 +152,7 @@
   :init
   (progn
     (custom-set-variables
-     '(key-chord-two-keys-delay 0.05))
+     '(key-chord-two-keys-delay 0.02))
     (key-chord-mode t)
     (key-chord-define-global "df" 'find-function)
     (key-chord-define-global "ip" 'package-install)
