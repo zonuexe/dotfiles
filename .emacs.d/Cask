@@ -102,6 +102,7 @@
 (depends-on "smartchr" :git "git@github.com:imakado/emacs-smartchr.git")
 (depends-on "smartparens")
 (depends-on "smex")
+(depends-on "smooth-scroll")
 (depends-on "stylus-mode")
 (depends-on "swoop")
 (depends-on "term+")
