@@ -606,9 +606,11 @@
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
 (use-package smooth-scroll
   :init
-  (custom-set-variables
-   '(smooth-scroll/vscroll-step-size 15))
-  (smooth-scroll-mode t))
+  (progn
+    (require 'smooth-scroll)
+    (custom-set-variables
+     '(smooth-scroll/vscroll-step-size 5))
+    (smooth-scroll-mode t)))
 
 ;; UCS Utility
 ;(use-package ucs-utils :defer t)
