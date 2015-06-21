@@ -338,6 +338,9 @@
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook xah-elisp-mode-hook))
 (--each my/lisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
 
+;; `Cask' is NOT emacs-lisp-mode
+(add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
+
 ;(use-package xah-elisp-mode)
 
 (use-package lispxmp :defer t
@@ -613,7 +616,7 @@
   (progn
     (require 'smooth-scroll)
     (custom-set-variables
-     '(smooth-scroll/vscroll-step-size 5))
+     '(smooth-scroll/vscroll-step-size 7))
     (smooth-scroll-mode t)))
 
 ;; UCS Utility
@@ -664,6 +667,7 @@
     magit-auto-revert-mode
     smart-newline-mode
     smartparens-mode
+    smooth-scroll-mode
     undo-tree-mode
     yas-minor-mode))
 (--each my/hidden-minor-modes
