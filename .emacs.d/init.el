@@ -180,7 +180,10 @@
     (require 'helm-config)
     (helm-mode t)))
 
-(use-package helm-ag :defer t)
+(use-package helm-ag :defer t
+  :init
+  (progn
+    (bind-key "C-:" 'helm-ag)))
 
 ;; Auto-Complete
 (use-package auto-complete
@@ -379,6 +382,15 @@
 (use-package js2-mode :defer t
   :mode "\\.js\\'")
 
+;; CoffeeScript
+(use-package coffee :defer t
+  :config
+  (progn
+    (setq-default coffee-tab-width 2)
+    (defun my/coffee-hook ()
+      (set (make-local-variable 'tab-width) 2))
+    (add-hook 'coffee-mode 'my/coffee-hook)))
+
 ;; Facebook JSX
 (defadvice web-mode-highlight-part (around tweak-jsx activate)
   "This snippet is derived from https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/ ."
@@ -421,6 +433,19 @@
 
 ;; JSON
 ;(use-package json-mode :defer t)
+
+(when nil
+  (flycheck-define-checker my/json-lint
+  "JSON Syntax check using Python json"
+  :command ("python" "-mjson.tool" source)
+  :error-patterns
+  ((error line-start "No JSON object could be decoded" line-end)
+   ;; [Python 2] Expecting object: line 1 column 2 (char 1)
+   ;; [Python 3] Expecting property name enclosed in double quotes: line 2 column 5 (char 6)
+   (error line-start (message) ": line " line " column " column " (char " (one-or-more char) ")" line-end)
+   ;; Extra data: line 1 column 43 - line 3 column 1 (char 42 - 86)
+   )
+  :modes 'json-mode))
 
 ;; YAML
 ;(use-package yaml-mode :defer t)
@@ -569,7 +594,7 @@
     (require 'wgrep-ag)
     (autoload 'wgrep-ag-setup "wgrep-ag")
     (add-hook 'ag-mode-hook 'wgrep-ag-setup)
-    (bind-key "C-:" 'ag))
+    (bind-key "M-C-:" 'ag))
   :config
   (progn
     (bind-key "r" 'wgrep-change-to-wgrep-mode ag-mode-map)))

@@ -57,6 +57,7 @@
 (depends-on "idle-highlight-mode")
 (depends-on "inf-ruby")
 (depends-on "ivs-edit")
+(depends-on "jade-mode")
 (depends-on "js2-mode")
 (depends-on "json-mode")
 (depends-on "key-chord")
