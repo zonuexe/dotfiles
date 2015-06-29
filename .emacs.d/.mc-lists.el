@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        c-electric-delete-forward
         my/seq-end
         paredit-forward-delete
         yas-expand
@@ -10,4 +11,5 @@
 
 (setq mc/cmds-to-run-once
       '(
+        subword-right
         ))
