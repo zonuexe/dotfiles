@@ -337,9 +337,16 @@
   :interpreter ("python" . python-mode))
 
 ;; Lisp
-(defvar my/lisp-mode-hooks
+(defun my/emacs-lisp-mode-hook ()
+  ""
+  (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
+  (set-face-foreground 'font-lock-regexp-grouping-construct "peru"))
+
+(defvar my/emacs-lisp-modes
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook xah-elisp-mode-hook))
-(--each my/lisp-mode-hooks (add-hook it 'turn-on-eldoc-mode))
+(--each my/emacs-lisp-modes
+  (add-hook it 'turn-on-eldoc-mode)
+  (add-hook it 'my/emacs-lisp-mode-hook))
 
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
@@ -353,7 +360,7 @@
 
 (use-package paredit :defer t
   :init
-  (--each my/lisp-mode-hooks (add-hook it 'enable-paredit-mode))
+  (--each my/emacs-lisp-modes (add-hook it 'enable-paredit-mode))
   :config
   (progn
     (bind-key "C-<right>" 'right-word paredit-mode-map)
@@ -779,6 +786,8 @@
 
 (bind-key "<S-tab>" 'my-outdent-dwim)
 ;;; my-outdent-dwim ends here.
+
+(elscreen-create)
 
 ;; pick up after
 (setq gc-cons-threshold (* 8 1024 1024))

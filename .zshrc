@@ -134,3 +134,6 @@ SHELLY_HOME=$HOME/.shelly; [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELL
 phptags(){
     ctags -e --php-types=c+i+d+f $(git ls-files | grep -E '\.php$' | grep -v vendor)
 }
+
+PERL_MB_OPT="--install_base \"/Users/megurine/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/Users/megurine/perl5"; export PERL_MM_OPT;

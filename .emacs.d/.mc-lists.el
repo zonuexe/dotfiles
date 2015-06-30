@@ -4,12 +4,18 @@
 (setq mc/cmds-to-run-for-all
       '(
         c-electric-delete-forward
+        c-electric-pound
+        c-electric-semi&comma
+        c-electric-star
         my/seq-end
         paredit-forward-delete
+        sp-remove-active-pair-overlay
+        subword-right
         yas-expand
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        c-electric-paren
         subword-right
         ))
