@@ -3,11 +3,14 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        c-electric-colon
         c-electric-delete-forward
         c-electric-pound
         c-electric-semi&comma
         c-electric-star
+        kill-region
         my/seq-end
+        my/seq-home
         paredit-forward-delete
         sp-remove-active-pair-overlay
         subword-right
