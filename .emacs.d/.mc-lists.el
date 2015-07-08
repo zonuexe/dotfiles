@@ -12,6 +12,7 @@
         my/seq-end
         my/seq-home
         paredit-forward-delete
+        paredit-kill
         sp-remove-active-pair-overlay
         subword-right
         yas-expand
