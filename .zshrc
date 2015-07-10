@@ -128,6 +128,7 @@ fi
 
 alias Emacs=$(which emacs)
 alias emacs="emacs -nw"
+alias あ=ag
 
 SHELLY_HOME=$HOME/.shelly; [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
 

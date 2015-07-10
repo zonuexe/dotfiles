@@ -133,9 +133,12 @@
   (progn
     (bind-key  "M-ESC ESC"   'keyboard-quit)
     (bind-key  "C-c R"       'revert-buffer)
+    (bind-key  "C-c i"       'my/display-file-info)
+    (bind-key  "C-x j"       'dired-jump)
     (bind-key  "C-x お"      'other-window)
     (bind-key  "M-："        'eval-expression)
     (bind-key  "M-ESC ："    'eval-expression)
+    (bind-key  "<S-tab>"     'my-outdent-dwim)
     (bind-key* "C-c <left>"  'windmove-left)
     (bind-key* "C-c <down>"  'windmove-down)
     (bind-key* "C-c <up>"    'windmove-up)
@@ -485,7 +488,7 @@
     (custom-set-variables
      '(recentf-max-saved-items 2000)
      '(recentf-auto-cleanup 100)
-     '(recentf-exclude '(".recentf" "COMMIT_EDITMSG" "TAGS"))
+     '(recentf-exclude '(".recentf" "COMMIT_EDITMSG" "TAGS" "^/sudo:"))
      (list 'recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list)))
     (recentf-mode t)
     (add-hook 'after-init-hook 'helm-recentf)
@@ -784,7 +787,6 @@
          offset)
       (indent-rigidly (point-at-bol) (point-at-eol) offset))))
 
-(bind-key "<S-tab>" 'my-outdent-dwim)
 ;;; my-outdent-dwim ends here.
 
 (elscreen-create)
