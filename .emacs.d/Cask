@@ -110,6 +110,8 @@
 (depends-on "term+")
 (depends-on "term+key-intercept")
 (depends-on "term+mux")
+(depends-on "toml")
+(depends-on "toml-mode")
 (depends-on "tss")
 (depends-on "twittering-mode")
 (depends-on "twittering-plus" :git "git@github.com:zonuexe/twittering-plus.git")

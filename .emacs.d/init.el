@@ -342,6 +342,7 @@
 ;; Lisp
 (defun my/emacs-lisp-mode-hook ()
   ""
+  (rainbow-mode t)
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru"))
 
@@ -376,6 +377,8 @@
   (custom-set-variables
    '(inferior-lisp-program "sbcl")))
 
+
+;; Haskell
 (use-package haskell-mode :defer t
   :init
   (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
