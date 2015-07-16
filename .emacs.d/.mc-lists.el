@@ -15,6 +15,7 @@
         paredit-forward-delete
         paredit-kill
         sp-remove-active-pair-overlay
+        subword-left
         subword-right
         yas-expand
         ))
