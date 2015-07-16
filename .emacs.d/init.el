@@ -201,12 +201,13 @@
 (use-package magit :defer t
   :init
   (progn
-    (setq-default magit-last-seen-setup-instructions "1.4.0")
     (setq-default magit-auto-revert-mode nil)
     (setq vc-handled-backends '())
     (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
     (bind-key "C-x m" 'magit-status)
     (bind-key "C-c l" 'magit-blame)))
+
+(add-to-list 'auto-mode-alist '("/\\.gitexclude" . gitignore-mode))
 
 ;; Projectile
 (use-package projectile
