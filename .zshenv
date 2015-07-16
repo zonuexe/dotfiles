@@ -5,6 +5,7 @@ path=(
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
     ~/.linuxbrew/bin(N-/)
+    $(brew --prefix homebrew/php/php56)/bin(N-/)
     /usr/local/sbin(N-/)
     /usr/local/bin(N-/)
     /usr/bin(N-/)
@@ -19,6 +20,9 @@ manpath=(
     $manpath
 )
 typeset -gxU manpath
+
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
 
 if type vim > /dev/null > /dev/null
 then

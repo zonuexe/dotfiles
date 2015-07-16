@@ -35,7 +35,7 @@
 ;;
 ;;; Code:
 
-(setq gc-cons-threshold (* 1024 1024 1024))
+(setq-default gc-cons-percentage 0.5)
 
 (if window-system
     (tool-bar-mode -1)
@@ -703,14 +703,6 @@
      '(twittering-use-master-password t))
     (twittering+tern-on-yorufukurou)
     (twittering-icon-mode)))
-
-;;; Server:
-(use-package edit-server
-  :if window-system
-  :init
-  (progn
-    (add-hook 'after-init-hook 'server-start t)
-    (add-hook 'after-init-hook 'edit-server-start t)))
 
 ;;; Variables:
 (custom-set-variables
