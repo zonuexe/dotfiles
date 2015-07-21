@@ -10,6 +10,7 @@
         c-electric-star
         kill-region
         markdown-exdent-or-delete
+        mouse-set-region
         my/seq-end
         my/seq-home
         paredit-forward-delete
