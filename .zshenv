@@ -5,6 +5,7 @@ path=(
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
     ~/.linuxbrew/bin(N-/)
+    ~/.linuxbrew/sbin(N-/)
     $(brew --prefix homebrew/php/php56)/bin(N-/)
     /usr/local/sbin(N-/)
     /usr/local/bin(N-/)
@@ -36,7 +37,7 @@ fi
 
 if which rbenv > /dev/null
 then
-    
+    eval "$(rbenv init -)"
 fi
 
 if type brew > /dev/null

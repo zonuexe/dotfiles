@@ -249,6 +249,8 @@
 
 ;;; Languages:
 
+(custom-set-variables
+ '(sql-product 'mysql))
 
 ;; Web
 (defun my/web-mode-hook ()
