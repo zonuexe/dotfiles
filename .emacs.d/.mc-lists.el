@@ -13,6 +13,8 @@
         mouse-set-region
         my/seq-end
         my/seq-home
+        org-end-of-line
+        org-self-insert-command
         paredit-forward-delete
         paredit-kill
         sp-remove-active-pair-overlay
