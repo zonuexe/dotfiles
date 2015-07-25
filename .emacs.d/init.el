@@ -55,6 +55,9 @@
 (setq delete-auto-save-files t)
 (setq use-dialog-box nil)
 
+(when load-file-name
+  (setq user-emacs-directory (file-name-directory load-file-name)))
+
 (let ((default-directory (locate-user-emacs-file "./site-lisp")))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
@@ -85,6 +88,14 @@
                15.5))))
 
 ;;; Packages:
+(add-to-list 'load-path (locate-user-emacs-file "el-get/el-get"))
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
+
 (when (or (require 'cask "~/.cask/cask.el" t)
 	  (require 'cask nil t))
   (cask-initialize))
