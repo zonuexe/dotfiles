@@ -4,6 +4,7 @@ path=(
     ~/.composer/vendor/bin(N-/)
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
+    ~/.linuxbrew/sbin(N-/)
     ~/.linuxbrew/bin(N-/)
     ~/.linuxbrew/sbin(N-/)
     $(brew --prefix homebrew/php/php56)/bin(N-/)
@@ -40,18 +41,13 @@ then
     eval "$(rbenv init -)"
 fi
 
-if type brew > /dev/null
-then
-    export PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages:$PYTHONPATH
-fi
 
 if [ -f $HOME/.phpbrew/bashrc ]
 then
     . $HOME/.phpbrew/bashrc
 fi
 
-export GOROOT=/usr/local/opt/go/libexec
-export GOPATH=$HOME/.go
+export GOPATH=$HOME
 
 if type launchctl > /dev/null
 then

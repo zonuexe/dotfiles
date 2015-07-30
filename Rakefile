@@ -10,6 +10,7 @@ dotfiles = %w(
   .profile
   .zshenv
   .zshrc
+  .tigrc
 )
 
 desc "Make symbolic link"
