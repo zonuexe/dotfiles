@@ -51,7 +51,6 @@ export GOPATH=$HOME
 
 if type launchctl > /dev/null
 then
-    launchctl setenv GOROOT $GOROOT
     launchctl setenv GOPATH $GOPATH
 fi
 
