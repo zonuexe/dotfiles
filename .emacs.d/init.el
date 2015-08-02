@@ -138,6 +138,11 @@
 ;; Column mode
 (column-number-mode t)
 
+;; volatile-highlights.el
+(use-package volatile-highlights
+  :init
+  (volatile-highlights-mode t))
+
 ;; Key config
 (use-package bind-key
   :config
