@@ -218,7 +218,14 @@
     (bind-key "C-x m" 'magit-status)
     (bind-key "C-c l" 'magit-blame)))
 
-(add-to-list 'auto-mode-alist '("/\\.gitexclude" . gitignore-mode))
+(add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
+
+
+;; Conf-Mode
+(add-to-list 'auto-mode-alist '("/\\.*config\\'"  . conf-mode) t)
+(add-to-list 'auto-mode-alist '("/\\.*rc\\'"  . conf-mode) t)
+
+(use-package ssh-config-mode)
 
 ;; Projectile
 (use-package projectile

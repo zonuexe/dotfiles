@@ -105,6 +105,7 @@
 (depends-on "smartrep")
 (depends-on "smex")
 (depends-on "smooth-scroll")
+(depends-on "ssh-config-mode")
 (depends-on "stylus-mode")
 (depends-on "swoop")
 (depends-on "term+")
