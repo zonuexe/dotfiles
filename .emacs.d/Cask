@@ -98,6 +98,7 @@
 (depends-on "s")
 (depends-on "scss-mode")
 (depends-on "sequential-command")
+(depends-on "slim-mode")
 (depends-on "sly")
 (depends-on "smart-newline")
 (depends-on "smartchr" :git "git@github.com:imakado/emacs-smartchr.git")

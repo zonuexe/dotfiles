@@ -8,6 +8,7 @@
         c-electric-pound
         c-electric-semi&comma
         c-electric-star
+        goto-line
         kill-region
         markdown-exdent-or-delete
         mouse-set-region

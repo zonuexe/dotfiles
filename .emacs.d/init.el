@@ -294,6 +294,9 @@
   (progn
     (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))))
 
+(add-to-list 'auto-mode-alist '("/Gemfile.lock\\'" . conf-mode))
+
+
 ;; PHP
 (use-package php-mode :defer t
   :config
