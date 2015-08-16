@@ -101,23 +101,17 @@
   (cask-initialize))
 
 (require 'use-package)
-(use-package pallet
-  :init (pallet-mode t))
+(pallet-mode t)
 
-(use-package nyan-mode
-  :init
-  (custom-set-variables
-   '(nyan-bar-length 16))
-  (nyan-mode t))
+(custom-set-variables '(nyan-bar-length 16))
+(nyan-mode t)
 
 ;;; Environment:
 
 ;; PATH
-(use-package exec-path-from-shell
-  :init
-  (custom-set-variables
-   '(exec-path-from-shell-variables ("PATH" "MANPATH" "GOROOT" "GOPATH")))
-  (exec-path-from-shell-initialize))
+(custom-set-variables
+ '(exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH")))
+(exec-path-from-shell-initialize)
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)
@@ -126,9 +120,7 @@
 (setq-default show-trailing-whitespace t)
 
 ;; Uniquify
-(use-package uniquify
-  :config
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
+(custom-set-variables '(uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Show paren
 (show-paren-mode t)
@@ -172,18 +164,18 @@
     (--each '(x-meta-keysym x-super-keysym)
       (when (boundp it) (set it 'meta))))))
 
+;; key-chord
 (use-package key-chord
   :init
-  (progn
-    (custom-set-variables
-     '(key-chord-two-keys-delay 0.02))
-    (key-chord-mode t)
-    (key-chord-define-global "df" 'find-function)
-    (key-chord-define-global "ip" 'package-install)
-    (key-chord-define-global "kl" 'align-regexp)
-    (key-chord-define-global "rt" 'toggle-load-theme)
-    (key-chord-define-global "wr" 'writeroom-mode)
-    (key-chord-define-global "m," 'reload-major-mode)))
+  (custom-set-variables
+   '(key-chord-two-keys-delay 0.02))
+  (key-chord-mode t)
+  (key-chord-define-global "df" 'find-function)
+  (key-chord-define-global "ip" 'package-install)
+  (key-chord-define-global "kl" 'align-regexp)
+  (key-chord-define-global "rt" 'toggle-load-theme)
+  (key-chord-define-global "wr" 'writeroom-mode)
+  (key-chord-define-global "m," 'reload-major-mode))
 
 (use-package sequential-command
   :config
@@ -211,7 +203,7 @@
 ;; Auto-Complete
 (use-package auto-complete
   :diminish auto-complete-mode
-  :init
+  :config
   (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
   (require 'auto-complete-config)
   (ac-config-default)
@@ -249,26 +241,18 @@
 
 ;; Flycheck
 (use-package flycheck
-  :diminish flycheck-mode
-  :init
-  (global-flycheck-mode t))
+ :diminish flycheck-mode)
+(global-flycheck-mode t)
 
 ;; Smartparens
 (use-package smartparens
-  :diminish smartparens-mode
-  :init
-  (use-package smartparens-config)
-  (smartparens-global-mode t))
+  :diminish smartparens-mode)
+(require 'smartparens-config)
+(smartparens-global-mode t)
 
 ;; smartchr
 (use-package smartchr :defer t
   :commands smartchr)
-
-;; smart-newline
-(use-package smart-newline :defer t
-  :init
-  (progn
-    (bind-key "C-m" 'smart-newline)))
 
 ;; YASnippets
 (use-package yasnippet
