@@ -105,21 +105,19 @@
   :init (pallet-mode t))
 
 (use-package nyan-mode
-  :config
-  (progn
-    (custom-set-variables
-     '(nyan-bar-length 16))
-    (nyan-mode t)))
+  :init
+  (custom-set-variables
+   '(nyan-bar-length 16))
+  (nyan-mode t))
 
 ;;; Environment:
 
 ;; PATH
 (use-package exec-path-from-shell
-  :config
-  (progn
-    (custom-set-variables
-      '(exec-path-from-shell-variables ("PATH" "MANPATH" "GOROOT" "GOPATH")))
-    (exec-path-from-shell-initialize)))
+  :init
+  (custom-set-variables
+   '(exec-path-from-shell-variables ("PATH" "MANPATH" "GOROOT" "GOPATH")))
+  (exec-path-from-shell-initialize))
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)
@@ -213,22 +211,20 @@
 ;; Auto-Complete
 (use-package auto-complete
   :diminish auto-complete-mode
-  :config
-  (progn
-    (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
-    (require 'auto-complete-config)
-    (ac-config-default)
-    (global-auto-complete-mode t)))
+  :init
+  (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
+  (require 'auto-complete-config)
+  (ac-config-default)
+  (global-auto-complete-mode t))
 
 ;; Magit
 (use-package magit :defer t
   :init
-  (progn
-    (setq-default magit-auto-revert-mode nil)
-    (setq vc-handled-backends '())
-    (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
-    (bind-key "C-x m" 'magit-status)
-    (bind-key "C-c l" 'magit-blame)))
+  (setq-default magit-auto-revert-mode nil)
+  (setq vc-handled-backends '())
+  (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
+  (bind-key "C-x m" 'magit-status)
+  (bind-key "C-c l" 'magit-blame))
 
 (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
 
@@ -384,20 +380,13 @@
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru"))
 
 (defvar my/emacs-lisp-modes
-      '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook xah-elisp-mode-hook))
+  '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 (--each my/emacs-lisp-modes
   (add-hook it 'turn-on-eldoc-mode)
   (add-hook it 'my/emacs-lisp-mode-hook))
 
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
-
-;(use-package xah-elisp-mode)
-
-(use-package lispxmp :defer t
-  :init
-  (progn
-    (bind-key "C-c C-e" 'lispxmp emacs-lisp-mode-map)))
 
 (use-package paredit :defer t
   :diminish paredit-mode
