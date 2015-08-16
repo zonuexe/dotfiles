@@ -19,6 +19,7 @@
         org-self-insert-command
         paredit-forward-delete
         paredit-kill
+        paredit-open-round
         sp-remove-active-pair-overlay
         subword-left
         subword-right

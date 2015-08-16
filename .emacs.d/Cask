@@ -123,6 +123,7 @@
 (depends-on "undo-tree")
 (depends-on "use-package")
 (depends-on "vimrc-mode")
+(depends-on "vim-filetype" :git "git@github.com:zonuexe/vim-filetype.el.git")
 (depends-on "visual-regexp")
 (depends-on "volatile-highlights")
 (depends-on "w3m")

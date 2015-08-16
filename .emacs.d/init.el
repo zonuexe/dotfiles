@@ -511,6 +511,11 @@
 ;; pixiv Novel
 ;(use-package pixiv-novel-mode :defer t)
 
+;; Vim Filetype
+(use-package vim-filetype
+  :init
+  (enable-vim-filetype))
+
 ;;; Others:
 
 ;; Recentf
