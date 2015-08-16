@@ -229,6 +229,7 @@
 ;; Conf-Mode
 (add-to-list 'auto-mode-alist '("/\\.*config\\'"  . conf-mode) t)
 (add-to-list 'auto-mode-alist '("/\\.*rc\\'"  . conf-mode) t)
+(require 'generic-x)
 
 (use-package ssh-config-mode)
 
@@ -245,16 +246,14 @@
 
 ;; Flycheck
 (use-package flycheck
-  :config
-  (progn
-    (global-flycheck-mode t)))
+  :init
+  (global-flycheck-mode t))
 
 ;; Smartparens
 (use-package smartparens
-  :config
-  (progn
-    (use-package smartparens-config)
-    (smartparens-global-mode t)))
+  :init
+  (use-package smartparens-config)
+  (smartparens-global-mode t))
 
 ;; smartchr
 (use-package smartchr :defer t
@@ -352,16 +351,15 @@
 ;;; enh-ruby-mode patch ends here
 
 ;; rhtml
-(use-package rhtml-mode :defer t)
+;(use-package rhtml-mode :defer t)
 
 ;; inf-ruby
 (use-package inf-ruby :defer t
   :config
-  (progn
-    (custom-set-variables
-     '(inf-ruby-default-implementation "pry")
-     '(inf-ruby-eval-binding "Pry.toplevel_binding"))
-    (add-hook 'inf-ruby-mode-hook 'ansi-color-for-comint-mode-on)))
+  (custom-set-variables
+   '(inf-ruby-default-implementation "pry")
+   '(inf-ruby-eval-binding "Pry.toplevel_binding"))
+  (add-hook 'inf-ruby-mode-hook 'ansi-color-for-comint-mode-on))
 
 ;; Python
 (use-package python :defer t
@@ -621,11 +619,11 @@
     (elscreen-start)))
 
 ;; Calfw
-(use-package calfw)
-(use-package calfw-git)
-(use-package calfw-syobocal
-  :init
-  (require 'syobo))
+;; (use-package calfw)
+;; (use-package calfw-git)
+;; (use-package calfw-syobocal
+;;   :init
+;;   (require 'syobo))
 
 ;; moccur
 (use-package color-moccur)
