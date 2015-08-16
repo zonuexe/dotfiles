@@ -745,21 +745,26 @@
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 ;;; Functions:
-(defvar my/hidden-minor-modes
-  '(abbrev-mode
-    auto-complete-mode
-    eldoc-mode
-    helm-mode
-    paredit-mode
-    magit-auto-revert-mode
-    smart-newline-mode
-    smartparens-mode
-    smooth-scroll-mode
-    undo-tree-mode
-    yas-minor-mode))
-(--each my/hidden-minor-modes
-  (setq minor-mode-alist
-        (cons (list it "") (assq-delete-all it minor-mode-alist))))
+(defmacro safe-diminish (file mode &optional new-name)
+  "https://github.com/larstvei/dot-emacs/blob/master/init.org"
+  `(with-eval-after-load ,file
+     (diminish ,mode ,new-name)))
+
+(safe-diminish "abbrev" 'abbrev-mode)
+(safe-diminish "auto-complete" 'auto-complete-mode)
+(safe-diminish "eldoc" 'eldoc-mode)
+(safe-diminish "flycheck" 'flycheck-mode)
+(safe-diminish "flyspell" 'flyspell-mode)
+(safe-diminish "helm-mode" 'helm-mode)
+(safe-diminish "paredit" 'paredit-mode)
+(safe-diminish "projectile" 'projectile-mode)
+(safe-diminish "rainbow-mode" 'rainbow-mode)
+(safe-diminish "simple" 'auto-fill-function)
+(safe-diminish "smartparens" 'smartparens-mode)
+(safe-diminish "smooth-scroll" 'smooth-scroll-mode)
+(safe-diminish "undo-tree" 'undo-tree-mode)
+(safe-diminish "volatile-highlights" 'volatile-highlights-mode)
+(safe-diminish "yasnippet" 'yas-minor-mode)
 
 (defvar my/disable-trailing-modes
   '(Buffer-menu-mode
