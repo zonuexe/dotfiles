@@ -140,8 +140,13 @@
 
 ;; volatile-highlights.el
 (use-package volatile-highlights
+  :diminish volatile-highlights-mode
   :init
   (volatile-highlights-mode t))
+
+;; Rainbow mode
+(use-package rainbow-mode :defer t
+  :diminish rainbow-mode)
 
 ;; Key config
 (use-package bind-key
@@ -194,6 +199,7 @@
 
 ;; Helm
 (use-package helm :defer t
+  :diminish helm-mode
   :config
   (progn
     (require 'helm-config)
@@ -206,6 +212,7 @@
 
 ;; Auto-Complete
 (use-package auto-complete
+  :diminish auto-complete-mode
   :config
   (progn
     (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
@@ -246,11 +253,13 @@
 
 ;; Flycheck
 (use-package flycheck
+  :diminish flycheck-mode
   :init
   (global-flycheck-mode t))
 
 ;; Smartparens
 (use-package smartparens
+  :diminish smartparens-mode
   :init
   (use-package smartparens-config)
   (smartparens-global-mode t))
@@ -267,6 +276,7 @@
 
 ;; YASnippets
 (use-package yasnippet
+  :diminish yas-minor-mode
   :init (yas-global-mode t))
 
 ;;; Languages:
@@ -390,6 +400,7 @@
     (bind-key "C-c C-e" 'lispxmp emacs-lisp-mode-map)))
 
 (use-package paredit :defer t
+  :diminish paredit-mode
   :init
   (--each my/emacs-lisp-modes (add-hook it 'enable-paredit-mode))
   :config
@@ -532,6 +543,7 @@
 
 ;; Undo Tree
 (use-package undo-tree
+  :diminish undo-tree-mode
   :init
   (global-undo-tree-mode))
 
@@ -707,6 +719,7 @@
 
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
 (use-package smooth-scroll
+  :diminish smooth-scroll-mode
   :init
   (progn
     (require 'smooth-scroll)
@@ -751,20 +764,9 @@
      (diminish ,mode ,new-name)))
 
 (safe-diminish "abbrev" 'abbrev-mode)
-(safe-diminish "auto-complete" 'auto-complete-mode)
 (safe-diminish "eldoc" 'eldoc-mode)
-(safe-diminish "flycheck" 'flycheck-mode)
 (safe-diminish "flyspell" 'flyspell-mode)
-(safe-diminish "helm-mode" 'helm-mode)
-(safe-diminish "paredit" 'paredit-mode)
-(safe-diminish "projectile" 'projectile-mode)
-(safe-diminish "rainbow-mode" 'rainbow-mode)
 (safe-diminish "simple" 'auto-fill-function)
-(safe-diminish "smartparens" 'smartparens-mode)
-(safe-diminish "smooth-scroll" 'smooth-scroll-mode)
-(safe-diminish "undo-tree" 'undo-tree-mode)
-(safe-diminish "volatile-highlights" 'volatile-highlights-mode)
-(safe-diminish "yasnippet" 'yas-minor-mode)
 
 (defvar my/disable-trailing-modes
   '(Buffer-menu-mode
