@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "2048-game")
+(depends-on "actionscript-mode")
 (depends-on "ag")
 (depends-on "anaphora")
 (depends-on "annotate")
@@ -12,6 +13,7 @@
 (depends-on "calfw-git" :git "https://gist.github.com/d77d9669440f3336bb9d.git")
 (depends-on "calfw-syobocal" :git "https://gist.github.com/1fd257fc1e8907d4d92e.git")
 (depends-on "cask")
+(depends-on "cmake-mode")
 (depends-on "coffee-mode")
 (depends-on "color-moccur")
 (depends-on "dash")
