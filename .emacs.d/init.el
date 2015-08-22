@@ -711,13 +711,13 @@
 ;(use-package gnugo :defer t)
 
 ;;; Communication:
-(use-package twittering-mode :defer t
+(use-package twindrill-mode :defer t
   :config
   (progn
     (custom-set-variables
-     '(twittering-use-master-password t))
-    (twittering+tern-on-yorufukurou)
-    (twittering-icon-mode)))
+     '(twindrill-use-master-password t))
+    ;;(twindrill+tern-on-yorufukurou)
+    (twindrill-icon-mode)))
 
 ;;; Variables:
 (custom-set-variables
@@ -745,8 +745,7 @@
     eshell-mode
     package-menu-mode
     eww-mode
-    term-mode
-    twittering-mode))
+    term-mode))
 (--each my/disable-trailing-modes
   (add-hook (intern (concat (symbol-name it) "-hook"))
             'my/disable-trailing-mode-hook))
