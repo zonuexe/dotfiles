@@ -476,10 +476,7 @@
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
-  :mode ("\\.md\\'" . gfm-mode)
-  :config
-  (progn
-    (visual-line-mode nil)))
+  :mode ("\\.md\\'" . gfm-mode))
 
 ;(use-package 'realtime-preview :defer t)
 
