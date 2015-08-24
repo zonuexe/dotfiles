@@ -4,6 +4,7 @@ HOME = ENV['HOME']
 PWD  = Dir.pwd
 
 dotfiles = %w(
+  .agignore
   .bashrc
   .gitconfig
   .gitexclude

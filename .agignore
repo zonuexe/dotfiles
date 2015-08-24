@@ -1,0 +1,7 @@
+*~
+*.swp
+*.bak
+*.old
+*.min.*
+tpl_c/*
+global.css
