@@ -716,8 +716,7 @@
   (progn
     (custom-set-variables
      '(twindrill-use-master-password t))
-    ;;(twindrill+tern-on-yorufukurou)
-    (twindrill-icon-mode)))
+    (twindrill+tern-on-yorufukurou)))
 
 ;;; Variables:
 (custom-set-variables
