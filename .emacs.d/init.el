@@ -312,6 +312,7 @@
     (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
     (add-hook 'php-mode-hook 'my/php-mode-hook)
     (add-hook 'php-mode-hook 'php-refactor-mode)))
+(add-to-list 'auto-mode-alist '("/composer.lock\\'" . json-mode))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
@@ -476,7 +477,11 @@
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
-  :mode ("\\.md\\'" . gfm-mode))
+  :mode ("\\.md\\'" . gfm-mode)
+  :config
+  (progn
+    ;(unbind-key "`" markdown-mode-map)
+    (visual-line-mode nil)))
 
 ;(use-package 'realtime-preview :defer t)
 

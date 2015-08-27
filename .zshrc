@@ -129,6 +129,13 @@ fi
 alias Emacs=$(which emacs)
 alias emacs="emacs -nw"
 alias あ=ag
+alias s=ls
+
+if which xsel > /dev/null
+then
+    alias pbcopy='xsel --clipboard --input'
+    alias pbpaste='xsel --clipboard --output'
+fi
 
 SHELLY_HOME=$HOME/.shelly; [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
 
