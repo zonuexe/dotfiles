@@ -16,6 +16,7 @@
 (depends-on "cmake-mode")
 (depends-on "coffee-mode")
 (depends-on "color-moccur")
+(depends-on "csv-mode")
 (depends-on "dash")
 (depends-on "diminish")
 (depends-on "dired-k")
