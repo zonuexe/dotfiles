@@ -561,6 +561,12 @@
 ;; w3m
 ;(use-package w3m :defer t)
 
+(use-package org-mode :defer t
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t))))
+
 ;; Org-IO Slide
 (require 'ox-ioslide-helper)
 

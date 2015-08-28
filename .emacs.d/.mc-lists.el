@@ -15,6 +15,7 @@
         mouse-set-region
         my/seq-end
         my/seq-home
+        org-delete-char
         org-end-of-line
         org-self-insert-command
         paredit-forward-delete
