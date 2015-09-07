@@ -5,6 +5,7 @@
       '(
         c-electric-colon
         c-electric-delete-forward
+        c-electric-paren
         c-electric-pound
         c-electric-semi&comma
         c-electric-slash
@@ -15,6 +16,7 @@
         mouse-set-region
         my/seq-end
         my/seq-home
+        nxml-electric-slash
         org-delete-char
         org-end-of-line
         org-self-insert-command
@@ -24,11 +26,10 @@
         sp-remove-active-pair-overlay
         subword-left
         subword-right
+        subword-right
         yas-expand
         ))
 
 (setq mc/cmds-to-run-once
       '(
-        c-electric-paren
-        subword-right
         ))
