@@ -117,7 +117,7 @@
 (depends-on "toml")
 (depends-on "toml-mode")
 (depends-on "tss")
-(depends-on "twindrill-mode" :git "git@github.com:zonuexe/twindrill-mode.git")
+(depends-on "twindrill-mode" :git "git@github.com:zonuexe/twindrill-mode.git" :branch "master")
 (depends-on "ucs-utils")
 (depends-on "undercover")
 (depends-on "undo-tree")
