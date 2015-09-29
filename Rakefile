@@ -6,6 +6,7 @@ PWD  = Dir.pwd
 dotfiles = %w(
   .agignore
   .bashrc
+  .gemrc
   .gitconfig
   .gitexclude
   .profile
