@@ -48,6 +48,8 @@ then
 fi
 
 export GOPATH=$HOME
+export SHELLY_HOME=$HOME/.shelly;
+[ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
 
 if type launchctl > /dev/null
 then

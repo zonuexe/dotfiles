@@ -130,6 +130,7 @@ alias Emacs=$(which emacs)
 alias emacs="emacs -nw"
 alias あ=ag
 alias s=ls
+alias be="bundle exec"
 
 if which xsel > /dev/null
 then
@@ -137,11 +138,11 @@ then
     alias pbpaste='xsel --clipboard --output'
 fi
 
-SHELLY_HOME=$HOME/.shelly; [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
+export RAILS_ENV=development
+
+#PERL_MB_OPT="--install_base \"/Users/megurine/perl5\""; export PERL_MB_OPT;
+#PERL_MM_OPT="INSTALL_BASE=/Users/megurine/perl5"; export PERL_MM_OPT;
 
 phptags(){
     ctags -e --php-types=c+i+d+f $(git ls-files | grep -E '\.php$' | grep -v vendor)
 }
-
-PERL_MB_OPT="--install_base \"/Users/megurine/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/Users/megurine/perl5"; export PERL_MM_OPT;
