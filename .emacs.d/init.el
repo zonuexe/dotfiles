@@ -753,6 +753,7 @@
 
 (defvar my/disable-trailing-modes
   '(Buffer-menu-mode
+    calendar-mode
     cfw:calendar-mode
     comint-mode
     eshell-mode
