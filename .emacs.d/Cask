@@ -136,4 +136,5 @@
 (depends-on "writeroom-mode")
 (depends-on "xterm-keybinder" :git "git@github.com:yuutayamada/xterm-keybinder-el.git")
 (depends-on "yaml-mode")
+(depends-on "yard-mode")
 (depends-on "yasnippet")
