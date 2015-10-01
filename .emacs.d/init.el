@@ -718,6 +718,11 @@
   :init
   (emoji-fontset/turn-on "Symbola"))
 
+;; TRAMP
+(eval-after-load 'tramp
+  '(vagrant-tramp-enable))
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
 ;;; Games:
 ;(use-package gnugo :defer t)
 
@@ -734,8 +739,6 @@
  '(ac-ignore-case nil)
  '(eldoc-minor-mode-string "")
  '(shr-max-image-proportion 2.5))
-
-(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 ;;; Functions:
 (defmacro safe-diminish (file mode &optional new-name)

@@ -124,6 +124,7 @@
 (depends-on "undercover")
 (depends-on "undo-tree")
 (depends-on "use-package")
+(depends-on "vagrant-tramp")
 (depends-on "vim-filetype" :git "git@github.com:zonuexe/vim-filetype.el.git")
 (depends-on "vimrc-mode")
 (depends-on "visual-regexp")
