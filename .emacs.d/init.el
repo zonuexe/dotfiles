@@ -195,11 +195,6 @@
     (require 'helm-config)
     (helm-mode t)))
 
-(use-package helm-cmd-t
-  :init
-  (require 'helm-C-x-b)
-  (bind-key "C-x b" 'helm-C-x-b))
-
 (use-package helm-ag :defer t
   :init
   (progn

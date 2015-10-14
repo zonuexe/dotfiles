@@ -53,7 +53,6 @@
 (depends-on "haskell-mode")
 (depends-on "helm")
 (depends-on "helm-ag")
-(depends-on "helm-cmd-t")
 (depends-on "helm-emms")
 (depends-on "helm-migemo")
 (depends-on "helm-projectile")
