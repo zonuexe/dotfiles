@@ -7,7 +7,7 @@ path=(
     ~/.linuxbrew/sbin(N-/)
     ~/.linuxbrew/bin(N-/)
     ~/.linuxbrew/sbin(N-/)
-    $(brew --prefix homebrew/php/php56)/bin(N-/)
+    #$(brew --prefix homebrew/php/php56)/bin(N-/)
     /usr/local/sbin(N-/)
     /usr/local/bin(N-/)
     /usr/bin(N-/)
