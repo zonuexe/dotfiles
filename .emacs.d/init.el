@@ -719,9 +719,11 @@
   (emoji-fontset/turn-on "Symbola"))
 
 ;; TRAMP
-(eval-after-load 'tramp
-  '(vagrant-tramp-enable))
-(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+(use-package tramp :defer t
+  :config
+  (require 'vagrant-tramp)
+  (vagrant-tramp-enable)
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 ;;; Games:
 ;(use-package gnugo :defer t)
