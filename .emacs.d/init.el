@@ -138,31 +138,29 @@
 (use-package rainbow-mode :defer t
   :diminish rainbow-mode)
 
-;; Key config
-(use-package bind-key
-  :config
-  (progn
-    (bind-key  "M-ESC ESC"   'keyboard-quit)
-    (bind-key  "C-c R"       'revert-buffer)
-    (bind-key  "C-c i"       'my/display-file-info)
-    (bind-key  "C-x j"       'dired-jump)
-    (bind-key  "C-x お"      'other-window)
-    (bind-key  "M-："        'eval-expression)
-    (bind-key  "M-ESC ："    'eval-expression)
-    (bind-key  "<S-tab>"     'my-outdent-dwim)
-    (bind-key* "C-c <left>"  'windmove-left)
-    (bind-key* "C-c <down>"  'windmove-down)
-    (bind-key* "C-c <up>"    'windmove-up)
-    (bind-key* "C-c <right>" 'windmove-right))
-  (cond
-   ((eq window-system 'ns)
-    (--each '(ns-command-modifier ns-alternate-modifier)
-      (when (boundp it) (set it 'meta)))
-    (bind-key "M-¥" (lambda () (interactive) (insert "¥")))
-    (bind-key "¥"   (lambda () (interactive) (insert "\\"))))
-   ((eq window-system 'x)
-    (--each '(x-meta-keysym x-super-keysym)
-      (when (boundp it) (set it 'meta))))))
+;; Key config ;(use-package bind-key)
+(progn
+  (bind-key  "M-ESC ESC"   'keyboard-quit)
+  (bind-key  "C-c R"       'revert-buffer)
+  (bind-key  "C-c i"       'my/display-file-info)
+  (bind-key  "C-x j"       'dired-jump)
+  (bind-key  "C-x お"      'other-window)
+  (bind-key  "M-："        'eval-expression)
+  (bind-key  "M-ESC ："    'eval-expression)
+  (bind-key  "<S-tab>"     'my-outdent-dwim)
+  (bind-key* "C-c <left>"  'windmove-left)
+  (bind-key* "C-c <down>"  'windmove-down)
+  (bind-key* "C-c <up>"    'windmove-up)
+  (bind-key* "C-c <right>" 'windmove-right))
+(cond
+ ((eq window-system 'ns)
+  (--each '(ns-command-modifier ns-alternate-modifier)
+    (when (boundp it) (set it 'meta)))
+  (bind-key "M-¥" (lambda () (interactive) (insert "¥")))
+  (bind-key "¥"   (lambda () (interactive) (insert "\\"))))
+ ((eq window-system 'x)
+  (--each '(x-meta-keysym x-super-keysym)
+    (when (boundp it) (set it 'meta)))))
 
 ;; key-chord
 (use-package key-chord
@@ -179,13 +177,12 @@
 
 (use-package sequential-command
   :config
-  (progn
-    (define-sequential-command my/seq-home
-      beginning-of-line beginning-of-line beginning-of-defun beginning-of-buffer seq-return)
-    (define-sequential-command my/seq-end
-      end-of-line end-of-line end-of-defun end-of-buffer seq-return)
-    (bind-key "C-a" 'my/seq-home)
-    (bind-key "C-e" 'my/seq-end)))
+  (define-sequential-command my/seq-home
+    beginning-of-line beginning-of-line beginning-of-defun beginning-of-buffer seq-return)
+  (define-sequential-command my/seq-end
+    end-of-line end-of-line end-of-defun end-of-buffer seq-return)
+  (bind-key "C-a" 'my/seq-home)
+  (bind-key "C-e" 'my/seq-end))
 
 ;; Helm
 (use-package helm :defer t
@@ -222,9 +219,9 @@
 
 
 ;; Conf-Mode
+(require 'generic-x)
 (add-to-list 'auto-mode-alist '("/\\.*config\\'"  . conf-mode) t)
 (add-to-list 'auto-mode-alist '("/\\.*rc\\'"  . conf-mode) t)
-(require 'generic-x)
 
 (use-package ssh-config-mode)
 
