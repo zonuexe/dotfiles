@@ -521,34 +521,30 @@
 ;; expand-region.el
 (use-package expand-region :defer t
   :init
-  (progn
-    (bind-key "C-@" 'er/expand-region)
-    (bind-key "C-`" 'er/contract-region)))
+  (bind-key "C-@" 'er/expand-region)
+  (bind-key "C-`" 'er/contract-region))
 
 ;; Annotate.el
 (use-package annotate :defer t
   :init
-  (progn
-    (bind-key "M-@"   'annotate-annotate)
-    (bind-key "C-M-@" 'annotate-clear-annotations)))
+  (bind-key "M-@"   'annotate-annotate)
+  (bind-key "C-M-@" 'annotate-clear-annotations))
 
 ;;; Tools:
 
 ;; term+
 (use-package term+
   :config
-  (progn
-    (use-package term+key-intercept)
-    (use-package term+mux)
-    (require 'xterm-256color)))
+  (use-package term+key-intercept)
+  (use-package term+mux)
+  (require 'xterm-256color))
 
 ;; Open junk file
 (use-package open-junk-file
   :init
-  (progn
-    (custom-set-variables
-     '(open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
-    (bind-key "C-c j" 'open-junk-file)))
+  (custom-set-variables
+   '(open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
+  (bind-key "C-c j" 'open-junk-file))
 
 ;; restclient.el
 (use-package restclient :defer t
@@ -569,43 +565,40 @@
 ;; navi2ch
 (use-package navi2ch :defer t
   :config
-  (progn
-    (require 'navi2ch-mona)
-    (custom-set-variables
-     '(navi2ch-article-use-jit t)
-     '(navi2ch-article-exist-message-range nil)
-     '(navi2ch-article-new-message-range nil)
-     '(navi2ch-mona-enable t)
-     '(navi2ch-mona-use-ipa-mona t)
-     '(navi2ch-mona-ipa-mona-font-family-name "mona-izmg16"))
-    (navi2ch-mona-setup)))
+  (require 'navi2ch-mona)
+  (custom-set-variables
+   '(navi2ch-article-use-jit t)
+   '(navi2ch-article-exist-message-range nil)
+   '(navi2ch-article-new-message-range nil)
+   '(navi2ch-mona-enable t)
+   '(navi2ch-mona-use-ipa-mona t)
+   '(navi2ch-mona-ipa-mona-font-family-name "mona-izmg16"))
+  (navi2ch-mona-setup))
 
 ;; EMMS http://www.emacswiki.org/emacs/EMMS
 (use-package emms :defer t
   :config
-  (progn
-    (require 'emms)
-    (use-package emms-player-mpv)
-    (add-to-list 'emms-player-list 'emms-player-mpv)
-    (use-package emms-player-mpv-jp-radios)
-    (let ((default-directory (file-name-directory (find-lisp-object-file-name 'emms-player-mpv-jp-radios-add 'defun))))
-      (add-to-list 'load-path default-directory)
-      (normal-top-level-add-subdirs-to-load-path))
-    (emms-player-mpv-jp-radios-add-all)))
+  (require 'emms)
+  (use-package emms-player-mpv)
+  (add-to-list 'emms-player-list 'emms-player-mpv)
+  (use-package emms-player-mpv-jp-radios)
+  (let ((default-directory (file-name-directory (find-lisp-object-file-name 'emms-player-mpv-jp-radios-add 'defun))))
+    (add-to-list 'load-path default-directory)
+    (normal-top-level-add-subdirs-to-load-path))
+  (emms-player-mpv-jp-radios-add-all))
 
 ;; ElScreen
 (use-package elscreen
   :init
-  (progn
-    (custom-set-variables
-     '(elscreen-prefix-key (kbd "C-z"))
-     '(elscreen-display-tab nil)
-     '(elscreen-tab-display-kill-screen nil)
-     '(elscreen-tab-display-control nil))
-    ;(bind-key "C-t p" 'helm-elscreen)
-    (bind-key "C-<tab>" 'elscreen-next)
-    (bind-key "<C-iso-lefttab>" 'elscreen-previous)
-    (elscreen-start)))
+  (custom-set-variables
+   '(elscreen-prefix-key (kbd "C-z"))
+   '(elscreen-display-tab nil)
+   '(elscreen-tab-display-kill-screen nil)
+   '(elscreen-tab-display-control nil))
+  ;;(bind-key "C-t p" 'helm-elscreen)
+  (bind-key "C-<tab>" 'elscreen-next)
+  (bind-key "<C-iso-lefttab>" 'elscreen-previous)
+  (elscreen-start))
 
 ;; Calfw
 ;; (use-package calfw)
@@ -620,39 +613,34 @@
 
 (use-package ag
   :init
-  (progn
-    (custom-set-variables
-     '(ag-highlight-search t)
-     '(ag-reuse-window 'nil)
-     '(ag-reuse-buffers 'nil))
-    (require 'wgrep-ag)
-    (autoload 'wgrep-ag-setup "wgrep-ag")
-    (add-hook 'ag-mode-hook 'wgrep-ag-setup)
-    (bind-key "M-C-:" 'ag))
+  (custom-set-variables
+   '(ag-highlight-search t)
+   '(ag-reuse-window 'nil)
+   '(ag-reuse-buffers 'nil))
+  (require 'wgrep-ag)
+  (autoload 'wgrep-ag-setup "wgrep-ag")
+  (add-hook 'ag-mode-hook 'wgrep-ag-setup)
+  (bind-key "M-C-:" 'ag)
   :config
-  (progn
-    (bind-key "r" 'wgrep-change-to-wgrep-mode ag-mode-map)))
+  (bind-key "r" 'wgrep-change-to-wgrep-mode ag-mode-map))
 
 ;; Swoop
 (use-package helm-swoop
   :init
-  (progn
-    (bind-key "C-;" 'helm-swoop)
-    (bind-key "M-C-;" 'helm-multi-swoop)))
+  (bind-key "C-;" 'helm-swoop)
+  (bind-key "M-C-;" 'helm-multi-swoop))
 
 ;; direx
 (use-package direx :defer t
   :init
-  (progn
-    (bind-key "M-C-\\" 'direx-project:jump-to-project-root-other-window)
-    (bind-key "M-C-¥"  'direx-project:jump-to-project-root-other-window)))
+  (bind-key "M-C-\\" 'direx-project:jump-to-project-root-other-window)
+  (bind-key "M-C-¥"  'direx-project:jump-to-project-root-other-window))
 
 ;; dired-k
 (use-package dired-k :defer t
   :init
-  (progn
-    (add-hook 'dired-initial-position-hook 'dired-k)
-    (bind-key "K" 'dired-k dired-mode-map)))
+  (add-hook 'dired-initial-position-hook 'dired-k)
+  (bind-key "K" 'dired-k dired-mode-map))
 
 ;; Wdired
 (use-package wdired)
@@ -663,46 +651,43 @@
 ;; image-mode
 (use-package image-mode :defer t
   :config
-  (progn
-    (bind-key "<wheel-up>"    'image-previous-line    image-mode-map)
-    (bind-key "<wheel-down>"  'image-next-line        image-mode-map)
-    (bind-key "<wheel-right>" 'image-forward-hscroll  image-mode-map)
-    (bind-key "<wheel-left>"  'image-backward-hscroll image-mode-map)))
+  (bind-key "<wheel-up>"    'image-previous-line    image-mode-map)
+  (bind-key "<wheel-down>"  'image-next-line        image-mode-map)
+  (bind-key "<wheel-right>" 'image-forward-hscroll  image-mode-map)
+  (bind-key "<wheel-left>"  'image-backward-hscroll image-mode-map))
 
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
 (use-package multiple-cursors
   :init
-  (progn
-    (require 'smartrep)
-    (declare-function smartrep-define-key "smartrep")
-    (bind-key "C-M-c" 'mc/edit-lines)
-    (bind-key "C-M-r" 'mc/mark-all-in-region)
-    (global-unset-key (kbd "C-t"))
-    (smartrep-define-key global-map "C-t"
-      '(("C-t" . 'mc/mark-next-like-this)
-        ("n"   . 'mc/mark-next-like-this)
-        ("p"   . 'mc/mark-previous-like-this)
-        ("m"   . 'mc/mark-more-like-this-extended)
-        ("u"   . 'mc/unmark-next-like-this)
-        ("U"   . 'mc/unmark-previous-like-this)
-        ("s"   . 'mc/skip-to-next-like-this)
-        ("S"   . 'mc/skip-to-previous-like-this)
-        ("*"   . 'mc/mark-all-like-this)
-        ("d"   . 'mc/mark-all-like-this-dwim)
-        ("i"   . 'mc/insert-numbers)
-        ("o"   . 'mc/sort-regions)
-        ("O"   . 'mc/reverse-regions)))))
+  (require 'smartrep)
+  (declare-function smartrep-define-key "smartrep")
+  (bind-key "C-M-c" 'mc/edit-lines)
+  (bind-key "C-M-r" 'mc/mark-all-in-region)
+  (global-unset-key (kbd "C-t"))
+  (smartrep-define-key global-map "C-t"
+    '(("C-t" . 'mc/mark-next-like-this)
+      ("n"   . 'mc/mark-next-like-this)
+      ("p"   . 'mc/mark-previous-like-this)
+      ("m"   . 'mc/mark-more-like-this-extended)
+      ("u"   . 'mc/unmark-next-like-this)
+      ("U"   . 'mc/unmark-previous-like-this)
+      ("s"   . 'mc/skip-to-next-like-this)
+      ("S"   . 'mc/skip-to-previous-like-this)
+      ("*"   . 'mc/mark-all-like-this)
+      ("d"   . 'mc/mark-all-like-this-dwim)
+      ("i"   . 'mc/insert-numbers)
+      ("o"   . 'mc/sort-regions)
+      ("O"   . 'mc/reverse-regions))))
 
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
 (use-package smooth-scroll
   :diminish smooth-scroll-mode
   :init
-  (progn
-    (require 'smooth-scroll)
-    (custom-set-variables
-     '(smooth-scroll/vscroll-step-size 7))
-    (smooth-scroll-mode t)))
+  (require 'smooth-scroll)
+  (custom-set-variables
+   '(smooth-scroll/vscroll-step-size 7))
+  (smooth-scroll-mode t))
 
 ;; UCS Utility
 ;(use-package ucs-utils :defer t)
@@ -727,10 +712,9 @@
 ;;; Communication:
 (use-package twindrill-mode :defer t
   :config
-  (progn
-    (custom-set-variables
-     '(twindrill-use-master-password t))
-    (twindrill+tern-on-yorufukurou)))
+  (custom-set-variables
+   '(twindrill-use-master-password t))
+  (twindrill+tern-on-yorufukurou))
 
 ;;; Variables:
 (custom-set-variables
@@ -740,7 +724,8 @@
 
 ;;; Functions:
 (defmacro safe-diminish (file mode &optional new-name)
-  "https://github.com/larstvei/dot-emacs/blob/master/init.org"
+  "
+https://github.com/larstvei/dot-emacs/blob/master/init.org"
   `(with-eval-after-load ,file
      (diminish ,mode ,new-name)))
 
