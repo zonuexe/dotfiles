@@ -148,6 +148,7 @@
   (bind-key  "M-："        'eval-expression)
   (bind-key  "M-ESC ："    'eval-expression)
   (bind-key  "<S-tab>"     'my-outdent-dwim)
+  (bind-key  "C-M-y"       'helm-show-kill-ring)
   (bind-key* "C-c <left>"  'windmove-left)
   (bind-key* "C-c <down>"  'windmove-down)
   (bind-key* "C-c <up>"    'windmove-up)
@@ -309,7 +310,7 @@
     (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
     (add-hook 'php-mode-hook 'my/php-mode-hook)
     (add-hook 'php-mode-hook 'php-refactor-mode)))
-(add-to-list 'auto-mode-alist '("/composer.lock\\'" . json-mode))
+(add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
@@ -492,10 +493,9 @@
 ;; pixiv Novel
 ;(use-package pixiv-novel-mode :defer t)
 
-;; Vim Filetype
-(use-package vim-filetype
-  :init
-  (enable-vim-filetype))
+;; Magic Filetype
+;(use-package magic-filetype)
+(magic-filetype:enable-vim-filetype)
 
 ;;; Others:
 
@@ -722,6 +722,9 @@
  '(eldoc-minor-mode-string "")
  '(shr-max-image-proportion 2.5))
 
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
 ;;; Functions:
 (defmacro safe-diminish (file mode &optional new-name)
   "
@@ -790,6 +793,5 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 
 
 (elscreen-create)
-
 
 ;;; init.el ends here
