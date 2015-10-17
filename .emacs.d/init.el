@@ -786,12 +786,10 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
          (save-excursion (goto-char (region-end)) (point-at-eol))
          offset)
       (indent-rigidly (point-at-bol) (point-at-eol) offset))))
-
 ;;; my-outdent-dwim ends here.
+
 
 (elscreen-create)
 
-;; pick up after
-(setq gc-cons-threshold (* 8 1024 1024))
 
 ;;; init.el ends here
