@@ -103,6 +103,8 @@
 (require 'use-package)
 (pallet-mode t)
 
+(defalias 'major-mode-of (symbol-function 'magic-filetype-major-mode-of))
+
 (custom-set-variables '(nyan-bar-length 16))
 (nyan-mode t)
 

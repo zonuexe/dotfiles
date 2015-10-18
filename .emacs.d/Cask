@@ -71,7 +71,7 @@
 (depends-on "less-css-mode")
 (depends-on "load-theme-buffer-local")
 (depends-on "logalimacs")
-(depends-on "magic-filetype" :git "git@github.com:zonuexe/magic-filetype.el.git")
+(depends-on "magic-filetype")
 (depends-on "magit")
 (depends-on "markdown-mode+")
 (depends-on "minesweeper")
