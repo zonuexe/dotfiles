@@ -217,6 +217,9 @@
   (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
   (bind-key "C-x m" 'magit-status)
   (bind-key "C-c l" 'magit-blame))
+(use-package magit-find-file :defer t
+  :init
+  (bind-key "M-t" 'magit-find-file))
 
 (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
 

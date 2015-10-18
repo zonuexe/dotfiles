@@ -73,6 +73,7 @@
 (depends-on "logalimacs")
 (depends-on "magic-filetype")
 (depends-on "magit")
+(depends-on "magit-find-file")
 (depends-on "markdown-mode+")
 (depends-on "minesweeper")
 (depends-on "multiple-cursors")
