@@ -219,7 +219,7 @@
   (bind-key "C-c l" 'magit-blame))
 (use-package magit-find-file :defer t
   :init
-  (bind-key "M-t" 'magit-find-file))
+  (bind-key "M-t" 'magit-find-file-completing-read))
 
 (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
 
