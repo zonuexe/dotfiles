@@ -439,6 +439,7 @@
             (when (equal web-mode-content-type "jsx")
               ;; enable flycheck
               (flycheck-select-checker 'jsxhint-checker)
+              (add-to-list 'web-mode-comment-formats '("jsx" . "// " ))
               (flycheck-mode))))
 
 ;; TypeScript
