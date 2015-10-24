@@ -172,7 +172,7 @@
    '(key-chord-two-keys-delay 0.02))
   (key-chord-mode t)
   (key-chord-define-global "df" 'find-function)
-  (key-chord-define-global "ip" 'package-install)
+  (key-chord-define-global "@p" 'package-install)
   (key-chord-define-global "kl" 'align-regexp)
   (key-chord-define-global "rt" 'toggle-load-theme)
   (key-chord-define-global "wr" 'writeroom-mode)
