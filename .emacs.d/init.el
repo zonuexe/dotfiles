@@ -149,7 +149,7 @@
   (bind-key  "C-x お"      'other-window)
   (bind-key  "M-："        'eval-expression)
   (bind-key  "M-ESC ："    'eval-expression)
-  (bind-key  "<S-tab>"     'my-outdent-dwim)
+  (bind-key  "<S-tab>"     'my/outdent-dwim)
   (bind-key  "C-M-y"       'helm-show-kill-ring)
   (bind-key* "C-c <left>"  'windmove-left)
   (bind-key* "C-c <down>"  'windmove-down)
@@ -783,7 +783,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
   (setq show-trailing-whitespace nil))
 
 ;; Original: http://qiita.com/ShingoFukuyama/items/e0be9497723b01905813
-(defun my-outdent-dwim ()
+(defun my/outdent-dwim ()
   "Outdent!"
   (interactive)
   (let* ((x-times (or current-prefix-arg 1))
@@ -795,8 +795,16 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
          (save-excursion (goto-char (region-end)) (point-at-eol))
          offset)
       (indent-rigidly (point-at-bol) (point-at-eol) offset))))
-;;; my-outdent-dwim ends here.
+;; my/outdent-dwim ends here
 
+;; Original: http://ja.stackoverflow.com/questions/12510
+(defun my/insert-kbd-sequence ()
+  "Insert (kbd) sequence."
+  (interactive)
+  (insert (concat "(kbd \""
+                  (key-description (read-key-sequence "input> "))
+                  "\")")))
+;; my/insert-kbd-sequence ends here
 
 (elscreen-create)
 
