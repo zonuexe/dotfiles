@@ -34,7 +34,6 @@
 ;; Nobiscum Sexp. - S-expression is with us.
 ;;
 ;;; Code:
-
 (setq-default gc-cons-percentage 0.5)
 
 (if window-system
@@ -511,10 +510,9 @@
   (custom-set-variables
    '(recentf-max-saved-items 2000)
    '(recentf-auto-cleanup 100)
-   '(recentf-exclude '(".recentf" "COMMIT_EDITMSG" "TAGS" "^/sudo:" "\\.emacs\\.d/games/*-scores"))
+   '(recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores"))
    (list 'recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list)))
   (recentf-mode t)
-  (add-hook 'after-init-hook 'helm-recentf)
   (bind-key "C-c っ" 'helm-recentf)
   (bind-key "C-c t" 'helm-recentf))
 
@@ -522,7 +520,9 @@
 (use-package undo-tree
   :diminish undo-tree-mode
   :init
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  (bind-key "C-_" #'undo-tree-undo)
+  (bind-key "C-?" #'undo-tree-redo))
 
 ;; expand-region.el
 (use-package expand-region :defer t
@@ -805,6 +805,8 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
                   (key-description (read-key-sequence "input> "))
                   "\")")))
 ;; my/insert-kbd-sequence ends here
+
+(init-open-recentf)
 
 (elscreen-create)
 

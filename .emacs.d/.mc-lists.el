@@ -20,6 +20,7 @@
         org-delete-char
         org-end-of-line
         org-self-insert-command
+        paredit-doublequote
         paredit-forward-delete
         paredit-kill
         paredit-open-round
