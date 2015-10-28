@@ -252,6 +252,9 @@
 (require 'smartparens-config)
 (smartparens-global-mode t)
 
+;; which-func
+(which-function-mode t)
+
 ;; smartchr
 (use-package smartchr :defer t
   :commands smartchr)
