@@ -63,7 +63,7 @@
 (depends-on "http")
 (depends-on "idle-highlight-mode")
 (depends-on "inf-ruby")
-(depends-on "init-open-recentf" :git "git@github.com:zonuexe/init-open-recentf.el.git")
+(depends-on "init-open-recentf")
 (depends-on "ivs-edit")
 (depends-on "jade-mode")
 (depends-on "js2-mode")

@@ -70,8 +70,10 @@ ld_library_path=(
     /usr/local/opt/curl/lib(N-/)
     /usr/local/opt/openssl/lib(N-/)
     /usr/local/opt/sqlite/lib(N-/)
+    /usr/local/opt/libzip/lib(N-/)
     /usr/local/opt/icu4c/lib(N-/)
     /usr/local/opt/gettext/lib(N-/)
+    /usr/local/opt/zlib/lib(N-/)
     $ld_library_path
 )
 #include=(${HOME}/include(N-/) $include)
