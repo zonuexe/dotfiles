@@ -26,12 +26,12 @@ typeset -gxU manpath
 export NVM_DIR=~/.nvm
 source $(brew --prefix nvm)/nvm.sh
 
-if type vim > /dev/null > /dev/null
+if which vim > /dev/null > /dev/null
 then
    export EDITOR=vim
 fi
 
-if type lv > /dev/null
+if which lv > /dev/null
 then
     export PAGER='lv -c'
 fi
@@ -51,7 +51,7 @@ export GOPATH=$HOME
 export SHELLY_HOME=$HOME/.shelly;
 [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
 
-if type launchctl > /dev/null
+if which launchctl > /dev/null
 then
     launchctl setenv GOPATH $GOPATH
 fi
