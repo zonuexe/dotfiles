@@ -63,10 +63,11 @@
 
 ;; http://ergoemacs.org/emacs/emacs_n_unicode.html
 ;; set Unicode data file location. (used by what-cursor-position and describe-char)
-(let ((file "~/emacs.d/UnicodeData.txt"))
-  (when (file-exists-p file)
-    (custom-set-variables
-     (list 'describe-char-unicodedata-file file))))
+(when nil
+  (let ((file "~/emacs.d/UnicodeData.txt"))
+    (when (file-exists-p file)
+      (custom-set-variables
+       (list 'describe-char-unicodedata-file file)))))
 
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
@@ -79,7 +80,7 @@
   '(("MegurineUbu1410"  . 12.5)
     ("tadsan-ret.local" . 17.5)))
 
-(when (and window-system (>= emacs-major-version 23))
+(when window-system
   (set-frame-font
    (format "%s-%.1f"
            my/default-display-font-family
