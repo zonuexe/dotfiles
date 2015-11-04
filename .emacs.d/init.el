@@ -537,13 +537,6 @@
 
 ;;; Tools:
 
-;; term+
-(use-package term+
-  :config
-  (use-package term+key-intercept)
-  (use-package term+mux)
-  (require 'xterm-256color))
-
 ;; Open junk file
 (use-package open-junk-file
   :init
