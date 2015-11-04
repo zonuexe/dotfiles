@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euxo pipefail
+
+cd $(dirname $0)/..
+src_dir=$PWD/../src/tmux
+patch_dir=$PWD/patches/tmux
+cd $src_dir
+
+./autogen.sh
+./configure --prefix=$HOME/local
+make && make install

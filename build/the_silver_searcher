@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euxo pipefail
+
+cd $(dirname $0)/..
+src_dir=$PWD/../src/the_silver_searcher
+cd $src_dir
+
+./build.sh --prefix=$HOME/local
+make install
