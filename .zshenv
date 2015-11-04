@@ -24,7 +24,7 @@ manpath=(
 typeset -gxU manpath
 
 export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
+which brew > /dev/null && source $(brew --prefix nvm)/nvm.sh
 
 if which vim > /dev/null > /dev/null
 then

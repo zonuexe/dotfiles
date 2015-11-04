@@ -78,6 +78,7 @@
 (defvar my/default-display-font-family "Migu 2M")
 (defvar my/display-font-size-by-hostname-alist
   '(("MegurineUbu1410"  . 12.5)
+    ("MegurineUbu1510"  . 12.5)
     ("tadsan-ret.local" . 17.5)))
 
 (when window-system
@@ -91,6 +92,7 @@
 (when (or (require 'cask "~/.cask/cask.el" t)
 	  (require 'cask nil t))
   (cask-initialize))
+(package-initialize)
 
 (require 'use-package)
 (pallet-mode t)
@@ -171,14 +173,14 @@
   (key-chord-define-global "wr" 'writeroom-mode)
   (key-chord-define-global "m," 'reload-major-mode))
 
-(use-package sequential-command
-  :config
-  (define-sequential-command my/seq-home
-    beginning-of-line beginning-of-line beginning-of-defun beginning-of-buffer seq-return)
-  (define-sequential-command my/seq-end
-    end-of-line end-of-line end-of-defun end-of-buffer seq-return)
-  (bind-key "C-a" 'my/seq-home)
-  (bind-key "C-e" 'my/seq-end))
+;; (use-package sequential-command
+;;   :config
+;;   (define-sequential-command my/seq-home
+;;     beginning-of-line beginning-of-line beginning-of-defun beginning-of-buffer seq-return)
+;;   (define-sequential-command my/seq-end
+;;     end-of-line end-of-line end-of-defun end-of-buffer seq-return)
+;;   (bind-key "C-a" 'my/seq-home)
+;;   (bind-key "C-e" 'my/seq-end))
 
 ;; Helm
 (use-package helm :defer t
