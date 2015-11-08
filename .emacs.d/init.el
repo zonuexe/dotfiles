@@ -218,6 +218,11 @@
 
 (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
 
+;; EditorConfig
+;; (use-package editorconfig)
+(custom-set-variables
+ '(editorconfig-get-properties-function 'editorconfig-core-get-properties-hash))
+(editorconfig-mode t)
 
 ;; Conf-Mode
 (require 'generic-x)
