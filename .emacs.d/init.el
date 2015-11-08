@@ -239,8 +239,11 @@
 
 ;; Flycheck
 (use-package flycheck
- :diminish flycheck-mode)
-(global-flycheck-mode t)
+  :diminish flycheck-mode
+  :init
+  (global-flycheck-mode t)
+  :config
+  (flycheck-package-setup))
 
 ;; Smartparens
 (use-package smartparens
@@ -695,7 +698,7 @@
 
 (use-package emoji-fontset
   :init
-  (emoji-fontset/turn-on "Symbola"))
+  (emoji-fontset-enable "Symbola"))
 
 ;; TRAMP
 (use-package tramp :defer t
