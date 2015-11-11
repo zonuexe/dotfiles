@@ -806,6 +806,17 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
                   "\")")))
 ;; my/insert-kbd-sequence ends here
 
+(defun my/insert-datetime-attr ()
+  "
+http://ergoemacs.org/emacs/elisp_datetime.html"
+  (interactive)
+  (insert
+   (concat " datetime=\""
+           (format-time-string "%Y-%m-%dT%T")
+           (let ((x (format-time-string "%z")))
+             (concat (substring x 0 3) ":" (substring x 3 5)))
+           "\"")))
+
 (init-open-recentf)
 
 (elscreen-create)
