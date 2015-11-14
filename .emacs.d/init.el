@@ -338,6 +338,7 @@
      '(ruby-deep-indent-paren-style nil))
     (setq-default enh-ruby-not-insert-magic-comment t)
     (add-hook 'robe-mode-hook 'ac-robe-setup)))
+(magic-filetype-set-auto-mode 'ruby)
 
 ;;; begin enh-ruby-mode patch
 ;;; http://qiita.com/vzvu3k6k/items/acec84d829a3dbe1427a
@@ -602,8 +603,8 @@
    '(elscreen-tab-display-kill-screen nil)
    '(elscreen-tab-display-control nil))
   ;;(bind-key "C-t p" 'helm-elscreen)
-  (bind-key "C-<tab>" 'elscreen-next)
-  (bind-key "<C-iso-lefttab>" 'elscreen-previous)
+  (bind-key* "C-<tab>" 'elscreen-next)
+  (bind-key* "<C-iso-lefttab>" 'elscreen-previous)
   (elscreen-start))
 
 ;; Calfw
