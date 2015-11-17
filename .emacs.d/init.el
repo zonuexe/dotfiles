@@ -776,7 +776,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 
 (defun find-file-as-sudo (filename)
   "Find `FILENAME' as root."
-  (interactive "FOpen: ")
+  (interactive "FFind file (as sudo): ")
   (find-file (concat "/sudo::" (replace-regexp-in-string "^sudo:[^:]*:" "" filename))))
 
 (defun my/disable-trailing-mode-hook ()
