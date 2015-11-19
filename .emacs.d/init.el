@@ -194,6 +194,7 @@
   :init
   (progn
     (bind-key "C-:" 'helm-ag)))
+(custom-set-variables '(helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
 
 ;; Auto-Complete
 (use-package auto-complete
