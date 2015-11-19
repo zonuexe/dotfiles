@@ -334,6 +334,7 @@
     (use-package robe)
     (defun my/enh-ruby-mode-hook ()
       (set (make-local-variable 'ac-ignore-case) t))
+    (subword-mode t)
     (add-to-list 'ac-modes 'enh-ruby-mode)
     (custom-set-variables
      '(ruby-deep-indent-paren-style nil))
@@ -590,9 +591,6 @@
   (use-package emms-player-mpv)
   (add-to-list 'emms-player-list 'emms-player-mpv)
   (use-package emms-player-mpv-jp-radios)
-  (let ((default-directory (file-name-directory (find-lisp-object-file-name 'emms-player-mpv-jp-radios-add 'defun))))
-    (add-to-list 'load-path default-directory)
-    (normal-top-level-add-subdirs-to-load-path))
   (emms-player-mpv-jp-radios-add-all))
 
 ;; ElScreen
@@ -711,7 +709,7 @@
 (use-package tramp :defer t
   :config
   (require 'vagrant-tramp)
-  (vagrant-tramp-enable)
+  (vagrant-tramp-add-method)
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 ;;; Games:
