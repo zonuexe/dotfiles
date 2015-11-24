@@ -305,9 +305,12 @@
 (use-package php-mode :defer t
   :config
   (progn
-    (require 'php-extras)
+    ;(require 'php-extras)
     ;(php-extras-eldoc-documentation-function)
-    (use-package php-auto-yasnippets)
+    ;(use-package php-auto-yasnippets)
+    (require 'ac-php)
+    ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
+    (setq ac-sources  '(ac-source-php ) )
     (defun my/php-mode-hook ()
       (when (require 'php-eldoc nil t)
         (php-eldoc-enable))

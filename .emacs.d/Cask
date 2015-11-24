@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "2048-game")
+(depends-on "ac-php")
 (depends-on "actionscript-mode")
 (depends-on "ag")
 (depends-on "anaphora")
