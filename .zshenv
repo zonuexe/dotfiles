@@ -1,5 +1,6 @@
 path=(
     ~/.rbenv/bin(N-/)
+    ~/.phpenv/bin(N-/)
     ~/.rbenv/shims(N-/)
     ~/.composer/vendor/bin(N-/)
     ~/local/bin(N-/)
@@ -39,11 +40,16 @@ then
     eval "$(rbenv init -)"
 fi
 
-
-if [ -f $HOME/.phpbrew/bashrc ]
+if which phpenv > /dev/null
 then
-    . $HOME/.phpbrew/bashrc
+    eval "$(phpenv init -)"
 fi
+
+
+# if [ -f $HOME/.phpbrew/bashrc ]
+# then
+#     . $HOME/.phpbrew/bashrc
+# fi
 
 export GOPATH=$HOME
 export SHELLY_HOME=$HOME/.shelly;
