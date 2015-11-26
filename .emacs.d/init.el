@@ -293,7 +293,7 @@
   (progn
     (add-hook 'web-mode-hook 'my/web-mode-hook)
     (add-hook 'web-mode-hook 'emmet-mode)
-    (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'")
+    (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.html\\.erb\\'")
       (add-to-list 'auto-mode-alist (cons it 'web-mode))))
   :config
   (progn
@@ -357,9 +357,6 @@
 (ad-activate 'enh-ruby-mode-set-encoding)
 (setq-default enh-ruby-not-insert-magic-comment t)
 ;;; enh-ruby-mode patch ends here
-
-;; rhtml
-;(use-package rhtml-mode :defer t)
 
 ;; inf-ruby
 (use-package inf-ruby :defer t
