@@ -2,6 +2,7 @@ path=(
     ~/.rbenv/bin(N-/)
     ~/.phpenv/bin(N-/)
     ~/.rbenv/shims(N-/)
+    ~/.phpenv/shims(N-/)
     ~/.composer/vendor/bin(N-/)
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
