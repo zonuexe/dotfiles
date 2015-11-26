@@ -292,7 +292,7 @@
   (progn
     (add-hook 'web-mode-hook 'my/web-mode-hook)
     (add-hook 'web-mode-hook 'emmet-mode)
-    (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'")
+    (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'")
       (add-to-list 'auto-mode-alist (cons it 'web-mode))))
   :config
   (progn
