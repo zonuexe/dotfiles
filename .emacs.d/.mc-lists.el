@@ -28,6 +28,7 @@
         subword-left
         subword-right
         subword-right
+        yaml-electric-backspace
         yas-expand
         ))
 

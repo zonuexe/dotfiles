@@ -317,7 +317,8 @@
       (subword-mode t)
       (setq show-trailing-whitespace t)
       (c-set-style "psr2")
-      (payas/ac-setup))
+      ;(payas/ac-setup)
+      )
     (custom-set-variables
      '(php-refactor-keymap-prefix (kbd "C-c v")))
     (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
