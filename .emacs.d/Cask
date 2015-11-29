@@ -14,6 +14,7 @@
 (depends-on "calfw-git" :git "https://gist.github.com/d77d9669440f3336bb9d.git")
 (depends-on "calfw-syobocal" :git "https://gist.github.com/1fd257fc1e8907d4d92e.git")
 (depends-on "cask")
+(depends-on "cedit")
 (depends-on "cmake-mode")
 (depends-on "codic")
 (depends-on "coffee-mode")

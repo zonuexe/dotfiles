@@ -324,6 +324,8 @@
      '(php-refactor-keymap-prefix (kbd "C-c v")))
     (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
     (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
+    (bind-key "C-}" 'cedit-barf php-mode-map)
+    (bind-key "C-)" 'cedit-slurp php-mode-map)
     (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
     (add-hook 'php-mode-hook 'my/php-mode-hook)
     (add-hook 'php-mode-hook 'php-refactor-mode)))
@@ -340,6 +342,7 @@
     (defun my/enh-ruby-mode-hook ()
       (set (make-local-variable 'ac-ignore-case) t))
     (subword-mode t)
+    (yard-mode t)
     (add-to-list 'ac-modes 'enh-ruby-mode)
     (custom-set-variables
      '(ruby-deep-indent-paren-style nil))
