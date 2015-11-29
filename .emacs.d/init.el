@@ -311,13 +311,14 @@
     ;(use-package php-auto-yasnippets)
     (require 'ac-php)
     ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
-    (setq ac-sources  '(ac-source-php ) )
     (defun my/php-mode-hook ()
       (when (require 'php-eldoc nil t)
         (php-eldoc-enable))
       (subword-mode t)
       (setq show-trailing-whitespace t)
       (c-set-style "psr2")
+      (unless (my/buffer-in-tramp)
+        (cl-pushnew 'ac-source-php ac-sources))
       ;(payas/ac-setup)
       )
     (custom-set-variables
@@ -782,6 +783,13 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
   "Find `FILENAME' as root."
   (interactive "FFind file (as sudo): ")
   (find-file (concat "/sudo::" (replace-regexp-in-string "^sudo:[^:]*:" "" filename))))
+
+(defun my/buffer-in-tramp ()
+  "Return non-nil if buffer file is in TRAMP."
+  (and buffer-file-name
+       (s-match
+        (concat "\\`/" (regexp-opt (mapcar 'car tramp-methods)) ":")
+        buffer-file-name)))
 
 (defun my/disable-trailing-mode-hook ()
   "Disable show tail whitespace."
