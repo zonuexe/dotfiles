@@ -12,6 +12,7 @@
         c-electric-star
         goto-line
         kill-region
+        magit-status
         markdown-exdent-or-delete
         mouse-set-region
         my/seq-end
