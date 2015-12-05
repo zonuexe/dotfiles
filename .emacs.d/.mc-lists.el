@@ -10,6 +10,7 @@
         c-electric-semi&comma
         c-electric-slash
         c-electric-star
+        delete-indentation
         goto-line
         kill-region
         magit-status
@@ -25,6 +26,7 @@
         paredit-forward-delete
         paredit-kill
         paredit-open-round
+        paredit-open-square
         sp-remove-active-pair-overlay
         subword-left
         subword-right
