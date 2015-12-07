@@ -309,7 +309,7 @@
     ;(require 'php-extras)
     ;(php-extras-eldoc-documentation-function)
     ;(use-package php-auto-yasnippets)
-    (require 'ac-php)
+    ;(require 'ac-php)
     ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
     (defun my/php-mode-hook ()
       (when (require 'php-eldoc nil t)
