@@ -78,6 +78,7 @@
 (depends-on "less-css-mode")
 (depends-on "load-theme-buffer-local")
 (depends-on "logalimacs")
+(depends-on "logview")
 (depends-on "magic-filetype")
 (depends-on "magit")
 (depends-on "magit-find-file")
