@@ -31,6 +31,7 @@
         subword-left
         subword-right
         subword-right
+        wgrep-finish-edit
         yaml-electric-backspace
         yas-expand
         ))
