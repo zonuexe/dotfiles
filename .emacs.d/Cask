@@ -125,6 +125,7 @@
 (depends-on "ssh-config-mode")
 (depends-on "stylus-mode")
 (depends-on "swoop")
+(depends-on "thrift")
 (depends-on "toml")
 (depends-on "toml-mode")
 (depends-on "tss")

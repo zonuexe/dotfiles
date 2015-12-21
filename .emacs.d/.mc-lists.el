@@ -27,6 +27,7 @@
         paredit-kill
         paredit-open-round
         paredit-open-square
+        paredit-semicolon
         sp-remove-active-pair-overlay
         subword-left
         subword-right

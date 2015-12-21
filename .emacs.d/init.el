@@ -306,10 +306,10 @@
 (use-package php-mode :defer t
   :config
   (progn
-    ;(require 'php-extras)
-    ;(php-extras-eldoc-documentation-function)
-    ;(use-package php-auto-yasnippets)
-    ;(require 'ac-php)
+    ;;(require 'php-extras)
+    ;;(php-extras-eldoc-documentation-function)
+    ;;(use-package php-auto-yasnippets)
+    ;;(require 'ac-php)
     ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
     (defun my/php-mode-hook ()
       (when (require 'php-eldoc nil t)
@@ -319,7 +319,7 @@
       (c-set-style "psr2")
       (unless (my/buffer-in-tramp)
         (cl-pushnew 'ac-source-php ac-sources))
-      ;(payas/ac-setup)
+      ;;(payas/ac-setup)
       )
     (custom-set-variables
      '(php-refactor-keymap-prefix (kbd "C-c v")))
@@ -400,13 +400,13 @@
     (bind-key "C-<right>" 'right-word paredit-mode-map)
     (bind-key "C-<left>"  'left-word  paredit-mode-map)))
 
+;; Common Lisp
 (use-package sly :defer t
   :init
   (progn
     (require 'sly-autoloads))
   (custom-set-variables
    '(inferior-lisp-program "sbcl")))
-
 
 ;; Haskell
 (use-package haskell-mode :defer t
@@ -444,7 +444,6 @@
 
 (flycheck-define-checker jsxhint-checker
   "A JSX syntax and style checker based on JSXHint."
-
   :command ("jsxhint" source)
   :error-patterns
   ((error line-start (1+ nonl) ": line " line ", col " column ", " (message) line-end))
