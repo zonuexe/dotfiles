@@ -317,8 +317,6 @@
       (subword-mode t)
       (setq show-trailing-whitespace t)
       (c-set-style "psr2")
-      (unless (my/buffer-in-tramp)
-        (cl-pushnew 'ac-source-php ac-sources))
       ;;(payas/ac-setup)
       )
     (custom-set-variables
@@ -469,39 +467,39 @@
     (tss-config-default)))
 
 ;; Go
-;(use-package go-mode :defer t)
+;;(use-package go-mode :defer t)
 
 ;; FSharp
-;(use-package fsharp-mode :defer t)
+;;(use-package fsharp-mode :defer t)
 
 ;; JSON
-;(use-package json-mode :defer t)
+;;(use-package json-mode :defer t)
 
 (when nil
   (flycheck-define-checker my/json-lint
-  "JSON Syntax check using Python json"
-  :command ("python" "-mjson.tool" source)
-  :error-patterns
-  ((error line-start "No JSON object could be decoded" line-end)
-   ;; [Python 2] Expecting object: line 1 column 2 (char 1)
-   ;; [Python 3] Expecting property name enclosed in double quotes: line 2 column 5 (char 6)
-   (error line-start (message) ": line " line " column " column " (char " (one-or-more char) ")" line-end)
-   ;; Extra data: line 1 column 43 - line 3 column 1 (char 42 - 86)
-   )
-  :modes 'json-mode))
+    "JSON Syntax check using Python json"
+    :command ("python" "-mjson.tool" source)
+    :error-patterns
+    ((error line-start "No JSON object could be decoded" line-end)
+     ;; [Python 2] Expecting object: line 1 column 2 (char 1)
+     ;; [Python 3] Expecting property name enclosed in double quotes: line 2 column 5 (char 6)
+     (error line-start (message) ": line " line " column " column " (char " (one-or-more char) ")" line-end)
+     ;; Extra data: line 1 column 43 - line 3 column 1 (char 42 - 86)
+     )
+    :modes 'json-mode))
 
 ;; YAML
-;(use-package yaml-mode :defer t)
+;;(use-package yaml-mode :defer t)
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
   :mode ("\\.md\\'" . gfm-mode)
   :config
   (progn
-    ;(unbind-key "`" markdown-mode-map)
+    ;;(unbind-key "`" markdown-mode-map)
     (visual-line-mode nil)))
 
-;(use-package 'realtime-preview :defer t)
+;;(use-package 'realtime-preview :defer t)
 
 ;; Emmet-mode
 (use-package emmet-mode :defer t
@@ -511,10 +509,10 @@
     (add-hook 'css-mode-hook  'emmet-mode)))
 
 ;; pixiv Novel
-;(use-package pixiv-novel-mode :defer t)
+;;(use-package pixiv-novel-mode :defer t)
 
 ;; Magic Filetype
-;(use-package magic-filetype)
+;;(use-package magic-filetype)
 (magic-filetype-enable-vim-filetype)
 
 ;;; Others:
@@ -565,7 +563,7 @@
   :mode ("\\.http\\'" . restclient-mode))
 
 ;; w3m
-;(use-package w3m :defer t)
+;;(use-package w3m :defer t)
 
 (use-package org-mode :defer t
   :config
@@ -620,7 +618,7 @@
 
 ;; moccur
 (use-package color-moccur)
-;(use-package moccur-edit)
+;;(use-package moccur-edit)
 
 (use-package ag
   :init
@@ -701,10 +699,10 @@
   (smooth-scroll-mode t))
 
 ;; UCS Utility
-;(use-package ucs-utils :defer t)
+;;(use-package ucs-utils :defer t)
 
 ;; Font Utility
-;(use-package font-utils)
+;;(use-package font-utils)
 
 (use-package emoji-fontset
   :init
@@ -718,7 +716,7 @@
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 ;;; Games:
-;(use-package gnugo :defer t)
+;;(use-package gnugo :defer t)
 
 ;;; Communication:
 (use-package twindrill-mode :defer t
