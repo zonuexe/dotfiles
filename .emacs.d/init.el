@@ -330,17 +330,16 @@
          ("\\.rake\\'" . enh-ruby-mode))
   :interpreter "pry"
   :config
-  (progn
-    (use-package robe)
-    (defun my/enh-ruby-mode-hook ()
-      (set (make-local-variable 'ac-ignore-case) t))
-    (subword-mode t)
-    (yard-mode t)
-    (add-to-list 'ac-modes 'enh-ruby-mode)
-    (custom-set-variables
-     '(ruby-deep-indent-paren-style nil))
-    (setq-default enh-ruby-not-insert-magic-comment t)
-    (add-hook 'robe-mode-hook 'ac-robe-setup)))
+  (use-package robe)
+  (defun my/enh-ruby-mode-hook ()
+    (set (make-local-variable 'ac-ignore-case) t))
+  (subword-mode t)
+  (yard-mode t)
+  (add-to-list 'ac-modes 'enh-ruby-mode)
+  (custom-set-variables
+   '(ruby-deep-indent-paren-style nil))
+  (setq-default enh-ruby-not-insert-magic-comment t)
+  (add-hook 'robe-mode-hook 'ac-robe-setup))
 (magic-filetype-set-auto-mode 'ruby)
 
 ;;; begin enh-ruby-mode patch
