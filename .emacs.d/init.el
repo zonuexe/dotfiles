@@ -187,14 +187,12 @@
 (use-package helm :defer t
   :diminish helm-mode
   :config
-  (progn
-    (require 'helm-config)
-    (helm-mode t)))
+  (require 'helm-config)
+  (helm-mode t))
 
 (use-package helm-ag :defer t
   :init
-  (progn
-    (bind-key "C-:" 'helm-ag)))
+  (bind-key "C-:" 'helm-ag))
 (custom-set-variables '(helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
 
 ;; Auto-Complete
@@ -236,13 +234,12 @@
 ;; Projectile
 (use-package projectile
   :config
-  (progn
-    (use-package helm-projectile)
-    (custom-set-variables
-     '(projectile-completion-system 'helm))
-    (projectile-global-mode t)
-    (helm-projectile-on)
-    (add-hook 'projectile-mode-hook 'projectile-rails-on)))
+  (use-package helm-projectile)
+  (custom-set-variables
+   '(projectile-completion-system 'helm))
+  (projectile-global-mode t)
+  (helm-projectile-on)
+  (add-hook 'projectile-mode-hook 'projectile-rails-on))
 
 ;; Flycheck
 (use-package flycheck
@@ -290,14 +287,12 @@
 
 (use-package web-mode :defer t
   :init
-  (progn
-    (add-hook 'web-mode-hook 'my/web-mode-hook)
-    (add-hook 'web-mode-hook 'emmet-mode)
-    (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.html\\.erb\\'")
-      (add-to-list 'auto-mode-alist (cons it 'web-mode))))
+  (add-hook 'web-mode-hook 'my/web-mode-hook)
+  (add-hook 'web-mode-hook 'emmet-mode)
+  (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.html\\.erb\\'")
+    (add-to-list 'auto-mode-alist (cons it 'web-mode)))
   :config
-  (progn
-    (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))))
+  (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
 
 (add-to-list 'auto-mode-alist '("/Gemfile.lock\\'" . conf-mode))
 
@@ -305,29 +300,28 @@
 ;; PHP
 (use-package php-mode :defer t
   :config
-  (progn
-    ;;(require 'php-extras)
-    ;;(php-extras-eldoc-documentation-function)
-    ;;(use-package php-auto-yasnippets)
-    ;;(require 'ac-php)
-    ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
-    (defun my/php-mode-hook ()
-      (when (require 'php-eldoc nil t)
-        (php-eldoc-enable))
-      (subword-mode t)
-      (setq show-trailing-whitespace t)
-      (c-set-style "psr2")
-      ;;(payas/ac-setup)
-      )
-    (custom-set-variables
-     '(php-refactor-keymap-prefix (kbd "C-c v")))
-    (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
-    (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
-    (bind-key "C-}" 'cedit-barf php-mode-map)
-    (bind-key "C-)" 'cedit-slurp php-mode-map)
-    (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
-    (add-hook 'php-mode-hook 'my/php-mode-hook)
-    (add-hook 'php-mode-hook 'php-refactor-mode)))
+  ;;(require 'php-extras)
+  ;;(php-extras-eldoc-documentation-function)
+  ;;(use-package php-auto-yasnippets)
+  ;;(require 'ac-php)
+  ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
+  (defun my/php-mode-hook ()
+    (when (require 'php-eldoc nil t)
+      (php-eldoc-enable))
+    (subword-mode t)
+    (setq show-trailing-whitespace t)
+    (c-set-style "psr2")
+    ;;(payas/ac-setup)
+    )
+  (custom-set-variables
+   '(php-refactor-keymap-prefix (kbd "C-c v")))
+  (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
+  (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
+  (bind-key "C-}" 'cedit-barf php-mode-map)
+  (bind-key "C-)" 'cedit-slurp php-mode-map)
+  (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
+  (add-hook 'php-mode-hook 'my/php-mode-hook)
+  (add-hook 'php-mode-hook 'php-refactor-mode))
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
 ;; Ruby
@@ -394,15 +388,13 @@
   :init
   (--each my/emacs-lisp-modes (add-hook it 'enable-paredit-mode))
   :config
-  (progn
-    (bind-key "C-<right>" 'right-word paredit-mode-map)
-    (bind-key "C-<left>"  'left-word  paredit-mode-map)))
+  (bind-key "C-<right>" 'right-word paredit-mode-map)
+  (bind-key "C-<left>"  'left-word  paredit-mode-map))
 
 ;; Common Lisp
 (use-package sly :defer t
   :init
-  (progn
-    (require 'sly-autoloads))
+  (require 'sly-autoloads)
   (custom-set-variables
    '(inferior-lisp-program "sbcl")))
 
@@ -426,11 +418,10 @@
 ;; CoffeeScript
 (use-package coffee :defer t
   :config
-  (progn
-    (setq-default coffee-tab-width 2)
-    (defun my/coffee-hook ()
-      (set (make-local-variable 'tab-width) 2))
-    (add-hook 'coffee-mode 'my/coffee-hook)))
+  (setq-default coffee-tab-width 2)
+  (defun my/coffee-hook ()
+    (set (make-local-variable 'tab-width) 2))
+  (add-hook 'coffee-mode 'my/coffee-hook))
 
 ;; Facebook JSX
 (defadvice web-mode-highlight-part (around tweak-jsx activate)
@@ -458,13 +449,12 @@
 (use-package typescript :defer t
   :mode ("\\.ts\\'" . typescript-mode)
   :config
-  (progn
-    (use-package tss)
-    (custom-set-variables
-     '(tss-popup-help-key "C-:")
-     '(tss-jump-to-definition-key "C->")
-     '(tss-implement-definition-key "C-c i"))
-    (tss-config-default)))
+  (use-package tss)
+  (custom-set-variables
+   '(tss-popup-help-key "C-:")
+   '(tss-jump-to-definition-key "C->")
+   '(tss-implement-definition-key "C-c i"))
+  (tss-config-default))
 
 ;; Go
 ;;(use-package go-mode :defer t)
@@ -495,18 +485,16 @@
 (use-package markdown-mode :defer t
   :mode ("\\.md\\'" . gfm-mode)
   :config
-  (progn
-    ;;(unbind-key "`" markdown-mode-map)
-    (visual-line-mode nil)))
+  ;;(unbind-key "`" markdown-mode-map)
+  (visual-line-mode nil))
 
 ;;(use-package 'realtime-preview :defer t)
 
 ;; Emmet-mode
 (use-package emmet-mode :defer t
   :init
-  (progn
-    (add-hook 'web-mode-hook  'emmet-mode)
-    (add-hook 'css-mode-hook  'emmet-mode)))
+  (add-hook 'web-mode-hook  'emmet-mode)
+  (add-hook 'css-mode-hook  'emmet-mode))
 
 ;; pixiv Novel
 ;;(use-package pixiv-novel-mode :defer t)
