@@ -31,7 +31,7 @@
 
 ;;; Commentary:
 ;;
-;; Nobiscum Sexp. - S-expression is with us.
+;; Nobiscum Sexp.  - S-expression is with us.
 ;;
 ;;; Code:
 (setq-default gc-cons-percentage 0.5)
@@ -296,7 +296,6 @@
 
 (add-to-list 'auto-mode-alist '("/Gemfile.lock\\'" . conf-mode))
 
-
 ;; PHP
 (use-package php-mode :defer t
   :config
@@ -553,6 +552,10 @@
 ;;(use-package w3m :defer t)
 
 (use-package org-mode :defer t
+  :init
+  (custom-set-variables
+   '(org-default-notes-file (concat org-directory "/notes.org")))
+  (bind-key "C-c c" 'org-capture)
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
