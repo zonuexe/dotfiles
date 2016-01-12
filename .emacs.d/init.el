@@ -106,6 +106,7 @@
 
 ;; PATH
 (custom-set-variables
+ '(exec-path-from-shell-check-startup-files nil)
  '(exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH")))
 (exec-path-from-shell-initialize)
 
@@ -186,7 +187,7 @@
 ;; Helm
 (use-package helm :defer t
   :diminish helm-mode
-  :config
+  :init
   (require 'helm-config)
   (helm-mode t))
 
