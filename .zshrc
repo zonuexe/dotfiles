@@ -144,5 +144,5 @@ export RAILS_ENV=development
 #PERL_MM_OPT="INSTALL_BASE=/Users/megurine/perl5"; export PERL_MM_OPT;
 
 phptags(){
-    ctags -e --php-types=c+i+d+f $(git ls-files | grep -E '\.php$' | grep -v vendor)
+    ctags -e --php-types=c+i+d+f $(git ls-files | grep -E '\.php$')
 }
