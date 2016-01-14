@@ -657,6 +657,11 @@
   (bind-key "<wheel-right>" 'image-forward-hscroll  image-mode-map)
   (bind-key "<wheel-left>"  'image-backward-hscroll image-mode-map))
 
+;; Yet another folding
+(use-package yafolding :defer
+  :init
+  (add-hook 'prog-mode-hook 'yafolding-mode))
+
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
 (use-package multiple-cursors
