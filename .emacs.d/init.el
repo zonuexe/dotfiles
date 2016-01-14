@@ -189,7 +189,8 @@
   :diminish helm-mode
   :init
   (require 'helm-config)
-  (helm-mode t))
+  (bind-key "C-x C-f" 'helm-find-files)
+  (bind-key "M-x" 'helm-M-x))
 
 (use-package helm-ag :defer t
   :init
