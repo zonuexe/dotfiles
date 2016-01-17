@@ -135,6 +135,7 @@
 (depends-on "undo-tree")
 (depends-on "use-package")
 (depends-on "vagrant-tramp")
+(depends-on "vi-tilde-fringe")
 (depends-on "vimrc-mode")
 (depends-on "visual-regexp")
 (depends-on "volatile-highlights" :git "git@github.com:zonuexe/volatile-highlights.el.git")

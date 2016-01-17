@@ -190,7 +190,8 @@
   :init
   (require 'helm-config)
   (bind-key "C-x C-f" 'helm-find-files)
-  (bind-key "M-x" 'helm-M-x))
+  (bind-key "M-x" 'helm-M-x)
+  (helm-mode t))
 
 (use-package helm-ag :defer t
   :init
@@ -658,9 +659,14 @@
   (bind-key "<wheel-left>"  'image-backward-hscroll image-mode-map))
 
 ;; Yet another folding
-(use-package yafolding :defer
+(use-package yafolding :defer t
   :init
   (add-hook 'prog-mode-hook 'yafolding-mode))
+
+;; vi-tilde-fringe
+(use-package vi-tilde-fringe :defer t
+  :init
+  (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode))
 
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
