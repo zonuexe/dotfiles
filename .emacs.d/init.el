@@ -466,6 +466,9 @@
 ;; JSON
 ;;(use-package json-mode :defer t)
 
+;; text-mode
+(add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode))
+
 (when nil
   (flycheck-define-checker my/json-lint
     "JSON Syntax check using Python json"
