@@ -14,6 +14,7 @@
         goto-line
         kill-region
         magit-status
+        markdown-electric-backquote
         markdown-exdent-or-delete
         mouse-set-region
         my/seq-end
