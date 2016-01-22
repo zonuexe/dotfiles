@@ -103,6 +103,7 @@
 (depends-on "pixiv-novel-mode")
 (depends-on "popwin")
 (depends-on "powershell")
+(depends-on "psysh" :git "git@github.com:zonuexe/psysh.git")
 (depends-on "prodigy")
 (depends-on "projectile")
 (depends-on "projectile-rails")
