@@ -5,6 +5,7 @@
 	s = status
 	l = log --graph
 	d = diff
+	ds = diff --staged
 	c = checkout
 	b = branch
 	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
