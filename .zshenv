@@ -9,6 +9,7 @@ path=(
     ~/.linuxbrew/sbin(N-/)
     ~/.linuxbrew/bin(N-/)
     ~/.linuxbrew/sbin(N-/)
+    ~/bin(N-/)
     /usr/local/sbin(N-/)
     /usr/local/bin(N-/)
     /usr/bin(N-/)
