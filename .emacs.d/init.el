@@ -695,6 +695,10 @@
       ("o"   . 'mc/sort-regions)
       ("O"   . 'mc/reverse-regions))))
 
+;; which-key
+(which-key-setup-side-window-right-bottom)
+(which-key-mode t)
+
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
 (use-package smooth-scroll
   :diminish smooth-scroll-mode
