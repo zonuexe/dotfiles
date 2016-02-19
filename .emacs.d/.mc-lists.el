@@ -41,4 +41,5 @@
 
 (setq mc/cmds-to-run-once
       '(
+        helm-find-files
         ))
