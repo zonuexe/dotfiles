@@ -696,8 +696,11 @@
       ("O"   . 'mc/reverse-regions))))
 
 ;; which-key
-(which-key-setup-side-window-right-bottom)
-(which-key-mode t)
+(use-package which-key
+  :diminish which-key-mode
+  :init
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode t))
 
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
 (use-package smooth-scroll
