@@ -41,5 +41,6 @@
 
 (setq mc/cmds-to-run-once
       '(
+        align-regexp
         helm-find-files
         ))
