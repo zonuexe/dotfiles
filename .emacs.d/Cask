@@ -141,7 +141,7 @@
 (depends-on "vi-tilde-fringe")
 (depends-on "vimrc-mode")
 (depends-on "visual-regexp")
-(depends-on "volatile-highlights" :git "git@github.com:zonuexe/volatile-highlights.el.git")
+(depends-on "volatile-highlights")
 (depends-on "w3m")
 (depends-on "web-mode")
 (depends-on "wgrep")
