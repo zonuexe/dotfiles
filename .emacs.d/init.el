@@ -379,6 +379,7 @@
   '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 (--each my/emacs-lisp-modes
   (add-hook it 'turn-on-eldoc-mode)
+  (add-hook it 'elisp-slime-nav-mode)
   (add-hook it 'my/emacs-lisp-mode-hook))
 
 ;; `Cask' is NOT emacs-lisp-mode
