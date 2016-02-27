@@ -766,7 +766,8 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 (safe-diminish "simple" 'auto-fill-function)
 
 (defvar my/disable-trailing-modes
-  '(Buffer-menu-mode
+  '(buffer-face-mode
+    Buffer-menu-mode
     calendar-mode
     cfw:calendar-mode
     comint-mode
