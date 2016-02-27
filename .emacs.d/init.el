@@ -765,6 +765,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     calendar-mode
     cfw:calendar-mode
     comint-mode
+    elisp-slime-nav-mode
     eshell-mode
     package-menu-mode
     eww-mode
