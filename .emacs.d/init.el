@@ -369,11 +369,14 @@
   :interpreter ("python" . python-mode))
 
 ;; Lisp
+(defvar my/emacs-lisp-ac-sources
+  '(ac-source-features ac-source-functions ac-source-variables ac-source-symbols))
+
 (defun my/emacs-lisp-mode-hook ()
   ""
   (rainbow-mode t)
   (auto-complete-mode 1)
-  (setq ac-sources (append ac-sources '(ac-source-features ac-source-functions ac-source-variables)))
+  (setq ac-sources (append ac-sources my/emacs-lisp-ac-sources))
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru"))
 
