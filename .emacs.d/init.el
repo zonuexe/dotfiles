@@ -372,6 +372,8 @@
 (defun my/emacs-lisp-mode-hook ()
   ""
   (rainbow-mode t)
+  (auto-complete-mode 1)
+  (setq ac-sources (append ac-sources '(ac-source-features ac-source-functions ac-source-variables)))
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru"))
 
@@ -845,5 +847,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (init-open-recentf)
 
 (elscreen-create)
+
+;; Beacon — Never lose your cursor again
+(beacon-mode 1)
 
 ;;; init.el ends here
