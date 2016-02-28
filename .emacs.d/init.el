@@ -586,6 +586,7 @@
    '(navi2ch-article-new-message-range nil)
    '(navi2ch-mona-enable t)
    '(navi2ch-mona-use-ipa-mona t)
+   '(navi2ch-mona-face-variable 'navi2ch-mona16-face)
    '(navi2ch-mona-ipa-mona-font-family-name "mona-izmg16"))
   (navi2ch-mona-setup))
 

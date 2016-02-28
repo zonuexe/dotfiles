@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "2048-game")
+(depends-on "aa-edit-mode")
 (depends-on "actionscript-mode")
 (depends-on "ag")
 (depends-on "anaphora")
