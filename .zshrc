@@ -131,6 +131,7 @@ alias emacs="emacs -nw"
 alias あ=ag
 alias s=ls
 alias be="bundle exec"
+alias tmxu=tmux
 
 if which xsel > /dev/null
 then
