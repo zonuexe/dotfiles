@@ -29,7 +29,7 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;; Code:
-(require 'cl)
+(require 'cl-lib)
 (require 'thingatpt)
 (defvar php-remote-functions nil)
 
@@ -2180,6 +2180,7 @@
            )))
 
 (defun php-eldoc-function ()
+  ""
   (let* ((func (php-function-and-argument))
          (hash-result (when func
                         (gethash (car func) php-eldoc-functions-hash)))
@@ -2202,6 +2203,7 @@
       )))
 
 (defun php-eldoc-probe-callback (orignial-buffer)
+  ""
   (goto-char (point-min))
   (search-forward "\n\n")
   (delete-region (point-min) (point))
@@ -2216,12 +2218,14 @@
      hash)))
 
 (defun php-eldoc-probe-load (url)
+  ""
   (url-retrieve
    url `(lambda (&rest ignore)
           (php-eldoc-probe-callback
            ,(current-buffer)))))
 
 (defun php-eldoc-ac-candidates ()
+  ""
   (let (result)
     (maphash (lambda (key value)
                (push key result))
@@ -2236,8 +2240,9 @@
 
 ;;;###autoload
 (defun php-eldoc-enable ()
+  ""
   (interactive)
-  (when (and (fboundp 'auto-complete-mode)
+  (when (and (boundp 'auto-complete-mode)
              auto-complete-mode)
     (pushnew 'ac-source-php-eldoc ac-sources))
   (setq-local eldoc-documentation-function 'php-eldoc-function)
