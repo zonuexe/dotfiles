@@ -161,19 +161,18 @@
     (when (boundp it) (set it 'meta)))))
 
 ;; key-chord
-(use-package key-chord
-  :init
-  (custom-set-variables
-   '(key-chord-two-keys-delay 0.02))
-  (key-chord-mode t)
-  (key-chord-define-global "df" 'find-function)
-  (key-chord-define-global "fh" 'describe-function)
-  (key-chord-define-global "fv" 'find-variable)
-  (key-chord-define-global "@p" 'package-install)
-  (key-chord-define-global "kl" 'align-regexp)
-  (key-chord-define-global "rt" 'toggle-load-theme)
-  (key-chord-define-global "wr" 'writeroom-mode)
-  (key-chord-define-global "m," 'reload-major-mode))
+;; (use-package key-chord)
+(custom-set-variables
+ '(key-chord-two-keys-delay 0.02))
+(key-chord-mode t)
+(key-chord-define-global "df" 'find-function)
+(key-chord-define-global "fh" 'describe-function)
+(key-chord-define-global "fv" 'find-variable)
+(key-chord-define-global "@p" 'package-install)
+(key-chord-define-global "kl" 'align-regexp)
+(key-chord-define-global "rt" 'toggle-load-theme)
+(key-chord-define-global "wr" 'writeroom-mode)
+(key-chord-define-global "m," 'reload-major-mode)
 
 ;; (use-package sequential-command
 ;;   :config
@@ -193,10 +192,9 @@
   (bind-key "M-x" 'helm-M-x)
   (helm-mode t))
 
-(use-package helm-ag :defer t
-  :init
-  (bind-key "C-:" 'helm-ag))
+;; (use-package helm-ag :defer t)
 (custom-set-variables '(helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
+(bind-key "C-:" 'helm-ag)
 
 ;; Auto-Complete
 (use-package auto-complete
@@ -208,16 +206,15 @@
   (global-auto-complete-mode t))
 
 ;; Magit
-(use-package magit :defer t
-  :init
-  (setq-default magit-auto-revert-mode nil)
-  (setq vc-handled-backends '())
-  (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
-  (bind-key "C-x m" 'magit-status)
-  (bind-key "C-c l" 'magit-blame))
-(use-package magit-find-file :defer t
-  :init
-  (bind-key "M-t" 'magit-find-file-completing-read))
+;; (use-package magit :defer t)
+(setq-default magit-auto-revert-mode nil)
+(setq vc-handled-backends '())
+(eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
+(bind-key "C-x m" 'magit-status)
+(bind-key "C-c l" 'magit-blame)
+
+;; (use-package magit-find-file :defer t)
+(bind-key "M-t" 'magit-find-file-completing-read)
 
 (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
 
@@ -229,10 +226,11 @@
 
 ;; Conf-Mode
 (require 'generic-x)
-(add-to-list 'auto-mode-alist '("/\\.*config\\'"  . conf-mode) t)
-(add-to-list 'auto-mode-alist '("/\\.*rc\\'"  . conf-mode) t)
+(add-to-list 'auto-mode-alist '("/\\.*conf\\(ig\\)?\\'" . conf-mode) t)
+(add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t)
 
-(use-package ssh-config-mode)
+;; SSH
+;;(use-package ssh-config-mode)
 
 ;; Projectile
 (use-package projectile
