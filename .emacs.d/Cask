@@ -128,7 +128,7 @@
 (depends-on "smartrep")
 (depends-on "smex")
 (depends-on "smooth-scroll")
-(depends-on "ssh-config-mode" :git "git@github.com:zonuexe/ssh-config-mode-el.git")
+(depends-on "ssh-config-mode")
 (depends-on "stylus-mode")
 (depends-on "swoop")
 (depends-on "thrift")
