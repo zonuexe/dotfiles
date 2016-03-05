@@ -79,6 +79,7 @@ ld_library_path=(
     /usr/local/opt/libzip/lib(N-/)
     /usr/local/opt/icu4c/lib(N-/)
     /usr/local/opt/gettext/lib(N-/)
+    /usr/local/opt/libxml2/lib(N-/)
     /usr/local/opt/zlib/lib(N-/)
     $ld_library_path
 )
