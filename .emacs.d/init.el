@@ -138,8 +138,8 @@
 ;; Key config ;(use-package bind-key)
 (progn
   (bind-key  "M-ESC ESC"   'keyboard-quit)
-  (bind-key  "C-N"         'new-frame)
-  (bind-key  "C-W"         'delete-frame)
+  (bind-key  "C-S-n"       'make-frame)
+  (bind-key  "C-S-w"       'delete-frame)
   (bind-key  "C-c R"       'revert-buffer)
   (bind-key  "C-c i"       'my/display-file-info)
   (bind-key  "C-x j"       'dired-jump)
