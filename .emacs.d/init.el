@@ -322,6 +322,7 @@
   (bind-key "C-}" 'cedit-barf php-mode-map)
   (bind-key "C-)" 'cedit-slurp php-mode-map)
   (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
+  (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
   (add-hook 'php-mode-hook 'my/php-mode-hook)
   (add-hook 'php-mode-hook 'php-refactor-mode))
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
