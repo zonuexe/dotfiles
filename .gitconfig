@@ -8,6 +8,7 @@
 	ds = diff --staged
 	c = checkout
 	b = branch
+	pr = pull --rebase
 	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
 [core]
 	excludesfile = ~/.gitexclude
