@@ -389,6 +389,9 @@
   (add-hook it 'elisp-slime-nav-mode)
   (add-hook it 'my/emacs-lisp-mode-hook))
 
+(defalias 'inferior-emacs-lisp 'ielm
+  "λ...")
+
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
 
