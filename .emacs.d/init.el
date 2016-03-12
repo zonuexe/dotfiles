@@ -143,6 +143,7 @@
   (bind-key  "C-c R"       'revert-buffer)
   (bind-key  "C-c i"       'my/display-file-info)
   (bind-key  "C-x j"       'dired-jump)
+  (bind-key  "C-x C-S-e"   'pp-eval-last-sexp)
   (bind-key  "C-x お"      'other-window)
   (bind-key  "M-："        'eval-expression)
   (bind-key  "M-ESC ："    'eval-expression)
