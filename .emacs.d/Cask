@@ -118,6 +118,7 @@
 (depends-on "recentf-ext")
 (depends-on "request-deferred")
 (depends-on "restclient")
+(depends-on "robots-txt-mode")
 (depends-on "robe")
 (depends-on "s")
 (depends-on "scss-mode")
