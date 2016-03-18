@@ -97,6 +97,7 @@
 (depends-on "nyan-mode")
 (depends-on "ob-ipython")
 (depends-on "open-junk-file")
+(depends-on "org-rtm")
 (depends-on "ox-ioslide")
 (depends-on "pacmacs")
 (depends-on "pallet")
