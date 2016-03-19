@@ -480,6 +480,12 @@
 ;; text-mode
 (add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode))
 
+(defun my/text-mode-hook ()
+  ""
+  (setq line-spacing 5))
+
+(add-hook 'text-mode-hook 'my/text-mode-hook)
+
 (when nil
   (flycheck-define-checker my/json-lint
     "JSON Syntax check using Python json"
