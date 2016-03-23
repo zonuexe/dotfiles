@@ -26,6 +26,7 @@
 (depends-on "dired-k")
 (depends-on "direx")
 (depends-on "drag-stuff")
+(depends-on "sql-drill" :git "https://github.com/zonuexe/sql-drill.el.git")
 (depends-on "edbi")
 (depends-on "edbi-sqlite")
 (depends-on "edit-server")
