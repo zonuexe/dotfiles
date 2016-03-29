@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: var_dump_exit
+# key: ve
+# --
+var_dump($1);exit;

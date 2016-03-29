@@ -867,4 +867,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Beacon — Never lose your cursor again
 (beacon-mode 1)
 
+(message "Emacs finished loading (%d GCs)." gcs-done)
+
 ;;; init.el ends here
