@@ -328,6 +328,12 @@
   (add-hook 'php-mode-hook 'php-refactor-mode))
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
+(use-package pixiv-dev :defer t
+  :init
+  (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
+  (custom-set-variables
+   '(pixiv-dev-user-name "tadsan")))
+
 ;; Ruby
 (use-package enh-ruby-mode :defer t
   :mode (("\\.rb\\'"   . enh-ruby-mode)
