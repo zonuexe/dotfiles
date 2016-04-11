@@ -586,6 +586,7 @@
    '(org-default-notes-file (concat org-directory "/notes.org")))
   (bind-key "C-c c" 'org-capture)
   :config
+  (org-ac/config-default)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t))))
