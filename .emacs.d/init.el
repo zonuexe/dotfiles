@@ -293,7 +293,7 @@
   :init
   (add-hook 'web-mode-hook 'my/web-mode-hook)
   (add-hook 'web-mode-hook 'emmet-mode)
-  (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.html\\.erb\\'")
+  (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\(\\.html\\)?\\.erb\\'")
     (add-to-list 'auto-mode-alist (cons it 'web-mode)))
   :config
   (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
