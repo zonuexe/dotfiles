@@ -14,6 +14,7 @@ path=(
     /usr/local/bin(N-/)
     /usr/bin(N-/)
     /usr/local/opt/coreutils/libexec/gnubin(N-/)
+    /usr/local/opt/go/libexec/bin(N-/)
     /usr/local/heroku/bin(N-/)
     /Applications/mpv.app/Contents/MacOS(N-/)
     $path
