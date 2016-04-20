@@ -393,7 +393,8 @@
 (--each my/emacs-lisp-modes
   (add-hook it 'turn-on-eldoc-mode)
   (add-hook it 'elisp-slime-nav-mode)
-  (add-hook it 'my/emacs-lisp-mode-hook))
+  (add-hook it 'my/emacs-lisp-mode-hook)
+  (add-hook it 'nameless-mode))
 
 (defalias 'inferior-emacs-lisp 'ielm
   "λ...")

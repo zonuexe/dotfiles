@@ -92,6 +92,7 @@
 (depends-on "markdown-preview-eww")
 (depends-on "minesweeper")
 (depends-on "multiple-cursors")
+(depends-on "nameless")
 (depends-on "navi2ch")
 (depends-on "nodejs-repl")
 (depends-on "nyan-mode")
