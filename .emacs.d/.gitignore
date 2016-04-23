@@ -1,5 +1,6 @@
 /*.elc
 /.cask
+/.edbi-ds-history
 /abbrev_defs
 /ac-comphist.dat
 /async-bytecomp.log
