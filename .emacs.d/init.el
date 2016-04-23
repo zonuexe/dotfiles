@@ -533,13 +533,16 @@
 
 ;;; Others:
 
+;; Save
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
 ;; Recentf
 (use-package recentf-ext
   :init
   (custom-set-variables
    '(recentf-max-saved-items 2000)
    '(recentf-auto-cleanup 100)
-   '(recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores"))
+   '(recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"))
    (list 'recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list)))
   (recentf-mode t)
   (bind-key "C-c っ" 'helm-recentf)
