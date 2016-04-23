@@ -107,7 +107,7 @@
 ;; PATH
 (custom-set-variables
  '(exec-path-from-shell-check-startup-files nil)
- '(exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH")))
+ '(exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
 (exec-path-from-shell-initialize)
 
 ;;; Coding:

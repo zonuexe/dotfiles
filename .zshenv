@@ -58,6 +58,8 @@ export GOPATH=$HOME
 export SHELLY_HOME=$HOME/.shelly;
 [ -s "$SHELLY_HOME/lib/shelly/init.sh" ] && . "$SHELLY_HOME/lib/shelly/init.sh"
 
+export PERL5LIB=$HOME/perl5/lib/perl5
+
 if which launchctl > /dev/null
 then
     launchctl setenv GOPATH $GOPATH
