@@ -41,6 +41,7 @@
 (depends-on "emoji-fontset")
 (depends-on "enh-ruby-mode")
 (depends-on "ensime")
+(depends-on "esa")
 (depends-on "ess")
 (depends-on "eval-in-repl")
 (depends-on "evalator")
