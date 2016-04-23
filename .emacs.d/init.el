@@ -61,6 +61,8 @@
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
 
+(require 'my/private "my-private.el")
+
 ;; http://ergoemacs.org/emacs/emacs_n_unicode.html
 ;; set Unicode data file location. (used by what-cursor-position and describe-char)
 (when nil
@@ -149,6 +151,8 @@
   (bind-key  "M-ESC ："    'eval-expression)
   (bind-key  "<S-tab>"     'my/outdent-dwim)
   (bind-key  "C-M-y"       'helm-show-kill-ring)
+  (bind-key  "M-<left>"    'bs-cycle-previous)
+  (bind-key  "M-<right>"   'bs-cycle-next)
   (bind-key* "C-c <left>"  'windmove-left)
   (bind-key* "C-c <down>"  'windmove-down)
   (bind-key* "C-c <up>"    'windmove-up)
