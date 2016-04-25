@@ -30,7 +30,6 @@
 (depends-on "edbi-sqlite")
 (depends-on "edit-server")
 (depends-on "editorconfig")
-(depends-on "editorconfig-core")
 (depends-on "elisp-slime-nav")
 (depends-on "elixir-mode")
 (depends-on "elscreen")
