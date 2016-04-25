@@ -882,6 +882,14 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Beacon — Never lose your cursor again
 (beacon-mode 1)
 
+;; indent-guide.el
+;; https://github.com/zk-phi/indent-guide
+(custom-set-variables
+ '(indent-guide-char "|") ;"█"
+ '(indent-guide-delay 0.7)
+ '(indent-guide-recursive t))
+(indent-guide-global-mode)
+
 (message "Emacs finished loading (%d GCs)." gcs-done)
 
 ;;; init.el ends here

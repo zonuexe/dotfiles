@@ -74,6 +74,7 @@
 (depends-on "htmlize")
 (depends-on "http")
 (depends-on "idle-highlight-mode")
+(depends-on "indent-guide")
 (depends-on "inf-ruby")
 (depends-on "init-open-recentf")
 (depends-on "ivs-edit")
