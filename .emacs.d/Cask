@@ -53,7 +53,6 @@
 (depends-on "font-lock-studio")
 (depends-on "font-utils")
 (depends-on "fsharp-mode")
-(depends-on "function-args")
 (depends-on "geben")
 (depends-on "gist")
 (depends-on "gitignore-mode")
