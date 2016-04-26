@@ -545,7 +545,7 @@
   :init
   (custom-set-variables
    '(recentf-max-saved-items 2000)
-   '(recentf-auto-cleanup 100)
+   '(recentf-auto-cleanup 'never)
    '(recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"))
    (list 'recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list)))
   (recentf-mode t)
@@ -886,7 +886,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; https://github.com/zk-phi/indent-guide
 (custom-set-variables
  '(indent-guide-char "|") ;"█"
- '(indent-guide-delay 0.7)
+ '(indent-guide-delay 0.5)
  '(indent-guide-recursive t))
 (indent-guide-global-mode)
 
