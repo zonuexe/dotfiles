@@ -791,6 +791,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 (safe-diminish "eldoc" 'eldoc-mode)
 (safe-diminish "flyspell" 'flyspell-mode)
 (safe-diminish "simple" 'auto-fill-function)
+(safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
 
 (defvar my/disable-trailing-modes
   '(buffer-face-mode
@@ -798,7 +799,6 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     calendar-mode
     cfw:calendar-mode
     comint-mode
-    elisp-slime-nav-mode
     eshell-mode
     package-menu-mode
     eww-mode
