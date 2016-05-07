@@ -153,6 +153,7 @@
   (bind-key  "C-M-y"       'helm-show-kill-ring)
   (bind-key  "M-<left>"    'bs-cycle-previous)
   (bind-key  "M-<right>"   'bs-cycle-next)
+  (bind-key  "C-M-S-y"     'my/kill-buffer-file-name)
   (bind-key* "C-c <left>"  'windmove-left)
   (bind-key* "C-c <down>"  'windmove-down)
   (bind-key* "C-c <up>"    'windmove-up)
@@ -858,6 +859,16 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
          offset)
       (indent-rigidly (point-at-bol) (point-at-eol) offset))))
 ;; my/outdent-dwim ends here
+
+(defun my/kill-buffer-file-name (n)
+  "Kill buffer file name.  Return Org mode style link if `N' eq 2."
+  (interactive "p")
+  (let ((path (cond
+               (buffer-file-name            (file-truename buffer-file-name))
+               ((eq major-mode 'dired-mode) (file-truename default-directory))
+               (:else                       (buffer-name)))))
+    (kill-new (if (eq n 1) path
+                (format "[[%s][%s]]" path (buffer-name))))))
 
 ;; Original: http://ja.stackoverflow.com/questions/12510
 (defun my/insert-kbd-sequence ()
