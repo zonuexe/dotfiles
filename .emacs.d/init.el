@@ -319,6 +319,10 @@
     (subword-mode t)
     (setq show-trailing-whitespace t)
     (c-set-style "psr2")
+
+    (when (eq 0 (buffer-size))
+      (insert "<?php\n\n"))
+
     ;;(payas/ac-setup)
     )
   (custom-set-variables
