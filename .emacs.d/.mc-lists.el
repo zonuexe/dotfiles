@@ -19,6 +19,7 @@
         mouse-set-region
         my/seq-end
         my/seq-home
+        nameless-insert-name
         nxml-electric-slash
         org-delete-char
         org-end-of-line

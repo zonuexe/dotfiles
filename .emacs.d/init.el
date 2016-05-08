@@ -341,8 +341,7 @@
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
-  :mode (("\\.rb\\'"   . enh-ruby-mode)
-         ("\\.rake\\'" . enh-ruby-mode))
+  :mode (("\\.rb\\'" . enh-ruby-mode))
   :interpreter "pry"
   :config
   (use-package robe)
