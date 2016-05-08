@@ -10,6 +10,7 @@ dotfiles = %w(
   .gitconfig
   .gitexclude
   .profile
+  .spacemacs
   .zshenv
   .zshrc
   .tigrc
