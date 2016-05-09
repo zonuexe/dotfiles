@@ -140,7 +140,7 @@
 (depends-on "smex")
 (depends-on "smooth-scroll")
 (depends-on "sokoban")
-(depends-on "sql-drill" :git "https://github.com/zonuexe/sql-drill.el.git")
+(depends-on "sql-drill")
 (depends-on "ssh-config-mode")
 (depends-on "stylus-mode")
 (depends-on "swoop")
