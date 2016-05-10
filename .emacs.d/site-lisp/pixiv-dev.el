@@ -7,7 +7,6 @@
 ;; Modified: 2016-04-07
 ;; Version: 0.4.0
 ;; Keywords: php
-;; Namespace: pixiv-dev-
 ;; URL: https://github.com/zonuexe/dotfiles/tree/master/.emacs.d/site-lisp
 
 ;; This file is NOT part of GNU Emacs.
@@ -42,9 +41,31 @@
 (defcustom pixiv-dev-host "pixiv-dev"
   "Host name of your pixiv develop server.")
 
+(defvar pixiv-dev-repository-web "http://gitlab.pixiv.private/pixiv/pixiv"
+  "URL of `pixiv.git' repository web.")
+
 (defun pixiv-dev--working-dir ()
   "Wokring directory of `pixiv.git'."
-  (format "/scp:%s:/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name))
+  (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name))
+
+(defun pixiv-dev-copy-file-url ()
+  "Copy pixiv repository file URL."
+  (interactive)
+  (let (path (working-dir (pixiv-dev--working-dir)))
+    (if (or (null buffer-file-name)
+            (not (string-prefix-p working-dir buffer-file-name)))
+        (error "File is not in pixiv repository!")
+      (setq path (concat pixiv-dev-repository-web "/tree/master/"
+                         (replace-regexp-in-string working-dir "" buffer-file-name)))
+      (kill-new path)
+      (message (format "Copy `%s'!" path)))))
+
+;;;###autoload
+(defun pixiv-dev-find-file ()
+  "Find file in pixiv working directory."
+  (interactive)
+  (let ((default-directory (pixiv-dev--working-dir)))
+    (call-interactively 'find-file nil)))
 
 ;;;###autoload
 (defun pixiv-dev-shell ()
