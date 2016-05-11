@@ -142,6 +142,7 @@
   (bind-key  "M-ESC ESC"   'keyboard-quit)
   (bind-key  "C-S-n"       'make-frame)
   (bind-key  "C-S-w"       'delete-frame)
+  (bind-key  "C-;"       'right-click-context-menu)
   (bind-key  "C-c R"       'revert-buffer)
   (bind-key  "C-c i"       'my/display-file-info)
   (bind-key  "C-x j"       'dired-jump)
