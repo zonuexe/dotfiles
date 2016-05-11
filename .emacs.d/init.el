@@ -897,6 +897,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 (elscreen-create)
 
+;; Right Click
+(right-click-context-mode 1)
+
 ;; Beacon — Never lose your cursor again
 (beacon-mode 1)
 
