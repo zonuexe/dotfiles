@@ -41,12 +41,16 @@
 (defcustom pixiv-dev-host "pixiv-dev"
   "Host name of your pixiv develop server.")
 
+(defcustom pixiv-dev-working-dir nil
+  "`pixiv.git' working directory.")
+
 (defvar pixiv-dev-repository-web "http://gitlab.pixiv.private/pixiv/pixiv"
   "URL of `pixiv.git' repository web.")
 
 (defun pixiv-dev--working-dir ()
   "Wokring directory of `pixiv.git'."
-  (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name))
+  (or pixiv-dev-working-dir
+      (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
 
 (defun pixiv-dev-copy-file-url ()
   "Copy pixiv repository file URL."
