@@ -77,18 +77,25 @@
 ;;;     |うゐのおくやま　けふこえて|
 ;;;     |あさきゆめみし　ゑひもせす|
 
-(defvar my/default-display-font-family "Migu 2M")
-(defvar my/display-font-size-by-hostname-alist
-  '(("MegurineUbu1410"  . 12.5)
-    ("MegurineUbu1510"  . 12.5)
-    ("tadsan-ret.local" . 17.5)))
+(defvar my/font-family "Migu 2M")
+(defvar my/font-size
+  (let ((size-by-hostname
+         '(("MegurineUbu1410"  . 12.5)
+           ("MegurineUbu1510"  . 12.5)
+           ("tadsan-ret.local" . 17.5))))
+    (or (cdr (assoc (system-name) size-by-hostname))
+        15.5)))
 
 (when window-system
-  (set-frame-font
-   (format "%s-%.1f"
-           my/default-display-font-family
-           (or (cdr (assoc (system-name) my/display-font-size-by-hostname-alist))
-               15.5))))
+  ;; http://lioon.net/emacs-change-font-size-quickly
+  (add-to-list 'default-frame-alist '(font . "fontset-standard"))
+  (add-to-list 'initial-frame-alist '(font . "fontset-standard"))
+  (set-fontset-font
+   "fontset-standard" 'ascii
+   (font-spec :family my/font-family :size my/font-size) nil 'prepend)
+  (set-fontset-font
+   "fontset-standard" 'japanese-jisx0213.2004-1
+   (font-spec :family my/font-family) nil 'prepend))
 
 ;;; Packages:
 (when (or (require 'cask "~/.cask/cask.el" t)
