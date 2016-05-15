@@ -87,15 +87,9 @@
         15.5)))
 
 (when window-system
-  ;; http://lioon.net/emacs-change-font-size-quickly
-  (add-to-list 'default-frame-alist '(font . "fontset-standard"))
-  (add-to-list 'initial-frame-alist '(font . "fontset-standard"))
-  (set-fontset-font
-   "fontset-standard" 'ascii
-   (font-spec :family my/font-family :size my/font-size) nil 'prepend)
-  (set-fontset-font
-   "fontset-standard" 'japanese-jisx0213.2004-1
-   (font-spec :family my/font-family) nil 'prepend))
+  ;; http://d.hatena.ne.jp/kitokitoki/20110502/p2
+  (let ((fontset (format "%s-%.1f" my/font-family my/font-size)))
+    (add-to-list 'default-frame-alist `(font . ,fontset))))
 
 ;;; Packages:
 (when (or (require 'cask "~/.cask/cask.el" t)
