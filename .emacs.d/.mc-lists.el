@@ -44,4 +44,5 @@
       '(
         align-regexp
         helm-find-files
+        rectangle-mark-mode
         ))
