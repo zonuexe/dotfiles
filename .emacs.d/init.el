@@ -5,7 +5,7 @@
 ;; Package-Requires: ((emacs "24.3"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
-;; Modified: 2014-11-27
+;; Modified: 2015-05-15
 ;; Version: 10.10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
@@ -903,6 +903,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (elscreen-create)
 
 ;; Right Click
+(custom-set-variables
+ '(right-click-context-mode-lighter ""))
 (right-click-context-mode 1)
 
 ;; Beacon — Never lose your cursor again
