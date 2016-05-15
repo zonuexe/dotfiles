@@ -275,7 +275,10 @@
 ;; YASnippets
 (use-package yasnippet
   :diminish yas-minor-mode
-  :init (yas-global-mode t))
+  :init
+  (custom-set-variables
+   '(yas-backport-obsolete-alias nil))
+  (yas-global-mode t))
 
 ;;; Languages:
 
