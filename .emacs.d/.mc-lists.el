@@ -44,5 +44,6 @@
       '(
         align-regexp
         helm-find-files
+        magit-find-file-completing-read
         rectangle-mark-mode
         ))
