@@ -18,6 +18,7 @@
 /projectile-*
 /recentf*
 /request/
+/site-lisp/*.elc
 /smex-*
 /tramp
 /tutorial
