@@ -21,8 +21,10 @@
         my/seq-home
         nameless-insert-name
         nxml-electric-slash
+        org-beginning-of-line
         org-delete-char
         org-end-of-line
+        org-force-self-insert
         org-self-insert-command
         paredit-doublequote
         paredit-forward-delete
