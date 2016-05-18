@@ -445,7 +445,7 @@
 
 ;; JavaScript
 (use-package js2-mode :defer t
-  :mode "\\.js\\'")
+  :mode ("\\.js\\'" "\\.jsx\\'"))
 
 ;; CoffeeScript
 (use-package coffee :defer t
