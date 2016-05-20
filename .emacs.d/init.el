@@ -278,7 +278,7 @@
   :diminish yas-minor-mode
   :init
   (custom-set-variables
-   '(yas-backport-obsolete-alias nil))
+   '(yas-alias-to-yas/prefix-p nil))
   (yas-global-mode t))
 
 ;;; Languages:
