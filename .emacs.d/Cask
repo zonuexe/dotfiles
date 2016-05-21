@@ -143,7 +143,7 @@
 (depends-on "smex")
 (depends-on "smooth-scroll")
 (depends-on "sokoban")
-(depends-on "sql-drill")
+(depends-on "sql-drill" :git "git@github.com:KeenS/sql-drill.el.git")
 (depends-on "ssh-config-mode")
 (depends-on "stylus-mode")
 (depends-on "swoop")
