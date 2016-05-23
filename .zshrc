@@ -132,6 +132,7 @@ alias あ=ag
 alias s=ls
 alias be="bundle exec"
 alias tmxu=tmux
+alias tumx=tmux
 alias Tree=$(which tree)
 alias tree="tree -C | less -R"
 
