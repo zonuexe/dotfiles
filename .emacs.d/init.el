@@ -815,6 +815,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     eshell-mode
     package-menu-mode
     eww-mode
+    Info-mode
     term-mode))
 (--each my/disable-trailing-modes
   (add-hook (intern (concat (symbol-name it) "-hook"))
