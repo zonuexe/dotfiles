@@ -345,6 +345,8 @@
 (use-package pixiv-dev :defer t
   :init
   (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
+  (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
+  (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t)
   (custom-set-variables
    '(pixiv-dev-user-name "tadsan")))
 

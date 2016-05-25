@@ -52,6 +52,7 @@
   (or pixiv-dev-working-dir
       (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
 
+;;;###autoload
 (defun pixiv-dev-copy-file-url ()
   "Copy pixiv repository file URL."
   (interactive)
