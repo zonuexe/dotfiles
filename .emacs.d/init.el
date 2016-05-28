@@ -236,6 +236,7 @@
 
 ;; Conf-Mode
 (require 'generic-x)
+(add-to-list 'auto-mode-alist '("/\\.env\\'" . conf-mode))
 (add-to-list 'auto-mode-alist '("/\\.*conf\\(ig\\)?\\'" . conf-mode) t)
 (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t)
 
@@ -901,6 +902,25 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
              (concat (substring x 0 3) ":" (substring x 3 5)))
            "\"")))
 
+(defun my/insert-tetosan ()
+  "Kimiwa jitsuni bakadana."
+  (with-current-buffer "*scratch*"
+    (goto-char (1- (point-max)))
+    (insert "
+;; 　　　　　 　r /
+;; 　 ＿＿ , --ヽ!-- .､＿
+;; 　! 　｀/::::;::::ヽ l
+;; 　!二二!::／}::::丿ハﾆ|
+;; 　!ﾆニ.|:／　ﾉ／ }::::}ｺ
+;; 　L二lイ　　0´　0 ,':ﾉｺ
+;; 　lヽﾉ/ﾍ､ ''　▽_ノイ ソ
+;;  　ソ´ ／}｀ｽ /￣￣￣￣/
+;; 　　　.(_:;つ/  0401 /　ｶﾀｶﾀ
+;;  ￣￣￣￣￣＼/＿＿＿＿/
+")))
+
+;; init-open-recentf
+(add-hook 'init-open-recentf-before-hook #'my/insert-tetosan)
 (init-open-recentf)
 
 (elscreen-create)
