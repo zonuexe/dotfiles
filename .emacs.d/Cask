@@ -3,6 +3,7 @@
 
 (depends-on "2048-game")
 (depends-on "aa-edit-mode")
+(depends-on "ac-html")
 (depends-on "actionscript-mode")
 (depends-on "ag")
 (depends-on "anaphora")
@@ -77,6 +78,7 @@
 (depends-on "inf-ruby")
 (depends-on "init-open-recentf")
 (depends-on "ivs-edit")
+(depends-on "ivy")
 (depends-on "jade-mode")
 (depends-on "js2-mode")
 (depends-on "json-mode")
@@ -115,6 +117,7 @@
 (depends-on "php-auto-yasnippets")
 (depends-on "php-mode")
 (depends-on "php-refactor-mode")
+(depends-on "phpunit")
 (depends-on "pixiv-novel-mode")
 (depends-on "ponylang-mode")
 (depends-on "popwin")

@@ -307,6 +307,8 @@
   (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\(\\.html\\)?\\.erb\\'")
     (add-to-list 'auto-mode-alist (cons it 'web-mode)))
   :config
+  (add-to-list 'web-mode-ac-sources-alist
+               '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
   (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
 
 (add-to-list 'auto-mode-alist '("/Gemfile.lock\\'" . conf-mode))
