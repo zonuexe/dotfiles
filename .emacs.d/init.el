@@ -803,6 +803,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 
 (safe-diminish "abbrev" 'abbrev-mode)
 (safe-diminish "beacon" 'beacon-mode)
+(safe-diminish "face-remap" 'buffer-face-mode)
 (safe-diminish "eldoc" 'eldoc-mode)
 (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
 (safe-diminish "flyspell" 'flyspell-mode)
