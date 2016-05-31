@@ -69,6 +69,7 @@
 (depends-on "helm-emms")
 (depends-on "helm-migemo")
 (depends-on "helm-projectile")
+(depends-on "helm-smex")
 (depends-on "helm-swoop")
 (depends-on "ht")
 (depends-on "htmlize")

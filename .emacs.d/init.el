@@ -199,7 +199,7 @@
   :init
   (require 'helm-config)
   (bind-key "C-x C-f" 'helm-find-files)
-  (bind-key "M-x" 'helm-M-x)
+  (bind-key "M-x" 'helm-smex)
   (helm-mode t))
 
 ;; (use-package helm-ag :defer t)
