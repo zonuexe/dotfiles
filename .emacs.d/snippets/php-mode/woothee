@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: woothee
+# key: woothee
+# --
+$woothee = new \Woothee\Classifier;
+$woothee->parse($0);

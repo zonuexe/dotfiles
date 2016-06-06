@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: psysh
+# key: psysh
+# --
+eval(\Psy\sh());
