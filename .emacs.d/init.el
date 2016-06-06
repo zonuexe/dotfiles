@@ -156,6 +156,7 @@
   (bind-key  "M-<left>"    'bs-cycle-previous)
   (bind-key  "M-<right>"   'bs-cycle-next)
   (bind-key  "C-M-S-y"     'my/kill-buffer-file-name)
+  (bind-key  "<f5>"        'compile)
   (bind-key* "C-c <left>"  'windmove-left)
   (bind-key* "C-c <down>"  'windmove-down)
   (bind-key* "C-c <up>"    'windmove-up)
