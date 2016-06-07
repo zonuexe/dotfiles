@@ -112,6 +112,7 @@
 (depends-on "pacmacs")
 (depends-on "page-break-lines")
 (depends-on "pallet")
+(depends-on "pandoc")
 (depends-on "paredit")
 (depends-on "pdf-tools")
 (depends-on "peep-dired")

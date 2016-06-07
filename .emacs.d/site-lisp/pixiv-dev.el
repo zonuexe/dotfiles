@@ -30,6 +30,7 @@
 
 ;;; Code:
 (require 'psysh nil t)
+(require 'flycheck)
 
 (defgroup pixiv-dev '()
   "Develop pixiv.net and other services."
@@ -51,6 +52,22 @@
   "Wokring directory of `pixiv.git'."
   (or pixiv-dev-working-dir
       (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
+
+;;;###autoload
+(flycheck-define-checker pixiv-dev-lint
+  "JSON Syntax check using Python json"
+  :command ("~/pixiv/dev-script/lint" source)
+  :error-patterns
+  (;; file:pixiv-lib/Novel/Body.php line:53 desc:${val} 形式の変数埋め込みは使用禁止 ( {$val} 形式を利用)
+   (error line-start "file:" (file-name)
+          "	line:" line
+          "	col:" column "-"
+          "	desc:" (message)
+          line-end)
+   )
+  :mode '(php-mode web-mode))
+;; (flycheck-select-checker 'pixiv-dev-lint)
+;; flycheck-pixiv-dev-lint-executable
 
 ;;;###autoload
 (defun pixiv-dev-copy-file-url ()
