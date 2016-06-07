@@ -55,13 +55,13 @@
 
 ;;;###autoload
 (flycheck-define-checker pixiv-dev-lint
-  "JSON Syntax check using Python json"
+  "Lint for pixiv.git"
   :command ("~/pixiv/dev-script/lint" source)
   :error-patterns
   (;; file:pixiv-lib/Novel/Body.php line:53 desc:${val} 形式の変数埋め込みは使用禁止 ( {$val} 形式を利用)
    (error line-start "file:" (file-name)
           "	line:" line
-          "	col:" column "-"
+          "	col:" (+ num) "-" column
           "	desc:" (message)
           line-end)
    )
