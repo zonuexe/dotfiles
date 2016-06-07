@@ -23,6 +23,7 @@
 (depends-on "color-moccur")
 (depends-on "csv-mode")
 (depends-on "dash")
+(depends-on "datetime-format")
 (depends-on "diminish")
 (depends-on "dired-k")
 (depends-on "direx")
