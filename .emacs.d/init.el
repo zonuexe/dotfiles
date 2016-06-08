@@ -923,6 +923,11 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;  ￣￣￣￣￣＼/＿＿＿＿/
 ")))
 
+;; Pandoc-EWW
+(use-package pandoc :defer 2
+  :init
+  (pandoc-turn-on-advice-eww))
+
 ;; init-open-recentf
 (add-hook 'init-open-recentf-before-hook #'my/insert-tetosan)
 (init-open-recentf)
