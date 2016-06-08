@@ -1,4 +1,4 @@
-;;; pixiv-dev --- p(ixi)v -*- coding: utf-8 ; lexical-binding: t -*-
+;;; pixiv-dev.el --- p(ixi)v -*- coding: utf-8 ; lexical-binding: t -*-
 
 ;; Copyright (C) 2016 USAMI Kenta
 
@@ -52,22 +52,26 @@
   "Wokring directory of `pixiv.git'."
   (or pixiv-dev-working-dir
       (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
+
+;; Flycheck
 
 ;;;###autoload
 (flycheck-define-checker pixiv-dev-lint
   "Lint for pixiv.git"
   :command ("pixiv-lint" source)
   :error-patterns
-  (;; file:pixiv-lib/Novel/Body.php line:53 desc:${val} 形式の変数埋め込みは使用禁止 ( {$val} 形式を利用)
-   (info line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
+  ((info line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
          "\tlevel:info" "\tdesc:" (message) line-end)
    (error line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
           "\tlevel:error" "\tdesc:" (message) line-end)
    (warning line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
             "\tlevel:" (+ alnum) "\tdesc:" (message) line-end))
-  :mode '(php-mode web-mode))
+  :mode '(php-mode)
+  :next-checkers (php))
 ;; (flycheck-select-checker 'pixiv-dev-lint)
 ;; flycheck-pixiv-dev-lint-executable
+
+;; Utillity
 
 ;;;###autoload
 (defun pixiv-dev-copy-file-url ()
@@ -101,6 +105,20 @@
     (switch-to-buffer buffer))
   (when (fboundp 'psysh-mode)
     (psysh-mode)))
+
+;; pixiv-dev-mode
+(defvar pixiv-dev-mode-lighter " p(ixi)v")
+
+(defvar pixiv-dev-mode-map
+  (let ((map (make-sparse-keymap)))
+    ;;
+    map))
+
+;;;###autoload
+(define-minor-mode pixiv-dev-mode
+  "Minor mode for editing pixiv PHP project."
+  nil pixiv-dev-mode-lighter pixiv-dev-mode-map
+  (flycheck-select-checker 'pixiv-dev-lint))
 
 (provide 'pixiv-dev)
 ;;; pixiv-dev.el ends here

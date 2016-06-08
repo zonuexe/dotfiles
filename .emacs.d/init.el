@@ -332,6 +332,10 @@
     (when (eq 0 (buffer-size))
       (insert "<?php\n\n"))
 
+    (flycheck-mode t)
+    (when (string-match "/pixiv/" buffer-file-name)
+      (require 'pixiv-dev nil t)
+      (pixiv-dev-mode t))
     ;;(payas/ac-setup)
     )
   (custom-set-variables
