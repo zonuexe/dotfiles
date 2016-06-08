@@ -56,15 +56,15 @@
 ;;;###autoload
 (flycheck-define-checker pixiv-dev-lint
   "Lint for pixiv.git"
-  :command ("~/pixiv/dev-script/lint" source)
+  :command ("pixiv-lint" source)
   :error-patterns
   (;; file:pixiv-lib/Novel/Body.php line:53 desc:${val} 形式の変数埋め込みは使用禁止 ( {$val} 形式を利用)
-   (warning line-start "file:" (file-name)
-            "	line:" line
-            "	col:" (+ (or "-" num))
-            "	desc:" (message)
-            line-end)
-   )
+   (info line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
+         "\tlevel:info" "\tdesc:" (message) line-end)
+   (error line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
+          "\tlevel:error" "\tdesc:" (message) line-end)
+   (warning line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
+            "\tlevel:" (+ alnum) "\tdesc:" (message) line-end))
   :mode '(php-mode web-mode))
 ;; (flycheck-select-checker 'pixiv-dev-lint)
 ;; flycheck-pixiv-dev-lint-executable
