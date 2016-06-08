@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Bookmarklet
+# key: bm
+# --
+javascript:(function(){$1})();
