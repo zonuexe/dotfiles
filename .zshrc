@@ -35,15 +35,30 @@ case "${OSTYPE}" in
 freebsd*|darwin*)
     if [ $(which ls | grep gnubin) ]
     then
-        alias ls="ls --color"
+        ls=coreutils
     else
-        alias ls="ls -G -w"
+        ls=bsdls
     fi
-  ;;
+    ;;
 linux*)
-  alias ls="ls --color"
-  ;;
+    ls=coreutils
+    ;;
 esac
+
+# 環境に合わせて出来るだけ好みのls出力にする
+# http://qiita.com/kawaz/items/a44f42bd5099efaab431
+if [ "$ls" = "bsdls" ]; then
+   alias ls='ls -G -w'
+elif ls -d -N >/dev/null 2>&1; then
+  # 最近の gnubin/ls が勝手にファイル名をクオート出力してくるのを抑止
+  alias ls='ls --color --time-style +%Y-%m-%d\ %H:%M:%S.%3N -N'
+elif ls -d --time-style +%Y-%m-%d\ %H:%M:%S.%3N >/dev/null 2>&1; then
+  # デフォの時間表示は見難いのでISOぽくする(full-iso,long-iso,isoは帯に短し襷に長しなのでカスタム)
+  alias ls='ls --color --time-style +%Y-%m-%d\ %H:%M:%S.%3N'
+elif ls -d --color >/dev/null 2>&1; then
+  # せめて色だけでも…
+  alias ls='ls --color'
+fi
 
 autoload colors && colors
 
