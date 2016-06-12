@@ -418,6 +418,7 @@
   (add-hook it 'elisp-slime-nav-mode)
   (add-hook it 'my/emacs-lisp-mode-hook)
   (add-hook it 'nameless-mode))
+(add-hook 'flycheck-mode-hook #'flycheck-cask-setup)
 
 (defalias 'inferior-emacs-lisp 'ielm
   "λ...")
