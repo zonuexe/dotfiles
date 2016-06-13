@@ -955,6 +955,13 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (custom-set-variables
  '(helm-dash-browser-func 'eww))
 
+;; bm
+(use-package bm :defer t
+  :init
+  (bind-key "<right-fringe> <wheel-down>" 'bm-next-mouse)
+  (bind-key "<right-fringe> <wheel-up>" 'bm-previous-mouse)
+  (bind-key "<right-fringe> <mouse-1>" 'bm-toggle-mouse))
+
 ;; indent-guide.el
 ;; https://github.com/zk-phi/indent-guide
 (custom-set-variables

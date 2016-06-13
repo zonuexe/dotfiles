@@ -12,6 +12,7 @@
 (depends-on "auto-complete")
 (depends-on "beacon")
 (depends-on "bind-key")
+(depends-on "bm")
 (depends-on "calfw")
 (depends-on "calfw-git" :git "https://gist.github.com/d77d9669440f3336bb9d.git")
 (depends-on "calfw-syobocal" :git "https://gist.github.com/1fd257fc1e8907d4d92e.git" :files ("*.el"))
