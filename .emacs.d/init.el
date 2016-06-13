@@ -41,7 +41,7 @@
   (menu-bar-mode -1))
 
 ;;; Color-theme:
-(defvar my/load-themes '(manoj-dark tango))
+(defvar my/load-themes '(manoj-dark tango spike))
 (load-theme (car my/load-themes) t)
 
 ;;; Variables:
