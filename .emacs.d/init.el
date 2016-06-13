@@ -333,7 +333,7 @@
       (insert "<?php\n\n"))
 
     (flycheck-mode t)
-    (when (string-match "/pixiv/" buffer-file-name)
+    (when (and buffer-file-name (string-match "/pixiv/" buffer-file-name))
       (require 'pixiv-dev nil t)
       (pixiv-dev-mode t))
     ;;(payas/ac-setup)

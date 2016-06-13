@@ -48,6 +48,9 @@
 (defvar pixiv-dev-repository-web "http://gitlab.pixiv.private/pixiv/pixiv"
   "URL of `pixiv.git' repository web.")
 
+(defvar pixiv-dev-psysh-buffer-process
+  '("pixiv-shell" "dev-script/shell.php"))
+
 (defun pixiv-dev--working-dir ()
   "Wokring directory of `pixiv.git'."
   (or pixiv-dev-working-dir
@@ -98,13 +101,13 @@
   "Run PHP interactive shell for pixiv."
   (interactive)
   (let ((current-dir default-directory)
-        (buffer      nil))
+        buffer)
     (cd (pixiv-dev--working-dir))
-    (setq buffer (make-comint "pixiv-shell" "dev-script/shell.php"))
-    (cd current-dir)
-    (switch-to-buffer buffer))
-  (when (fboundp 'psysh-mode)
-    (psysh-mode)))
+    (if (fboundp 'psysh-mode)
+        (apply #'psysh-run pixiv-dev-psysh-buffer-process)
+      (setq buffer (make-comint "pixiv-shell" "dev-script/shell.php"))
+      (cd current-dir)
+      (switch-to-buffer buffer))))
 
 ;; pixiv-dev-mode
 (defvar pixiv-dev-mode-lighter " p(ixi)v")
@@ -118,7 +121,9 @@
 (define-minor-mode pixiv-dev-mode
   "Minor mode for editing pixiv PHP project."
   nil pixiv-dev-mode-lighter pixiv-dev-mode-map
-  (flycheck-select-checker 'pixiv-dev-lint))
+  (setq psysh-comint-buffer-process pixiv-dev-psysh-buffer-process)
+  (when (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint"))
+    (flycheck-select-checker 'pixiv-dev-lint)))
 
 (provide 'pixiv-dev)
 ;;; pixiv-dev.el ends here
