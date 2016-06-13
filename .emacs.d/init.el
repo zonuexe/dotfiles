@@ -948,6 +948,13 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Beacon — Never lose your cursor again
 (beacon-mode 1)
 
+;; Eshell
+(add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
+
+;; Helm Dash
+(custom-set-variables
+ '(helm-dash-browser-func 'eww))
+
 ;; indent-guide.el
 ;; https://github.com/zk-phi/indent-guide
 (custom-set-variables
