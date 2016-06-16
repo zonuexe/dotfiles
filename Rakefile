@@ -9,6 +9,7 @@ dotfiles = %w(
   .gemrc
   .gitconfig
   .gitexclude
+  .guile
   .profile
   .spacemacs
   .zshenv

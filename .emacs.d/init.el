@@ -434,6 +434,18 @@
   (bind-key "C-<right>" 'right-word paredit-mode-map)
   (bind-key "C-<left>"  'left-word  paredit-mode-map))
 
+;; Scheme
+(use-package scheme :defer t
+  :config
+  (defun my/scheme-mode-hook ()
+    "λ..."
+    (paredit-mode t)
+    (ac-geiser-setup))
+  (custom-set-variables
+   '(geiser-active-implementations '(guile racket)))
+  (add-hook 'geiser-mode-hook #'my/scheme-mode-hook)
+  (add-hook 'scheme-mode-hook #'my/scheme-mode-hook))
+
 ;; Common Lisp
 (use-package sly :defer t
   :init
