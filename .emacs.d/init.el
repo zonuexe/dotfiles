@@ -529,19 +529,6 @@
 
 (add-hook 'text-mode-hook 'my/text-mode-hook)
 
-(when nil
-  (flycheck-define-checker my/json-lint
-    "JSON Syntax check using Python json"
-    :command ("python" "-mjson.tool" source)
-    :error-patterns
-    ((error line-start "No JSON object could be decoded" line-end)
-     ;; [Python 2] Expecting object: line 1 column 2 (char 1)
-     ;; [Python 3] Expecting property name enclosed in double quotes: line 2 column 5 (char 6)
-     (error line-start (message) ": line " line " column " column " (char " (one-or-more char) ")" line-end)
-     ;; Extra data: line 1 column 43 - line 3 column 1 (char 42 - 86)
-     )
-    :modes 'json-mode))
-
 ;; YAML
 ;;(use-package yaml-mode :defer t)
 
