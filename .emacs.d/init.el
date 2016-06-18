@@ -548,6 +548,7 @@
 ;; Markdown Mode
 (use-package markdown-mode :defer t
   :mode ("\\.md\\'" . gfm-mode)
+  (add-hook 'markdown-mode-hook 'orgtbl-mode)
   :config
   ;;(unbind-key "`" markdown-mode-map)
   (visual-line-mode nil))
