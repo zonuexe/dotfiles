@@ -41,6 +41,9 @@
   (menu-bar-mode -1))
 
 ;;; Color-theme:
+(custom-set-variables
+ '(custom-safe-themes
+   '("b4117b5e16a0d1d9a265cbdc0c4062f4b3f832da38316f9d65ea39f1b2dd0063" default)))
 (defvar my/load-themes '(manoj-dark tango spike))
 (load-theme (car my/load-themes) t)
 
