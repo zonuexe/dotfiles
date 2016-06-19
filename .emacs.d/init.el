@@ -150,6 +150,7 @@
   (bind-key  "C-x C-S-e"   'pp-eval-last-sexp)
   (bind-key  "C-x お"      'other-window)
   (bind-key  "M-："        'eval-expression)
+  (bind-key  "M-i"         'helm-imenu prog-mode-map)
   (bind-key  "M-ESC ："    'eval-expression)
   (bind-key  "<S-tab>"     'my/outdent-dwim)
   (bind-key  "C-M-y"       'helm-show-kill-ring)
@@ -535,8 +536,8 @@
 ;; Markdown Mode
 (use-package markdown-mode :defer t
   :mode ("\\.md\\'" . gfm-mode)
-  (add-hook 'markdown-mode-hook 'orgtbl-mode)
   :config
+  (add-hook 'markdown-mode-hook 'orgtbl-mode)
   ;;(unbind-key "`" markdown-mode-map)
   (visual-line-mode nil))
 
