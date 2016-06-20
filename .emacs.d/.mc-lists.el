@@ -26,6 +26,8 @@
         org-end-of-line
         org-force-self-insert
         org-self-insert-command
+        orgtbl-hijacker-command-109
+        orgtbl-self-insert-command
         paredit-doublequote
         paredit-forward-delete
         paredit-kill
