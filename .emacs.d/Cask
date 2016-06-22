@@ -84,6 +84,7 @@
 (depends-on "ht")
 (depends-on "htmlize")
 (depends-on "http")
+(depends-on "hydra")
 (depends-on "idle-highlight-mode")
 (depends-on "indent-guide")
 (depends-on "inf-ruby")
