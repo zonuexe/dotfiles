@@ -1,0 +1,388 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 2004-2015 Free Software Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@c
+@c This file is included either in emacs-xtra.texi (when producing the
+@c printed version) or in the main Emacs manual (for the on-line version).
+@node Fortran
+@section Fortranモード
+@cindex Fortran mode
+@cindex mode, Fortran
+
+@cindex Fortran fixed form and free form
+@cindex Fortran 77 and Fortran 90, 95, 2003, 2008
+@findex f90-mode
+@findex fortran-mode
+  Fortranモードは、``固定形式(fixed form)''(または``タブ形式(tab
+format)'')のソースコードを編集するためのモードです(通常はFortran 77)。よりモダンな``自由形式(free
+form)''のソースコードを編集するためには、F90モード(@code{f90-mode})を使用します。Emacsは通常、拡張子が@samp{.f}、@samp{.F}、@samp{.for}のファイルにたいしてはFortranモードを使用し、拡張子が@samp{.f90}、@samp{.f95}、@samp{.f03}、@samp{.f08}のファイルにたいしてはF90モードを使用します。@code{auto-mode-alist}をカスタマイズして、拡張子を追加することができます。GNU
+Fortranは、これら自由形式と固定形式の両方をサポートします。このマニュアルでは主にFortranモードを記述しますが、対応するF90モードの機能については、その都度言及します。
+
+  Fortranモードは、Fortran命令文およびサブプログラムにたいする特別な移動コマンドと、Fortranのネスト規則、行番号、行継続された命令文を理解する、インデントコマンドを提供します。Fortranモードは、長い行を適正なFortranの継続行にブレークする、Auto
+Fillモードをサポートします。FortranモードはHideshowマイナーモード
+@iftex
+(@ref{Hideshow,,, emacs, the Emacs Manual}を参照してください)、
+@end iftex
+@ifnottex
+(@ref{Hideshow}を参照してください)、
+@end ifnottex
+、およびImenu
+@iftex
+(@ref{Imenu,,, emacs, the Emacs Manual}を参照してください)もサポートします。
+@end iftex
+@ifnottex
+(@ref{Imenu}を参照してください)もサポートします。
+@end ifnottex
+
+  Fortranのコメントは他の言語とは異なるので、コメントのための特別なコマンドも提供されています。ビルトインのabbrev(省略形)は、Fortranキーワードをタイプする手間を削減します。
+
+  @kbd{M-x
+fortran-mode}を使用して、このメジャーモードに切り替えます。このコマンドはフック@code{fortran-mode-hook}を実行します。
+@iftex
+@ref{Hooks,,, emacs, the Emacs Manual}を参照してください。
+@end iftex
+@ifnottex
+@ref{Hooks}を参照してください。
+@end ifnottex
+
+@menu
+* Motion: Fortran Motion.    命令文またはサブプログラムごとにポイントを移動する。
+* Indent: Fortran Indent.    Fortranのためのインデントコマンド。
+* Comments: Fortran Comments.  コメントの挿入と位置揃え。
+* Autofill: Fortran Autofill.  FortranをサポートするAuto Fill。
+* Columns: Fortran Columns.  有効なFortranのための列の計算。
+* Abbrev: Fortran Abbrev.    Fortranキーワードのためのビルトインのabbrev。
+@end menu
+
+@node Fortran Motion
+@subsection 移動コマンド
+
+  ``defun''(Fortranのサブプログラム ---
+関数、サブルーチン、同様にF90モードのモジュールには、コマンド@code{fortran-end-of-subprogram}および@code{fortran-beginning-of-subprogram}を使用します)を単位に移動、操作する通常コマンドに加えて、Fortranモードは命令文や他のプログラム単位に移動する、特別なコマンドを提供します。
+
+@table @kbd
+@kindex C-c C-n @r{(Fortran mode)}
+@findex fortran-next-statement
+@findex f90-next-statement
+@item C-c C-n
+次の命令文の先頭に移動します(@code{fortran-next-statement}/@code{f90-next-statement})。
+
+@kindex C-c C-p @r{(Fortran mode)}
+@findex fortran-previous-statement
+@findex f90-previous-statement
+@item C-c C-p
+前の命令文の先頭に移動します(@code{fortran-previous-statement}/@code{f90-previous-statement})。前の命令文が存在しない場合(たとえばバッファーの最初の命令文で呼び出された場合)、バッファーの先頭に移動します。
+
+@kindex C-c C-e @r{(F90 mode)}
+@findex f90-next-block
+@item C-c C-e
+次のコードブロックの先頭、またはカレントのコードブロックの最後に移動します(@code{f90-next-block})。コードブロックとは、サブルーチン、@code{if}--@code{endif}命令文などです。これはF90モードだけのコマンドで、Fortranモードにはありません。数引数を指定すると、複数ブロックを前方に移動します。
+
+@kindex C-c C-a @r{(F90 mode)}
+@findex f90-previous-block
+@item C-c C-a
+前のブロックに、後方にポイントを移動します(@code{f90-previous-block})。これは@code{f90-next-block}と似ていますが、後方に移動します。
+
+@kindex C-M-n @r{(Fortran mode)}
+@findex fortran-end-of-block
+@findex f90-end-of-block
+@item C-M-n
+カレントのコードブロックの最後にポイントを移動します(@code{fortran-end-of-block}/@code{f90-end-of-block})。数引数を指定した場合、指定した数のブロックを前方に移動します。ポイントを移動する前にマークがセットされます。このコマンドのF90モードのバージョンでは、ブロックタイプと、(もしあれば)ラベルの整合性をチェックしますが、最外のブロックは不完全かもしれないのでチェックしません。
+
+@kindex C-M-p @r{(Fortran mode)}
+@findex fortran-beginning-of-block
+@findex f90-beginning-of-block
+@item C-M-p
+カレントコードブロックの先頭にポイントを移動します(@code{fortran-beginning-of-block}/@code{f90-beginning-of-block})。これは@code{fortran-end-of-block}と似ていますが、後方に移動します。
+@end table
+
+コマンド@code{fortran-beginning-of-subprogram}および@code{fortran-end-of-subprogram}は、カレントサブプログラムの先頭または後方に移動します。コマンド@code{fortran-mark-do}および@code{fortran-mark-if}は、カレントの@code{do}ブロック、または@code{if}ブロックの最後にマークをセットして、ポイントをブロックの先頭に移動します。
+
+
+@node Fortran Indent
+@subsection Fortranのインデント
+
+  固定形式(またはタブ形式)のFortranコードにたいしては、さまざまな構文エントリー(行番号、行インジケーター、継続行フラグ)が、要求される列に表示されるようにするために、特別なコマンドと機能が必要です。
+
+@menu
+* Commands: ForIndent Commands.  Fortranをインデントおよびフィルするコマンド。
+* Contline: ForIndent Cont.  継続行がインデントされる方法。
+* Numbers: ForIndent Num.    行番号が自動インデントされる方法。
+* Conv: ForIndent Conv.      トラブル防止のために、したがわなければならない慣習。
+* Vars: ForIndent Vars.      Fortranのインデントスタイルを制御する変数。
+@end menu
+
+@node ForIndent Commands
+@subsubsection Fortranのインデントおよびフィルコマンド
+
+@table @kbd
+@item C-M-j
+ポイント位置でカレント行をブレークして、継続行をセットアップします(@code{fortran-split-line})。
+@item M-^
+その行を前の行と結合します(@code{fortran-join-line})。
+@item C-M-q
+ポイントのあるサブプログラムの、すべての行をインデントします(@code{fortran-indent-subprogram})。
+@item M-q
+コメントブロックまたは命令文をフィルします(@code{fortran-fill-paragraph}または@code{fortran-fill-statement}を使用します)。
+@end table
+
+@kindex C-M-q @r{(Fortran mode)}
+@findex fortran-indent-subprogram
+  キー@kbd{C-M-q}は、@code{fortran-indent-subprogram}を実行します、これはポイントを含むFortranサブプログラム(関数またはサブルーチン)の、すべての行を再インデントします。
+
+@kindex C-M-j @r{(Fortran mode)}
+@findex fortran-split-line
+  キー@kbd{C-M-j}は、@code{fortran-split-line}を実行します、これはFortranの流儀にあった方法で行を分割します。非コメント行では、後半は継続行になり、それにしたがったインデントになります。コメント行の場合、両方とも別のコメント行になります。
+
+@kindex M-^ @r{(Fortran mode)}
+@kindex C-c C-d @r{(Fortran mode)}
+@findex fortran-join-line
+  @kbd{M-^}または@kbd{C-c
+C-d}は、コマンド@code{fortran-join-line}を実行します。これは継続行を前の行に結合します。大雑把にいうと、@code{fortran-split-line}の逆です。このコマンドを呼び出すとき、ポイントは継続行になければなりません。
+
+@kindex M-q @r{(Fortran mode)}
+Fortranモードでの@kbd{M-q}は、ポイントのあるコメントブロックまたは命令文ブロックをフィルします。これは余分な命令文の継続を削除します。
+
+@node ForIndent Cont
+@subsubsection 継続行
+@cindex Fortran continuation lines
+
+@vindex fortran-continuation-string
+  ほとんどのFortran77コンパイラーは、2つの方法で継続行を記述します。ある行の最初の非スペース文字が列5の場合、その行は前の行の継続行です。これを@dfn{固定形式(fixed
+form)}と呼びます。(GNU
+Emacsでは常に列は0から数えますが、Fortran標準では列1から数えることに注意してください)。変数@code{fortran-continuation-string}は、列5に配す文字を指定します。タブ文字で開始され、その後@samp{0}以外の任意の数字が記述された行も継続行です。この継続スタイルを@dfn{タブ形式(tab
+format)}と呼びます(Fortran 90では、``自由形式(free form)''という、他の継続行スタイルが導入されました)。
+
+@vindex indent-tabs-mode @r{(Fortran mode)}
+@vindex fortran-analyze-depth
+@vindex fortran-tab-mode-default
+  Fortranモードは、どちらの継続行スタイルも使用できます。Fortranモードに入ったとき、バッファー内容から、自動的に適切な継続行スタイルを推論しようと試みます。これはバッファーの開始から、@code{fortran-analyze-depth}行(デフォルトは100)をスキャンすることにより行われます。最初の行の開始がタブ文字か、6個のスペースかで選択が決定されます。スキャンが失敗した場合(たとえば、新しいバッファーで中身が空の場合)、@code{fortran-tab-mode-default}の値(@code{nil}の場合は固定形式で、非@code{nil}の場合はタブ形式)が使用されます。モードラインに@samp{/t}
+(@code{fortran-tab-mode-string})が表示されている場合、タブ形式が選択されていることを示します。それに応じてFortranモードは@code{indent-tabs-mode}の値をセットします。
+
+  行のテキストがFortranの継続マーカー@samp{$}で始まるか、列5の非空白文字で始まる場合、Fortranモードはそれを継続行として扱います。継続行を@key{TAB}でインデントした場合、その行をカレントの継続スタイルに変換します。Fortran命令文を@kbd{C-M-j}で分割した場合、継続スタイルに応じた継続マーカーがある新しい行が作成されます。
+
+  継続スタイルのセッティングは、Fortranモードでの編集の他の側面に影響します。固定形式の場合、命令文の最小列は6になります。Fortranブロック内でそれより大きい列にインデントされる行には、空白文字としてスペース文字だけを使用しなければなりません。タブ形式では、命令文の最小列は8で、列8より前の空白文字は1つのタブ文字でなければなりません。
+
+@node ForIndent Num
+@subsubsection 行番号
+
+  その行の最初の非空白文字が数字の場合、Fortranのインデントはそれを行番号と判断して、列0から列4に移動します(Emacsでは列を常に0から数えます)。
+
+@vindex fortran-line-number-indent
+  4桁以下の行番号は、通常1つのスペースでインデントされます。変数@code{fortran-line-number-indent}はこれを制御します。これは行番号がもてる最大のインデントを指定します。この変数のデフォルト値は1です。Fortranモードは、必要なら指定した最大列以下にインデントを減らして、行番号が列4を超えるのを防ごうと試みます。@code{fortran-line-number-indent}が5の場合、行番号は列4で終わるように右端に揃えられます。
+
+@vindex fortran-electric-line-number
+  これらのルールに応じたインデントをするには、単純に行番号を挿入するだけで充分です。各桁が挿入されるたびに、インデントは再計算されます。この機能をオフに切り替えるには、変数@code{fortran-electric-line-number}を@code{nil}にセットしてください。
+
+
+@node ForIndent Conv
+@subsubsection 構文的な慣習
+
+  Fortranモードは正しくインデントを行うために、あなたが、Fortranプログラム解読を単純化する特定の慣習にしたがうと仮定します：
+
+@itemize @bullet
+@item
+ネストされた2つの@samp{do}ループは、@samp{continue}命令を共有しない。
+
+@item
+@samp{if}、@samp{else}、@samp{then}、@samp{do}、その他のFortranキーワードは、空白文字や行ブレークを含まずに記述される。
+
+Fortranコンパイラーは一般的に文字列定数の外の空白文字を無視しますが、Fortranモードはこれらのキーワードが隣接していない場合、それらを認識しません。@samp{else
+if}や@samp{end do}のような構成は許されますが、2つ目の単語は継続行ではなく、1つ目の単語と同じ行にあるべきです。
+@end itemize
+
+@noindent
+これらの慣習にしたがわない場合、インデントコマンドは醜いインデントをするかもしれません。しかし正しいFortranプログラムなら、慣習にしたがわずにインデントされたものでも、その意味は変わりません。
+
+@node ForIndent Vars
+@subsubsection Fortranのインデントのための変数
+
+@vindex fortran-do-indent
+@vindex fortran-if-indent
+@vindex fortran-structure-indent
+@vindex fortran-continuation-indent
+@vindex fortran-check-all-num@dots{}
+@vindex fortran-minimum-statement-indent@dots{}
+  Fortranのインデントがどのように機能するかを制御する、追加の変数がいくつかあります:
+
+@table @code
+@item fortran-do-indent
+@samp{do}命令の各レベルにたいする、追加のインデントです(デフォルトは3)。
+
+@item fortran-if-indent
+@samp{if}、@samp{select case}、@samp{where}命令の各レベルにたいする、追加のインデントです(デフォルトは3)。
+
+@item fortran-structure-indent
+@samp{structure}、@samp{union}、@samp{map}、@samp{interface}命令の各レベルにたいする、追加のインデントです(デフォルトは3)。
+
+@item fortran-continuation-indent
+継続行の本文にたいする、追加のインデントです(デフォルトは3)。
+
+@item fortran-check-all-num-for-matching-do
+Fortran
+77では、番号つきの@samp{do}命令は、それにマッチする行番号をもつ任意の命令で終了します。この目的のためには@samp{continue}命令を使うのが一般的です(が、強制ではありません)。この変数が非@code{nil}値の場合、番号が付与された命令をインデントするとき、そこで終了する@samp{do}をチェックしなければなりません。@samp{do}命令を常に@samp{continue}(またはよりモダンな@samp{enddo})で終了する場合は、この変数を@code{nil}(デフォルト)にセットすることにより、インデントの速度を上げることができます。
+
+@item fortran-blink-matching-if
+この変数が@code{t}の場合、@samp{endif}(または@samp{enddo})命令のインデントにより、マッチする@samp{if}(または@samp{do})命令にカーソルが数瞬移動します。デフォルトは@code{nil}です。
+
+@item fortran-minimum-statement-indent-fixed
+固定形式の継続行スタイルを使用する場合の、Fortran命令にたいする最小のインデントです。命令本体はこれより小さい値でインデントされることはありません。デフォルトは6です。
+
+@item fortran-minimum-statement-indent-tab
+タブ形式の継続行スタイルを使用する場合の、Fortran命令にたいする最小のインデントです。命令本体はこれより小さい値でインデントされることはありません。デフォルトは8です。
+@end table
+
+以下のセクションでは、コメントのインデントを制御する変数を説明します。
+
+@node Fortran Comments
+@subsection Fortranのコメント
+
+  通常のEmacsのコメントコマンドは、コード行の後にコメントを記述できると仮定します。Fortran
+77では、標準のコメント構文はコメント行に行全体を要求します。したがってFortranモードは、標準のEmacsコメントコマンドを置き換え、新しい変数も定義します。
+
+@vindex fortran-comment-line-start
+  Fortranモードは、@samp{!}で始まり、他のテキストの後に記述することができる、Fortran
+90のコメント構文も処理できます。この構文を許すFortran
+77コンパイラーは限られているので、Fortranモードは、あらかじめそれを行うように指示しない限り、そのようなコメントを挿入しません。これを行うには、変数@code{fortran-comment-line-start}に@samp{"!"}をセットします。通常とは異なる値を使う場合、@code{fortran-comment-line-start-skip}も変更する必要があるでしょう。
+
+
+@table @kbd
+@item M-;
+コメントの位置揃え、または新しいコメントを挿入します(@code{comment-dwim})。
+
+@item C-x ;
+非標準の@samp{!}だけを適用します(@code{comment-set-column})。
+
+@item C-c ;
+リージョンのすべての行をコメントにします。または(引数を指定した場合は)コメントを実際のコードに戻します(@code{fortran-comment-region})。
+@end table
+
+  Fortranモードで実行すると、これは標準の@code{comment-dwim}を実行します。これは任意の種類の既存のコメントを認識して、それらのテキストの位置揃えをします。既存のコメントがない場合は、コメントの挿入・位置揃えをします。Fortranモードでのコメントの挿入および位置揃えは、他のモードとは異なります。
+
+  新しいコメントが挿入されなければならない場合、カレント行が空のときは、行全体をコメントとして挿入します。その行が空でない場合、もしそれを使うことを指示していれば、非標準の@samp{!}コメントが挿入されます。そうでない場合はカレント行の前に新しい行を挿入して、その行全体をコメントにします。
+
+  非標準の@samp{!}コメントは、他の言語のコメントと同じように位置揃えされますが、行全体のコメントは異なります。標準の行全体のコメントは、コメント区切り自体は常に列0に出現しなければなりません。位置揃えできるのは、コメントの中のテキストです。変数@code{fortran-comment-indent-style}に、以下の3つの値のうち1つをセットすることにより、3つのスタイルの位置揃えを選択できます。
+
+@vindex fortran-comment-indent-style
+@vindex fortran-comment-line-extra-indent
+@table @code
+@item fixed
+テキストを固定列に位置揃えします。これは@code{fortran-comment-line-extra-indent}と命令文の最小のインデントとの和です。これがデフォルトです。
+
+最小のインデントは、タブ形式の継続行スタイルの場合は@code{fortran-minimum-statement-indent-tab}で、固定形式スタイルの場合は@code{fortran-minimum-statement-indent-fixed}です。
+
+@item relative
+そのテキストがコード行であるかのように位置揃えしますが、@code{fortran-comment-line-extra-indent}に指定した列のインデントが追加されます。
+
+@item nil
+行全体のコメントを自動的に移動しません。
+@end table
+
+@vindex fortran-comment-indent-char
+  これらに加えて、変数@code{fortran-comment-indent-char}に、使用したい1文字をセットすることにより、行全体のコメントのインデントに使用する文字を指定することができます
+
+@vindex fortran-directive-re
+  コンパイラーにたいする命令行や、プリプロセッサー行は、コメント行と同じ外観をもっています。しかし、@code{fortran-comment-indent-style}の値に関わらず、そのような行が決してインデントされないことが重要です。変数@code{fortran-directive-re}は、どのような行がそのような命令なのかを指定する正規表現です。これにマッチする行はインデントされず、特別な外観のフォントが適用されます。
+
+  Emacsの通常のコメントコマンド@kbd{C-x ;}
+(@code{comment-set-column})は再定義されません。@samp{!}コメントを使用している場合、このコマンドをそれらに使用できます。そうでない場合、これはFortranモードでは役に立ちません。
+
+@kindex C-c ; @r{(Fortran mode)}
+@findex fortran-comment-region
+@vindex fortran-comment-region
+  コマンド@kbd{C-c ;}
+(@code{fortran-comment-region})は、リージョンのすべての行の行頭に文字列@samp{c$$$}を挿入することにより、これらをコメントにします。数引数を指定した場合、各行の行頭から@samp{c$$$}を削除することにより、リージョンをコードに戻します。これらのコメントに使用する文字列は、変数@code{fortran-comment-region}をセットすることにより制御できます。これはコマンドと変数が同じ名前をもつ例であることに注意してください。同じ名前を2つの用途で使用することによる衝突はありません。なぜならLispおよびEmacsではそれが意味するものは、コンテキストにより明らかだからです。
+
+@node Fortran Autofill
+@subsection FortranモードでのAuto Fill
+
+  Fortranモードは、Auto
+Fillモードにたいする特別なサポートをもっています。これは命令文を挿入するとき、それが長くなりすぎた場合は自動的に分割するマイナーモードです。命令文の分割は、@code{fortran-continuation-string}を使用した継続行により行われます(@ref{ForIndent
+Cont}を参照してください)。この分割は@key{SPC}、@key{RET}、@key{TAB}、およびFortranのインデントコマンドにより発生します。FortranモードでのAuto
+Fillの有効化は、通常の方法で行うことができます。
+@iftex
+@ref{Auto Fill,,, emacs, the Emacs Manual}を参照してください。
+@end iftex
+@ifnottex
+@ref{Auto Fill}を参照してください。
+@end ifnottex
+
+@vindex fortran-break-before-delimiters
+   Auto
+Fillは、その行が望ましい幅(@code{fill-column}の値)より長くなった場合は、スペースおよび区切り文字で行をブレークします。Auto
+Fillが行をブレークする(空白文字以外の)区切り文字は@samp{+}、@samp{-}、@samp{/}、@samp{*}、@samp{=}、@samp{<}、@samp{>}、@samp{,}です。@code{fortran-break-before-delimiters}が@code{nil}の場合、区切り文字の後ろで行ブレークします。そうでない場合(デフォルト)、区切り文字の前で行ブレークします。
+
+  すべてのFortranバッファーでAuto
+Fillを有効にするには、@code{fortran-mode-hook}に@code{auto-fill-mode}を追加します。
+@iftex
+@ref{Hooks,,, emacs, the Emacs Manual}を参照してください。
+@end iftex
+@ifnottex
+@ref{Hooks}を参照してください。
+@end ifnottex
+
+@node Fortran Columns
+@subsection Fortranでの列のチェック
+
+@vindex fortran-line-length
+標準のFortran
+77では、72列目以降は無視されます。ほとんどのコンパイラーはこれを変更するオプションを提供します(たとえばgfortranの@samp{-ffixed-line-length-N})。変数@code{fortran-line-length}をカスタマイズすることにより、Fortranモードでの行の長さを変更できます。このポイント以降はコメントにfont-lockされます(ただし文字列内の場合は除きます。@code{fortran-line-length}を超える文字列は、font-lockを混乱させるでしょう)。
+
+@table @kbd
+@item C-c C-r
+カレント行の上に、``列目盛(column ruler)''を一時的に表示します。
+@item C-c C-w
+@code{fortran-line-length}列の幅になるように、カレントウィンドウを水平に分割します(@code{fortran-window-create-momentarily})。これは、Fortranコンパイラーにより課せられた制限を超えないようにする助けになるでしょう。
+@item C-u C-c C-w
+(@code{fortran-window-create})列の幅になるように、カレントウィンドウを水平に分割します。その後は編集を続行できます。
+@item M-x fortran-strip-sequence-nos
+列@code{fortran-line-length}以上のすべてのテキストを削除します。
+@end table
+
+@kindex C-c C-r @r{(Fortran mode)}
+@findex fortran-column-ruler
+  コマンド@kbd{C-c C-r}
+(@code{fortran-column-ruler})は、カレント行の上に列目盛を一時的に表示します。列目盛は2行のテキストで、Fortranプログラムにおいて特別な意味をもつ列の位置を表示します。角カッコ(square
+brackets)は行番号の範囲を示し、中カッコ(curly brackets)は命令文本体の範囲を示します。列番号がその上に表示されます。
+
+  GNU
+Emacsでは、列番号は常に0から数えることに注意してください。結果として、この番号はあなたが親しんでいる番号より1小さくなるかもしれません。しかしこの行で示される位置は、Fortranの標準です。
+
+@vindex fortran-column-ruler-fixed
+@vindex fortran-column-ruler-tabs
+  列目盛を表示するのに使用されるテキストは、変数@code{indent-tabs-mode}の値に依存します。@code{indent-tabs-mode}が@code{nil}の場合、変数@code{fortran-column-ruler-fixed}の値が列目盛として使用されます。それ以外は、変数@code{fortran-column-ruler-tab}の値が表示されます。これらの値を変更することにより、表示される列目盛を変更できます。
+
+@kindex C-c C-w @r{(Fortran mode)}
+@findex fortran-window-create-momentarily
+  @kbd{C-c C-w}
+(@code{fortran-window-create-momentarily})で、一時的にカレントウィンドウを水平方向に分割して、ウィンドウの幅を@code{fortran-line-length}列にすることにより、長くなりすぎた行を見つけることができます。スペースをタイプすると元の幅に戻ります。
+
+@kindex C-u C-c C-w @r{(Fortran mode)}
+@findex fortran-window-create
+  適切な位置でウィンドウを水平方向に分割して、編集を継続することもできます。これを行うには、@kbd{C-u C-c C-w} (@code{M-x
+fortran-window-create})を使用します。このウィンドウで編集することより、Fortranでの正しい長さを超える行をすぐに見つけることができます。
+
+@findex fortran-strip-sequence-nos
+  コマンド@kbd{M-x
+fortran-strip-sequence-nos}は、カレントバッファーのすべての行にたいして、列@code{fortran-line-length}以上のテキストすべてを削除します。これは古いシーケンス番号を削除する一番簡単な方法です。
+
+@node Fortran Abbrev
+@subsection FortranキーワードのAbbrev
+
+  Fortranモードは、一般的なキーワードや定義にたいするabbrev(abbreviation:
+省略形)を提供します。あなたが定義できるabbrevと同様なものがあります。これらを使用するには、Abbrevモードをオンに切り替えなければなりません。
+@iftex
+@ref{Abbrevs,,, emacs, the Emacs Manual}を参照してください。
+@end iftex
+@ifnottex
+@ref{Abbrevs}を参照してください。
+@end ifnottex
+
+  ビルトインのabbrevは、1つの点で特異です。これらはすべてセミコロンから始まります。たとえばFortranのビルトインのabbrevである@samp{;c}は、@samp{continue}にたいする省略形です。@samp{;c}を挿入してから、スペースや改行のような区切りとなる文字を挿入すると、Abbrevモードが有効な場合、@samp{;c}は自動的に@samp{continue}に展開されます。
+
+  @samp{;?}または@samp{;C-h}とタイプすると、すべてのビルトインのFortranのabbrevのリストと、それが何を意味するかが表示されます。

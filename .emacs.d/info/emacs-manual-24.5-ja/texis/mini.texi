@@ -1,0 +1,487 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 1985-1987, 1993-1995, 1997, 2000-2015 Free Software
+@c Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@node Minibuffer
+@chapter ミニバッファー
+@cindex minibuffer
+
+  @dfn{ミニバッファー(minibuffer)}とは、Emacsのコマンドがファイル名、バッファー名、Emacsコマンド名、Lisp式といった、複雑な引数を読み取るための場所です。なぜ``ミニバッファー''と呼ぶかというと、それがスクリーン上の小領域を占める、特別な目的のためのバッファーだからです。ミニバッファーで引数テキストを編集するために、通常のEmacs編集コマンドを使うことができます。
+
+@menu
+* Basic Minibuffer::         ミニバッファーの基本的な使い方。
+* Minibuffer File::          ミニバッファーでファイル名を入力する。
+* Minibuffer Edit::          ミニバッファーで編集する方法。
+* Completion::               ミニバッファーでの入力のための略語機能。
+* Minibuffer History::       最近のミニバッファー引数の再使用。
+* Repetition::               ミニバッファーを使ったコマンドの再実行。
+* Passwords::                エコーエリアでパスワードを入力する。
+* Yes or No Prompts::        エコーエリアでyes/noにこたえる。
+@end menu
+
+@node Basic Minibuffer
+@section ミニバッファーを使う
+
+@cindex prompt
+  ミニバッファーを使用中、ミニバッファーはエコーエリアにカーソルとともに表示されます。ミニバッファーは通常、コロンが最後についた@dfn{プロンプト(prompt)}から開始されます。プロンプトはどのような入力が期待されるか、そしてそれがどのように使われるのかを示します。プロンプトは、フェイス@code{minibuffer-prompt}を使ってハイライトされます。
+
+  ミニバッファーで入力するもっとも簡単な方法は、テキストを入力してから@key{RET}で引数入力を完了してミニバッファーを終了する方法です。かわりに@kbd{C-g}を入力して引数を求めているコマンドをキャンセルし、ミニバッファーを終了することもできます(@ref{Quitting}を参照してください)。
+
+@cindex default argument
+  コロンの前のカッコ内に@dfn{デフォルト引数(default
+argument)}を表示するプロンプトもあります。このデフォルト値は、@key{RET}だけを入力したときに、引数として使用されます。たとえばバッファー名を読み取るコマンドは、通常デフォルト値としてバッファー名を表示します。@key{RET}を入力することでデフォルトのバッファーにたいして処理を行うことができます。
+
+@cindex Minibuffer Electric Default mode
+@cindex mode, Minibuffer Electric Default
+@findex minibuffer-electric-default-mode
+@vindex minibuffer-eldef-shorten-default
+  Minibuffer Electric
+Defaultモードというグローバルマイナーモードを有効にしている場合、ミニバッファーの内容の変更を開始すると、Emacsはデフォルト引数を非表示にします。ミニバッファーのテキストを元に戻せば、ふたたびプロンプトにデフォルト値が表示されます。さらに変数@code{minibuffer-eldef-shorten-default}を非@code{nil}値に変更すると、スクリーンのスペースを節約するために、@samp{(default
+@var{default})}のかわりに@samp{[@var{default}]}の形式でデフォルト値を表示します。このマイナーモードを有効にするには、@kbd{M-x
+minibuffer-electric-default-mode}とタイプしてください。
+
+  エコーエリアにミニバッファーが表示されると、他のエコーエリアの使用と競合するかもしれません。ミニバッファーがアクティブなとき、エラーメッセージや情報メッセージは一時的な表示となります。メッセージは数秒ミニバッファーを隠すように表示されるか、なにかタイプするまでのあいだ表示され、その後ミニバッファーに戻ります。ミニバッファーの使用中、キーストロークはエコーされません。
+
+@node Minibuffer File
+@section ミニバッファーでのファイル名
+
+@cindex default directory
+  @kbd{C-x C-f}
+(@code{find-file})のようなコマンドは、ミニバッファーを使ってファイル名引数を読み取ります。ファイル名を読み取るためにミニバッファーを使用しているとき、通常は最後にスラッシュがついたテキストで開始されています。これは@dfn{デフォルトディレクトリー(default
+directory)}です。たとえば以下のように開始されていたとします:
+
+@example
+Find file: /u2/emacs/src/
+@end example
+
+@noindent
+ここで@samp{Find file:@:
+}はプロンプト、@samp{/u2/emacs/src/}はデフォルトディレクトリーです。ここで@kbd{buffer.c}を入力すると@file{/u2/emacs/src/buffer.c}を指定したことになります。デフォルトディレクトリーについての情報は、@ref{File
+Names}を参照してください。
+
+  @file{..}で親ディレクトリーを指定できます。つまり@file{/a/b/../foo.el}は@file{/a/foo.el}と同じです。@kbd{M-@key{DEL}}を使えば、ディレクトリー名を後方にkillできます(@ref{Words}を参照してください)。
+
+  デフォルトディレクトリーとは無関係のファイルを指定する場合、デフォルト値全部を@kbd{C-a
+C-k}でkillできます。かわりにデフォルト値を無視することもできます。これはスラッシュで始まる絶対パスのファイル名か、チルダで始まるファイル名をデフォルトディレクトリーに続けて入力します。たとえば以下のようにして@file{/etc/termcap}を指定できます:
+
+@example
+Find file: /u2/emacs/src//etc/termcap
+@end example
+
+@noindent
+@cindex // in file name
+@cindex double slash in file name
+@cindex slashes repeated in file name
+@findex file-name-shadow-mode
+Emacsはダブルスラッシュを、``2番目のスラッシュより前のすべてを無視する''と解釈します。上の例では@file{/u2/emacs/src/}は無視されるので、引数は@file{/etc/termcap}となります。無視される部分のファイル名は、端末に可能なら目立たないような表示になります(これを無効にするには、コマンド@kbd{M-x
+file-name-shadow-mode}でFile Name Shadowモードをオフにしてください)。
+
+@cindex home directory shorthand
+  Emacsは@file{~/}をホームディレクトリーと解釈します。@file{~/foo/bar.txt}はホームディレクトリーにある、@file{foo}というディレクトリーの、@file{bar.txt}という名前のファイルを指定します。さらに@file{~@var{user-id}/}はログイン名が@var{user-id}というユーザーの、ホームディレクトリーを意味します。@file{~}の前のディレクトリー名は無視されるので、@file{/u2/emacs/~/foo/bar.txt}は@file{~/foo/bar.txt}と同じです。
+
+  MS-WindowsとMS-DOSでは、ユーザーは常にホームディレクトリーを持つとは限らないので、Emacsはいくつかの代替ディレクトリーを使います。MS-Windowsについては@ref{Windows
+HOME}、MS-DOSについては
+@ifnottex
+@ref{MS-DOS File Names}を参照してください。
+@end ifnottex
+@iftex
+@ref{MS-DOS File Names, HOME on MS-DOS,, emacs, the digital version of the
+Emacs Manual}を参照してください。
+@end iftex
+これらのシステムでは@file{~@var{user-id}/}は現在のユーザーの場合だけ、つまり@var{user-id}が現在のユーザーのログイン名のときだけがサポートされます。
+
+@vindex insert-default-directory
+  Emacsがファイル名を読みとるとき、デフォルトディレクトリーを挿入しないようにするには、変数@code{insert-default-directory}を@code{nil}に変更します。この場合、ミニバッファーは空で開始されます。それでも相対パスでのファイル名引数は、同じデフォルトディレクトリーにもとづいて解釈されます。
+
+  ミニバッファーにリモートファイル名を入力することもできます。 @ref{Remote Files}を参照してください。
+
+@node Minibuffer Edit
+@section ミニバッファーでの編集
+
+  ミニバッファーは一風変わっていますがEmacsのバッファーなので、引数テキストを編集するための、通常のEmacsコマンドが利用可能です(しかしプロンプトは@dfn{読み取り専用(read-only)}なので変更できません)。
+
+  ミニバッファーでの@key{RET}は引数を完了させるので、これを使って改行を挿入することはできません。@kbd{C-q
+C-j}を使えば制御文字@kbd{C-j}(改行文字と等しい)を挿入できます(@ref{Inserting
+Text}を参照してください)。かわりに@kbd{C-o} (@code{open-line})を使うこともできます(@ref{Blank
+Lines}を参照してください)。
+
+  ミニバッファーの中では@key{TAB}、@key{SPC}、@kbd{?}は@dfn{補完コマンド(completion
+commands)}にバインドされている場合があります。これによりテキスト全部を入力せずに、入力したいテキストを簡単に入力できます。@ref{Completion}を参照してください。@key{RET}のときと同様、@kbd{C-q}を使って@key{TAB}、@key{SPC}、@samp{?}のような文字を入力できます。
+
+  便宜上ミニバッファーでの@kbd{C-a}
+(@code{move-beginning-of-line})は、プロンプトの先頭ではなく引数テキストの先頭にポイントを移動します。これにより、たとえば@kbd{C-a
+C-k}で引数全体をkillことができます。
+
+@cindex height of minibuffer
+@cindex size of minibuffer
+@cindex growing minibuffer
+@cindex resizing minibuffer
+  ミニバッファーがアクティブのとき、エコーエリアは通常のEmacsウィンドウのように扱われます。たとえば(@kbd{C-x
+o}で)他のウィンドウに切り替えて、そこでテキストを編集して、またミニバッファーのウィンドウにもどって引数の入力を完了できます。ほかのウィンドウでテキストをkillしてからミニバッファーのウィンドウにもどり、引数にテキストをyankすることさえ可能です。しかしミニバッファーのウィンドウは分割(split)できないなどの制限もあります。@ref{Windows}を参照してください。
+
+@vindex resize-mini-windows
+  通常ミニバッファーのウィンドウは、スクリーン行で1行を占めます。しかし2行以上のテキストをミニバッファーに追加すると、そのテキストに対応して自動的に拡張されます。変数@code{resize-mini-windows}は、ミニバッファーのサイズ調整を制御します。デフォルト値は@code{grow-only}で、これは今説明したとおりの振る舞いを意味します。もし値が@code{t}の場合、ミニバッファーから行を削除すると。ミニバッファーのウィンドウは自動的に縮小されて、スクリーン行で1行まで小さくなります。値が@code{nil}の場合、ミニバッファーのウィンドウは自動的にサイズを変更しません。しかし通常のウィンドウのサイズ調整コマンドは使用できます(@ref{Windows}を参照してください)。
+
+@vindex max-mini-window-height
+  変数@code{max-mini-window-height}は、ミニバッファーのウィンドウのサイズ変更するときの、最大高さを制御します。浮動少数を指定した場合は、フレームの高さにたいする比になります。整数を指定した場合は最大行数になります。@code{nil}を指定すると、ミニバッファーのウィンドウの自動サイズ調整は行われません。デフォルト値は0.25です。
+
+  ミニバッファーでの@kbd{C-M-v}コマンドは、他のウィンドウに表示されたコマンドのヘルプテキストをスクロールします。@kbd{M-@key{prior}}や@kbd{M-@key{next}}(または@kbd{M-@key{PageUp}}や@kbd{M-@key{PageDown}})でも、ヘルプテキストをスクロールできます。これは長い補完候補のリストを選ぶときなどに便利です。@ref{Other
+Window}を参照してください。
+
+@vindex enable-recursive-minibuffers
+  通常Emacsはミニバッファーがアクティブのときは、ミニバッファーにたいして多くのコマンドを使用できないようにしています。ミニバッファーでこれらのコマンドを使えるようにするには、変数@code{enable-recursive-minibuffers}に@code{t}をセットしてください。
+
+@findex minibuffer-inactive-mode
+  アクティブでないとき、ミニバッファーは@code{minibuffer-inactive-mode}になっており、@kbd{Mouse-1}をクリックすると、@file{*Messages*}バッファーを表示します。ミニバッファー専用のフレームを使用している場合、Emacsはそこでのキー入力も認識します。たとえば@kbd{n}は新しいフレームを作成します。
+
+@node Completion
+@section 補完
+@c This node is referenced in the tutorial.  When renaming or deleting
+@c it, the tutorial needs to be adjusted.
+@cindex completion
+
+  引数を入力する助けとなる、@dfn{補完(completion)}という機能が使えるときがあります。これは引数の一部を入力すると、それまでに何を入力したかにもとづいて、Emacsが残りあるいは残りの一部を補完してくれることを意味します。
+
+@cindex completion alternative
+  補完が利用可能なとき、特定のキー(通常は@key{TAB}、@key{RET}、@key{SPC})が、ミニバッファーの特別な補完コマンド(@ref{Completion
+Commands}を参照してください)にリバインドされています。これらのコマンドは、ミニバッファーのテキストを完了させようと試みます。これは引数を要求したコマンドが提供する、@dfn{補完候補(completion
+alternatives)}にもとづいています。通常@kbd{?}を入力すると、補完候補のリストを見ることができます。
+
+  補完は通常ミニバッファー内で行われますが、通常のバッファーないでもこの機能を利用可能なときがあります。@ref{Symbol
+Completion}を参照してください。
+
+@menu
+* Completion Example::       補完の使い方の例。
+* Completion Commands::      補完コマンドのリスト。
+* Completion Exit::          補完とミニバッファーでのテキストの確定。
+* Completion Styles::        補完のマッチが選ばれる方法。
+* Completion Options::       補完のオプション。
+@end menu
+
+@node Completion Example
+@subsection 補完の例
+
+@kindex TAB @r{(completion)}
+  ここでは簡単な例が理解しやすいでしょう。@kbd{M-x}は、コマンド名を読み取るためにミニバッファーを使います。補完はミニバッファーのテキストと、既存のEmacsコマンドの名前のマッチによって機能します。コマンドを@code{auto-fill-mode}を実行したいとします。@kbd{M-x
+auto-fill-mode @key{RET}}をタイプすればよいのですが、補完を使えばもっと簡単になります。
+
+  @kbd{M-x a u
+@key{TAB}}とタイプすると、@key{TAB}は@samp{au}で始まる補完候補(この例ではコマンド名)を探します。@code{auto-fill-mode}、@code{autoconf-mode}などの候補がいくつかありますが、候補はすべて@code{auto}で始まるので、ミニバッファーの@samp{au}は@samp{auto}に補完されます(あなたのEmacsのセッションには、もっと多くのコマンドが定義されているかもしれません。たとえば@code{authorize-me}というコマンドが定義されている場合には、Emacsが補完できるのは@samp{aut}までです)。
+
+  もう一度@key{TAB}をタイプしても、次の文字は@samp{-}、@samp{a}、@samp{c}のどれなのか決定できません。そのため文字は追加されず、かわりに@key{TAB}は可能性のある補完候補の一覧を別のウィンドウに表示します。
+
+  次に@kbd{-f}と入力します。ミニバッファーには@samp{auto-f}が入力されました。この文字で始まるコマンド名は、@code{auto-fill-mode}だけです。ここで@key{TAB}を入力すると、残りの部分が補完されて、ミニバッファーの引数は@samp{auto-fill-mode}になります。
+
+  したがって@kbd{a u @key{TAB} - f
+@key{TAB}}と入力するだけで、@samp{auto-fill-mode}と入力できるのです。
+
+@node Completion Commands
+@subsection 補完コマンド
+
+  以下は補完が使えるときに、ミニバッファーで定義されている補完コマンドの一覧です。
+
+@table @kbd
+@item @key{TAB}
+@findex minibuffer-complete
+可能な限りミニバッファーのテキストを補完します。補完できないときは、可能性のある補完候補のリストを表示します(@code{minibuffer-complete})。
+@item @key{SPC}
+ミニバッファーのテキストを単語単位で補完します(@code{minibuffer-complete-word})。このコマンドは、引数にスペースが含まれる可能性のあるファイル名などでは利用できません。
+@item @key{RET}
+最初に可能な限り補完した後で、ミニバッファーのテキストを引数として確定します。@ref{Completion Exit}を参照してください。
+@item ?
+補完候補の一覧を表示します(@code{minibuffer-completion-help})。
+@end table
+
+@kindex TAB @r{(completion)}
+@findex minibuffer-complete
+  @key{TAB}
+(@code{minibuffer-complete})は、もっとも基本的な補完コマンドです。これはミニバッファーのテキストとマッチする可能性のある、すべての補完候補を検索して、できるかぎりの補完を試みます。補完候補が選択される方法については、@ref{Completion
+Styles}を参照してください。
+
+@kindex SPC @r{(completion)}
+@findex minibuffer-complete-word
+  @key{SPC}
+(@code{minibuffer-complete-word})は、@key{TAB}と同じように補完をおこないますが、次のハイフンまたは空白までしか補完しません。ミニバッファーが@samp{auto-f}の場合、@samp{auto-fill-mode}まで補完できますが、@samp{ill-}しか挿入しないので@samp{auto-fill-}となります。次に@key{SPC}を入力すると@samp{auto-fill-mode}が補完されます。
+
+@kindex ? @r{(completion)}
+@cindex completion list
+  @key{TAB}や@key{SPC}が補完できない場合、マッチする補完候補のリスト(複数ある場合)を、別のウィンドウに表示します。同じリストは@kbd{?}
+(@code{minibuffer-completion-help})でも表示できます。以下は補完一覧で使うことができるコマンドです:
+
+@table @kbd
+@findex mouse-choose-completion
+@item Mouse-1
+@itemx Mouse-2
+マウスのボタン1もしくはボタン2で補完候補を選択します(@code{mouse-choose-completion})。
+
+@findex switch-to-completions
+@item M-v
+@itemx @key{PageUp}
+@itemx @key{prior}
+ミニバッファーで@kbd{M-v}を入力すると、候補リストを表示しているウィンドウを選択します(@code{switch-to-completions})。以下のコマンドを使うには、この方法がよいでしょう。@key{PageUp}と@key{prior}は同じことをおこないます。他の方法でもウィンドウを選択できます(@ref{Windows}を参照してください)。
+
+@findex choose-completion
+@item @key{RET}
+補完候補リストのバッファー内では、ポイント位置の補完候補を選択します(@code{choose-completion})。
+
+@findex next-completion
+@item @key{RIGHT}
+補完候補リストのバッファー内では、次の補完候補にポイントを移動します(@code{next-completion})。
+
+@findex previous-completion
+@item @key{LEFT}
+補完候補リストのバッファー内では、前の補完候補にポイントを移動します(@code{previous-completion})。
+@end table
+
+@node Completion Exit
+@subsection 補完の終了
+
+@kindex RET @r{(completion in minibuffer)}
+@findex minibuffer-complete-and-exit
+  コマンドがミニバッファーの補完を使って引数を読みとる場合、引数を確定するために@key{RET}
+(@code{minibuffer-complete-and-exit})をタイプしたときに、何が起こるかも制御します。これには4種類の動作があります:
+
+@itemize @bullet
+@item
+@dfn{強い補完(Strict
+completion)}は、正確にマッチする補完のみを許します。@key{RET}でミニバッファーを抜けるのは、ミニバッファーのテキストが正確にマッチしているか、1つに補完された場合だけです。それ以外の場合、Emacsはミニバッファーからのexit(入力を完了してミニバッファーから抜け出す)を拒絶します。かわりに補完を試み、補完できなかったときは、ミニバッファーのテキストの後ろに数秒@samp{[No
+match]}と表示します(@kbd{C-g}を使えばミニバッファーを離れることができます)。
+
+この動作をおこなうコマンドの例は@kbd{M-x}で、それは存在しないコマンド名を受けとるのは無意味だからです。
+
+@item
+@dfn{慎重な補完(Cautious
+completion)}は強い補完と似ていますが、テキストがすでに正確にマッチしているときだけexitできる点が異なります。テキストが正確なマッチに補完できるとき、@key{RET}は補完を行いますが、まだexitしません。exitするには、もう一度@key{RET}を入力しなければなりません。
+
+慎重な補完は、たとえば存在しなければならないファイル名を読みとるときに使用されます。
+
+@item
+@dfn{寛大な補完(Permissive
+completion)}は、任意の入力を許容します。補完候補はあくまでも提案です。@key{RET}では補完は行われず、単に入力された引数を確定します。
+
+@cindex minibuffer confirmation
+@cindex confirming in the minibuffer
+@item
+@dfn{確認付きの寛大な補完(Permissive completion with
+confirmation)}は、寛大な補完と似ていますが例外があります。@key{TAB}を入力して、テキストがある中間的な状態まで補完されたとき(たとえばまだ正確なマッチに至らないとき)、次に@key{RET}を入力しても引数は確定されません。かわりにEmacsはテキストの後ろに@samp{[Confirm]}を数秒表示して、確認を求めます。その次の@key{RET}は確認とみなされテキストが確定されます。これにより@key{TAB}により希望するマッチまで補完されたと勘違いして、@key{RET}を押してしまうなどの一般的な間違いを捕らえることができます。
+
+@vindex confirm-nonexistent-file-or-buffer
+変数@code{confirm-nonexistent-file-or-buffer}をカスタマイズして、確認動作を微調整できます。デフォルト値の@code{after-completion}は、まさに説明したとおりに動作します。これを@code{nil}に変更すると、Emacsは確認を求めなくなり、寛大な補完にフォールバックします。他の非@code{nil}値に変更した場合、その前のコマンドが@key{TAB}かどうかにかかわらず、Emacsは確認を求めます。
+
+この動作はファイル名を読みとる@kbd{C-x C-f}や、バッファー名を読み取る@kbd{C-x b}など、多くのコマンドで使われています。
+@end itemize
+
+@node Completion Styles
+@subsection 補完候補が選択される方法
+@cindex completion style
+
+  補完コマンドは、たくさんの可能性のある補完候補を、ミニバッファーに入力したものと``マッチ(match)''する、より少ないサブセットへと絞り込むことにより機能します。@ref{Completion
+Example}では、そのようなマッチングの簡単な例を紹介しました。どのような構成が``マッチ''なのかを決定する手続きはとても複雑です。Emacsは多くの状況下でもっとも妥当と思われる補完を試みます。
+
+  Emacsは1つ以上の@dfn{補完スタイル(completion
+styles)}を使って補完をおこないます。これはミニバッファーのテキストを補完候補とマッチングするための条件のセットです。補完を行うとき、Emacsは補完スタイルを順番に試します。もしあるスタイルが1つ以上のマッチを獲得した場合、それらは補完候補リストのために使用されます。もしあるスタイルがマッチを獲得できなかった場合、Emacsは次のスタイルにフォールバックします。
+
+@vindex completion-styles
+  リスト変数@code{completion-styles}は、使用する補完スタイルを定義します。それぞれのリスト要素(list
+element)は、補完スタイルの名前(Lispシンボル)です。デフォルトの補完スタイルは、リスト変数に以下の名前の要素が順番に並んでいます。
+
+@table @code
+@item basic
+ミニバッファーのポイントより前のテキストと、補完候補の先頭が同じでなければなりません。さらにミニバッファーのポイントより後ろのテキストがある場合、補完候補の残りそれが含まれていなければなりません。
+
+@findex partial completion
+@item partial-completion
+このアグレッシブな補完スタイルは、ミニバッファーのテキストをハイフンまたは空白で区切り、各単語ごとに補完をおこないます(たとえばコマンド名を補完する場合、@samp{em-l-m}は、@samp{emacs-lisp-mode}に補完されます)。
+
+さらにミニバッファーのテキスト中の@samp{*}は、@dfn{ワイルドカード(wildcard)}として扱われます。これは補完候補の対応する位置にある、任意の文字とマッチします。
+
+@item emacs22
+この補完スタイルは@code{basic}とにていますが、ミニバッファーのポイントより後のテキストを無視します。この名前は補完の動作がEmacs
+22と同じだからです。
+@end table
+
+@noindent
+以下の追加の補完スタイルが定義されており、@code{completion-styles}に追加することもできます(@ref{Customization}を参照してください)。
+
+@table @code
+@item substring
+補完候補は、ミニバッファーのポイントより前のテキストと、ポイントより後のテキストが同じ順番で含まれていなければなりません。
+
+したがって、ミニバッファーのテキストが@samp{foobar}で、ポイントが@samp{foo}と@samp{bar}の間にある場合、@samp{@var{a}foo@var{b}bar@var{c}}にマッチします。この場合@var{a}、@var{b}、@var{c}は空文字列を含む任意の文字列です。
+
+@item initials
+このとてもアグレッシブな補完スタイルは、頭文字とイニシャルで補完を試みます。たとえばコマンド名の補完をする場合、@samp{lch}は@samp{list-command-history}とマッチします。
+@end table
+
+@noindent
+@code{emacs21}と呼ばれる、とてもシンプルな補完スタイルもあります。このスタイルでは、ミニバッファーのテキストが@samp{foobar}の場合、@samp{foobar}で始まるものだけにマッチします。
+
+@vindex completion-category-overrides
+変数@code{completion-category-overrides}を設定することにより、状況に応じて異なる補完スタイルを使うことができます。たとえばバッファー名を補完するときは、デフォルトで@code{basic}と@code{substring}だけを使うよう指定できます。
+
+
+@node Completion Options
+@subsection 補完オプション
+
+@cindex case-sensitivity and completion
+@cindex case in completion
+  大文字小文字の違いは、コマンド名のように大文字小文字を区別する(case-sensitive)引数では重要です。たとえばコマンド名の補完では、@samp{AU}では@samp{auto-fill-mode}に補完されません。大文字小文字の違いは、それが問題にならない引数の補完では無視されます。
+
+@vindex read-file-name-completion-ignore-case
+@vindex read-buffer-completion-ignore-case
+  ファイル名を補完するとき、変数@code{read-file-name-completion-ignore-case}が非@code{nil}なら、大文字小文字の違いは無視されます。GNU/Linuxのように、ファイル名の大文字と小文字を区別するシステムでは、デフォルト値は@code{nil}です。Microsoft
+Windowsのように、ファイル名の大文字と小文字を区別しないシステムでは、非@code{nil}です。バッファー名を補完するとき、@code{read-buffer-completion-ignore-case}が非@code{nil}なら、大文字小文字の違いは無視されます。デフォルトは@code{nil}です。
+
+@vindex completion-ignored-extensions
+@cindex ignored file names, in completion
+  通常Emacsはファイル名を補完するとき、選ばれるべきではないと思われる、特定の候補を無視します。これはリスト変数@code{completion-ignored-extensions}により決定されます。リストの要素はに文字列を指定します。それらの文字列で終わるファイル名は、補完候補としては無視されます。スラッシュ(@file{/})で終わる要素は、ディレクトリー名を表します。@code{completion-ignored-extensions}の標準的な値は@code{".o"}、@code{".elc"}、@code{"~"}を含むいくつかの要素です。たとえばディレクトリーに@samp{foo.c}、@samp{foo.elc}があるとき、@samp{foo}は@samp{foo.c}に補完されます。しかし@emph{すべて}の補完候補が``無視すべき''文字列で終わるとき、これらの候補は無視されません。前の例でいうと@samp{foo.e}は@samp{foo.elc}に補完されます。Emacsは補完候補リストで補完候補を表示するとき、@code{completion-ignored-extensions}を無視します。
+
+  Shellでの補完は、ファイル名補完の拡張されたバージョンです。@ref{Shell Options}を参照してください。
+
+@vindex completion-auto-help
+  @code{completion-auto-help}に@code{nil}がセットされていると、補完コマンドは補完リストバッファーを表示しません。表示するには@kbd{?}を入力しなければなりません。値が@code{lazy}の場合、Emacsは2度目の補完を試みたときだけ、補完リストバッファーを表示します。もし補完すべきものがない場合、1度目の@key{TAB}は@samp{Next
+char not unique}と表示し、2度目の@key{TAB}で補完リストバッファーが表示されます。
+
+@vindex completion-cycle-threshold
+  @code{completion-cycle-threshold}が非@code{nil}のとき、補完コマンドは補完候補を``循環(cycle)''できます。通常ミニバッファーのテキストで１つ以上の補完候補がある場合、補完コマンドは補完できた文字までを表示します。@code{completion-cycle-threshold}を@code{t}に変更すると、補完コマンドは補完候補の中から最初の候補を表示します。それ以降の補完コマンドの呼び出しでは、その次の補完候補を循環的に表示します。@code{completion-cycle-threshold}を数値@var{n}にすると、補完候補が@var{n}以下のときだけ循環表示の動作をします。
+
+@node Minibuffer History
+@section ミニバッファーヒストリー
+@cindex minibuffer history
+@cindex history of minibuffer input
+
+  ミニバッファーで入力したすべての引数は、@dfn{ミニバッファーヒストリーリスト(minibuffer history
+list)}に保存されているので、簡単に後でまた使うことができます。以下のコマンドにより、前の引数をすばやく探してミニバッファーに呼び出すことができます:
+
+@table @kbd
+@item M-p
+@itemx @key{UP}
+ミニバッファーヒストリーの前のアイテム、つまり以前のアイテムに移動します(@code{previous-history-element})。
+@item M-n
+@itemx @key{DOWN}
+ミニバッファーヒストリーの次のアイテムに移動します(@code{next-history-element})。
+@item M-r @var{regexp} @key{RET}
+@var{regexp}にマッチする、ミニバッファーヒストリーの以前のアイテムに移動します(@code{previous-matching-history-element})。
+@item M-s @var{regexp} @key{RET}
+@var{regexp}にマッチする、ミニバッファーヒストリーの以降のアイテムに移動します(@code{next-matching-history-element})。
+@end table
+
+@kindex M-p @r{(minibuffer history)}
+@kindex M-n @r{(minibuffer history)}
+@kindex UP @r{(minibuffer history)}
+@kindex DOWN @r{(minibuffer history)}
+@findex next-history-element
+@findex previous-history-element
+  ミニバッファーでの@kbd{M-p}または@key{UP}
+(@code{previous-history-element})は、ミニバッファーのヒストリーリストのアイテムを1つずつ移動します。@kbd{M-p}はヒストリーリストの以前のアイテムを取り出して、ミニバッファーの既存の内容を置き換えます。@kbd{M-n}または@key{DOWN}
+(@code{next-history-element})は、ミニバッファーのヒストリーリストを反対方向、つまり以降のエントリーを取り出してミニバッファーの既存の内容を置き換えます。
+
+  ミニバッファーヒストリーに以降のエントリーがないとき(たとえば前に1回も@kbd{M-p}を入力していないとき)、Emacsはデフォルト引数のリストから、あなたが入力するだろうと思われる値を取り出します。これは``未来のヒストリー''を移動すると考えることもできます。
+
+  ミニバッファーコマンドの@kbd{M-p}または@kbd{M-n}で挿入されたテキストを編集しても、ヒストリーリストのエントリーは変更されません。かわりに編集された引数が確定されたとき、ヒストリーリストの最後に追加されます。
+
+@findex previous-matching-history-element
+@findex next-matching-history-element
+@kindex M-r @r{(minibuffer history)}
+@kindex M-s @r{(minibuffer history)}
+  @kbd{M-r}
+(@code{previous-matching-history-element})でヒストリーリストの古い要素を、@kbd{M-s}
+(@code{next-matching-history-element})で新しいエントリーを探すことができます。これらのコマンドはどちらも引数として@dfn{正規表現(regular
+expression)}を要求し、それにマッチした最初のエントリーをミニバッファーに取り出します。正規表現についての説明は、@ref{Regexps}を参照してください。数引数@var{n}を指定すると、それは@var{n}番目に一致したエントリーを取り出すことを意味します。これらのコマンドはミニバッファーから呼び出されたとはいえ、ミニバッファーを使って正規表現を読みとるという点では、変わったコマンドです。正規表現に大文字が含まれていると、大文字小文字を区別する検索(@ref{Search
+Case}を参照してください)となります。
+
+  ヒストリーをインクリメンタルサーチすることもできます。@ref{Isearch Minibuffer}を参照してください。
+
+  Emacsは引数の種類ごとに個別のリストを保持します。たとえばファイル名のリストは、ファイル名を読みとるすべてのコマンドで使われたファイル名、といった具合です。ほかのヒストリーリストとしてはバッファー名やコマンド名(@kbd{M-x}で使われたもの)、コマンド引数(@code{query-replace}のような引数で使われたもの)があります。
+
+@vindex history-length
+  変数@code{history-length}には、ミニバッファーのヒストリーリストの最大の長さを指定します。リストが長くなりすぎたときは、一番古い要素を削除して新しい要素を追加します。@code{t}を指定したときは、長さは無制限になります。
+
+@vindex history-delete-duplicates
+  変数@code{history-delete-duplicates}には、重複したヒストリーを削除するかを指定します。非@code{nil}の場合、新しい要素が追加されるとリストからそれと同じ要素がすべて削除されます。デフォルトは@code{nil}です。
+
+@node Repetition
+@section ミニバッファーでのコマンドの繰り返し
+@cindex command history
+@cindex history of commands
+
+  ミニバッファーを使用したコマンドはすべて、@dfn{コマンドヒストリー(command
+history)}という特別なヒストリーリストに記録されます。これにはコマンドの引数の値も記録されるので、コマンド全体を再実行できます。特に@kbd{M-x}はコマンド名を読みとるので、@kbd{M-x}を使用したものはすべてそこに記録されます。
+
+@findex list-command-history
+@table @kbd
+@item C-x @key{ESC} @key{ESC}
+コマンドヒストリーから最近のミニバッファーのコマンドを再実行します(@code{repeat-complex-command})。
+@item M-x list-command-history
+コマンドヒストリー全体を表示します。表示されたすべてのコマンドは@kbd{C-x @key{ESC}
+@key{ESC}}で再実行できます。一番最近のものが先頭に表示されます。
+@end table
+
+@kindex C-x ESC ESC
+@findex repeat-complex-command
+  @kbd{C-x @key{ESC}
+@key{ESC}}は、ミニバッファーを使った最近のコマンドを再実行します。引数を与えないと、一番最近のコマンドを実行します。数引数で再実行したいコマンドを指定します。1は一番最近のコマンド、2はその前、といった具合です。
+
+  @kbd{C-x @key{ESC}
+@key{ESC}}は、前のコマンドをLisp式に変換して、その式でミニバッファーのテキストを初期化します。Lispを知らなくても、何のコマンドが再実行用に表示されているか明白でしょう。単に@key{RET}を入力すると、コマンドを変更せずに再実行します。実行する前にLisp式を編集して、コマンドを変更できます。実行されたコマンドは、一番最近のコマンドと等しくなければ、コマンドヒストリーの一番先頭に追加されます。
+
+  @kbd{C-x @key{ESC}
+@key{ESC}}で一度ミニバッファーの中に入れば、通常のミニバッファーのヒストリーコマンド(@ref{Minibuffer
+History}を参照してください)を使って、ヒストリーリスト中を移動できます。以前に実行したコマンドが見つけたら、式を編集して@key{RET}により実行できます。
+
+@vindex isearch-resume-in-command-history
+  厳密に言うとインクリメンタルサーチはミニバッファーを使いません。これが複雑なコマンドのように振る舞うとしても、通常は@kbd{C-x @key{ESC}
+@key{ESC}}で表示されるヒストリーリストに含まれません。ヒストリーにインクリメンタルサーチコマンドを表示させるには、@code{isearch-resume-in-command-history}に非@code{nil}をセットしてください。@ref{Incremental
+Search}を参照してください。
+
+@vindex command-history
+  ミニバッファーを使用した以前のコマンドのリストは、Lispのリスト値として@code{command-history}に格納されています。Lisp式の各要素は、1つのコマンドとその引数をあらわしています。Lispプログラムは@code{eval}に@code{command-history}の要素を使って呼び出すことで、コマンドを再実行できます。
+
+@node Passwords
+@section パスワードの入力
+
+Emacsでパスワードを入力したい場合があります。たとえばEmacsにFTPのようなネットワークプロトコルを介して他のマシンのファイルをvisitし、マシンへのアクセスのためにパスワードを与える場合などです(@ref{Remote
+Files}を参照してください)。
+
+  パスワードの入力はミニバッファーの使用と似ています。Emacsは(@samp{Password:
+}のような)プロンプトをエコーエリアに表示します。要求されたパスワードを入力した後、それを確定するために@key{RET}を押します。他の人がパスワードを見るのを防ぐために、入力した文字は通常の形式ではなく、ドット(@samp{.})で表示されます。
+
+  ミニバッファーに関連付けられた多くの機能およびコマンドは、パスワード入力では使用@emph{できません}。ヒストリーや補完はできず、ウィンドウの変更やEmacsでの他の処理も、パスワードをsubmitするまでは行うことができません。
+
+  パスワードのタイプ中は、@key{DEL}を押して後方に、すなわち最後に入力した文字から削除できます。@kbd{C-u}で入力したすべての文字を削除できます。@kbd{C-g}はパスワードプロンプトを閉じます(@ref{Quitting}を参照してください)。@kbd{C-y}は現在のkillリングからパスワードを挿入します(@pxref{Killing})。パスワードを確定するには、@key{RET}または@key{ESC}を入力します。他の自己挿入文字は、対応する文字をパスワードに入力します.それ以外の入力は無視されます。
+
+@node Yes or No Prompts
+@section Yes or No プロンプト
+
+  Emacsのコマンドが実行の過程で、``yes or
+no(はい/いいえ)''形式で質問して答えを求めるかもしれません。これらの質問は大きく2つにわけることができます。
+
+@cindex y or n prompt
+  1番目の``yes or no''形式の質問は、@samp{(y or
+n)}で終わるプロンプトのものです。このような質問は、実際のところミニバッファーを使用しません。プロンプトがエコーエリアに表示され、答えを@samp{y}または@samp{n}で入力すると、ただちにそれが答えとなります。たとえばバッファーの保存で@kbd{C-x
+C-w} (@kbd{write-file})を入力して既存のファイル名を入力すると、Emacsは以下のようなプロンプトを表示します:
+
+@smallexample
+File `foo.el' exists; overwrite? (y or n)
+@end smallexample
+
+@noindent
+この質問はミニバッファーを使用しないので、通常のミニバッファー編集コマンドは使えません。しかしいくつかのウィンドウをスクロールする操作は行えます。@kbd{C-l}による選択されたウィンドウの再センタリング、@kbd{M-v}(または@key{PageDown}か@key{next})による前方へのスクロール、@kbd{C-v}(または@key{PageUp}か@key{prior})による後方へのスクロール、@kbd{C-M-v}による次のウィンドウの前方へのスクロール、@kbd{C-M-S-v}による次のウィンドウの後方へのスクロールができます。@kbd{C-g}は質問を打ちきり、質問を発したコマンドを終了します(@ref{Quitting}を参照してください)。
+
+@cindex yes or no prompt
+  2番目の``yes or no''形式の質問は、間違った答えが深刻な事態を招くような場合に使用されます。これはミニバッファーを使い、@samp{(yes
+or no)}で終わるプロンプトという特徴があります。たとえば変更が保存されていないファイルをvisitしているバッファーで、@kbd{C-x k}
+(@code{kill-buffer})を呼び出すと、Emacsはミニバッファーをアクティブにして以下のようなプロンプトを表示します:
+
+@smallexample
+Buffer foo.el modified; kill anyway? (yes or no)
+@end smallexample
+
+@noindent
+これに答えるには、ミニバッファーに@samp{yes}または@samp{no}と入力してから、@key{RET}を押さなければなりません。ミニバッファーは前のセクションで説明したように動作します。@kbd{C-x
+o}による他のウィンドウへのスイッチ、ヒストリーコマンドの@kbd{M-p}や@kbd{M-f}などが使用できます。@kbd{C-g}でミニバッファーを閉じて、質問を発したコマンドを終了できます。

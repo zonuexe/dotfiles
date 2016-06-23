@@ -1,0 +1,1136 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 1997, 1999-2015 Free Software Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@node International
+@chapter 国際化文字セットのサポート
+@c This node is referenced in the tutorial.  When renaming or deleting
+@c it, the tutorial needs to be adjusted.  (TUTORIAL.de)
+@cindex international scripts
+@cindex multibyte characters
+@cindex encoding of characters
+
+@cindex Arabic
+@cindex Bengali
+@cindex Chinese
+@cindex Cyrillic
+@cindex Han
+@cindex Hindi
+@cindex Ethiopic
+@cindex Georgian
+@cindex Greek
+@cindex Hangul
+@cindex Hebrew
+@cindex Hindi
+@cindex IPA
+@cindex Japanese
+@cindex Korean
+@cindex Latin
+@cindex Thai
+@cindex Vietnamese
+  Emacsは、広範囲な国際化文字セット(international character
+sets)をサポートします。それらには、ラテンアルファベットの変種であるEuropeanとVietnamese、同様にArabic
+scripts、(Bengali、Hindi、Thaiのような言語にたいする)Brahmic scripts
+、Cyrillic、Ethiopic、Georgian、Greek、(ChineseとJapaneseにたいする)Han、(Koreanにたいする)Hangul、Hebrew、IPAが含まれます。Emacsは他の国際化されたソフトウェアー(ワープロやメーラー)などで使われる、それらの文字にたいするさまざまなエンコーディングもサポートします。
+
+  Emacsは関連するアクティビティーのすべてをサポートすることにより、国際化文字セットの編集を可能にします:
+
+@itemize @bullet
+@item
+非@acronym{ASCII}文字のファイルをvisitしたり、非@acronym{ASCII}のテキストを保存したり、非@acronym{ASCII}のテキストを、EmacsとEmacsが呼び出すプログラム(コンパイラー、スペルチェッカー、メーラーなど)に引き渡すことができます。言語環境のセッティングとは、コーディングシステムのセッティングと、その他の言語に特有な文化のためのオプションを処理することです。かわりに各コマンドにエンコードあるいはデコードする方法を指定できます。@ref{Text
+Coding}を参照してください.
+
+@item
+さまざまなスクリプトでエンコードされた、非@acronym{ASCII}文字を表示することができます。これはグラフィカルなディスプレー上で適切なフォントを使うこと(@ref{Defining
+Fontsets}を参照してください)、そしてテキスト表示のために特別なコードを送信すること(@ref{Terminal
+Coding}を参照してください)により機能します。正しく表示できない文字があるときは、@ref{Undisplayable
+Characters}を参照してください。これには考えられる原因と、解決方法が記述されています。
+
+@item
+本来、右から左に記述されるスクリプトの文字は、表示のために再配置されます。これらのスクリプトにはArabic、Hebrew、Syriac、Thaana、それ以外にもいくつか存在します。
+
+@item
+非@acronym{ASCII}文字を挿入したり検索することができます。これを行うために、言語にあったインプットメソッド(IM: input
+method。@ref{Select Input
+Method}を参照してください)を指定するか、言語環境を選択したときにセットアップされた、デフォルトのインプットメソッドを使うことができます。キーボードが非@acronym{ASCII}文字を生成できる場合、適切なキーボードコーディングシステムを選択できます。Emacsはそれらの文字を受け入れることができるでしょう。Latin-1文字は、@kbd{C-x
+8}プレフィクスを使って入力することもできます。@ref{Unibyte Mode}を参照してください.
+
+Xウィンドウシステムでは、Emacsがキーボード入力を正しく解釈するために、localeに適切な値をセットする必要があります。@ref{Language
+Environments, locales}を参照してください。
+@end itemize
+
+  このチャプターの残りの部分では、これらの問題について詳細を説明します。
+
+@menu
+* International Chars::      マルチバイト文字の基本的な概念。
+* Language Environments::    使用する言語のためのセットアップ事項。
+* Input Methods::            キーボードにないテキスト文字の入力。
+* Select Input Method::      インプットメソッド選択を指定する。
+* Coding Systems::           ファイルを読み書きしたりするときの文字セット変換。
+* Recognize Coding::         どの変換を使用するかをEmacsが解決する方法。
+* Specify Coding::           ファイルのコーディングシステムの明示的な指定。
+* Output Coding::            出力のためのコーディングシステムの選択について。
+* Text Coding::              ファイルのテキストに使う変換の選択。
+* Communication Coding::     プロセス間通信のためのコーディングシステム。
+* File Name Coding::         @emph{ファイル名}のコーディングシステム。
+* Terminal Coding::          端末の入出力の変換のためのコーディングシステムの指定。
+* Fontsets::                 フォントセット、それは文字の全範囲をカバーするフォントのコレクション。
+* Defining Fontsets::        新しいフォントセットの定義。
+* Modifying Fontsets::       既存のフォントセットの修正。
+* Undisplayable Characters::  文字が表示されないとき。
+* Unibyte Mode::             マルチバイト文字を使わずに1つの英文字セットを選択する。
+* Charsets::                 Emacsが内部の文字コードをグループ化する方法。
+* Bidirectional Editing::    右から左に記述する言語のサポート。
+@end menu
+
+@node International Chars
+@section 国際化文字セットのイントロダクション
+
+  国際化文字セットとスクリプトのユーザーは、ファイルを保存するために、多少の差はありますが、標準化された多くのコーディングシステムを確立しています。これらのコーディングシステムは通常は@dfn{マルチバイト(multibyte)}で、これは1つの非@acronym{ASCII}文字を表すのに、2つ以上のバイトシーケンスを対応させることを意味します。
+
+@cindex Unicode
+  Emacsは、内部的には@dfn{Unicode}標準のスーパーセットである、マルチバイト文字エンコーディングを使用します。この内部的なエンコーディングは、ほとんどすべての既知のスクリプトを、1つのバッファーまたは文字列に混成することを可能にします。Emacsはファイルを読み書きしたり、サブプロセスとデータをやりとりするとき、このマルチバイト文字エンコーディングと、他のさまざまなコーディングシステムをコード変換します。
+
+@kindex C-h h
+@findex view-hello-file
+@cindex undisplayable characters
+@cindex @samp{?} in display
+  コマンド@kbd{C-h h}
+(@code{view-hello-file})は、ファイル@file{etc/HELLO}を表示します。これは、多くの異なる言語で、``hello''をどのように記述するかを、さまざまな文字で例示するファイルです。もしもある文字が端末で表示できないときは、それらの文字は@samp{?}か、中抜きのボックスで表示されます。
+
+  これらの文字セットを使う国のキーボードでも、一般的にはすべての文字に対応するキーはもっていません。キーボードがサポートしない文字は、@kbd{C-q}
+(@code{quoted-insert})、または@kbd{C-x 8 @key{RET}}
+(@code{insert-char})を使って挿入することができます。@ref{Inserting
+Text}を参照してください。Emacsはさまざまな@dfn{インプットメソッド(IM: input
+methods)}をサポートします。これはある字体の文字をタイプするのを簡単にするもので、通常1つの字体または言語に1つです。@ref{Input
+Methods}を参照してください。
+
+@kindex C-x RET
+  プレフィクスキー@kbd{C-x
+@key{RET}}は、マルチバイト文字、コーディングシステム、インプットメソッドに属するコマンドにたいして使用されます。
+
+@kindex C-x =
+@findex what-cursor-position
+  コマンド@kbd{C-x =}
+(@code{what-cursor-position})は、ポイント位置にある文字の情報を表示します。文字の位置に加えて、@ref{Position
+Info}で説明したように、このコマンドはその文字がどのようにエンコードされているかを表示します。たとえば、このコマンドは文字@samp{c}に大して、以下のような行をエコーエリアに表示します:
+
+@smallexample
+Char: c (99, #o143, #x63) point=28062 of 36168 (78%) column=53
+@end smallexample
+
+  @samp{Char:}の後ろの4つの値は、ポイント位置の文字を説明するためのもので、1つ目はその文字自身、その後ろに文字コードを10進(decimal)、8進(octal)、16進(hex)で表示します。非@acronym{ASCII}のマルチバイト文字の場合、バッファーのコーディングシステムでその文字を安全に1バイトでエンコードできる場合は、@samp{file}とそのバッファーのコーディングシステムで表した文字コードの16進表記が続きます。その文字のエンコーディングが1バイトより長い場合、Emacsは@samp{file
+...}と表示します。
+
+  特別なケースとして、文字コードが128(8進の0200)から159(8進の0237)の範囲の場合、それは``raw(生)''のバイトを表し、それに対応する表示可能な文字はありません。そのような``文字''は@code{eight-bit-control}文字セットに属し、エスケープされた8進表記で表示されます。このような場合、@kbd{C-x
+=}は@samp{file}のかわりに、@samp{part of display ...}と表示します。
+
+@cindex character set of character at point
+@cindex font of character at point
+@cindex text properties at point
+@cindex face at point
+  プレフィクス引数を指定した(@kbd{C-u C-x =})では、その文字の詳細な情報をウィンドウに表示します:
+
+@itemize @bullet
+@item
+文字セット名(character set
+name)と、文字セットでその文字が識別されるコード。@acronym{ASCII}文字の場合、@code{ascii}文字セットに属すると識別されます。
+
+@item
+その文字のスクリプト(script)、構文(syntax)、カテゴリー(categories)。
+
+@item
+現在のインプットメソッドで(もしその文字をサポートしていれば)、その文字を入力するためにタイプするキー。
+
+@item
+その文字のエンコード。バッファー内部のエンコードと、ファイルに保存したときの外部のエンコードの両方。
+
+@item
+グラフィカルなディスプレーでEmacsを実行しているときはフォント名と、その文字にたいするグリフコード(glyph
+code)。Emacsをテキスト端末で実行している場合、端末に送るコード。
+
+@item
+その文字のテキストプロパティー(@ref{Text Properties,,, elisp, the Emacs Lisp Reference
+Manual}を参照してください)。これにはその文字を表示するのに使われるデフォルト以外のフェイスと、それを含むオーバーレイ(overlays)が含まれます(@ref{Overlays,,,
+elisp, the same manual}を参照してください)。
+@end itemize
+
+  以下は例です(マニュアルに収まるように折り返している行もあります):
+
+@smallexample
+             position: 1 of 1 (0%), column: 0
+            character: @^e (displayed as @^e) (codepoint 234, #o352, #xea)
+    preferred charset: unicode (Unicode (ISO10646))
+code point in charset: 0xEA
+               script: latin
+               syntax: w        which means: word
+             category: .:Base, L:Left-to-right (strong), c:Chinese,
+                       j:Japanese, l:Latin, v:Viet
+             to input: type "C-x 8 RET HEX-CODEPOINT" or "C-x 8 RET NAME"
+          buffer code: #xC3 #xAA
+            file code: #xC3 #xAA (encoded by coding system utf-8-unix)
+              display: by this font (glyph code)
+    xft:-unknown-DejaVu Sans Mono-normal-normal-
+        normal-*-15-*-*-*-m-0-iso10646-1 (#xAC)
+
+Character code properties: customize what to show
+  name: LATIN SMALL LETTER E WITH CIRCUMFLEX
+  old-name: LATIN SMALL LETTER E CIRCUMFLEX
+  general-category: Ll (Letter, Lowercase)
+  decomposition: (101 770) ('e' '^')
+@end smallexample
+
+@node Language Environments
+@section 言語環境
+@cindex language environments
+
+  サポートされているすべての文字セットは、マルチバイト文字が利用可能なときは、Emacsバッファーの中でサポートされます。その文字を表示するために、特定の言語を選択する必要はありません。しかしさまざまなデフォルト値をセットするために、@dfn{言語環境(language
+environment)}を選択することは重要です。大まかに言うと、言語環境とは、言語の選択というよりも、好ましいスクリプト選択の提示です。
+
+  言語環境は、テキストを読み込むとき、それを認識するコーディングシステムを制御します(@ref{Recognize
+Coding}を参照してください)。これはファイル、到着メール、その他のEmacsで読む任意のテキストに適用されます。これは新しくファイルを作成するときに使う、デフォルトのコーディングシステムも指定します。それぞれの言語環境は、デフォルトのインプットメソッドも指定します。
+
+@findex set-language-environment
+@vindex current-language-environment
+  言語環境を選択するには、@code{current-language-environment}をカスタマイズするか、コマンド@kbd{M-x
+set-language-environment}を使います。このコマンドを使うとき、どのバッファーがカレントかで違いは生じません。なぜなら、その効果はEmacsセッションにグローバルで適用されるからです。サポートされている言語環境の一覧は、変数@code{language-info-alist}を参照してください。コマンド@kbd{C-h
+L @var{lang-env} @key{RET}}
+(@code{describe-language-environment})を使うと、言語環境@var{lang-env}の、より詳細な情報が参照できます。サポートされる言語環境には、以下が含まれます:
+
+@c @cindex entries below are split between portions of the list to
+@c make them more accurate, i.e. land on the line that mentions the
+@c language.  However, makeinfo 4.x doesn't fill inside @quotation
+@c lines that follow a @cindex entry and whose text has no whitespace.
+@c To work around, we group the language environments together, so
+@c that the blank that separates them triggers refill.
+@quotation
+@cindex ASCII
+@cindex Arabic
+ASCII、Arabic、
+@cindex Belarusian
+@cindex Bengali
+Belarusian、Bengali、
+@cindex Brazilian Portuguese
+@cindex Bulgarian
+Brazilian Portuguese、Bulgarian、
+@cindex Burmese
+@cindex Cham
+Burmese、Cham、
+@cindex Chinese
+Chinese-BIG5、Chinese-CNS、Chinese-EUC-TW、Chinese-GB、Chinese-GB18030、Chinese-GBK、
+@cindex Croatian
+@cindex Cyrillic
+Croatian、Cyrillic-ALT、Cyrillic-ISO、Cyrillic-KOI8、
+@cindex Czech
+@cindex Devanagari
+Czech、Devanagari、
+@cindex Dutch
+@cindex English
+Dutch、English、
+@cindex Esperanto
+@cindex Ethiopic
+Esperanto、Ethiopic、
+@cindex French
+@cindex Georgian
+French、Georgian、
+@cindex German
+@cindex Greek
+@cindex Gujarati
+German、Greek、Gujarati、
+@cindex Hebrew
+@cindex IPA
+Hebrew、IPA、
+@cindex Italian
+Italian、
+@cindex Japanese
+@cindex Kannada
+Japanese、Kannada、
+@cindex Khmer
+@cindex Korean
+@cindex Lao
+Khmer、Korean、Lao、
+@cindex Latin
+Latin-1、Latin-2、Latin-3、Latin-4、Latin-5、Latin-6、Latin-7、Latin-8、Latin-9、
+@cindex Latvian
+@cindex Lithuanian
+Latvian、Lithuanian、
+@cindex Malayalam
+@cindex Oriya
+Malayalam、Oriya、
+@cindex Persian
+@cindex Polish
+Persian、Polish、
+@cindex Punjabi
+@cindex Romanian
+Punjabi、Romanian、
+@cindex Russian
+@cindex Sinhala
+Russian、Sinhala、
+@cindex Slovak
+@cindex Slovenian
+@cindex Spanish
+Slovak、Slovenian、Spanish、
+@cindex Swedish
+@cindex TaiViet
+Swedish、TaiViet、
+@cindex Tajik
+@cindex Tamil
+Tajik、Tamil、
+@cindex Telugu
+@cindex Thai
+Telugu、Thai、
+@cindex Tibetan
+@cindex Turkish
+Tibetan、Turkish、
+@cindex UTF-8
+@cindex Ukrainian
+UTF-8、Ukrainian、
+@cindex Vietnamese
+@cindex Welsh
+Vietnamese、Welsh、
+@cindex Windows-1255
+Windows-1255
+@end quotation
+
+  グラフィカルなディスプレーでは、使用されている言語環境で使われているスクリプトを表示するために、適切なフォントをもっている必要があります。フォントのセットアップについては、@ref{Fontsets}を参照してください。
+
+@findex set-locale-environment
+@vindex locale-language-names
+@vindex locale-charset-language-names
+@cindex locales
+  環境変数@env{LC_ALL}、@env{LC_CTYPE}、@env{LANG}をセットすることにより、使用する文字セットのlocaleを指定するオペレーティングシステムがいくつかあります(もしこれらの１つ以上がセットされている場合、特に1番目のものが空でない場合、それは正にこの目的のためにlocaleを指定しています)。起動の間、Emacsは文字セットのlocale名を、システムのlocaleエイリアステーブルから探して、その正規化された名前(canonical
+name)を、変数@code{locale-charset-language-names}および@code{locale-language-names}(前者は後者をオーバーライドします)のエントリーにたいしてマッチし、マッチが見つかったら対応する言語環境を選択します。これはディスプレーテーブルと端末のコーディングシステム、localeコーディングシステム、localeに必要な好ましいコーディングシステム
+--- そして最後に重要なのは --- Emacsがキーボードから送られた非@acronym{ASCII}文字をデコードする方法を調整します。
+
+@c This seems unlikely, doesn't it?
+  Emacs実行中に、(@kbd{M-x
+setenv}を使って)環境変数@env{LC_ALL}、@env{LC_CTYPE}、@env{LANG}を変更した場合、新しいlocaleにたいする言語環境を再調整するために、後で@code{set-locale-environment}関数を呼び出したいと思うかもしれません。
+
+@vindex locale-preferred-coding-systems
+  @code{set-locale-environment}関数は通常、システムメッセージをデコードするために、言語環境により確立された、優先されるコーディングシステムを使用します。しかしlocaleが変数@code{locale-preferred-coding-systems}のエントリーにマッチした場合、Emacsはかわりに対応するコーディングシステムを使用します。たとえばlocaleの@samp{ja_JP.PCK}が、@code{locale-preferred-coding-systems}の@code{japanese-shift-jis}にマッチした場合、Emacsは通常なら@code{japanese-iso-8bit}が使われるような場合でも、エンコーディングにそのコーディングシステムを使用します。
+
+  initファイルで明示的にコマンド@code{set-language-environment}を使うか、@code{current-language-environment}をカスタマイズすることにより、起動時に選択された言語環境をオーバーライドできます。
+
+@kindex C-h L
+@findex describe-language-environment
+  特定の言語環境@var{lang-env}の効果に関する情報を表示するには、コマンド@kbd{C-h L @var{lang-env}
+@key{RET}}
+(@code{describe-language-environment})を使います。これはこの言語環境に有効な言語、文字セットのリスト、コーディングシステム、インプットメソッドを表示します。これはこの言語環境で使われるスクリプトを例示する、サンプルテキストも表示します。@var{lang-env}に空の入力を与えると、このコマンドは選択されている言語環境を説明します。
+
+@vindex set-language-environment-hook
+  ノーマルフック@code{set-language-environment-hook}により、任意の言語環境をカスタマイズできます。コマンド@code{set-language-environment}は、新しい言語環境をセットアップした後に、このフックを実行します。フック関数は変数@code{current-language-environment}をチェックすることにより、特定の言語環境をテストできます。このフックはキーボード入力にたいするコーディングシステムや端末出力、デフォルトのインプットメソッドなど、特定の言語環境にたいして非デフォルトのセッティングが必要な場所に設定します
+
+@vindex exit-language-environment-hook
+  新しい言語環境のセットアップを開始する前に、@code{set-language-environment}はまずフック@code{exit-language-environment-hook}を実行します。このフックは@code{set-language-environment-hook}によるカスタマイズを取り消すのに便利です。たとえば、特定の言語環境にたいして@code{set-language-environment-hook}を使って特別なキーバインドをセットアップした場合は、@code{exit-language-environment-hook}で通常のキーバインドに復元するべきです。
+
+@node Input Methods
+@section インプットメソッド
+
+@cindex input methods
+  @dfn{インプットメソッド(IM: input
+method)}は、対話的入力のために具体的にデザインされた、一種の文字変換です。Emacsでは、各言語はそれ自身のインプットメソッドをもっています。同じ文字を使う複数の言語で、1つのインプットメソッドを共有できます。複数のインプットメソッドをサポートする言語もあります。
+
+  一番簡単な種類のインプットメソッドは、@acronym{ASCII}文字を他のアルファベットにマッピングすることにより機能します。これにより@acronym{ASCII}のかわりに他のアルファベットを使うことが可能になります。GreekとRussianのインプットメソッドはこの方式で機能します。
+
+  より強力なテクニックがコンポジション(composition:
+複合)です。これは文字のシーケンスを1つの文字に変換します。Europeanのインプットメソッドの多くが、アクセント文字を後(または前)に続けた文字シーケンスから、1つの非@acronym{ASCII}文字を生成するためにコンポジションを使います。たとえば、インプットメソッドのいくつかは、@kbd{o
+^}のシーケンスを1つのアクセントつき文字に変換します。これらのインプットメソッドは、それら自身では特別なコマンドをもちません。これらすべてが行うのは、文字シーケンスを複合して、プリント文字にすることです。
+
+  音節記号(syllabic
+scripts)のためのインプットメソッドは通常、マッピングと、それに続けてコンポジションを使います。ThaiとKoreanのためのインプットメソッドは、この方式で機能します。最初に複数の文字が、特定の音や口調のためのシンボルにマッピングされます。次にこれらシンボルのシーケンスから音節全体を作り、それを1つの音節記号にマッピングします。
+
+  ChineseとJapaneseには、さらに複雑な方式が必要です。Chineseのインプットメソッドでは、最初にChineseの単語の音声スペルを入力するか(特にインプットメソッド@code{chinese-py})、文字の一部をシーケンスとして入力します(インプットメソッド@code{chinese-4corner}、@code{chinese-sw}など)。通常1つの入力シーケンスは、多くのChinese文字に対応します。@kbd{C-f}、@kbd{C-b}、@kbd{C-n}、@kbd{C-p}(または矢印キー)、またはこの状況では特別な意味をもつ数字を指定することにより、意図するものを選択します。
+
+  文字の候補は、概念的には複数の行にアレンジされ、各行は10個の候補をもちます。通常Emacsは1度に1行をエコーエリアに表示します。行頭に@code{(@var{i}/@var{j})}が表示され、これはトータル@var{j}行中、@var{i}番目の行かを示します。@kbd{C-n}または@kbd{C-p}をタイプすると、次または前の行を表示します。
+
+    @kbd{C-f}または@kbd{C-b}をタイプすると、カレント行の候補の間を前方または後方に移動します。これを行うとき、Emacsはカレント候補を特別な色でハイライトします。@code{C-@key{SPC}}とタイプすると、カレント候補を選択して、それを入力に使用します。各行の候補には番号も付けられています。この番号は各候補の前に表示されます。番号をタイプすると、カレント行の番号に関連付けられた候補を選択し、それを入力に使用します。
+
+  これらChineseのインプットメソッドでは、@key{TAB}はすべての文字候補をバッファーに表示します。候補の1つを@kbd{Mouse-2}でクリックすることにより選択します。@kbd{C-f}、@kbd{C-b}、@kbd{C-n}、@kbd{C-p}、および数字キーは通常どおり機能しますが、それらはエコーエリアではなく、文字候補を表示したバッファーをハイライトします。
+
+  Japaneseのインプットメソッドでは、最初に音声スペルを使って単語全体を入力します。つぎに単語がバッファーに入った後で、より大きな辞書を使ってEmacsがそれを1つ以上の文字に変換します。1つの音声スペルは、いくつかのJapaneseの単語に対応します。これらの1つを選択するには、@kbd{C-n}または@kbd{C-p}を使って候補を巡回します。
+
+  インプットメソッドをオフにして、入力した文字シーケンスが複合されないようにするのが便利なときがあります。たとえばインプットメソッド@code{latin-1-postfix}では、シーケンス@kbd{o
+^}は、アクセントつきの@samp{o}に複合されます。これらの文字を個別に入力したいときはどうすればよいでしょう?
+
+  1つは、アクセントを2度タイプする方法です。これは文字とアクセントを個別に入力するための特別な機能です。たとえば@kbd{o ^
+^}により、2つの文字@samp{o^}が得られます。他の方法としては@kbd{o}の後に別の文字 --- 複合されない何か別の文字 ---
+を入力してすぐにそれを削除する方法です。たとえば@kbd{o o @key{DEL}
+^}とタイプすることにより、@samp{o}と@samp{^}を個別に得ることができます。
+
+  他の方法としては、もっと一般的ですがタイプしにくい方法です。これは2つの文字の間に@kbd{C-\ 
+C-\}を使って、それらの文字が複合されるのを止める方法です。これはコマンド@kbd{C-\}
+(@code{toggle-input-method})を2回使っています。
+@ifnottex
+@ref{Select Input Method}を参照してください。
+@end ifnottex
+
+@cindex incremental search, input method interference
+  @kbd{C-\ 
+C-\}は、インクリメンタル検索の中で使うのが特に便利です。なぜならこれは複合される文字が入力されるのを待つのを止めて、それまでに入力した文字で検索を開始するからです。
+
+  現在のインプットメソッドを使って、ポイント位置の後ろの文字を入力する方法を探すには、@kbd{C-u C-x
+=}をタイプします。@ref{Position Info}を参照してください。
+
+@vindex input-method-verbose-flag
+@vindex input-method-highlight-flag
+  変数@code{input-method-highlight-flag}および@code{input-method-verbose-flag}は、インプットメソッドで何が起きているかを告げる方法を制御します。@code{input-method-highlight-flag}が非@code{nil}の場合、部分的な入力シーケンスがバッファーでハイライトされます(この機能を無効にしているインプットメソッドもあります)。@code{input-method-verbose-flag}が非@code{nil}の場合、次にタイプできる文字の一覧をエコーエリア(ただしミニバッファーにいるときは除く)に表示します。
+
+  キーボードにない文字をタイプする他の方法は、@kbd{C-x 8 @key{RET}}
+(@code{insert-char})を使って、Unicode名またはコードポイント(code-point)にもとづいて1つの文字を挿入する方法です。@ref{Inserting
+Text}を参照してください。
+
+@node Select Input Method
+@section インプットメソッドの選択
+
+@table @kbd
+@item C-\
+選択されたインプットメソッドを有効または無効にします(@code{toggle-input-method})。
+
+@item C-x @key{RET} C-\ @var{method} @key{RET}
+カレントバッファーにたいして、新しいインプットメソッドを選択します(@code{set-input-method})。
+
+@item C-h I @var{method} @key{RET}
+@itemx C-h C-\ @var{method} @key{RET}
+@findex describe-input-method
+@kindex C-h I
+@kindex C-h C-\
+インプットメソッド@var{method}の説明を表示します(@code{describe-input-method})。デフォルトでは、(もしあれば)カレントのインプットメソッドを説明します。これは特定のインプットメソッドの使い方に関する、すべての詳細説明を表示します。
+
+@item M-x list-input-methods
+サポートされている、すべてのインプットメソッドのリストを表示します。
+@end table
+
+@findex set-input-method
+@vindex current-input-method
+@kindex C-x RET C-\
+  カレントバッファーにたいするインプットメソッドを選択するには、@kbd{C-x @key{RET} C-\}
+(@code{set-input-method})を使います。このコマンドはミニバッファーからインプットメソッドの名前を読み取ります。この名前は通常、それが使われることを意図した言語環境で開始されます。変数@code{current-input-method}は選択されたインプットメソッドを記録します。
+
+@findex toggle-input-method
+@kindex C-\
+  インプットメソッドは非@acronym{ASCII}文字を表すために、さまざまな@acronym{ASCII}文字のシーケンスを使います。インプットメソッドを一時的にオフにできると便利なときもあります。そのようなときは@kbd{C-\}
+(@code{toggle-input-method})をタイプします。インプットメソッドを再度有効にするには、もう1度@kbd{C-\}をタイプします。
+
+  @kbd{C-\}をタイプしたときに、まだインプットメソッドが選択されていない場合、インプットメソッドを指定するように求めます。これはインプットメソッドを指定する@kbd{C-x
+@key{RET} C-\}を使ったときと同じ効果です。
+
+  @kbd{C-u
+C-\}のようにプレフィクス引数を指定した場合、@code{toggle-input-method}は常にインプットメソッドを尋ねます。このときデフォルトとして提案されるのは、もっとも最近選択されたインプットメソッドです。
+
+@vindex default-input-method
+  言語環境の選択により、さまざまなバッファーで使用するデフォルトのインプットメソッドが指定されます。デフォルトのインプットメソッドがある場合、@kbd{C-\}とタイプしてカレントバッファーでそれを選択できます。変数@code{default-input-method}はデフォルトのインプットメソッドを指定します(@code{nil}は、それが存在しないことを意味します)。
+
+  複数の異なるインプットメソッドをサポートする言語環境では、@code{set-language-environment}で選択されるデフォルトとは違うインプットメソッドを使いたいときもあるでしょう。@code{set-language-environment-hook}を使って、特定の言語環境にたいして異なるデフォルトのインプットメソッドを使うようEmacsに指示できます(@ref{Language
+Environments, set-language-environment-hook}を参照してください)。たとえば:
+
+@lisp
+(defun my-chinese-setup ()
+  "Set up my private Chinese environment."
+  (if (equal current-language-environment "Chinese-GB")
+      (setq default-input-method "chinese-tonepy")))
+(add-hook 'set-language-environment-hook 'my-chinese-setup)
+@end lisp
+
+@noindent
+これは言語環境をChinese-GB
+languageに選択したときは、常にデフォルトのインプットメソッドを@code{chinese-tonepy}にセットします。
+
+特定のインプットメソッドを自動的にアクティブにするようEmacsに指示できます。たとえば:
+
+@lisp
+(add-hook 'text-mode-hook
+  (lambda () (set-input-method "german-prefix")))
+@end lisp
+
+@noindent
+これはTextモードで自動的にインプットメソッド``german-prefix''をアクティブにします。
+
+@findex quail-set-keyboard-layout
+  英文字スクリプトのためのいくつかのインプットメソッドは、それらのスクリプトで一般的に使用されているさまざまなキーボードエミュレートするために、(実質的には)他のアルファベットに再マッピングすることにより機能します。この再マッピングがどのように正しく行われるかは、実際のキーボードレイアウトに依存します。キーボードがどのレイアウトなのかを指定するには、コマンド@kbd{M-x
+quail-set-keyboard-layout}を使います。
+
+@findex quail-show-key
+  コマンド@kbd{M-x
+quail-show-key}を使って、ポイントの後ろにある文字を入力するために、選択されたキーボードレイアウトの、どのキー(またはキーシーケンス)をタイプすればよいのか表示できます。コマンド@kbd{C-u
+C-x =}もこの情報と、それに加えてその文字に関する他の情報を表示します。
+
+@findex list-input-methods
+  @kbd{M-x
+list-input-methods}は、サポートされているすべてのインプットメソッドを一覧します。この一覧は各インプットメソッドの情報と、モードラインに表示される文字列を表示します。
+
+@node Coding Systems
+@section コーディングシステム
+@cindex coding systems
+
+  さまざまな言語のユーザーは、多少の差はあれ、それらを表示するための標準のコーディングシステムを確立しています。Emacsはこれらのコーディングシステムを、内部的に使用しません。データを読み込むときは、さまざまなコーディングシステムからEmacs独自のコーディングシステムに変換し、データを書き込むときには、内部コーディングシステムから他のコーディングシステムに変換します。ファイルの読み書き、端末とのやりとり、サブプロセスとのデータ交換において、変換が可能です。
+
+  Emacsは各コーディングシステムに名前を割り当てます。ほとんどのコーディングシステムは、1つの言語で使用され、コーディングシステムの名前は、言語の名前で始まります。複数の言語で使用されるコーディングシステムもあります。これらのコーディングシステムの名前は、通常@samp{iso}で始まります。@code{no-conversion}、@code{raw-text}、@code{emacs-internal}のような特別なコーディングシステムもあります。
+
+@cindex international files from DOS/Windows systems
+  まとめて@dfn{コードページ(codepages)}として知られる、特別なクラスのコーディングシステムは、MS-WindowsおよびMS-DOSのソフトウェアーによりエンコードされたテキストをサポートするためにデザインされています。これらのコーディングシステムの名前は@code{cp@var{nnnn}}という形式で、@var{nnnn}は3桁から4桁のコードページ番号です。これらのコーディングもほかのコーディングシステムと同様に使うことができます。たとえばコードページ850でエンコードされたファイルをvisitするには、@kbd{C-x
+@key{RET} c cp850 @key{RET} C-x C-f @var{filename} @key{RET}}とタイプします。
+
+  非@acronym{ASCII}文字のさまざまな表現の変換に加えて、コーディングシステムは行末変換(end-of-line
+conversion)も行います。Emacsは、ファイル内の行の区切り方として、3つの異なる変換を扱います。つまり、改行(``unix'')、復帰改行(``dos'')、復帰(``mac'')です。
+
+@table @kbd
+@item C-h C @var{coding} @key{RET}
+コーディングシステム@var{coding}の説明を表示します(@code{describe-coding-system})。
+
+@item C-h C @key{RET}
+現在使われているコーディングシステムの説明を表示します。
+
+@item M-x list-coding-systems
+サポートされているすべてのコーディングシステムのリストを表示します。
+@end table
+
+@kindex C-h C
+@findex describe-coding-system
+  コマンド@kbd{C-h C}
+(@code{describe-coding-system})は、特定のコーディングシステムについて、それらのコーディングシステムで規定されている、行末変換も含めた情報を表示します。引数にコーディングシステム名を指定できます。引数が空のときには、さまざまな目的のために選択されている、現在のコーディングシステムの、カレントバッファにたいするものとデフォルトの両方について表示するとともに、コーディングシステムを認識するための優先順位表を表示します(@ref{Recognize
+Coding}を参照してください)。
+
+@findex list-coding-systems
+  サポートされているすべてのコーディングシステムのリストを表示するには、@kbd{M-x
+list-coding-systems}とタイプします。表示されるリストは、モードラインに表示される文字も含めて、各コーディングシステムの情報を提供します。
+
+@cindex end-of-line conversion
+@cindex line endings
+@cindex MS-DOS end-of-line conversion
+@cindex Macintosh end-of-line conversion
+  リストに表示される各コーディングシステム --- ただし何の変換も行わない@code{no-conversion}は除く ---
+は、プリントする文字をどのように変換するか、しないかを指定しますが、改行変換については、各ファイル内容にもどづいて決定するので選択をしません。たとえばファイルが行区切りに改行復帰文字を使っているように見えるときは、DOSの改行変換を使います。
+
+  リストされた各コーディングシステムは、改行変換を厳密に指定する3つの変種があります。
+
+@table @code
+@item @dots{}-unix
+何の改行変換も行いません。ファイルは行区切りに改行文字を使っていると仮定します(これは通常Unix、GNUシステム、Mac OS
+Xで使われている慣習です)。
+
+@item @dots{}-dos
+ファイルが行区切りに改行復帰文字を使っていると仮定し、適切な変換を行います(これは通常Microsoftシステムで使われている慣習です@footnote{これはMIMEの@samp{text/*}の本体、および他のネットワーク転送のコンテキストでも指定されています。これはEmacsが直接サポートしないSGMLリファレンス構文のrecord-start/record-endとは異なります。})。
+
+@item @dots{}-mac
+ファイルが行区切りに復帰文字を使っていると仮定し、適切な変換を行います(これはOS Xより前のMacintoshシステムで使われている慣習です)。
+@end table
+
+  これらのコーディングシステムの変種は、それらが完全に予測可能なため、簡略化のために@code{list-coding-systems}の表示からは省略されています。たとえばコーディングシステム@code{iso-latin-1}は@code{iso-latin-1-unix}、@code{iso-latin-1-dos}、@code{iso-latin-1-mac}という変種をもちます。
+
+@cindex @code{undecided}, coding system
+  コーディングシステム@code{unix}、@code{dos}、@code{mac}は、それぞれ@code{undecided-unix}、@code{undecided-dos}、@code{undecided-mac}の別名です。これらのコーディングシステムは改行変換だけを指定し、文字コード変換はテキスト字体から推論されるよう残します
+
+@cindex @code{raw-text}, coding system
+  コーディングシステム@code{raw-text}は、主にASCIIテキストのファイルに適していますが、ファイルには、非ASCII文字の符号を意味しない127を越えるバイト値が含まれるかもしれません。@code{raw-text}では、
+Emacsはそれらのバイト値を変更せずにコピーし、カレントバッファーの@code{enable-multibyte-characters}を@code{nil}にセットして、それらは適切に解釈されるます。@code{raw-text}は、出会ったデータに基づく通常の方法で行末変換を処理し、使用する行末変換を指定する変種も3つもちます。
+
+@cindex @code{no-conversion}, coding system
+  対照的に、コーディングシステム@code{no-conversion}は、いかなる文字コード変換 ---
+非@acronym{ASCII}バイト値や行末にたいしても --- を行いません。これは、バイナリーファイル、tarファイル、
+そのまま処理する必要があるその他のファイルを読み書きするのに便利です。これも@code{enable-multibyte-characters}を@code{nil}にセットします。
+
+  いかなる種類の変換もしないでファイルを編集するもっとも簡単な方法は、@kbd{M-x
+find-file-literally}コマンドを使うことです。このコマンドは、@code{no-conversion}を使い、ファイルを見る前にファイルの内容を変換するかもしれない、Emacsのその他の機能を抑制します。@ref{Visiting}を参照してください。
+
+@cindex @code{emacs-internal}, coding system
+  コーディングシステム@code{emacs-internal}(または@code{utf-8-emacs})は、Emacs内部エンコーディングのままで格納された、非ASCII文字を含むファイルであることを意味します。これは出会ったデータに基づいて行末変換を処理し、行末変換の種類を指定する通常の3つの変種を持ちます。
+
+@node Recognize Coding
+@section コーディングシステムの認識
+
+  Emacsはテキストを読み込むとき、どのコーディングシステムが使われているか認識しようと試みます。これはファイルの読み込み、サブプロセスからの出力、X選択からのテキストなど、さまざまです。Emacsは大抵の場合
+--- 自分の好みを1度指定しておけば、自動的に正しいコーディングシステムを選択できます。
+
+  データにどのバイトシーケンスが出現するかにより、認識あるいは識別されるコーディングシステムもいくつかあります。しかし識別される可能性さえないコーディングシステムもあります。たとえばLatin-1とLatin-2を識別する方法はありません。これらは同じバイト値を異なる意味で使用します。
+
+  Emacsはこのようなシチュエーションを、コーディングシステムの優先リストにより処理します。Emacsがファイルを読み込むときは常に、それに使用するコーディングシステムを指定しなければ、Emacsはデータを各コーディングシステムに照らしてチェックし、それを優先順位の上から順に、データに適合するコーディングシステムが見つかるまで続けます。そして、そのコーディングシステムで、ファイル内容が表示できると仮定して変換を行います。
+
+  コーディングシステムの優先リストは、選択されている言語環境に依存します(@ref{Language
+Environments}を参照してください)。たとえばFrenchを使うのなら、おそらくEmacsにはLatin-2よりLatin-1を選んでほしいでしょう。Czechを使うなら、おそらくLatin-2のほうがよいでしょう。これが言語環境を指定する理由の1つです。
+
+@findex prefer-coding-system
+  しかし、コマンド@kbd{M-x
+prefer-coding-system}を使って、優先リストの詳細を変更できます。このコマンドはミニバッファーからコーディングシステムの名前を読み取り、それを優先リストの先頭に追加して、他のすべてのものより優先するようにします。このコマンドを数回使うと、使用するごとに優先リストの先頭に1つの要素が追加されます。
+
+  @code{iso-8859-1-dos}のような、行末変換を指定したコーディングシステムを使うと、@code{iso-8859-1}を優先して認識を試み、その際DOSの行末変換を使うことをEmacsに指示することになります。
+
+@vindex file-coding-system-alist
+  ファイルにたいして使用するコーディングシステムをファイル名が示していることがあります。変数@code{file-coding-system-alist}は、この対応関係を指定します。このリストに要素を追加する特別な関数は、@code{modify-coding-system-alist}です。たとえば、すべての@samp{.txt}の読み書きに、コーディングシステム@code{chinese-iso-8bit}を使用したいなら、つぎのLisp式を実行します:
+
+@smallexample
+(modify-coding-system-alist 'file "\\.txt\\'" 'chinese-iso-8bit)
+@end smallexample
+
+@noindent
+1つ目の引数は@code{file}、2番目の引数はこれを適用するファイルを決定する正規表現、3番目の引数は、これらのファイルに対して使用するコーディングシステムです。
+
+@vindex inhibit-eol-conversion
+@cindex DOS-style end-of-line display
+  Emacsはファイルの内容にもとづいて、使用する行末変換の種類を認識します。復帰のみ、あるいは復帰改行のシーケンスだけであれば、対応する行末変換を選択します。変数@code{inhibit-eol-conversion}を非@code{nil}にセットすることにより、行末変換の自動的な使用を抑止できます。これを行うとDOSスタイルのファイルは、バッファー内に可視の@samp{^M}という文字を表示します。モードラインの左端に目立たないように表示される改行タイプ指示@samp{(DOS)}より、こちらのほうを好む人もいます。
+
+@vindex inhibit-iso-escape-detection
+@cindex escape sequences in files
+  デフォルトでは、コーディングシステムの自動検知はエスケープシーケンスを検出します。文字シーケンスがエスケープ文字で開始されていて、そのシーケンスが有効なISO-2022であれば、それはEmacsにファイルをデコードするエンコーディングに、ISO-2022を使うことを告げています。
+
+  しかし、ファイルの中のエスケープシーケンスを、そのまま読み取りたい場合もあるでしょう。そのような場合、変数@code{inhibit-iso-escape-detection}を非@code{nil}にセットします。これにより、コード検知はエスケープシーケンスを無視するようになり、ISO-2022エンコーディングは使用されません。この結果として、すべてのエスケープシーケンスがバッファー内で可視になります。
+
+@c I count a grand total of 3 such files, so is the above really true?
+  変数@code{inhibit-iso-escape-detection}のデフォルト値は@code{nil}です。わたしたちは特別な操作を除いて、これを変更しないことを推奨します。なぜなら、EmacsディストリビューションのEmacs
+Lispソースファイルのいくつかは、コーディングシステム@code{iso-2022-7bit}でエンコードされた非@acronym{ASCII}文字を含んでおり、エスケープシーケンス検知を抑止しているときにこれらのファイルをvisitすると、正しくデコードされないからです。
+
+@vindex auto-coding-alist
+@vindex auto-coding-regexp-alist
+  変数@code{auto-coding-alist}および@code{auto-coding-regexp-alist}は、それぞれファイル名に含まれる特定パターン、およびファイルに含まれる特定パターンによりコーディングシステムを指定する一番強い方法です。これらの変数は、ファイル自身に含まれる@samp{-*-coding:-*-}タグさえオーバーライドします。たとえば、Emacsはtarおよびアーカイブファイルに、@code{auto-coding-alist}を使います。これはアーカイブのメンバーファイルに@samp{-*-coding:-*-}が含まれている場合、Emacsが混乱してそれをファイル全体に適用するのを防ぎます。
+@ignore
+@c This describes old-style BABYL files, which are no longer relevant.
+Likewise, Emacs uses @code{auto-coding-regexp-alist} to ensure that
+RMAIL files, whose names in general don't match any particular
+pattern, are decoded correctly.
+@end ignore
+
+@vindex auto-coding-functions
+  コーディングシステムを指定する他の方法は、変数@code{auto-coding-functions}を使う方法です。たとえばビルトインの1つ@code{auto-coding-functions}は、XMLファイルにたいするエンコーディングを検知します。前の2つと異なり、この変数は@samp{-*-coding:-*-}タグをオーバーライドしません.
+
+@node Specify Coding
+@section ファイルのコーディングシステムの指定
+
+  Emacsがファイルのエンコーディングを正しく認識しなかった場合、@kbd{C-x @key{RET} r}
+(@code{revert-buffer-with-coding-system})で、正しいコーディングシステムでファイルを再読み込みできます。このコマンドは、使用するコーディングシステムの入力を求めます。ファイルのデコードに実際に使われているコーディングシステムを見るには、モードラインの左端の近くのコーディングシステムのニーモニック文字を見るか、@kbd{C-h
+C} (@code{describe-coding-system})をタイプします。
+
+@vindex coding
+  特定のファイルのコーディングシステムを指定するのに、そのファイル自身の最初に@w{@samp{-*-@dots{}-*-}}構成を指定するか、ファイルの最後にローカル変数リスト(@ref{File
+Variables}を参照してください)を使用できます。これは@code{coding}という名前の``変数''に、値を定義することにより行われます。Emacsは実際には変数@code{coding}をもっていません。かわりに変数をセットして、特定のファイルにたいしてコーディングシステムを指定するのにこれを使います。たとえば@samp{-*-mode:
+C; coding:
+latin-1;-*-}は、Latin-1コーディングシステム、同様にCモードを指定することを指示します。ファイルの中でコーディングを明示的に指定した場合、これは@code{file-coding-system-alist}をオーバーライドします。
+
+@node Output Coding
+@section 出力のためのコーディングシステムの選択
+
+@vindex buffer-file-coding-system
+  Emacsがバッファーにたいして1度コーディングシステムを選択すると、そのコーディングシステムは、@code{buffer-file-coding-system}に記録されます。これにより@code{save-buffer}や@code{write-region}などの、バッファーからファイルに書き込む際のデフォルトに、それを使用するようになります。@code{set-buffer-file-coding-system}を使って、バッファーのコーディングシステムとは異なるコーディングシステムで、ファイルに書き込むよう指定できます(@ref{Text
+Coding}を参照してください)。
+
+  Emacsがサポートする任意の文字を、任意のEmacsバッファーに挿入できますが、ほとんどのコーディングシステムは、それらの文字のサブセットしか処理することができません。したがって挿入した文字は、そのバッファーを保存するのに使われるコーディングシステムではエンコードできないかもしれません。たとえば、@code{iso-8859-2}でエンコードされたPolishのファイルをvisitして、それにRussianの単語を追加することは可能です。このバッファーを保存するとき、Emacsは@code{buffer-file-coding-system}の現在の値を使用できません。なぜなら追加された文字が、そのコーディングシステムではエンコードできないからです。
+
+  これが発生した場合、Emacsは(@kbd{M-x prefer-coding-system}または@kbd{M-x
+set-language-environment}によりセットされた)もっとも適したコーディングシステムを試します。そのコーディングシステムがバッファーのすべての文字をエンコードできたら、Emacsはそれを使って、その値を@code{buffer-file-coding-system}に格納します。そうでなければEmacsはバッファー内容をエンコードするのに適したコーディングシステムのリストを表示して、それらのコーディングシステムを1つ選ぶよう求めます。
+
+@c What determines this?
+  メールメッセージに適さない文字を入力した場合、Emacsの振る舞いは若干異なります。この場合、追加でMIMEメッセージに推奨されたもっとも適したコーディングシステムかをチェックします。もしそうでなければ、この事実を知らせ、他のコーディングシステムの入力を求めます。これにより、メール受信者のメールソフトがデコードするのが困難なエンコードで、無意識にメッセージを送るようなことがなくなります(入力をもとめられたときに、適さないコーディングシステムを選ぶ、という選択肢もまだ残っています)。
+
+@c It seems that select-message-coding-system does this.
+@c Both sendmail.el and smptmail.el call it; i.e., smtpmail.el still
+@c obeys sendmail-coding-system.
+@vindex sendmail-coding-system
+@c i.e., default-sendmail-coding-system
+@c FIXME?  Where does the Latin-1 default come in?
+  メールメッセージを送信するとき、Emacsはメッセージテキストのエンコーディングに使うコーディングシステムを決定する、4つの異なる方法をもっています。最初にバッファー自身の@code{buffer-file-coding-system}が非@code{nil}なら、それを使います。次に@code{sendmail-coding-system}が非@code{nil}なら、それを使います。3番目は言語環境の選択により制御されるデフォルトのコーディングシステムが非@code{nil}なら、それを使います。上述した値のすべてが@code{nil}の場合、送信メールをLatin-1コーディングシステムを使ってエンコードします。
+
+@node Text Coding
+@section ファイルのテキストにたいするコーディングシステムの指定
+
+  Emacsがファイル内容にたいして、自動的に正しいコーディングシステムを選択しない場合、コーディングシステムを指定するために、以下のコマンドを使用できます。
+
+@table @kbd
+@item C-x @key{RET} f @var{coding} @key{RET}
+カレントバッファーのファイルを、コーディングシステム@var{coding}を使って保存または再visitします(@code{set-buffer-file-coding-system})。
+
+@item C-x @key{RET} c @var{coding} @key{RET}
+直後に続くコマンドのコーディングシステムに@var{coding}を指定します(@code{universal-coding-system-argument}).
+
+@item C-x @key{RET} r @var{coding} @key{RET}
+コーディングシステム@var{coding}を使って、現在のファイルを再visitします(@code{revert-buffer-with-coding-system})。
+
+@item M-x recode-region @key{RET} @var{right} @key{RET} @var{wrong} @key{RET}
+コーディングシステム@var{wrong}を使ってデコードされたリージョンを、かわりにコーディングシステム@var{right}を使ってデコードします。
+@end table
+
+@kindex C-x RET f
+@findex set-buffer-file-coding-system
+  コマンド@kbd{C-x @key{RET} f}
+(@code{set-buffer-file-coding-system})は、カレントバッファーのファイルのコーディングシステムをセットします(たとえばファイルを保存またはリバートするときに使うコーディングシステム)。これはミニバッファーを使ってコーディングシステムを指定します。モードラインのコーディングシステムインディケーターを@kbd{Mouse-3}でクリックしても、このコマンドを呼び出すことができます。
+
+  バッファーのすべての文字を処理できないコーディングシステムを指定した場合、Emacsは問題となる文字について警告します。そしてそのバッファーを保存するときのコーディングシステムの選択を求めます。
+
+@cindex specify end-of-line conversion
+  このコマンドを、カレントバッファーのエンコーディングの際の改行変換の指示に使うこともできます(@ref{Coding Systems,
+end-of-line conversion}を参照してください)。たとえば@kbd{C-x @key{RET} f dos
+@key{RET}}は、カレントバッファーを、DOSスタイル(行末が改行復帰文字)で保存します。
+
+@kindex C-x RET c
+@findex universal-coding-system-argument
+  ファイルにたいしてコーディングシステムを指定する他の方法は、ファイルをvisitするときに指定する方法です。最初にコマンド@kbd{C-x
+@key{RET} c}
+(@code{universal-coding-system-argument})を使います。このコマンドはミニバッファーを使ってコーディングシステムを読み取ります。ミニバッファーを抜けた後、@emph{その直後に続くコマンド}に、指定したコーディングシステムが使用されます。
+
+  たとえば直後に続くコマンドが@kbd{C-x
+C-f}の場合、そのコーディングシステムを使ってファイルを読み込みます(そして後で保存するときのために、そのコーディングシステムを記録します)。直後に続くコマンドが@kbd{C-x
+C-w}の場合、そのコーディングシステムを使ってファイルを書き込みます。@kbd{C-x @key{RET}
+f}のかわりに、この方法で保存するときのコーディングシステムを指定した場合、バッファーにそのコーディングシステムが処理できない文字が含まれていても警告はされません。
+
+  @kbd{C-x i}や@kbd{C-x C-v}、同様に@kbd{C-x C-f}の別ウィンドウ版@kbd{C-x @key{RET}
+c}など、その他のファイルコマンドも指定されたコーディングシステムに影響されます。そして@kbd{M-x shell}
+(@ref{Shell}を参照してください)を含む、サブプロセスを開始するコマンドも影響を受けます。直後に続くコマンドがコーディングシステムを使用しない場合、@kbd{C-x
+@key{RET} c}は何の影響も与えません。
+
+  変換をせずにファイルをvisitする簡単な方法は、@kbd{M-x
+find-file-literally}コマンドです。@ref{Visiting}を参照してください。
+
+  変数@code{buffer-file-coding-system}のデフォルト値は、新しいファイルを作成するときに選択されるコーディングシステムを指定します。これは新しいファイルを作成するときや、バッファーを作成してそれをファイルに保存するときに適用されます。言語環境の選択は、この変数を言語環境にたいして適した、デフォルトのコーディングシステムにセットします。
+
+@kindex C-x RET r
+@findex revert-buffer-with-coding-system
+  間違ったコーディングシステムでファイルをvisitしたときは、@kbd{C-x @key{RET} r}
+(@code{revert-buffer-with-coding-system})でこれを正すことができます。これは指定したコーディングシステムを使って、現在のファイルを再visitします。
+
+@findex recode-region
+  テキストの一部が、すでに間違ったコーディングシステムでバッファーに挿入されてしまった場合、@kbd{M-x
+recode-region}を使ってデコードしなおすことができます。これは正しいコーディングシステムと、実際に使われた間違ったコーディングシステムの入力を求め、変換を行います。最初にリージョンを間違ったコーディングシステムでエンコードして、その後で正しいコーディングシステムでデコードします。
+
+@node Communication Coding
+@section プロセス間通信にたいするコーディングシステム
+
+  このセクションでは、他のプロセスと通信するときに使うコーディングシステムを指定する方法を説明します。
+
+@table @kbd
+@item C-x @key{RET} x @var{coding} @key{RET}
+選択したテキストを、他のグラフィカルなアプリケーションと送受信するために、コーディングシステム@var{coding}を使用します(@code{set-selection-coding-system})。
+
+@item C-x @key{RET} X @var{coding} @key{RET}
+次回に選択するテキストを、他のグラフィカルなアプリケーションと送受信するために、コーディングシステム@var{coding}を使用します(@code{set-next-selection-coding-system})。
+
+@item C-x @key{RET} p @var{input-coding} @key{RET} @var{output-coding} @key{RET}
+カレントバッファーでのサブプロセスの入出力に、コーディングシステム@var{input-coding}と@var{output-coding}を使用します(@code{set-buffer-process-coding-system})。
+@end table
+
+@kindex C-x RET x
+@kindex C-x RET X
+@findex set-selection-coding-system
+@findex set-next-selection-coding-system
+  コマンド@kbd{C-x @key{RET} x}
+(@code{set-selection-coding-system})は、選択したテキストを他のウィンドウアプリケーションに送信するとき、および他のアプリケーションで選択されたテキストを受信するときのコーディングシステムを指定します。このコマンドは、このコマンドを再度使って設定をオーバーライドするまで、以降のすべての選択に適用されます。コマンド@kbd{C-x
+@key{RET} X}
+(@code{set-next-selection-coding-system})は、Emacsで次に選択されるテキスト、または次に読み取られるテキストのためのコーディングシステムを指定します。
+
+@vindex x-select-request-type
+  変数@code{x-select-request-type}は、Xウィンドウシステムからのリクエストにより、他のアプリケーションで選択されたテキストを受信する際のデータタイプを指定します。値が@code{nil}(デフォルト)の場合、Emacsは@code{UTF8_STRING}、@code{COMPOUND_TEXT}の順に試み、さらにさまざまな経験則を用いて、2つの結果からより適したものを選択します。どちらも成功しなかったとき、Emacsは@code{STRING}にフォールバックします。@code{x-select-request-type}の値が、@code{COMPOUND_TEXT}、@code{UTF8_STRING}、@code{STRING}、@code{TEXT}のうちのどれかであった場合、Emacsはリクエストされたタイプだけを使用します。値がこれらのシンボルのリストだった場合、Emacsはリストのリクエストタイプを順に試行し、どれかが成功するか、すべてを試みるまで続けます。
+
+@kindex C-x RET p
+@findex set-buffer-process-coding-system
+  コマンド@kbd{C-x @key{RET} p}
+(@code{set-buffer-process-coding-system})は、サブプロセスの入出力のコーディングシステムを指定します。このコマンドはカレントバッファーに適用されます。サブプロセスは通常、それぞれ自身のバッファーをもっています。したがってサブプロセスに対応するバッファーでこのコマンドを実行することにより、特定のサブプロセスとの送受信に使用するコーディングシステムを指定できます。
+
+  サブプロセスを開始するコマンドの直前に@kbd{C-x @key{RET} c}
+(@code{universal-coding-system-argument})を使うことにより、そのプロセスとの通信で使用するコーディングシステムを指定することもできます。@ref{Text
+Coding}を参照してください。
+
+  デフォルトでは、プロセス通信の入出力は現在の言語環境に依存します。
+
+@vindex locale-coding-system
+@cindex decoding non-@acronym{ASCII} keyboard input on X
+  変数@code{locale-coding-system}は、システムのエラーメッセージや、@code{format-time-string}のフォーマットやタイムスタンプなどの、システム文字列のエンコードおよびデコードで使用するコーディングシステムを指定します。このコーディングシステムは、Xウィンドウシステムでの非@acronym{ASCII}キーボードによる入力のデコードにも使用されます。通常は環境変数@env{LC_ALL}、@env{LC_CTYPE}、@env{LANG}のうちの1つで指定される、背景にあるシステムのテキスト表現(text
+representation)と互換性のあるコーディングシステムを選択するべきです(上記の順番で最初の環境変数の値が空でない場合、それはテキスト表現を決定します)。
+
+@node File Name Coding
+@section ファイル名にたいするコーディングシステム
+
+@table @kbd
+@item C-x @key{RET} F @var{coding} @key{RET}
+ファイル名のエンコードおよびデコードに、コーディングシステム@var{coding}を使用します(@code{set-file-name-coding-system})。
+@end table
+
+@findex set-file-name-coding-system
+@kindex C-x @key{RET} F
+@cindex file names with non-@acronym{ASCII} characters
+  コマンド@kbd{C-x @key{RET} F}
+(@code{set-file-name-coding-system})は、ファイルの@emph{名前}に使用するコーディングシステムを指定します。ファイルの@emph{内容}の読み込みと書き込みには影響がありません。
+
+@vindex file-name-coding-system
+  実際にこのコマンドが行うのは、変数@code{file-name-coding-system}に値をセットすることだけです。変数にコーディングシステムの名前(Lispシンボルか文字列)をセットすると、Emacsはすべてのファイル操作において、ファイル名のエンコードにそのコーディングシステムを使用します。これによりファイル名に非@acronym{ASCII}文字
+--- または少なくとも指定されたコーディングシステムではエンコードできる非@acronym{ASCII}文字 --- を使うことが可能になります。
+
+@c FIXME?  Is this correct?  What is the "default language environment"?
+  @code{file-name-coding-system}が@code{nil}の場合、Emacsは言語環境により選択され、変数@code{default-file-name-coding-system}に格納される、デフォルトのコーディングシステムを使用します。デフォルトの言語環境では、ファイル名の非@acronym{ASCII}文字は特別にエンコードはされません。これらはEmacsの内部表現を使って、ファイルシステム上に表示されます。
+
+@cindex file-name encoding, MS-Windows
+@vindex w32-unicode-filenames
+  Emacsが、MS-WindowsのNTファミリーの子孫(Windows 2000、XP、Vista、Windows 7、Windows
+8)にあたるバージョンで実行されている場合、@code{file-name-coding-system}の値は大部分が無視されます。これはEmacsがデフォルトでUnicodeファイル名を直接渡せるAPIを使用するからです。一方、Windows
+9Xでは、ファイル名は変数@code{file-name-coding-system}を使ってエンコードされており、この変数にはカレントのシステムロケールにたいして適切なコードページ(@ref{Coding
+Systems,
+codepage}を参照してください)がセットされている必要があります。変数@code{w32-unicode-filenames}の値は、Emacsがファイル名を引数とするOS関数を呼び出すUnicode
+APIを使うかどうかを制御します。この変数はスタートアップコードにより、Windows
+9Xでは@code{nil}、新しいバージョンのMS-Windowsでは@code{t}にセットされます。
+
+  @strong{警告:
+}Emacsセッションの途中で@code{file-name-coding-system}(または言語環境)を変更した場合、すでにvisitしているファイルの名前が、古いコーディングシステムを使えばエンコードできるが、新しいコーディングシステムではエンコードされない(または違ってエンコードされる)という問題が発生します。このようなバッファーをvisitしたファイル名で保存を試みると、間違ったファイル名で保存するか、エラーが発生します。このような問題が発生したときは@kbd{C-x
+C-w}を使って、そのバッファーにたいして新しいファイル名を指定してください。
+
+@findex recode-file-name
+  ファイル名をエンコードするとき間違いが発生した場合、コマンド@kbd{M-x
+recode-file-name}を使って、ファイル名のコーディングシステムを変更します。このコマンドは古いコーディングシステムでの既存のファイル名と、変換したいコーディングシステムの入力を求めます。
+
+@node Terminal Coding
+@section 端末入出力にたいするコーディングシステム
+
+@table @kbd
+@item C-x @key{RET} t @var{coding} @key{RET}
+端末の出力に、コーディングシステム@var{coding}を使用します(@code{set-terminal-coding-system})。
+
+@item C-x @key{RET} k @var{coding} @key{RET}
+キーボード入力に、コーディングシステム@var{coding}を使用します(@code{set-keyboard-coding-system})。
+@end table
+
+@kindex C-x RET t
+@findex set-terminal-coding-system
+  コマンド@kbd{C-x @key{RET} t}
+(@code{set-terminal-coding-system})は、端末出力のためのコーディングシステムを指定します。端末出力の文字コードを指定した場合、端末へのすべての文字出力は、指定したコーディングシステムに変換されます。
+
+  この機能は、特定の言語または文字セットをサポートするようビルドされた、特定の文字端末で有用です --- たとえばEuropean端末は、ISO
+Latin文字セットの1つをサポートします。マルチバイトテキストを使う場合は、端末のコーディングシステムを指定する必要があります。これにより、Emacsは端末が実際にどの文字を処理できるのか知ることができます。
+
+  デフォルトでは、Emacsが端末タイプまたはlocale指定により、正しいコーディングシステムを推論できない場合、端末への出力は変換されません。
+
+@kindex C-x RET k
+@findex set-keyboard-coding-system
+@vindex keyboard-coding-system
+  コマンド@kbd{C-x @key{RET} k}
+(@code{set-keyboard-coding-system})、または変数@code{keyboard-coding-system}は、キーボード入力のためのコーディングシステムを指定します。キーボード入力の文字コード変換は、非@acronym{ASCII}のグラフィック文字を送信するキーをもつ端末で有用です
+--- たとえば、いくつかの端末はISO Latin-1、またはそれのサブセットのためにデザインされています。
+
+  デフォルトでは、キーボード入力はシステムのlocale設定にもとづいて変換されます。端末がlocaleにより暗に指定されるエンコードを実際にはサポートしない場合(たとえば、@kbd{M-i}をタイプしたときに非@acronym{ASCII}文字が挿入されるのに気づいたとき)、エンコーディングをオフにするために@code{keyboard-coding-system}を@code{nil}にセットする必要があるでしょう。これは、
+
+@lisp
+(set-keyboard-coding-system nil)
+@end lisp
+
+@noindent
+をinitファイルに記述することにより、行うことができます。
+
+  キーボード入力にたいするコーディングシステムを使用した変換と、インプットメソッドの使用は似通った点があります。これらは両方ともキーボード入力シーケンスを1つの文字に変換します。しかし、インプットメソッドは人間により対話的に使用されることが便利なようにデザインされており、通常は@acronym{ASCII}のプリント文字のシーケンスが、変換されたシーケンスになります。通常、コーディングシステムは非グラフィック文字のシーケンスを変換します。
+
+@node Fontsets
+@section フォントセット
+@cindex fontsets
+
+  フォントは通常、1つのアルファベットまたはスクリプトの形状を定義します。したがってEmacsがサポートするスクリプトの全範囲を表示するには、多くのフォントのコレクションが要求されます。Emacsではこのようなコレクションのことを@dfn{フォントセット(fontset)}と呼びます。フォントセットはフォント仕様のリストとして定義され、それぞれが文字コードのある範囲を処理し、指定されたフォントでカバーしない文字にたいしては他のフォントセットにフォールバックします。
+
+@cindex fonts for various scripts
+@cindex Intlfonts package, installation
+@c FIXME?  I feel like this may be out of date.
+@c E.g., the intlfonts tarfile is ~ 10 years old.
+  それぞれのフォントセットは、フォントと同様に名前をもちます。しかしフォントはシステムに格納されていて、利用可能なフォント名はシステムで定義されていますが、フォントセットはEmacs自身で定義されます。1度フォントセットを定義したら、1つのフォントを使える場所ならどこでも、フォントセットを名前で指定して使用することができます。もちろんEmacsのフォントセットに使用できるのは、システムがサポートするフォントだけです。もしある文字がスクリーン上で空のボックスや16進コードで表示される場合、それは使用しているフォントセットがその文字にたいするフォントをもっていないことを意味します。このような場合や、文字は表示されるが、それが意図したものとは異なる場合、多分追加のフォントをインストールする必要があるでしょう。オペレーティングシステムにはインストールできるオプションのフォントがあるはずです。またはサポートされたスクリプトのほとんどのフォントを含むGNU
+Intlfontsパッケージをインストールすることもできます。@footnote{EmacsをXで実行している場合、以下のようにして新しくインストールしたフォントの場所を、X
+serverに指示する必要があるでしょう:
+@example
+xset fp+ /usr/local/share/emacs/fonts
+xset fp rehash
+@end example
+}
+
+@c FIXME?  The doc of *standard*-fontset-spec says:
+@c "You have the biggest chance to display international characters
+@c with correct glyphs by using the *standard* fontset." (my emphasis)
+@c See http://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00430.html
+  Emacsは3つのフォントセットを自動的に作成します。それは@dfn{スタンダードフォントセット(standard
+fontset)}、@dfn{スタートアップフォントセット(startup fontset)}、@dfn{デフォルトフォントセット(default
+fontset)}の3つです。デフォルトフォントセットは、さまざまな非@acronym{ASCII}文字のフォントをもち、他の2つのフォントセットのデフォルトのフォールバック先です(デフォルトフォントをセットしたときは、デフォルトフォントセットではなくデフォルトフォント)。しかしこれはフォントのファミリー名を指定しないので、これを直接使うと、結果は少しランダムに思えるかもしれません。Emacsを@samp{-fn}オプションで実行することにより、特定のフォントセットを使用するように指示できます。たとえば、
+
+@example
+emacs -fn fontset-standard
+@end example
+
+@noindent
+@samp{Font}でフォントセットを指定することもできます(@ref{X Resources}を参照してください)。
+
+  使用するフォントセットが何も指定されていない場合、Emacsは@acronym{ASCII}フォントを使用し、そのフォントがカバーしない文字にたいするフォールバックに@samp{fontset-default}を使用します。名前とは裏腹にスタンダードフォントセットは、明示的に要求されたときだけ使用されます。
+
+  フォントセットは、すべての文字コードにたいしてフォントを指定する必要はありません。フォントセットが特定の文字にたいしてフォントを指定していない、または指定したフォントがシステムに存在しない場合、フォントセットは文字を正しく表示できません。この場合、その文字は16進コード、細いスペース、または空のボックスがかわりに表示されます(詳細は、@ref{Text
+Display, , glyphless characters}を参照してください)。
+
+@node Defining Fontsets
+@section フォントセットの定義
+
+@vindex standard-fontset-spec
+@vindex w32-standard-fontset-spec
+@vindex ns-standard-fontset-spec
+@cindex standard fontset
+  XでEmacsを実行している場合、Emacsは@code{standard-fontset-spec}の値により、スタンダードフォントセットを作成します。このフォントセットの名前は、
+
+@example
+-*-fixed-medium-r-normal-*-16-*-*-*-*-*-fontset-standard
+@end example
+
+@noindent
+または単に短く@samp{fontset-standard}です。
+
+  GNUstep、およびMac OS
+Xではスタンダードフォントセットは、@code{ns-standard-fontset-spec}の値を使って作成され、MS
+Windowsでは@code{w32-standard-fontset-spec}の値を使って作成されます。
+
+@c FIXME?  How does one access these, or do anything with them?
+@c Does it matter?
+  スタンダードフォントセットのボールド、イタリック、ボールドイタリックなどの変種も自動的に作成されます。これらの変種の名前には@samp{medium}のかわりに@samp{bold}、または@samp{r}のかわりに@samp{i}、またはその両方が使われます。
+
+@cindex startup fontset
+  Emacsは@samp{Font}リソース、または@samp{-fn}引数で指定した任意のデフォルト@acronym{ASCII}フォント、またはEmacsが起動時に見つけたデフォルトフォントにもとづいて、フォントセットを自動的に作成します。これが@dfn{スタートアップフォントセット(startup
+fontset)}で、名前は@code{fontset-startup}です。これは@var{charset_registry}フィールドを@samp{fontset}、@var{charset_encoding}フィールドを@samp{startup}で置き換えたもので、その置き換えた文字列をフォントセットの指定に用います。
+
+  たとえば以下の形式でEmacsを起動した場合、
+
+@c FIXME?  I think this is a little misleading, because you cannot (?)
+@c actually specify a font with wildcards, it has to be a complete spec.
+@c Also, an X font specification of this form hasn't (?) been
+@c mentioned before now, and is somewhat obsolete these days.
+@c People are more likely to use a form like
+@c emacs -fn "DejaVu Sans Mono-12"
+@c How does any of this apply in that case?
+@example
+emacs -fn "*courier-medium-r-normal--14-140-*-iso8859-1"
+@end example
+
+@noindent
+Emacsは以下のフォントセットを生成して、それをXウィンドウの初期フレームに使用します:
+
+@example
+-*-courier-medium-r-normal-*-14-140-*-*-*-*-fontset-startup
+@end example
+
+  スタートアップフォントセットは、そのフォントでサポートされているすべての文字にたいして指定したフォントか、異なるregistryまたはencodingのフォントを使用し、それ以外の文字は@samp{fontset-default}にフォールバックして表示するでしょう。
+
+@c FIXME is this still true?
+  Xリソースの@samp{Emacs.Font}では、フォントセット名を実際のフォント名のように指定できます。しかし@samp{Emacs*Font}のようなワイルドカードを使ったリソースにフォントセット名を指定しないように注意してください
+--- ワイルドカードを使った指定は、メニューのようなフォントセットを処理できないものも含めて、 他のさまざまな目的にも適用されます。@ref{X
+Resources}を参照してください。
+
+  @samp{Fontset-@var{n}}という名前のXリソースを使って、追加のフォントセットを指定できます。ここで@var{n}は0から始まる整数です。リソースの値はつぎのような形式です:
+
+@smallexample
+@var{fontpattern}, @r{[}@var{charset}:@var{font}@r{]@dots{}}
+@end smallexample
+
+@noindent
+@var{fontpattern}は、最後の2つのフィールドを除いて、標準のXフォント名の形式です(前のfontset-startupの例を参照)。最後の2つのフィールドは、@samp{fontset-@var{alias}}の形式をもつべきです。
+
+  フォントセットには2つの名前、長い名前と短い名前があります。長い名前は@var{fontpattern}です。短い名前は@samp{fontset-@var{alias}}です。どちらの名前でもフォントセットを参照できます。
+
+  @samp{@var{charset}:@var{font}}という構成は、ある文字セットにたいして、(このフォントセットでは)どのフォントを使用するかを指定します。ここで@var{charset}は、文字セットの名前で、@var{font}はその文字セットに使用するフォントです。1つのフォントセットの定義の中で、この構成を何度でも使用できます。
+
+  他の文字セットにたいしては、Emacsは@var{fontpattern}にもとづいて選択します。これは文字セットを記述する値で@samp{fontset-@var{alias}}を置き換えます。@acronym{ASCII}文字フォントにたいしては、@samp{fontset-@var{alias}}を@samp{ISO8859-1}で置き換えます。
+
+  これに加えて、複数の連続するフィールドがワイルドカードの場合、Emacsはそれらを1つのワイルドカードにまとめます。これは、オートスケールされたフォントの使用を避けるためです。大きいフォントをスケーリングしたフォントは編集に適しておらず、小さいフォントをスケーリングしたフォントも同様です。なぜならEmacsがそうするように、もともと小さなフォントを使うほうがよいからです。
+
+  したがって、@var{fontpattern}が以下の場合、
+
+@example
+-*-fixed-medium-r-normal-*-24-*-*-*-*-*-fontset-24
+@end example
+
+@noindent
+@acronym{ASCII}文字にたいするフォント指定は、以下のようになるでしょう:
+
+@example
+-*-fixed-medium-r-normal-*-24-*-ISO8859-1
+@end example
+
+@noindent
+そしてChinese GB2312文字にたいするフォント指定は、以下のようになるでしょう:
+
+@example
+-*-fixed-medium-r-normal-*-24-*-gb2312*-*
+@end example
+
+  上記のフォント指定に一致するChineseフォントがないかもしれません。ほとんどのXディストリビューションには、@var{family}フィールドが@samp{song
+ti}か@samp{fangsong
+ti}のChineseフォントだけが含まれています。そのような場合、@samp{Fontset-@var{n}}をつぎのように指定します:
+
+@smallexample
+Emacs.Fontset-0: -*-fixed-medium-r-normal-*-24-*-*-*-*-*-fontset-24,\
+        chinese-gb2312:-*-*-medium-r-normal-*-24-*-gb2312*-*
+@end smallexample
+
+@noindent
+そうするとChinese GB2312の文字を除くフォント指定では、@var{family}フィールドが@samp{fixed}となり、Chinese
+GB2312の文字に対するフォント指定では、@var{family}フィールドが@samp{*}となります。
+
+@findex create-fontset-from-fontset-spec
+  フォントセットのリソース値を処理してフォントセットを作る関数は、@code{create-fontset-from-fontset-spec}と呼ばれます。フォントセットを作るために、この関数を明示的に呼ぶこともできます。
+
+  フォントの命名についての詳細は、@ref{Fonts}を参照してください。
+
+@node Modifying Fontsets
+@section フォントセットの修正
+@cindex fontsets, modifying
+@findex set-fontset-font
+
+  常にフォントセットをスクラッチから作成する必要はありません。軽微な変更だけが必要なときは、既存のフォントセットを修正するのが簡単な方法でしょう。@samp{fontset-default}の修正は、それをフォールバックに使用する他のフォントセットにも影響するので、特定のスクリプトのためにEmacsが選択するフォントに関する問題を解決する、効果的な方法になり得ます。
+
+フォントセットは関数@code{set-fontset-font}を使って、文字、文字セット、スクリプトフォントを修正する文字範囲、使用されるフォントの指定を修正することができます。以下は例です:
+
+@example
+;; Use Liberation Mono for latin-3 charset.
+(set-fontset-font "fontset-default" 'iso-8859-3
+                  "Liberation Mono")
+
+;; Prefer a big5 font for han characters
+(set-fontset-font "fontset-default"
+                  'han (font-spec :registry "big5")
+                  nil 'prepend)
+
+;; Use DejaVu Sans Mono as a fallback in fontset-startup
+;; before resorting to fontset-default.
+(set-fontset-font "fontset-startup" nil "DejaVu Sans Mono"
+                  nil 'append)
+
+;; Use MyPrivateFont for the Unicode private use area.
+(set-fontset-font "fontset-default"  '(#xe000 . #xf8ff)
+                  "MyPrivateFont")
+
+@end example
+
+
+@node Undisplayable Characters
+@section 表示できない文字
+
+  あなたの端末では表示できない非@acronym{ASCII}文字が、いくつか存在するかもしれません。ほとんどのテキスト端末は、1つの文字セットだけをサポートします(Emacsに何を使うか指示するには、変数@code{default-terminal-coding-system}を使用します。@ref{Terminal
+Coding}を参照してください)。そのコーディングシステムではエンコードできない文字は、デフォルトでは@samp{?}と表示されます。
+
+  グラフィカルなディスプレーでは、より広範囲の文字を表示できますが、それらすべてのフォントがインストールされていないかもしれません。フォントがない文字は、中空のボックスで表示されます。
+
+  Latin-1文字を使用するとき、端末がLatin-1を表示できない場合、かわりにニーモニック@acronym{ASCII}シーケンスを表示できます。たとえばo-umlautのかわりに@samp{"o}が表示されます。これを行うには@file{iso-ascii}をロードします。
+
+@vindex latin1-display
+  端末がLatin-1を表示できる場合、Latin-1と等しい文字と@acronym{ASCII}ニーモニックを混交して、他のEuropean文字セットを表示できます。これは変数@code{latin1-display}をカスタマイズすることにより有効になります。ニーモニック@acronym{ASCII}シーケンスは、ほとんどがインプットメソッドのプレフィクスに対応します。
+
+@node Unibyte Mode
+@section Unibyte編集モード
+
+@cindex European character sets
+@cindex accented characters
+@cindex ISO Latin character sets
+@cindex Unibyte operation
+  ISO 8859
+Latin-@var{n}文字セットは、さまざまなEuropean言語で必要とされるアクセント文字と区切り文字を扱うために、8進の0240から0377(10進の160から250)の範囲の文字コードを定義しています。Emacsはこの範囲のバイトを、たとえunibyteバッファー(たとえばマルチバイト文字を無効にしている場合)でも、それらを文字としてではなく、rawバイトとみなします。しかし、それでもEmacsはこれらの文字コードを、あたかも@emph{1つ}も1バイト文字セットに属するかのように1度に扱うことができます。これらのコードの@emph{どれ}を使うかを指定するには、@kbd{M-x
+set-language-environment}を呼び出して、@samp{Latin-@var{n}}のような適切な言語環境を指定します。@ref{Disabling
+Multibyte, , Disabling Multibyte Characters, elisp, GNU Emacs Lisp Reference
+Manual}を参照してください。
+
+@vindex unibyte-display-via-language-environment
+  端末や使っているフォントがこれらの文字をサポートしている場合、Emacsは160から255の文字を読み取り可能な文字として表示できます。これは自動的に行われます。グラフィカルなディスプレーでは、Emacsはフォントセットを通じて1バイト文字として表示できます。これは現在の言語環境で、それらに対応するマルチバイト文字を表示することにより行われます。これを行うには、変数@code{unibyte-display-via-language-environment}に非@code{nil}値を設定します。このセッティングは、これらのバイトを表示する方法だけに影響しますが、Emacsがそれらを文字としてではなくrawバイトとして扱うという基礎事実は変わらないことに注意して下さい。
+
+@cindex @code{iso-ascii} library
+  端末でLatin-1文字セットを表示できない場合、Emacsはこれらの文字をその文字が少なくとも何であるかを明確に理解できるような、@acronym{ASCII}シーケンスとして表示できます。これを行うには、ライブラリー@code{iso-ascii}をロードします。他のLatin-@var{n}文字セットに対しても似たようなライブラリを実装できますが、これは
+まだ行われていません。
+
+@findex standard-display-8bit
+@cindex 8-bit display
+  通常、非ISO
+8859文字セット(10進文字の128から159のコードも含む)は、8進でエスケープ表示されます。ライブラリー@code{disp-table}の関数@code{standard-display-8bit}を使うことにより、非標準の``拡張''バージョンのISO
+8859文字セットに変更できます。
+
+  1バイトの非@acronym{ASCII}文字を入力する2つの方法があります:
+
+@itemize @bullet
+@cindex 8-bit input
+@item
+選択した言語環境のインプットメソッドを使用することができます。@ref{Input
+Methods}を参照してください。unibyteバッファーでインプットメソッドを使用した場合、入力した非@acronym{ASCII}文字は、ユニバイトに変換されます。
+
+@item
+キーボードが、非@acronym{ASCII}文字を表現する(10進の)128以上の文字コードを生成できるならば、それらの文字コードを直接タイプすることができます。
+
+グラフィカルなディスプレーでは、これらのキーを使うのに特別なことをする必要はありません。それらは単純に機能するでしょう。テキスト端末では、コマンド@code{M-x
+set-keyboard-coding-system}を使うか、変数@code{keyboard-coding-system}をカスタマイズして、キーボードが使用するコーディングシステムを指定します(@ref{Terminal
+Coding}を参照してください)。この機能を有効にすることにより、おそらくMeta文字を入力するために@key{ESC}を使う必要が生じるでしょう。しかし、コンソール端末、または@code{xterm}では、Metaを@key{ESC}にアレンジすることが可能です。また8ビット文字を直接キーボードから入力したり、@key{Compose}キーや@key{AltGr}キーを使うこともできます。@ref{User
+Input}を参照してください。
+
+@kindex C-x 8
+@cindex @code{iso-transl} library
+@cindex compose character
+@cindex dead character
+@item
+Latin-1にたいしてだけですが、非@acronym{ASCII}のLatin-1のプリント文字入力の``合成文字''プレフィックスとして@kbd{C-x
+8}を使用できます。@kbd{C-x
+8}は、(ミニバッファーや他のバッファーでの)挿入、検索、キーシーケンスが許される他のコンテキストなどで使用できます。
+
+ライブラリー@code{iso-transl}をロードすることにより@kbd{C-x
+8}は機能します。1度ライブラリーをロードすると、@key{Alt}修飾キーがある場合は、@kbd{C-x
+8}と同じ目的で使用できます。後続の文字を修飾するには、アクセント文字と一緒に@key{Alt}を使用します。さらにLatin-1の``専用アクセント文字''キーがあると、1度@code{iso-transl}をロードした後は、それらのキーも後続の文字を合成するように定義されます。
+
+@kbd{C-x 8 C-h}を使用すると、利用可能なすべての@kbd{C-x 8}翻訳を一覧します。
+@end itemize
+
+@node Charsets
+@section 文字セット
+@cindex charsets
+
+  Emacsでは``文字セット(character
+set)''を縮めて、@dfn{charset}と呼びます。Emacsは、ほとんどの有名なcharsets(@code{ascii}、@code{iso-8859-1}、@code{cp1250}、@code{big5}、@code{unicode}など)に加えて、Emacs自身のcharsets(@code{emacs}、@code{unicode-bmp}、@code{eight-bit}など)をサポートします。すべてのサポートされた文字は、1つ以上のcharsetsに属します。
+
+  Emacsは通常、charsetsにたいして``正しいことを行う(does the right
+thing)''ので、あなたはそれらを心配する必要はありません。しかし、charsetsの背景の詳細を知ることが助けになる場合もあります。
+
+  1つの例はフォント選択です(@ref{Fonts}を参照してください)。それぞれの言語環境(@ref{Language
+Environments}を参照してください)は、さまざまな文字にたいする``優先リスト(priority
+list)''を定義します。フォントを検索するとき、Emacsは最初に一番優先度の高いcharsetsを表示できるものを探すことを試みます。たとえばJapanese言語環境では、charsets
+@code{japanese-jisx0208}は一番高い優先度をもっているので、Emacsは@code{registry}プロパティーが@samp{JISX0208.1983-0}のフォントの使用を試みます。
+
+@findex list-charset-chars
+@cindex characters in a certain charset
+@findex describe-character-set
+  charsetsに関する情報を得るのに使うことができるコマンドが2つあります。コマンド@kbd{M-x
+list-charset-chars}はcharset名の入力を求め、その文字セットのすべての文字を表示します。コマンド@kbd{M-x
+describe-character-set}はcharset名の入力を求め、Emacsでの内部表現も含めたそのcharsetに関する情報を表示します。
+
+@findex list-character-sets
+  @kbd{M-x
+list-character-sets}は、すべてのサポートされたcharsetsを表示します。このリストはcharsetsの名前と、各charsetを識別する追加の情報を与えます。詳細は、@url{http://www.itscj.ipsj.or.jp/ISO-IR/,
+International Register of Coded Character
+Sets}を参照してください。このリストでは、charsetsは2つのカテゴリーに分かれています。@dfn{通常のcharsets(normal
+charsets)}が最初にリストされ、その後に@dfn{追加のcharsets(supplementary
+charsets)}が続きます。追加のcharsetは他のcharsetを定義するのに(サブセットの親として)使用されるか、古いバージョンのEmacsとの互換性のために提供されます。
+
+  バッファーの文字がどのcharsetに属するか探すには、ポイントをその文字の前において、@kbd{C-u C-x
+=}をタイプします(@ref{International Chars}を参照してください)。
+
+@node Bidirectional Editing
+@section 双方向の編集
+@cindex bidirectional editing
+@cindex right-to-left text
+
+  EmacsはArabicやHebrewのような、テキストを水平方向の右から左に記述するスクリプトで書かれたテキストの編集をサポートします。しかし数字やそれらのスクリプトに埋め込まれたLatinテキストは、左から右に表示されます。Latin文書の中に少量のArabicやHebrewのテキスト部分が含まれている場合も、稀ではありません(例:
+プログラムソース内のコメントや文字列)。これらの理由により、これらのスクリプトを使うテキストは、実際には@dfn{双方向(bidirectional)}、つまりそれらはleft-to-right(左から右)の文字とright-to-left(右から左)文字の混交されたものになります。
+
+  このセクションでは、双方向テキストを編集するためにEmacsが提供する機能とオプションを説明します。
+
+@cindex logical order
+@cindex visual order
+  Emacsはright-to-leftおよび双方向テキストを、いわゆる@dfn{logical}順(または@dfn{reading}順)で格納します。バッファーまたは文字列の最初の文字の位置は、次に読む文字の前になります。双方向テキストを@dfn{visual}順に再配置するには、表示時間が発生します。結果として文字の位置は、それらが表示される位置にたいして単調に増加しなくなります。Emacsは表示のための双方向テキストの再配置を、Unicode
+Standard Annex #9で説明されているUnicode Bidirectional Algorithmで実装しています。
+
+@vindex bidi-display-reordering
+  バッファーローカルな変数@code{bidi-display-reordering}は、表示用にバッファーのテキストを再配置するかどうかを制御します。この変数の値が非@code{nil}の場合、Emacsは右から左の方向に表示される文字を再配置します。デフォルト値は@code{t}です。
+
+@cindex base direction of paragraphs
+@cindex paragraph, base direction
+@c paragraph-separate etc have no influence on this?
+  双方向テキストの各パラグラフは、それ自身の@dfn{base
+direction(基本方向)}をもっており、それはright-to-leftまたはleft-to-rightです(パラグラフの境界は空行、たとえば行全体が空白文字の行などです)。left-to-rightのパラグラフはスクリーンの左端から開始し、右端に到達すると切り詰め、または継続されます。対照的にright-to-leftのパラグラフのテキストは右端から開始し、左端で継続、または切り詰められて表示されます。
+
+@vindex bidi-paragraph-direction
+  Emacsは、パラグラフを開始するテキストにもとづいて、各パラグラフの基本方向を動的に決定します。しかし、バッファーのパラグラフにたいして特定の基本方向を強制する必要もあるでしょう。変数@code{bidi-paragraph-direction}が非@code{nil}の場合、これは基本方向の動的な決定を無効にして、バッファーのすべてのパラグラフの方向を、このバッファーローカルな値で指定された方向に強制します。値には@code{right-to-left}と@code{left-to-right}が指定できます。これ以外の値は@code{nil}と解釈されます。
+
+@cindex LRM
+@cindex RLM
+  かわりにパラグラフの先頭に特別な文字を挿入することにより、パラグラフの基本方向を制御できます。特別な文字@code{RIGHT-TO-LEFT
+MARK}または@sc{rlm}は、以降に続くパラグラフをright-to-left方向に強制します。その効果は@code{LEFT-TO-RIGHT
+MARK}または@sc{lrm}によりleft-to-right方向に再強制されるまで続きます(@kbd{C-x 8
+@key{RET}}を使ってこれらの文字を挿入できます)。GUIセッションでは@sc{lrm}文字および@sc{rlm}文字は、極端に細いスペースで表示されます。テキスト端末では、それらはスペースで表示されます。
+
+  文字は表示用に再配置されるので、logical順で処理を行うEmacsコマンドやバッファーの拡大は、普通とは異なる効果を生みます。たとえばコマンド@kbd{C-f}および@kbd{C-b}はポイントをlogical順で移動するので、再配置された双方向テキストではポイントがジャンプすることがあります。同様に隣接する文字位置の範囲をカバーするハイライトされたリージョンは、リージョンが再配置されたテキストにかかる場合には不連続に見える場合があります。これは双方向テキストをサポートする他のプログラムの振る舞いとしては普通であり、似通っています。@code{visual-order-cursor-movement}を非@code{nil}値にセットした場合、矢印キーによるカーソル移動は、スクリーンでのvisual順にしたがいます(@ref{Moving
+Point, visual-order movement}を参照してください)。

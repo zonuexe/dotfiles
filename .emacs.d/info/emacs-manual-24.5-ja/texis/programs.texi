@@ -1,0 +1,1280 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c -*- coding: utf-8 -*-
+@c This is part of the Emacs manual.
+@c Copyright (C) 1985-1987, 1993-1995, 1997, 1999-2015 Free Software
+@c Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@node Programs
+@chapter プログラムの編集
+@cindex Lisp editing
+@cindex C editing
+@cindex program editing
+
+  このチャプターでは、プログラムの編集を容易にするEmacsの機能を説明します。これらの機能で行えるいくつかは、以下のようなものです:
+
+@itemize @bullet
+@item
+トップレベルの定義の検索や移動(@ref{Defuns}を参照してください)。
+@item
+言語の通常のインデント規則の適用(@ref{Program Indent}を参照してください)。
+@item
+カッコの対応をとります(@ref{Parentheses}を参照してください)。
+@item
+コメントの挿入、kill、位置揃え(@ref{Comments}を参照してください)。
+@item
+プログラム構文のハイライト(@ref{Font Lock}を参照してください)。
+@end itemize
+
+@menu
+* Program Modes::            プログラムを編集するためのメジャーモード。
+* Defuns::                   プログラムの主要なトップレベル要素を操作するためのコマンド。
+* Program Indent::           ネスティングを示すためのインデントの調整。
+* Parentheses::              カッコを操作するコマンド。
+* Comments::                 コメントの挿入、kill、位置揃え。
+* Documentation::            関数ドキュメントの取得。
+* Hideshow::                 ブロックの選択的な表示。
+* Symbol Completion::        プログラムまたは言語でのシンボルの補完。
+* MixedCase Words::          identifiersLikeThisのような識別子の処理。
+* Semantic::                 ソースコードのパースにもとづいた編集ツール。
+* Misc for Programs::        その他、プログラムを編集するための便利なEmacs機能。
+* C Modes::                  C、C++、Objective-C、Java、IDL、Pike、AWKモードの特別なコマンド。
+* Asm Mode::                 Asmモードと特別な機能。
+@ifnottex
+* Fortran:: Fortranモードと特別な機能。
+@end ifnottex
+@end menu
+
+@node Program Modes
+@section プログラミング言語のためのメジャーモード
+@cindex modes for programming languages
+
+  Emacsには、プログラミング言語のために特化した、多くのメジャーモード(@ref{Major
+Modes}を参照してください)があります。プログラミング言語に関連したモードは通常、式の構文、インデントの慣習的ルール、言語の構文をハイライトする方法、関数定義の開始と終了を検索する方法を指定します。プログラムをコンパイルしたり、デバッグするための機能をもつ場合もあります。各言語にたいするメジャーモード名は、言語名により名づけられます。たとえばCプログラミング言語にたいするメジャーモードは、@code{c-mode}です。
+
+@cindex Perl mode
+@cindex Icon mode
+@cindex Makefile mode
+@cindex Tcl mode
+@cindex CPerl mode
+@cindex DSSSL mode
+@cindex Octave mode
+@cindex Metafont mode
+@cindex Modula2 mode
+@cindex Prolog mode
+@cindex Python mode
+@cindex Ruby mode
+@cindex Simula mode
+@cindex VHDL mode
+@cindex M4 mode
+@cindex Shell-script mode
+@cindex OPascal mode
+@cindex PostScript mode
+@cindex Conf mode
+@cindex DNS mode
+@cindex Javascript mode
+  EmacsにはLisp、Scheme、SchemeベースのDSSSL
+expression言語、Ada、ASM、AWK、C、C++、Fortran、Icon、IDL(CORBA)、IDLWAVE、Java、Javascript、Metafont(フォント作成のための@TeX{}の仲間)、Modula2、Object
+Pascal、Objective-C、Octave、Pascal、Perl、Pike、PostScript、Prolog、Python、Ruby、Simula、Tcl、VHDLなどのプログラミング言語のためのモードがあります。Perlのための代替モードはCPerlモードと呼ばれます。一般的なGNUおよびUnixシェルのスクリプティング言語、VMS
+DCL、MS-DOS/MS-Windowsの@samp{BAT}ファイル、makefiles、DNS
+masterファイル、一連のさまざまな設定ファイルのためのモードも利用可能です。
+
+  理想的には、Emacsは編集したいと望むすべてのプログラミング言語のためのメジャーモードをもつべきです。しかし、もしあなたのお気に入りの言語のためのモードがない場合、それはEmacsとともに配布されないパッケージで実装されているかもしれません(@ref{Packages}を参照してください)。または、あたたが貢献することもできます。
+
+@kindex DEL @r{(programming modes)}
+@findex c-electric-backspace
+@findex backward-delete-char-untabify
+  ほとんどのプログラミング言語では、インデントはプログラム構造を示すために行ごとに異なります。したがって、ほとんどのプログラミング言語のモードでは、@key{TAB}とタイプすることにより、カレント行のインデントが更新されます(@ref{Program
+Indent}を参照してください)。さらに@key{DEL}は通常、タブをあたかも等価な数のスペースであるかのように扱って、後方に削除する@code{backward-delete-char-untabify}にバインドされているので、空白文字がスペースなのかタブなのか気にせずに、インデントを1列ずつ削除できます。
+
+@cindex mode hook
+@vindex c-mode-hook
+@vindex lisp-mode-hook
+@vindex emacs-lisp-mode-hook
+@vindex lisp-interaction-mode-hook
+@vindex scheme-mode-hook
+  プログラミング言語のモードに入ることにより、フック変数@code{prog-mode-hook}に指定されたカスタムLisp関数と、その後でモード自身のモードフックが実行されます(@ref{Major
+Modes}を参照してください)。たとえばCモードに入ることにより、@code{prog-mode-hook}と@code{c-mode-hook}が実行されます。フックについての情報は、@ref{Hooks}を参照してください。
+
+@ifnottex
+  Adaモード(@ref{Top,, Ada Mode, ada-mode, Ada Mode}を参照してください)、C/C++/Objective
+C/Java/Corba IDL/Pike/AWKモード(@ref{Top, , CC Mode, ccmode, CC
+Mode}を参照してください)、IDLWAVEモード(@ref{Top,, IDLWAVE, idlwave, IDLWAVE User
+Manual}を参照してください)のマニュアルが利用可能です。
+@end ifnottex
+@iftex
+  EmacsディストリビューションにはAda、C/C++/Objective C/Java/Corba
+IDL/Pike/AWK、IDLWAVEのためのメジャーモードのInfoマニュアルが含まれています。Fortranモードに関しては、@ref{Fortran,,,
+emacs-xtra, Specialized Emacs Features}を参照してください。
+@end iftex
+
+@node Defuns
+@section トップレベルの定義、またはdefun
+
+  Emacsでは関数などの、バッファーのトップレベルの主要な定義は、@dfn{defun}と呼ばれます。この名前はLispが由来ですが、Emacsではすべての言語に使用します。
+
+@menu
+* Left Margin Paren::        開きカッコまたは同様の開始を意味する区切りは、それが左端にある場合はdefunの開始です。
+* Moving by Defuns::         主要な定義を移動したりマークするコマンド。
+* Imenu::                    バッファーのインデックスをメニューにする。
+* Which Function::           Which 
+                               Functionモードはどの関数にいるか表示します。
+@end menu
+
+@node Left Margin Paren
+@subsection 左端の慣習
+
+@cindex open-parenthesis in leftmost column
+@cindex ( in leftmost column
+  プログラミング言語のモードの多くは、デフォルトでは左端で見つかった開始区切りは、トップレベル定義、またはdefunの開始とみなします。したがって、@strong{そのような意味をもたない場合、開始区切りを左端に配してはいけません}。たとえば、それがトップレベルのリストの開始でない場合は、Lispファイルの左端に開きカッコを記述しないでください。
+
+  この慣習に従わない場合、コードの構文を解析するために、バッファーの先頭から再スキャンが必要ですが、慣習に従うことにより、多くのEmacs操作をスピードアップできます。
+
+  この慣習にしたがわない場合、defunにより動作するコマンドを明示的に使用する場合にトラブルが起こるだけではありません。これを使用する他の機能もトラブルを起こすでしょう。これにはインデントコマンド(@ref{Program
+Indent}を参照してください)と、Font Lockモード(@ref{Font Lock}を参照してください)が含まれます。
+
+  同様な問題ケースのほとんどは、文字列リテラルで開始区切りを行の先頭に記述したい場合です。このトラブルを避けるには、開始区切りの前にエスケープ文字(CおよびEmacs
+Lispでは@samp{\}、その他のLisp方言のいくつかは@samp{/})を配します。これは文字列の内容には影響を与えませんが、その開始区切りがdefunの開始となるのを防ぎます。以下は例です:
+
+@example
+  (insert "Foo:
+\(bar)
+")
+@end example
+
+  この慣習を破ったことに気づくには、Font Lockモードが助けになります。Font
+Lockモードは混乱して、(クォートする必要がある)開始区切りを赤の太字でハイライトするからです。
+
+@vindex open-paren-in-column-0-is-defun-start
+  この慣習をオーバーライドする必要がある場合、変数@code{open-paren-in-column-0-is-defun-start}をセッティングすることにより、これを行うことができます。このユーザーオプションが@code{t}(デフォルト)にセットされている場合、列0の開きカッコまたは大カッコ(braces)は常にdefunの開始となります。@code{nil}の場合、defunは最外レベルのカッコまたは大カッコを検索することにより発見されます。
+
+  通常は、このオプションをデフォルト値の@code{t}にしておくべきです。バッファーの列0にdefunの開始でないカッコまたは大カッコが含まれていて、これらのカッコまたは大カッコを削除するのが何らかの理由で現実的でない場合、このオプションを@code{nil}にするのが役に立つかもしれません。しかしこれは大きなバッファーのスクロールや、表示の速度を著しく低下させるかもしれないことを知っておいてください。さらに、正しく機能させるために、バッファー全体を通じてカッコまたは大カッコが、正しく対応が取れていなければなりません。
+
+@node Moving by Defuns
+@subsection defunの移動
+@cindex defuns
+
+  これらのコマンドはトップレベルの主要な定義、または@dfn{defuns}にもとづいてポイントを移動したり、リージョンをセットアップします。
+
+@table @kbd
+@item C-M-a
+カレントまたは直前のdefunの先頭に移動します(@code{beginning-of-defun})。
+@item C-M-e
+カレントまたは直後のdefunの最後に移動します(@code{end-of-defun})。
+@item C-M-h
+カレントまたは後続のdefun全体の周囲にリージョンを設定します(@code{mark-defun})。
+@end table
+
+@cindex move to beginning or end of function
+@cindex function, move to beginning or end
+@kindex C-M-a
+@kindex C-M-e
+@kindex C-M-h
+@findex beginning-of-defun
+@findex end-of-defun
+@findex mark-defun
+  カレントのdefunの先頭または最後に移動するコマンドは、@kbd{C-M-a}
+(@code{beginning-of-defun})と@kbd{C-M-e}
+(@code{end-of-defun})です。これらのコマンドの1つを繰り返すか、正の数引数を使用すると、繰り返しごとに動作方向の次のdefunに移動します。
+
+  @kbd{C-M-a}で負の引数@minus{}@var{n}を指定すると、次のdefunの開始へと@var{n}回移動します。これは@kbd{C-M-e}に引数@var{n}を与えたときに移動する位置と、正確に同じではありません。defunの終わりは通常、後続のdefunの開始と同じ位置ではないからです(空白文字、コメント、もしかしたら宣言がこれらのdefunを分割するからです)。同様に@kbd{C-M-e}に負の引数を与えると、defunの最後に後方に移動しますが、これは@kbd{C-M-a}に正の引数を与えた場合とは完全に異なる位置になります。
+
+@kindex C-M-h @r{(C mode)}
+@findex c-mark-function
+  カレントのdefunを操作するには、@kbd{C-M-h}
+(@code{mark-defun})を使用します。これはカレントのdefunの最後にマークをセットし、先頭にポイントを配します。@ref{Marking
+Objects}を参照してください。これは、そのdefunをkillしてファイルの他の場所に移動するための、一番簡単な準備方法です。ポイントがdefunの間にある場合、後続のdefunを使用します。マークがすでにアクティブのときにこのコマンドを使用すると、マークはセットしますがポイントは移動しません。さらに、連続して@kbd{C-M-h}を使用するとリージョンの最後が、複数のdefunを含むように拡張されます。
+
+  Cモードでは、@code{mark-defun}とほとんど同じな@code{c-mark-function}を実行します。違いは、それが引数定義、関数名、リターンデータ型を含むことで、これによりC関数全体にリージョンが設定されます。これは標準のキーバインディングをメジャーモードが調整する方法の例です。これにより特定の言語によりふさわしい方法で標準的な作業を行うのです。この目的のために、他のメジャーモードは、これらのキーバインディングすべてを置き換えているかもしれません。
+
+@node Imenu
+@subsection Imenuとは
+@cindex index of buffer definitions
+@cindex buffer definitions index
+
+  Imenu機能は、ファイル内の主要な定義を、名前で検索する方法を提供します。これはチャプター、セクションなどを扱う、テキストフォーマッターのためのメジャーモードでも有用です(複数ファイルを扱う、より強力な機能については、@ref{Tags}を参照してください)。
+
+@findex imenu
+  @kbd{M-x
+imenu}とタイプすると、これはミニバッファーを使用して定義の名前を読み取り、ポイントをその定義に移動します。名前の指定に補完を使用できます。このコマンドは常に有効な名前の全体のリストを表示します。
+
+@findex imenu-add-menubar-index
+  かわりに、コマンド@code{imenu}をマウスクリックにバインドできます。そうすると定義名を選択するために、マウスメニューが表示されます。@code{imenu-add-menubar-index}を呼び出して、バッファーのインデックスをメニューバーに追加することもできます。特定のメジャーモードのすべてのバッファーにたいして、このメニューバーアイテムを有効にしたい場合、モードフックに@code{imenu-add-menubar-index}を追加して、これを行うことができます。しかし、それを行うことにより、そのモードでファイルをvisitするたびに、Emacsがそのバッファーのすべての定義を検索する間、待つ必要があります。
+
+@vindex imenu-auto-rescan
+  バッファーの内容を変更する際、定義の追加や削除をした場合は、メニューの@samp{*Rescan*}アイテムを呼び出すことにより、新しい内容にもとづいてバッファーのインデックスを更新することができます。@code{imenu-auto-rescan}を非@code{nil}値にセットした場合、再スキャンは自動的に発生します。テキストを少量変更しただけの場合、再スキャンは必要ありません。
+
+@vindex imenu-sort-function
+  変数@code{imenu-sort-function}をセットして、メニューがソートされる方法をカスタマイズすることができます。デフォルトでは、名前はバッファーで出現する順にソートされています。アルファベット順にソートしたいときは、値にシンボル@code{imenu--sort-by-name}を使用します。Lispコードを記述することにより、独自の比較関数を定義することもできます。
+
+  ImenuはWhich Functionモードに情報を提供します
+@ifnottex
+(@ref{Which Function}を参照してください)。
+@end ifnottex
+@iftex
+(以下参照)。
+@end iftex
+Speedbarもこれを使用します(@ref{Speedbar}を参照してください)。
+
+@node Which Function
+@subsection Which Functionモード
+@cindex current function name in mode line
+
+  Which Function(どの関数)モードは、グローバルなマイナーモード(@ref{Minor
+Modes}を参照してください)で、これはカレントの関数名をモードラインに表示して、バッファーの移動にしたがってそれを更新します。
+
+@findex which-function-mode
+@vindex which-func-modes
+  Which Functionモードを有効または無効にするには、コマンド@kbd{M-x which-function-mode}を使用します。Which
+Functionモードは、グローバルなマイナーモードです。デフォルトでは、それをサポートする方法を知っている、すべてのメジャーモード(たとえばImenuをサポートするすべてのメジャーモード)に影響を与えます。変数@code{which-func-modes}の値を@code{t}(これは利用可能なすべてのメジャーモードをサポートすることを意味します)から、特定のメジャーモードのリストに変更することにより、これを制限することができます。
+
+@node Program Indent
+@section プログラムのインデント
+@cindex indentation for programs
+
+  プログラムを正しくインデントされた状態に保つには、何か変更したらEmacsを使って再インデントするのが一番よい方法です。Emacsには1行、指定した数の行、1つのカッコでグループ化されたすべての行をインデントするコマンドがあります。
+
+  インデントに間する全般的な情報は、@ref{Indentation}を参照してください。このセクションでは、プログラミング言語のモードに特有のインデント機能について説明します。
+
+@menu
+* Basic Indent::             1行のインデント。
+* Multi-line Indent::        複数行を1度に再インデントするコマンド。
+* Lisp Indent::              Lisp関数がどのようにインデントされるべきか指定する。
+* C Indent::                 Cおよび関連するモードのインデントのための追加機能。
+* Custom C Indent::          Cおよび関連するモードのインデントスタイルの制御。
+@end menu
+
+@cindex pretty-printer
+  Emacsは@code{pp}パッケージで、Lispのプリティープリンター(pretty-printer)も提供します。これはLispオブジェクトを、見栄えのよいインデントで再フォーマットします。
+
+@node Basic Indent
+@subsection プログラムの基本的なインデントコマンド
+
+@table @kbd
+@item @key{TAB}
+カレント行のインデントを調整します(@code{indent-for-tab-command})。
+@item @key{RET}
+改行を挿入して、次の行のインデントを調整します(@code{newline})。
+@end table
+
+@kindex TAB @r{(programming modes)}
+@findex c-indent-command
+@findex indent-line-function
+@findex indent-for-tab-command
+  基本的なインデントコマンドは@key{TAB}
+(@code{indent-for-tab-command})で、これは@ref{Indentation}で説明されています。プログラミング言語のモードでは、@key{TAB}は前の行のインデントと構文的な内容にもとづき、カレント行をインデントします。リージョンがアクティブのとき、@key{TAB}はカレント行だけでなく、リージョン内の各行をインデントします。
+
+  @ref{Inserting Text}で説明されているコマンド@key{RET}
+(@code{newline})は、@kbd{C-j}の後に@key{TAB}を続けるのと同じです。これは改行を挿入してから、その行のインデントを調整します。
+
+  カッコによるグループ化により開始される行でインデントする場合、通常Emacsはグループ内の前の行の開始、または、カッコの後ろのテキストの下に、行の開始を合わせます。(たとえば美的観点により)これらの行に手動で非標準的なインデントを与えた場合は、その下の行もそれにしたがいます。
+
+  プログラミング言語のモードのほとんどは、左端の開きカッコ、開き大カッコ(open-brace)、その他の開始区切りを関数の開始とみなします。編集しているコードがこの前提に違反する場合は
+--- それらの区切りが文字列やコメントの中にある場合でも ---
+インデントが正しく機能するために、@code{open-paren-in-column-0-is-defun-start}に@code{nil}をセットしなければなりません。@ref{Left
+Margin Paren}を参照してください
+
+@node Multi-line Indent
+@subsection 複数行のインデント
+
+  複数行のコードを、1度に再インデントしたいときがあるかもしれません。これを行う1つの方法は、マークを使う方法です。マークがアクティブでリージョンが空でないとき、@key{TAB}はリージョン内の各行をインデントします。一方、コマンド@kbd{C-M-\}
+(@code{indent-region})は、マークがアクティブか否かにかかわらず、リージョン内の各行をインデントします(@ref{Indentation
+Commands}を参照してください)。
+
+  それらに加えて、Emacsはコードの大きな断片をインデントするために、以下のコマンドを提供します:
+
+@table @kbd
+@item C-M-q
+カッコでグループ化された、すべての行を再インデントします。
+@item C-u @key{TAB}
+カッコでグループ化されたすべてを横にシフトして、最初の行が正しくインデントされるようにします。
+@item M-x indent-code-rigidly
+リージョン内のすべての行を横にシフトしますが、コメントや文字列内で開始される行は変更しません。
+@end table
+
+@kindex C-M-q
+@findex indent-pp-sexp
+  1つのカッコでグループ化されたものを再インデントするには、ポイントをグループ化の前に配して、@kbd{C-M-q}とタイプします。これはグループ化されたものの全体的なインデント(たとえばグループ化が開始される行のインデント)は変更せずに、相対的なインデントを変更します。@kbd{C-M-q}で実行される関数は、Lispモードでは@code{indent-pp-sexp}、Cモードでは@code{c-indent-exp}、のようにメジャーモードに依存します。全体的なインデントも同様に訂正したい場合は、最初に@key{TAB}をタイプします。
+
+@kindex C-u TAB
+  グループ内の相対的なインデントは好ましいが、それの最初の行のインデントが好ましくない場合は、その最初の行にポイントを移動して@kbd{C-u
+@key{TAB}}とタイプします。Lisp、C、他のいくつかのメジャーモードでは、数引数を指定した@key{TAB}は通常どおりカレント行をインデントしてから、カレント行で始まる、カッコでグループ化されたすべての行を同じ量で再インデントします。このコマンドは巧妙なので、文字列内で開始される行は変更しません。CモードのときはCプリプロセッサー行は変更しませんが、それらにアタッチされた継続行は再インデントします。
+
+@findex indent-code-rigidly
+  コマンド@kbd{M-x
+indent-code-rigidly}は、@code{indent-rigidly}が行うように(@ref{Indentation
+Commands}を参照してください)、リージョン内のすべての行を厳格(rigidly)にシフトします。このコマンドはリージョンが文字列内で開始される場合を除き、文字列内で開始される行のインデントは変更しません。プレフィクス引数は、インデントする列数です。
+
+@node Lisp Indent
+@subsection Lispのインデントのカスタマイズ
+@cindex customizing Lisp indentation
+
+  Lisp式のインデントパターンは、式により呼ばれる関数によって決定することができます。それぞれのLisp関数のために、事前定義された複数のインデントパターンの中から選択するか、Lispプログラムで独自のものを定義できます。
+
+  標準的なインデントのパターンは以下のとおりです。最初の引数が式の開始行にある場合、式の2行目は最初の引数の下にインデントされます。そうでない場合、2行目は関数名の下にインデントされ、後続の行はネストの深さが同じなら前の行の下にインデントされます。
+
+@vindex lisp-indent-offset
+  変数@code{lisp-indent-offset}が非@code{nil}の場合、これは式の2行目の通常のインデントパターンをオーバーライドするので、常にこれを含むリストより@code{lisp-indent-offset}列余計にインデントされます。
+
+@vindex lisp-body-indent
+  特定の関数は、標準のパターンをオーバーライドします。名前が@code{def}で始まる関数は、式の開始の開きカッコより@code{lisp-body-indent}列多く2行目をインデントすることにより、2行目を@dfn{body}の開始として扱います。
+
+@cindex @code{lisp-indent-function} property
+  関数名の@code{lisp-indent-function}プロパティーにより、個々の関数の標準パターンを、さまざまな方法でオーバーライドできます。これは通常@code{declare}構成を使用することにより、マクロ定義のために行われます。@ref{Defining
+Macros,,, elisp, the Emacs Lisp Reference Manual}を参照してください。
+
+@node C Indent
+@subsection Cのインデントのためのコマンド
+
+  Cおよび関連するモードのインデントのために、特別な機能があります。
+
+@table @code
+@item C-c C-q
+@kindex C-c C-q @r{(C mode)}
+@findex c-indent-defun
+カレントのトップレベル関数を再インデント、または型定義を統合します(@code{c-indent-defun})。
+
+@item C-M-q
+@kindex C-M-q @r{(C mode)}
+@findex c-indent-exp
+ポイントの後ろの、対応が取れた式の中の各行を再インデントします(@code{c-indent-exp})。プレフィクス引数は、無効な構文についての警告メッセージを抑制します。
+
+@item @key{TAB}
+@findex c-indent-command
+カレント行の再インデントおよび／またはタブ文字を挿入する場合もあります(@code{c-indent-command})。
+
+@vindex c-tab-always-indent
+@code{c-tab-always-indent}が@code{t}の場合、このコマンドは常にカレント行をインデントし、他には何もしません。これがデフォルトです。
+
+この変数が@code{nil}の場合、このコマンドはポイントが左端か、その行のインデント位置にある場合だけ、カレント行を再インデントします。そうでない場合、このコマンドはタブ(@code{indent-tabs-mode}が@code{nil}の場合は等価な数のスペース)を挿入します。
+
+(@code{nil}でも@code{t}でもない)他の値の場合、常にその行をインデントし、コメントか文字列の中の場合は、タブも挿入します。
+@end table
+
+  カレントバッファー全体を再インデントするには、@kbd{C-x h
+C-M-\}とタイプします。これは最初にバッファー全体をリージョンとして選択し、それからリージョンを再インデントします。
+
+  カレントブロックを再インデントするには、@kbd{C-M-u
+C-M-q}を使用します。これはブロックの前に移動してから、ブロックのすべてを再インデントします。
+
+@node Custom C Indent
+@subsection Cのインデントのカスタマイズ
+@cindex style (for indentation)
+
+  Cモードおよび関連するモードは、インデントをカスタマイズするために柔軟なメカニズムを使用します。Cモードはソース行を2ステップでインデントします。最初のステップは、行の内容とコンテキストに応じて行の構文を分類します。次のステップで、構文コンストラクトで選択された@dfn{スタイル}により、関連付けられたインデントのオフセットを決定して、これを@dfn{アンカーとなる命令文(anchor
+statement)}のインデントに加えます。
+
+@table @kbd
+@item C-c . @var{style} @key{RET}
+事前に定義されたスタイル@var{style}を選択します(@code{c-set-style})。
+@end table
+
+  @dfn{スタイル}とは、Cモードおよび関連するモードで使用できるカスタマイズ用の名前つきコレクションです。完全な説明は、@ref{Styles,,,
+ccmode, The CC Mode
+Manual}を参照してください。Emacsには、@code{gnu}、@code{k&r}、@code{bsd}、@code{stroustrup}、@code{linux}、@code{python}、@code{java}、@code{whitesmith}、@code{ellemtel}、@code{awk}を含む、事前に定義されたスタイルがいくつか付属します。これらのスタイルのうちいくつかは、主に1つの言語を意図したものですが、他のスタイルはこれらのモードをサポートする任意の言語で使用できます。スタイルがどのように見えるかは、何らかのコードにたいしてスタイルを選択して、(たとえば関数定義の最初で@kbd{C-M-q}とタイプして)再インデントしてみることです。
+
+@kindex C-c . @r{(C mode)}
+@findex c-set-style
+  カレントバッファーのスタイルを選択するには、コマンド@w{@kbd{C-c
+.}}を使用します。引数として、スタイル名を指定します(大文字小文字に意味はありません)。このコマンドはカレントバッファーだけに影響し、将来のインデントコマンドの呼び出しだけに影響します。そのバッファーにすでにあるコードの再インデントはしません。バッファー全体を新しいスタイルで再インデントするには、@kbd{C-x
+h C-M-\}とタイプしてください。
+
+@vindex c-default-style
+  変数@code{c-default-style}をセットして、さまざまなメジャーモードにたいしてデフォルトのスタイルを指定できます。この値は、スタイル名(文字列)、または各要素が1つのメジャーモードと、それに使用するインデントスタイルを指定するalistです。たとえば、
+
+@example
+(setq c-default-style
+      '((java-mode . "java")
+        (awk-mode . "awk")
+        (other . "gnu")))
+@end example
+
+@noindent
+これはJavaモード、AWKモードにたいして明示的に選択して、その他のC-likeなモードにたいしては、デフォルトの@samp{gnu}スタイルを指定します。この変数はC-likeなメジャーモードを選択したときに効果を表します。したがってJavaモードにたいして新しいデフォルトスタイルを指定するには、既存のJavaモードのバッファーで、@kbd{M-x
+java-mode}とタイプすることにより効果が表れます。
+
+  @code{gnu}スタイルは、CにたいするGNUプロジェクトで推奨されるフォーマットを指定します。これがデフォルトで、私たちが使用を推奨するスタイルです。
+
+  既存のスタイルのオーバーライドや、独自のスタイルを定義する方法など、Cおよび関連するモードにたいするインデントのカスタマイズに間する情報は、@ref{Indentation
+Engine Basics,,, ccmode, the CC Mode Manual}、および@ref{Customizing
+Indentation,,, ccmode, the CC Mode Manual}を参照してください。
+
+@findex c-guess
+@findex c-guess-install
+  スタイルを指定するかわりに、サンプルコードのバッファーで@kbd{M-x
+c-guess}とタイプすることにより、Emacsにスタイルを推測させることができます。その後、@kbd{M-x
+c-guess-install}として、推測されたスタイルを他のバッファーに適用できます。詳細については、@ref{Guessing the
+Style,,, ccmode, the CC Mode Manual}を参照してください。
+
+@node Parentheses
+@section カッコに付随する編集のためのコマンド
+
+@findex check-parens
+@cindex unbalanced parentheses and quotes
+  このセクションでは、プログラム内のカッコ構造を活用したり、それらを対応が取れた状態に保つためのコマンドと機能について説明します。
+
+  これらの機能を語るとき、用語``カッコ(parenthesis)''には、大カッコ(braces)、角カッコ(brackets)、またはマッチするペアとして定義される区切りも含まれます。メジャーモードはどの区切りに意味があるかを、構文テーブル(syntax
+table)を通じて制御します(@ref{Syntax Tables,, Syntax Tables, elisp, The Emacs Lisp
+Reference
+Manual}を参照してください)。Lispでは丸カッコ(parentheses)だけが考慮され、Cではこれらのコマンドは大カッコや角カッコにも適用されます。
+
+  @kbd{M-x
+check-parens}を使用して、バッファー内の対応の取れていないカッコと、対応が取れていない文字列のクォートを検索することができます。
+
+@menu
+* Expressions::              対応が取れたカッコの式。
+* Moving by Parens::         カッコ構造を上、下、横断して移動するコマンド。
+* Matching::                 終了区切りの挿入による、マッチする開始区切りのフラッシュ表示。
+@end menu
+
+@node Expressions
+@subsection 対応が取れたカッコの式
+
+@cindex sexp
+@cindex expression
+@cindex balanced expression
+  プログラミング言語のモードはそれぞれ、@dfn{対応が取れた式(balanced
+expression)}にたいする、独自の定義をもちます。対応が取れた式は通常、個別のシンボル、数字、文字列定数、同様にマッチする区切りで囲まれたコードの断片を含みます。以下のコマンドは対応が取れた式にたいするものです(Emacsでは、内部的にそのような式は@dfn{sexp}として参照されます@footnote{単語``sexp''はLispで式を参照するのに使用されます。})。
+
+@table @kbd
+@item C-M-f
+対応が取れた式を、前方に飛び越して移動します(@code{forward-sexp})。
+@item C-M-b
+対応が取れた式を、後方に飛び越して移動します(@code{backward-sexp})。
+@item C-M-k
+対応が取れた式を、前方にkillします(@code{kill-sexp})。
+@item C-M-t
+式を入れ替えます(@code{transpose-sexps})。
+@item C-M-@@
+@itemx C-M-@key{SPC}
+後続の式の後ろに、マークを配します(@code{mark-sexp})。
+@end table
+
+@kindex C-M-f
+@kindex C-M-b
+@findex forward-sexp
+@findex backward-sexp
+  対応が取れた式を前方に飛び越して移動するには、@kbd{C-M-f}
+(@code{forward-sexp})を使用します。ポイントの後ろの最初の文字が開始区切り(たとえばCでは@samp{(}、@samp{[}、@samp{@{})の場合、このコマンドはそれにマッチする終了区切りまで移動します。文字がシンボル、文字列、数字で始まる場合、このコマンドはそれらを飛び越して移動します。
+
+  コマンド@kbd{C-M-b} (@code{backward-sexp})は対応が取れた式を後方 --- @kbd{C-M-f}と同様ですが逆向き
+---
+に飛び越して移動します。式の前にプレフィクス文字がある場合(Lispではシングルクォート、バッククォート、カンマ)、このコマンドはそれらも同様に飛び越して後方に移動します。
+
+  @kbd{C-M-f}および@kbd{C-M-b}に数引数を与えると、指定した回数繰り返し操作をします。負の引数を与えると、反対の方向に移動します。ほとんどのモードでは、これらの2つのコマンドはコメントをあたかも空白文字のように通過します。これら@kbd{C-M-f}および@kbd{C-M-b}のキーは、文字単位で移動する@kbd{C-f}および@kbd{C-b}(@ref{Moving
+Point}を参照してください)、単語単位に移動する@kbd{M-f}および@kbd{M-b}(@ref{Words}を参照してください)に類似していることに注意してください。
+
+@cindex killing expressions
+@kindex C-M-k
+@findex kill-sexp
+  対応が取れた式全体をkillするには、@kbd{C-M-k}
+(@code{kill-sexp})とタイプします。これは@kbd{C-M-f}が飛び越すテキストをkillします。
+
+@cindex transposition of expressions
+@kindex C-M-t
+@findex transpose-sexps
+  @kbd{C-M-t}
+(@code{transpose-sexps})は、前にある対応の取れた式と、次の対応の取れた式の位置をスイッチします。このコマンドは、文字を入れ替える@kbd{C-t}コマンド(@ref{Transpose}を参照してください)と類似しています。@kbd{C-M-t}への引数は繰り返し回数を意味し、前の式を、何個か先の式に移動します。負の引数は前にある対応が取れた式を後方に、それらの式の前に移動します。引数0は何もしないのではなく、ポイントの位置で終わる対応が取れた式、またはポイントの後ろの式と、マークの後ろの式を入れ替えます。
+
+@kindex C-M-@@
+@kindex C-M-@key{SPC}
+@findex mark-sexp
+  リージョンにたいして動作するコマンドで対応が取れた式を操作するには、@kbd{C-M-@key{SPC}}
+(@code{mark-sexp})とタイプします。これは@kbd{C-M-f}が移動する位置にマークをセットします。マークがアクティブの間、このコマンドを連続で呼び出すとマークが1つの式ごとにシフトしてリージョンが拡張します。正または負の引数はマークを前方または後方に指定した数の式分のマークを移動します。エイリアス@kbd{C-M-@@}は、@kbd{C-M-@key{SPC}}と等価です。これに関連したコマンドは、@ref{Marking
+Objects}を参照してください。
+
+  Cのように挿入オペレーター(infix
+operators)を使用する言語では、与えられた位置で複数の可能な解釈があるので、すべての対応が取れた式を認識するのは不可能です。たとえば@samp{foo
++
+bar}は1つのCの式ですが、Cモードはこれを1つの式とは扱いません。かわりに@samp{foo}を1つの式、@samp{bar}をもう1つの式、そしてそれらの間にある@samp{+}を句読点として認識します。しかしカッコがあればCモードは@samp{(foo
++ bar)}を1つの式として認識します。
+
+@node Moving by Parens
+@subsection カッコ構造の移動
+
+@cindex parenthetical groupings
+@cindex parentheses, moving across
+@cindex matching parenthesis and braces, moving to
+@cindex braces, moving across
+@cindex list commands
+
+  以下のコマンドはカッコ(または、あなたが使用している言語で、そのような区切りとして使用される文字)で区切られてグループ化されたものを移動するコマンドです。これらのコマンドは、カッコを含んでいたとしても文字列とコメントを無視し、エスケープ文字で``クォート''されたカッコも無視します。これらのコマンドは主にプログラムの編集を意図していますが、カッコを含む任意のテキストの編集にも有用です。これらは内部的には``リスト''コマンドとして参照されます。なぜならLispではこれらのグループはリストだからです。
+
+  これらのコマンドは、開始ポイントが文字列やコメントの中でないと仮定します。これらのコマンドを文字列やコメントの中から呼び出したとき、結果は信頼できません。
+
+@table @kbd
+@item C-M-n
+カッコでグループ化されたグループを飛び越えて、前方に移動します(@code{forward-list})。
+@item C-M-p
+カッコでグループ化されたグループを飛び越えて、後方に移動します(@code{backward-list})。
+@item C-M-u
+カッコによる構造を上に移動します(@code{backward-up-list})。
+@item C-M-d
+カッコによる構造を下に移動します(@code{down-list})。
+@end table
+
+@kindex C-M-n
+@kindex C-M-p
+@findex forward-list
+@findex backward-list
+  ``リスト(list)''コマンドの@kbd{C-M-n} (@code{forward-list})と@kbd{C-M-p}
+(@code{backward-list})は、グループ化されたカッコを前方または後方に、1つ(または@var{n}個)飛び越えて移動します。
+
+@kindex C-M-u
+@findex backward-up-list
+  @kbd{C-M-n}と@kbd{C-M-p}は、カッコによる構造において同じレベルに留まろうと試みます。1レベル(または@var{n}レベル)@emph{上}に移動するには、@kbd{C-M-u}
+(@code{backward-up-list})を使用します。@kbd{C-M-u}は対応が取れていない、前にある開始区切りへ、後方に移動します。正の引数は繰り返し回数を意味します。負の引数は移動の方向を逆転するので、このコマンドは1レベル以上を上に、前方に移動します。
+
+@kindex C-M-d
+@findex down-list
+  カッコによる構造を@emph{下}に移動するには、@kbd{C-M-d}
+(@code{down-list})を使用します。Lispモードでは@samp{(}は開始区切りなので、これは@samp{(}を検索するのとほとんど同じです。引数は何レベルしたに移動するかを指定します。
+
+@node Matching
+@subsection マッチするカッコ
+@cindex matching parentheses
+@cindex parentheses, displaying matches
+
+  Emacsには@dfn{カッコのマッチング(parenthesis
+matching)}機能がいくつかあります。これにより、どのカッコ(または他の区切り)がどのようにマッチするか簡単に見ることができます。
+
+  終了文字となる自己挿入文字をタイプすると、Emacsはそれがスクリーン上にあれば、マッチする開始区切りの位置を簡単に示します。スクリーン上にない場合、Emacsは開始区切りの近くにあるテキストをエコーエリアに表示します。どちらの方法でも、どのグループを終了したのか見分けることができます。開始区切りと終了区切りがマッチしない
+--- @samp{[x)}のような場合、エコーエリアに警告メッセージが表示されます。
+
+@vindex blink-matching-paren
+@vindex blink-matching-paren-distance
+@vindex blink-matching-delay
+  3つの変数が、マッチするカッコの表示を制御します:
+
+@itemize @bullet
+@item
+@code{blink-matching-paren}は、この機能をオンまたはオフに切り替えます。@code{nil}は無効にしますが、デフォルトの@code{t}は有効にします。@code{jump}にセットすると、マッチする開始区切りに数瞬カーソルを移動して指示します。
+
+@item
+@code{blink-matching-delay}は、マッチする開始区切りを何秒表示するかを指定します。これには整数または浮動小数点数を指定します。デフォルトは1です。
+
+@item
+@code{blink-matching-paren-distance}には、マッチする開始区切りを後方に何文字検索するかを指定します。この文字数内にマッチが見つからない場合、Emacsは検索を中止して、何も表示しません。デフォルトは102400です。
+@end itemize
+
+@cindex Show Paren mode
+@cindex highlighting matching parentheses
+@findex show-paren-mode
+  グローバルなマイナーモードのShow
+Parenモードは、より強力な自動的なマッチングの類を提供します。これは開始区切りの前、または終了区切りの後ろにポイントを移動すると、その区切りと、それに対応する反対側の区切りをハイライトします。Show
+Parenモードに切り替えるには、@kbd{M-x show-paren-mode}とタイプしてください。
+
+@cindex Electric Pair mode
+@cindex inserting matching parentheses
+@findex electric-pair-mode
+  グローバルなマイナーモードのElectric
+Pairモードは、マッチする区切りを簡単に挿入する方法を提供します。開始区切りを挿入すると、マッチする終了区切りが自動的に挿入され、2つの区切りの間にポイントが配されます。反対に終了区切りを既存の区切りの先に挿入した場合、何の挿入もされず、その位置は単にスキップされます。以下の変数はElectric
+Pairモードの追加機能を制御します:
+
+@itemize @bullet
+@item
+@code{electric-pair-preserve-balance} ---
+非@code{nil}の場合、デフォルトのペアリングロジックは、開始区切りと終了区切りの数のバランスになります。
+
+@item
+@code{electric-pair-delete-adjacent-pairs} ---
+非@code{nil}の場合、隣接する区切りの間でのバックスペースにより、終了区切りも自動的に削除します。
+
+@item
+@code{electric-pair-open-newline-between-pairs} ---
+非@code{nil}の場合、2つの隣接するペアの間での改行の挿入は、ポイントの後ろに自動的に自動的に追加の改行をオープンします。
+
+@item
+@code{electric-pair-skip-whitespace} ---
+非@code{nil}の場合、終了区切りのスキップを決定する前に、マイナーモードが空白文字を前方にスキップするようにします。
+@end itemize
+
+Electric Pairモードに切り替えるには、@kbd{M-x electric-pair-mode}とタイプしてください。
+
+@node Comments
+@section コメントの操作
+@cindex comments
+
+  コメントは、プログラミングにおいて重要なパートなので、Emacsはコメントの編集や挿入を行う特別なコマンドを提供します。Flyspell
+Progモードによる、コメントのスペルチェックも行うことができます(@ref{Spelling}を参照してください)。
+
+  異なる種類のコメントのインデントにたいして、特別なルールをもつメジャーモードがいくつかあります。たとえばLispコードでは、2つのセミコロンで始まるコメントは、それらの行がコードであるかのようにインデントされ、3つのセミコロンで始まるコメントは左端に揃えてインデントされ、しばしば区分けの目的で使用されます。Emacsはこれらの慣習を理解します。たとえば、コメント行で@key{TAB}をタイプすると、そのコメントを適切な位置にインデントします。
+
+@example
+;; This function is just an example.
+;;; Here either two or three semicolons are appropriate.
+(defun foo (x)
+;;;  And now, the first part of the function:
+  ;; The following line adds one.
+  (1+ x))           ; This line adds one.
+@end example
+
+@menu
+* Comment Commands::         コメントの挿入、kill、位置揃え。
+* Multi-Line Comments::      複数行のコメントを追加・編集するコマンド。
+* Options for Comments::コメント機能のカスタマイズ。
+
+@end menu
+
+@node Comment Commands
+@subsection コメントコマンド
+@cindex indentation for comments
+@cindex alignment for comments
+
+  以下のコマンドは、コメントにたいして処理を行います:
+
+@table @asis
+@item @kbd{M-;}
+カレント行にコメントを挿入、または位置揃えします。リージョンがアクティブのときは、かわりにリージョンをコメント化、または非コメント化します(@code{comment-dwim})。
+@item @kbd{C-u M-;}
+カレント行のコメントをkillします(@code{comment-kill})。
+@item @kbd{C-x ;}
+コメント列をセットします(@code{comment-set-column})。
+@item @kbd{C-M-j}
+@itemx @kbd{M-j}
+@key{RET}の後にコメントを挿入して位置揃えします(@code{comment-indent-new-line})。@ref{Multi-Line
+Comments}を参照してください。
+@item @kbd{M-x comment-region}
+@itemx @kbd{C-c C-c} (C-likeなモードの場合)
+リージョンのすべての行にたいして、コメント区切りを追加します。
+@end table
+
+@kindex M-;
+@findex comment-dwim
+  コメントを挿入または位置揃えするコマンドは、@kbd{M-;} (@code{comment-dwim})です。単語``dwim''は、``Do
+What I
+Mean(私が言ったとおりにしてください)''の頭文字をとったものです。このコマンドは、コメントに関係する多くの異なる作業に使用できます。それは、このコマンドをどこで使うかという、状況に依存することを示します。
+
+  リージョンがアクティブ(@ref{Mark}を参照してください)の場合、@kbd{M-;}はリージョンのコメント区切りの追加と削除のどちらかを行います。リージョンの各行がすでにコメントの場合、それらのコメント区切りを削除することにより、それらの行を``非コメント化''します。そうでない場合は、リージョンのテキストにコメント区切りを追加します。
+
+  リージョンがアクティブのときに@kbd{M-;}に数引数を与えると、それは追加または削除するコメント区切りの数を指定します。正の引数@var{n}は@var{n}個の区切りを追加し、負の引数@var{-n}は@var{n}個の区切りを削除します。
+
+  リージョンが非アクティブで、カレント行にコメントがない場合、@kbd{M-;}はカレント行に新しいコメントを追加します。ブランク行(たとえば空または空白文字しか含まない)の場合、@key{TAB}をタイプしたときにインデントされるのと同じ位置に、コメントがインデントされます(@ref{Basic
+Indent}を参照してください)。非ブランク行の場合、コメントはその行の最後の非空白文字の後ろに配されます。通常Emacsは変数@code{comment-column}
+(@ref{Options for
+Comments}を参照してください)で指定された列にコメントを配そうと試みますが、行が既にその列を越えている場合、コマンドはコメントを適切な位置
+---
+通常、非コメントのテキストと1つのスペースを空けてコメントを配します。どちらの場合も、Emacsはコメントの開始区切りの後ろにポイントを配すので、すぐにコメントのタイプを開始できます。
+
+  既存のコメントの位置揃えにも@kbd{M-;}を使用できます。行がすでにコメント開始文字列を含む場合、@kbd{M-;}は慣習的な位置にそれを位置揃えして、ポイントをコメント開始区切りの後ろに移動します。例外として、列0で始まるコメントは移動されません。既存のコメントがすでに正しく位置揃えされているときでも、@kbd{M-;}はコメントテキストの開始に直接移動するので有用です。
+
+@findex comment-kill
+@kindex C-u M-;
+  @kbd{C-u M-;}
+(@code{comment-dwim}にプレフィクス引数を指定)は、カレント行の任意のコメントを、それの前の空白文字と一緒にkillします。コメントはkillリングに保存されるので、他の行の行末に移動して@kbd{C-y}で挿入して、@kbd{M-;}でコメントの位置揃えをすることができます。@kbd{M-x
+comment-kill}とタイプしても@kbd{C-u
+M-;}と同じ効果を得ることができます(@code{comment-dwim}はプレフィクス引数を与えられたとき、実際にサブルーチンとして@code{comment-kill}を呼び出します)。
+
+@kindex C-c C-c (C mode)
+@findex comment-region
+@findex uncomment-region
+  コマンド@kbd{M-x
+comment-region}は、アクティブなリージョンにたいして@kbd{M-;}を呼び出すのと等価ですが、このコマンドはマークが非アクティブのときでも、常にリージョンにたいして動作します。Cモードおよび関連するモードでは、このコマンドは@kbd{C-c
+C-c}にバインドされています。コマンド@kbd{M-x
+uncomment-region}は、リージョンの各行を非コメント化します。数引数は、削除するコメント区切りの数を指定します(負の引数は、追加するコメント区切りの数を指定します)。
+
+  C-likeなモードにたいしては、変数@code{c-indent-comment-alist}および@code{c-indent-comments-syntactically-p}をセットすることにより、@kbd{M-;}の正確な効果を設定できます。たとえば閉じ大カッコで終わる行では、@kbd{M-;}は@code{comment-column}ではなく、大カッコの後ろにスペースを1つ空けてコメントを配します。完全な詳細は、@ref{Comment
+Commands,,, ccmode, The CC Mode Manual}を参照してください。
+
+@node Multi-Line Comments
+@subsection 複数行のコメント
+
+@kindex C-M-j
+@kindex M-j
+@cindex blank lines in programs
+@findex comment-indent-new-line
+@vindex comment-multi-line
+  コメントをタイプするとき、それを次の行に継続したくなったときは、@kbd{M-j}または@kbd{C-M-j}
+(@code{comment-indent-new-line})とタイプします。これはカレント行を行ブレークして、コメントを継続するために必要なコメント区切りとインデントを挿入します。
+
+  コメントの終了区切りをもつ言語(たとえばCの@samp{*/})では、@kbd{M-j}の正確な振る舞いは、変数@code{comment-multi-line}の値に依存します。変数の値が@code{nil}の場合、このコマンドは古い行のコメントを終了させて、新しい行で新しいコメントを開始します。そうでない場合、カレントのコメント区切りの中で新しい行を開きます。
+
+  Auto
+Fillモードがオンの場合、コメントをタイプしているときにフィル列に達すると、明示的に@kbd{M-j}を呼び出したときと同じ方法で、コメントが継続されます。
+
+  既存の行をコメントにするには、リージョンがアクティブのときは@kbd{M-;}、または@kbd{M-x comment-region}を使用します。
+@ifinfo
+(@pxref{Comment Commands}).
+@end ifinfo
+@ifnotinfo
+as described in the preceding section.
+@end ifnotinfo
+
+  複数行ブロックのコメントの行の開始で@samp{/}をタイプすると、コメントを終了するようにCモードを設定できます。これを行なうには、クリーンアップ(clean-up)で、@code{comment-close-slash}を有効にします。@ref{Clean-ups,,,
+ccmode, The CC Mode Manual}を参照してください。
+
+@node Options for Comments
+@subsection コメントを制御するオプション
+
+@vindex comment-column
+@kindex C-x ;
+@findex comment-set-column
+  @ref{Comment
+Commands}で示したように、@kbd{M-j}コマンドが行にコメントを追加するとき、バッファーローカルな変数@code{comment-column}で指定された位置にコメントを配しようと試みます。このバッファーローカルな変数のデフォルト値、またはローカルな値は、通常の方法(@ref{Locals}を参照してください)でセットできます。かわりに@kbd{C-x
+;}
+(@code{comment-set-column})とタイプすることにより、カレントバッファーの@code{comment-column}の値を、現在コメントがある列にセットすることができます。@kbd{C-u
+C-x
+;}は、コメント列をそのバッファーのポイントの前にある最後のコメントにセットします。その後で@kbd{M-;}を行うことにより、カレント行のコメントを前のコメントに揃えることができます。
+
+@vindex comment-start-skip
+@c This stops M-q from breaking the line inside that @code.
+  コメントコマンドは、変数@code{comment-start-skip}の値である正規表現にもとづいて、コメントを認識します。この正規表現がヌル文字列にマッチしないように気をつけてください。単語という言葉の厳格な意味から考えると、これはコメント開始区切りより長い文字列にマッチするかもしれません。たとえばCモードでの変数の値は@code{@w{"\\(//+\\|/\\*+\\)\\s
+*"}}で、これは@samp{/*}自身と、その後ろの余分なアスタリスクやスペースにマッチし、C++スタイルのコメントも許容します(文字列に@samp{\}を含む場合、Lisp構文では@samp{\\}と記述する必要があることに注意してください。これは最初のアスタリスクにたいして、正規表現においてアスタリスクがもつ特別な意味を打ち消すために必要です)。
+
+@vindex comment-start
+@vindex comment-end
+  コメントコマンドが新しいコメントを作るとき、これは@code{comment-start}の値をコメント開始区切りとして挿入します。これはポイントの後ろに、コメント終了区切りとして@code{comment-end}の値も挿入します。たとえばLispモードでは@code{comment-start}が@samp{";"}で、@code{comment-end}が@code{""}(空文字列)です。Cモードでは@code{comment-start}が@code{"/*
+"}で、@code{comment-end}が@code{" */"}です。
+
+@vindex comment-padding
+  変数@code{comment-padding}は、コメントコマンドが、コメント区切りとコメントテキストの間を区切る文字列を指定します。デフォルトでは@samp{"
+"}、つまり1つのスペースが指定されます。かわりに数字を指定すると、これは指定した数のスペースになり、@code{nil}の場合、スペースは挿入されません。
+
+  変数@code{comment-multi-line}は、@kbd{M-j}とAuto
+Fillモードがコメントをどのように複数行に継続するかを制御します。@ref{Multi-Line Comments}を参照してください。
+
+@vindex comment-indent-function
+  変数@code{comment-indent-function}は、新しく挿入されたコメント、または既存のコメントの位置揃え位置を計算するために呼び出される関数を指定します。これはメジャーモードごとに異なります。関数は引数なしで呼び出されますが、新しいコメントが挿入されるときはコメント開始位置のポイント、または行末のポイントで呼び出されます。この関数はコメントが開始されるべき列を返す必要があります。たとえばLispモードでは、インデントフック関数の決定は、既存のコメントがいくつのセミコロンで始まるかと、前の行のコードにもとづきます。
+
+@node Documentation
+@section ドキュメントの照会
+
+  Emacsは、関数やプログラムで使おうと計画している変数およびコマンドを、ドキュメントから探すのに使用できる機能をいくつか提供します。
+
+@menu
+* Info Lookup::              Infoファイルからライブラリー関数やコマンドを探す。
+* Man Page::                 manからライブラリー関数やコマンドを探す。
+* Lisp Doc::                 Emacs関数を探す、その他。
+@end menu
+
+@node Info Lookup
+@subsection Infoドキュメントの照会
+
+@findex info-lookup-symbol
+@findex info-lookup-file
+@kindex C-h S
+  Infoドキュメントをもつ言語に適用されるメジャーモードでは、プログラムで使用されるシンボルにたいして@kbd{C-h S}
+(@code{info-lookup-symbol})を使用することにより、Infoドキュメントを閲覧できます。シンボルはミニバッファーで指定します。デフォルトはバッファーのポイント位置にあるシンボルです。たとえばCモードでは、シンボルをC
+Library Manualから探します。このコマンドは適切なInfoファイルのマニュアルがインストールされているときだけ機能します。
+
+  メジャーモードは、どのドキュメントのどこからシンボルを探すか ---
+つまり、どのInfoファイルを探すのか、そしてどのインデックスを検索するかを決定します。@kbd{M-x
+info-lookup-file}を使用して、ドキュメントのファイル名を指定することもできます。
+
+  @kbd{C-h S}をサポートしないメジャーモードでこれを使用すると、これは``symbol help
+mode''を指定するよう求めます。ここでは@code{c-mode}コマンドのように、@kbd{C-h S}をサポートするメジャーモードを選択します。
+
+@node Man Page
+@subsection man-pageの照会
+
+@cindex man page
+  Unixでは、オンラインドキュメントのメインフォームは@dfn{manual page}または@dfn{man
+page}です。GNUオペレーティングシステムではmanを、Infoでブラウズできる、より組織化されたマニュアルで置き換えることを目指しています。このプロセスは終了していないので、manを読むことはまだ有用です。
+
+@findex manual-entry
+  オペレーティングシステムのコマンド、ライブラリー関数、システムコールにたいするman pageを、@kbd{M-x
+man}コマンドで読むことができます。このコマンドは補完つき(@ref{Completion}を参照してください)でトピック(topic)の入力を求め、対応するman
+pageをフォーマットするために、@command{man}コマンドを実行します。そのシステムが許すなら、このコマンドは@command{man}を非同期で実行するので、ページがフォーマットされる間、編集を続けることができます。フォーマットされた結果は@file{*Man
+@var{topic}*}という名前のバッファーに表示されます。このバッファーは、Manモードという特別なメジャーモードを使用します。これはスクロールや他のman
+pageにジャンプする機能をもちます。詳細についてはManモードのバッファーで、@kbd{C-h m}をタイプしてください。
+
+@cindex sections of manual pages
+  それぞれのman
+pageは、1つ以上の@dfn{セクション(sections)}に属します。セクションの名前は数字または数字と文字です。同じ名前のman
+pageが、複数のセクションに存在することもあります。特定のセクションのman pageを読むには、@kbd{M-x
+manual-entry}がトピックの入力を求める際、@samp{@var{topic}(@var{section})}または@samp{@var{section}
+@var{topic}}とタイプします。たとえばCのライブラリー関数@code{chmod}はセクション2ですが、同じ名前のシェルコマンドのman
+pageはセクション1です。前者を閲覧するには、@kbd{M-x manual-entry @key{RET} chmod(2)
+@key{RET}}とタイプしてください。
+
+@vindex Man-switches
+@kindex M-n @r{(Man mode)}
+@kindex M-p @r{(Man mode)}
+  セクションを指定しないと、@kbd{M-x man}は通常、最初に見つかったman
+pageだけを表示します。@code{man}に、コマンドラインオプション@samp{-a}を指定できるシステムもいくつかあります。これは指定したトピックにたいするすべてのman
+pageを表示するよう指定します。これを使用するには、変数@code{Man-switches}の値を@samp{"-a"}に変更します。そうするとManモードのバッファーで、@kbd{M-n}と@kbd{M-p}で異なるセクションのman
+pagfeを切り替えることができます。モードラインには、利用可能なman pageの数が表示されます。
+
+@findex woman
+@cindex manual pages, on MS-DOS/MS-Windows
+  man pageを読む他の方法として、@kbd{M-x woman}コマンドがあります。@kbd{M-x man}とは異なり、これはman
+pageをフォーマットするために外部のプログラムを実行しないので、MS-Windowsのような、@command{man}プログラムが利用できないかもしれないシステムでも機能します。このコマンドは、表示するman
+pageの入力を求め、それを@file{*WoMan @var{section} @var{topic}}という名前のバッファーに表示します。
+
+  @kbd{M-x woman}は、コマンドを最初に呼び出したとき、man
+pageの補完リストを計算します。数引数を指定すると、このリストを再計算します。これはman pageを追加・削除したとき有用です。
+
+  man pageの名前を入力して、@kbd{M-x woman}が複数のセクションで同じ名前のman
+pageを見つけた場合、これはウィンドウをポップアップして利用可能な候補を示し、それらから1つを選択するよう求めます。
+
+  @kbd{M-x woman}のセットアップと使用についての情報は、
+@ifinfo
+@ref{Top, WoMan, Browse UN*X Manual Pages WithOut Man, woman, The WoMan
+Manual}を参照してください。
+@end ifinfo
+@ifnotinfo
+Emacsとともに配布されているWoMan Infoマニュアルを参照してください。
+@end ifnotinfo
+
+@node Lisp Doc
+@subsection Emacs Lispドキュメントの照会
+
+  Emacs Lispコードを編集するとき、コマンド@kbd{C-h f} (@code{describe-function})および@kbd{C-h
+v} (@code{describe-variable})で、使用したい関数または変数のビルトインドキュメントを閲覧できます。@ref{Name
+Help}を参照してください。
+
+@cindex Eldoc mode
+@findex eldoc-mode
+  Eldocモードは、Lispドキュメントを検索するのに助けとなる、バッファーローカルなマイナーモードです。これが有効な場合、ポイントがLisp関数または変数にあるときは、有用な情報がエコーエリアに表示されます。関数の場合は引数リスト、変数の場合は変数のドキュメントストリングの最初の行が表示されます。Eldocモードに切り替えるには、@kbd{M-x
+eldoc-mode}とタイプします。Eldocモードは、メジャーモードのEmacs LispモードおよびLisp
+Interactionモードとともに使用できます。
+
+@node Hideshow
+@section Hideshowマイナーモード
+@cindex Hideshow mode
+@cindex mode, Hideshow
+
+@findex hs-minor-mode
+  Hideshowモードは、バッファーローカルなマイナーモードで、@dfn{ブロック}と呼ばれるプログラムの一部を、選択的に表示させることができます。このマイナーモードに切り替えるには、@kbd{M-x
+hs-minor-mode}とタイプします(@ref{Minor Modes}を参照してください)。
+
+  ブロックを非表示にするためにHideshowモードを使用したとき、そのブロックはスクリーンに表示されなくなり、かわりに省略記号(3つのピリオド)に置き換えられます。何をブロックと定めるかは、メジャーモードに依存します。Cモード、および関連するモードでは、ブロックは大カッコ(braces)で区切られ、Lispモードでは丸カッコ(parentheses)で区切られます。複数行のコメントもブロックとみなされます。
+
+  Hideshowモードは以下のコマンドを提供します:
+
+@findex hs-hide-all
+@findex hs-hide-block
+@findex hs-show-all
+@findex hs-show-block
+@findex hs-show-region
+@findex hs-hide-level
+@findex hs-minor-mode
+@kindex C-c @@ C-h
+@kindex C-c @@ C-s
+@kindex C-c @@ C-M-h
+@kindex C-c @@ C-M-s
+@kindex C-c @@ C-r
+@kindex C-c @@ C-l
+@kindex S-Mouse-2
+@table @kbd
+@item C-c @@ C-h
+カレントブロックを隠します(@code{hs-hide-block})。
+@item C-c @@ C-s
+カレントブロックを表示します(@code{hs-show-block})。
+@item C-c @@ C-c
+カレントブロックを表示、または非表示にします(@code{hs-toggle-hiding})。
+@item S-Mouse-2
+クリックしたブロックの表示・非表示を切り替えます(@code{hs-mouse-toggle-hiding})。
+@item C-c @@ C-M-h
+トップレベルのすべてのブロックを隠します(@code{hs-hide-all})。
+@item C-c @@ C-M-s
+バッファーのすべてのブロックを表示します(@code{hs-show-all})。
+@item C-c @@ C-l
+現在のブロックの、@var{n}レベル下のすべてのブロックを隠します(@code{hs-hide-level})。
+@end table
+
+@vindex hs-hide-comments-when-hiding-all
+@vindex hs-isearch-open
+@vindex hs-special-modes-alist
+  以下の変数はHideshowモードをカスタマイズするのに使用されます:
+
+@table @code
+@item hs-hide-comments-when-hiding-all
+非@code{nil}の場合、@kbd{C-c @@ C-M-h} (@code{hs-hide-all})はコメントも隠します。
+
+@item hs-isearch-open
+この変数は、インクリメンタル検索でマッチするテキストが隠されたブロックにあるとき、それを表示すべき条件を指定します。変数の値は、@code{code}(コードブロックだけを表示)、@code{comment}(コメントだけを表示)、@code{t}(コードブロックとコメントの両方を表示)、@code{nil}(どちらも表示しない)のいずれかです。デフォルト値は@code{code}です。
+@end table
+
+@node Symbol Completion
+@section シンボル名の補完
+@cindex completion (symbol names)
+
+  補完は通常ミニバッファーで行われますが(@ref{Completion}を参照してください)、シンボル名の補完を、普通のEmacsバッファーで行うこともできます。
+
+@kindex M-TAB
+@kindex C-M-i
+  プログラミング言語のモードでは、@kbd{C-M-i}または@kbd{M-@key{TAB}}とタイプすることにより、ポイントの前のシンボル名の一部にたいして補完を行うことができます。グラフィカルなディスプレーでは、@kbd{M-@key{TAB}}キーは通常、グラフィカルなウィンドウの切り替え用にウィンドウマネージャーに予約されているので、かわりに@kbd{C-M-i}または@kbd{@key{ESC}
+@key{TAB}}とタイプする必要があります。
+
+@cindex tags-based completion
+@findex completion-at-point
+@cindex Lisp symbol completion
+@cindex completion (Lisp symbols)
+  ほとんどのプログラミング言語のモードでは、@kbd{C-M-i}
+(または@kbd{M-@key{TAB}})は、コマンド@code{completion-at-point}を呼び出します。これは柔軟な方法で補完リストを生成します。Semanticモードが有効な場合は、補完にSemanticパーサーのデータを使用することを試みます(@ref{Semantic}を参照してください)。Semanticモードが無効、または補完の処理に失敗した場合、選択されたtagsテーブル(@ref{Tags}を参照してください)を使用して補完を試みます。Emacs
+Lispモードの場合、カレントのEmacsセッションで定義された関数、変数、プロパティー名を使用して補完を行います。
+
+  他の点では、バッファーでのシンボル補完はミニバッファーでの補完と同様に振る舞います。たとえば、Emacsが一意なシンボルを補完できない場合、他のウィンドウに補完候補のリストを表示します。@ref{Completion}を参照してください。
+
+  Textモード、および関連するモードでは、@kbd{M-@key{TAB}}はスペルチェッカーの辞書にもとづいて単語を補完します。@ref{Spelling}を参照してください。
+
+@node MixedCase Words
+@section 大文字小文字の混ざった単語
+@cindex camel case
+
+  いくつかのプログラミングスタイルでは、@samp{unReadableSymbol}のような大文字小文字が混ざった(``CamelCase''の)シンボルを使います(GNUプロジェクトでは、識別子の単語の区切りに、大文字小文字の違いではなく、アンダースコアを使用することを推奨しています)。Emacsには、そのようなシンボルに簡単に対処するための、さまざまな機能があります。
+
+@cindex Glasses mode
+@findex mode, Glasses
+  バッファーローカルなマイナーモードのGlassesモードは、そのようなシンボルが表示される方法を変更することにより、それらを読みやすくします。デフォルトでは、小文字とそれに続く大文字の間に余分なアンダースコアを表示します。これはバッファーのテキストを変更するわけではなく、表示の仕方だけを変更します。
+
+  Glassesモードに切り替えるには、@kbd{M-x glasses-mode}とタイプします(@ref{Minor
+Modes}を参照してください)。Glassesモードが有効な場合、モードラインのマイナーモードインジケーターには@samp{o^o}が表示されます。Glassesモードに間する情報を得るには、@kbd{C-h
+P glasses @key{RET}}とタイプしてください。
+
+@cindex Subword mode
+@findex subword-mode
+  Subwordモードは、バッファーローカルなマイナーモードです。Subwordモードでは、Emacsの単語コマンドは、@samp{StudlyCapsIdentifiers}のような、単語の中の大文字を単語境界と認識します。Subwordモードが有効なときは、モードラインのマイナーモードインジケーターに@samp{,}が表示されます。同様なモード@code{superword-mode}も参照してください(@ref{Misc
+for Programs}を参照してください)。
+
+@node Semantic
+@section Semanticとは
+@cindex Semantic package
+
+Semanticは、@code{ソースコードパーサー(source code
+parsers)}にもとづく、言語認識(language-aware)による編集のためのコマンドを提供します。このセクションは、Semanticについての簡単な説明を提供します。完全な詳細については、
+@ifnottex
+@ref{Top, Semantic,, semantic, Semantic}を参照してください。
+@end ifnottex
+@iftex
+Emacsとともに配布されているSemanticのInfoマニュアルを参照してください。
+@end iftex
+
+  Font Lockモード(@ref{Font Lock}を参照してください)のような、Emacsの``言語認識機能(language aware
+features)''のほとんどは、``rules of
+thumb''@footnote{正規表現と構文テーブル。}にもとづいています。これは大抵の場合においてよい結果を得られますが、完全に正しい結果は決して得られない、ということを意味します。対照的に、Semanticで使用されるパーサーは、プログラミング言語の構文を正確に理解します。これによりSemanticは、より強力で正確な検索、操作、補完コマンドが提供できるのです。
+
+@cindex Semantic mode
+@cindex mode, Semantic
+  Semanticの使用を開始するには、@kbd{M-x
+semantic-mode}をタイプするか、@samp{Tools}メニューの、@samp{Source Code Parsers
+(Semantic)}という名前のメニューをクリックします。これはグローバルなマイナーモードのSemanticモードを有効にします。
+
+   Semanticモードが有効な場合、Emacsはファイルをvisitするたびに自動的にパースを試みます。現在のところ、SemanticはC、C++、Scheme、Javascript、Java、HTML、Makeを理解します。パースされたバッファーでは以下のコマンドが利用可能です:
+
+@table @kbd
+@item C-c , j
+@kindex C-c , j
+カレントファイルで定義された関数名の入力を求め、ポイントをそこに移動します(@code{semantic-complete-jump-local})。
+
+@item C-c , J
+@kindex C-c , J
+Emacsがパースした任意のファイルで定義された関数名の入力を求め、ポイントをそこに移動します(@code{semantic-complete-jump})。
+
+@item C-c , @key{SPC}
+@kindex C-c , @key{SPC}
+ポイント位置のシンボルにたいして可能な補完候補のリストを表示します(@code{semantic-complete-analyze-inline})。これは補完候補を選択するための特別なキーバインドのセットをアクティブにします。@key{RET}はカレントの補完候補を選択し、@kbd{M-n}と@kbd{M-p}は可能な補完候補を巡回、@key{TAB}は可能なところまで補完を行ってから巡回、そして、@kbd{C-g}または他のキーは補完を中止します。
+
+@item C-c , l
+@kindex C-c , l
+ポイント位置のシンボルにたいして可能な補完候補のリストを、他のウィンドウに表示します(@code{semantic-analyze-possible-completions})。
+@end table
+
+@noindent
+上記のコマンドに加えて、Semanticパッケージは、パーサー情報を使用する他のさまざまな方法を提供します。たとえば、Emacsがアイドルのとき、補完候補のリストを表示するために、それを使用することができます。
+@ifnottex
+詳細は、@ref{Top, Semantic,, semantic, Semantic}を参照してください。
+@end ifnottex
+
+@node Misc for Programs
+@section プログラムを編集するための他の便利な機能
+
+  プログラムを編集するためにデザインされているわけではありませんが、有用なEmacsコマンドもいくつかあります
+
+  単語、センテンス、パラグラフを操作するEmacsコマンドは、コードを編集するのに有用です。ほとんどのシンボル名は単語(@ref{Words}を参照してください)を含んでおり、文字列やコメントの中でセンテンス(@ref{Sentences}を参照してください)を見つけることができます。パラグラフについては、ほとんどのプログラミング言語のモードは空行をパラグラフの開始および終了に定義しています。したがって空行を注意深く使用してプログラムをクリアーにすることにより、パラグラフコマンドが機能できる、有意なテキストの集合を提供することができます。プログラミング言語のモードでAuto
+Fillモードが有効な場合、新しい行の作成でインデントされるようになります。
+
+@findex superword-mode
+ Superwordはバッファーローカルなマイナーモードで、編集および移動コマンドがシンボル(たとえば@samp{this_is_a_symbol})を単語として扱うようになります。Superwordモードが有効な場合、モードラインのマイナーモードインジケーターに、
+@iftex
+@samp{@math{^2}}
+@end iftex
+@ifnottex
+@samp{²}
+@end ifnottex
+が表示されます。同様なモード@code{subword-mode}も参照してください(@ref{MixedCase Words}を参照してください)。
+
+@findex electric-layout-mode
+  Electric Layoutモード(@kbd{M-x
+electric-layout-mode})はグローバルなマイナーモードで、特定の文字をタイプしたときに自動的に改行を挿入します。たとえばJavascriptモードでは@samp{@{}、@samp{@}}、@samp{;}などです。
+
+  Hideshowモード(@ref{Hideshow}を参照してください)は別として、プログラムの一部を選択的に表示するには、選択的な表示機能(@ref{Selective
+Display}を参照してください)を使う方法があります。プログラミングのモードには、Foldoutパッケージ(@ref{Foldout}を参照してください)とともに使用できる、Outline
+minorマイナーモード(@ref{Outline Mode}を参照してください)をサポートするものもあります。
+
+@ifinfo
+  プログラムを記述するためには``automatic typing''機能が有用でしょう。@ref{Top,,Autotyping, autotype,
+Autotyping}を参照してください。
+@end ifinfo
+
+@findex prettify-symbols-mode
+  Prettify Symbolsモードはバッファーローカルなマイナーモードで、特定の文字の表示をより``アトラクティブ(attractive:
+見栄えのする)''なバージョンに置き換えます。たとえばEmacs
+Lispモードでは、文字列``lambda''を、ギリシャ文字のラムダに置き換えます。このモードを、プログラミングとは関係のないモードで使いたいと思うかもしれません。@code{prettify-symbols-alist}にエントリーを追加することにより、このモードをカスタマイズできます。グローバルなバージョン@code{global-prettify-symbols-mode}は、サポートするすべてのモードでこれを有効にします。
+
+
+@node C Modes
+@section Cおよび関連するモード
+@cindex C mode
+@cindex Java mode
+@cindex Pike mode
+@cindex IDL mode
+@cindex CORBA IDL mode
+@cindex Objective C mode
+@cindex C++ mode
+@cindex AWK mode
+@cindex mode, Java
+@cindex mode, C
+@cindex mode, C++
+@cindex mode, Objective C
+@cindex mode, CORBA IDL
+@cindex mode, Pike
+@cindex mode, AWK
+
+  このセクションではC、C++、Objective-C、Java、CORBA
+IDL、Pike、AWKのためのモード(これらは``Cモードおよび関連するモード''と呼ばれます)で利用できる、特別な機能を簡単に説明します。
+@ifinfo
+詳細は、@ref{Top,, CC Mode, ccmode, CC Mode}を参照してください。
+@end ifinfo
+@ifnotinfo
+詳細は、Emacsとともに配布されるCC modeのInfoマニュアルを参照してください。
+@end ifnotinfo
+
+@menu
+* Motion in C::              Cステートメント単位での移動、その他。
+* Electric C::               コロンおよび他の文字による、自動的な再インデント。
+* Hungry Delete::            より強力なDELコマンド。
+* Other C Commands::         コメントのフィル、マクロ展開の閲覧、その他のクールな機能。
+@end menu
+
+@node Motion in C
+@subsection Cモードの移動コマンド
+
+  このセクションでは、Cモードおよび関連するモードで、ポイントを移動するコマンドを説明します。
+
+@table @code
+@item C-M-a
+@itemx C-M-e
+@findex c-beginning-of-defun
+@findex c-end-of-defun
+カレント関数またはトップレベルの定義の、先頭または最後にポイントを移動します。スコープによる囲い(C++のclassなど)をもつ言語では、@dfn{カレント関数(current
+function)}はスコープ内の隣接する関数です。そうでない場合、それは大カッコ(braces)で囲まれることにより定義されます。@ref{Moving
+by Defuns}を参照してください。
+
+@item C-c C-u
+@kindex C-c C-u @r{(C mode)}
+@findex c-up-conditional
+マークを置いたまま、ポイントを含むプリプロセッサー条件を後方に移動します。プレフィクス引数は、繰り返し回数として振る舞います。負の引数を指定すると、ポイントを含むプリプロセッサー条件の最後に、前方へポイントを移動します。
+
+@samp{#elif}は、@samp{#else}の後に@samp{#if}を続けたのと同じなので、この関数は後方に移動するときは@samp{#elif}で止まりますが、前方に移動するときは止まりません。
+
+@item C-c C-p
+@kindex C-c C-p @r{(C mode)}
+@findex c-backward-conditional
+マークを置いたまま、プリプロセッサー条件を越えてポイントを後方に移動します。プレフィクス引数は、繰り返し回数として振る舞います。負の引数の場合は前方に移動します。
+
+@item C-c C-n
+@kindex C-c C-n @r{(C mode)}
+@findex c-forward-conditional
+マークを置いたまま、プリプロセッサー条件を越えて、ポイントを前方に移動します。プレフィクス引数は、繰り返し回数として振る舞います。負の引数の場合は後方に移動します。
+
+@item M-a
+@kindex M-a (C mode)
+@findex c-beginning-of-statement
+一番内側のCステートメントの先頭に、ポイントを移動します(@code{c-beginning-of-statement})。すでにポイントがステートメントの先頭にある場合は、その前のステートメントの先頭に移動します。プレフィクス引数@var{n}を指定した場合、@var{n}
+@minus{} 1個前のステートメントに、後方へ移動します。
+
+2行以上のコメントまたは文字列の場合、このコマンドはステートメントではなくセンテンス単位で移動します。
+
+@item M-e
+@kindex M-e (C mode)
+@findex c-end-of-statement
+Cステートメントまたはセンテンスの最後に、ポイントを移動します。@kbd{M-a}と同様ですが、これは逆の方向に移動します(@code{c-end-of-statement})。
+@end table
+
+@node Electric C
+@subsection エレクトリックC文字
+
+  Cモードおよび関連するモードでは、特定の文字は@dfn{エレクトリック(electric)} ---
+つまり自分自身を挿入するのに加えて、カレント行を再インデントしたり、オプションで改行を挿入します。``エレクトリック''な文字は、@kbd{@{}、@kbd{@}}、@kbd{:}、@kbd{#}、@kbd{;}、@kbd{,}、@kbd{<}、@kbd{>}、@kbd{/}、@kbd{*}、@kbd{(}、@kbd{)}です。
+
+  混乱したインデントのコードを編集している場合には、エレクトリックなインデントを不便だと感じるかもしれません。CCモードになれていない場合、それはあなたを当惑させるかもしれません。エレクトリックな動作は、コマンド@kbd{C-c
+C-l}で切り替えることができます。有効な場合には、モードラインのモード名の後ろに@samp{/l}が表示されます。
+
+@table @kbd
+@item C-c C-l
+@kindex C-c C-l @r{(C mode)}
+@findex c-toggle-electric-state
+エレクトリックな動作を切り替えます(@code{c-toggle-electric-state})。正のプレフィクス引数を指定した場合、、このコマンドはエレクトリックな動作を有効にし、負の引数の場合は無効にします。
+@end table
+
+  エレクトリックな文字は、エレクトリックな状態に加えて、@dfn{自動改行(auto-newline)}の機能が有効な場合(モードラインのモード名の後ろに@samp{/la}が表示されている状態のとき)だけ、改行を挿入します。この機能は@kbd{C-c
+C-a}で、オンまたはオフに切り替えることができます。
+
+@table @kbd
+@item C-c C-a
+@kindex C-c C-a @r{(C mode)}
+@findex c-toggle-auto-newline
+自動改行機能を切り替えます(@code{c-toggle-auto-newline})。このコマンドにプレフィクス引数を指定した場合、引数が正のときは自動改行機能をオン、負のときはオフに切り替えます。
+@end table
+
+  CCモードのスタイルは通常、Emacsが自動改行する正確な状況を設定します。これを直接設定することもできます。@ref{Custom
+Auto-newlines,,, ccmode, The CC Mode Manual}を参照してください。
+
+@node Hungry Delete
+@subsection Cの欲張りな削除機能
+@cindex hungry deletion (C Mode)
+
+  ポイント位置の空白文字のブロック全体を削除したい場合は、@dfn{hungry
+deletion(欲張りな削除)}を使うことができます。これはポイントの前後の、一連の空白文字を1回の操作で削除します。@dfn{空白文字(whitespace)}にはタブと改行が含まれますが、コメントとプリプロセッサーコマンドは含まれません。
+
+@table @kbd
+@item C-c C-@key{DEL}
+@itemx C-c @key{DEL}
+@findex c-hungry-delete-backwards
+@kindex C-c C-@key{DEL} (C Mode)
+@kindex C-c @key{DEL} (C Mode)
+ポイントの前の空白文字のブロック全体を削除します(@code{c-hungry-delete-backwards})。
+
+@item C-c C-d
+@itemx C-c C-@key{Delete}
+@itemx C-c @key{Delete}
+@findex c-hungry-delete-forward
+@kindex C-c C-d (C Mode)
+@kindex C-c C-@key{Delete} (C Mode)
+@kindex C-c @key{Delete} (C Mode)
+ポイントの後の空白文字のブロック全体を削除します(@code{c-hungry-delete-forward})。
+@end table
+
+  上記のコマンドのかわりに、@dfn{hungry
+deleteモード}を有効にすることができます。この機能が有効な場合(モードラインのモード名の後ろに@samp{/h}が示されます)、1回の@key{DEL}で1つのスペースではなくポイントの前に続くすべての空白文字を削除し、@kbd{C-d}(@key{Delete}では@emph{ありません})でポイントの後に続くすべての空白文字を削除します。
+
+@table @kbd
+@item M-x c-toggle-hungry-state
+@findex c-toggle-hungry-state
+hungry-delete機能を切り替えます(@code{c-toggle-hungry-state})。このコマンドにプレフィクス引数を指定した場合、正の場合はhungry-delete機能をオン、負の場合はオフにします。
+@end table
+
+@vindex c-hungry-delete-key
+   変数@code{c-hungry-delete-key}は、hungry-delete機能を有効にするかを制御します。
+
+@node Other C Commands
+@subsection Cモードのその他のコマンド
+
+@table @kbd
+@item M-x c-context-line-break
+@findex c-context-line-break
+このコマンドは、コンテキストに応じたマナーで、行ブレークの挿入と新しい行のインデントを行います。通常のコードの中では、@key{RET}
+(@code{newline})の働きをしますが、Cプリプロセッサー行の中では、行ブレークに追加で@samp{\}を挿入し、コメントの中では@kbd{M-j}
+(@code{c-indent-new-comment-line})のように動作します。
+
+デフォルトでは、@code{c-context-line-break}はキーにバインドされていませんが、便利に使うためには、キーにバインドする必要があります。以下のコードは、このコマンドを@key{RET}にバインドします。この例ではキーマップを変更する前に、それがロードされていることを確実にするために@code{c-initialization-hook}を使用しています。
+
+@example
+(defun my-bind-clb ()
+  (define-key c-mode-base-map "\C-m"
+              'c-context-line-break))
+(add-hook 'c-initialization-hook 'my-bind-clb)
+@end example
+
+@item C-M-h
+マークを関数定義の最後に配し、ポイントを先頭に配します(@code{c-mark-function})。
+
+@item M-q
+@kindex M-q @r{(C mode)}
+@findex c-fill-paragraph
+CおよびC++のコメントに対応した、パラグラフのフィルを行います(@code{c-fill-paragraph})。カレント行がコメントを含む、またはカレント行がコメントの場合、このコマンドはコメントのインデントとコメント区切りを保ちながら、コメントまたはポイントがあるパラグラフをフィルします。
+
+@item C-c C-e
+@cindex macro expansion in C
+@cindex expansion of C macros
+@findex c-macro-expand
+@kindex C-c C-e @r{(C mode)}
+リージョンのテキストにたいして、Cプリプロセッサーを実行して、すべてのマクロ呼び出しの展開を含めて、結果を表示します。リージョンの前にあるバッファーのテキストも、マクロ定義がそこにあるためにプリプロセスされますが、この部分は出力には表示されません。
+
+マクロを使用するCコードをデバッグするとき、マクロがどのように展開されるか正確に解明するのが難しいときがあります。このコマンドにより、展開結果を見ることができるので、わざわざ解明する必要がなくなります。
+
+@item C-c C-\
+@findex c-backslash-region
+@kindex C-c C-\ @r{(C mode)}
+リージョン内の各行末に、@samp{\}文字を挿入、または位置揃えします(@code{c-backslash-region})。これはCマクロ定義を、記述または編集した後に便利です。
+
+行がすでに(@code{c-backslash-region})で終了されている場合、このコマンドはそれの前の空白文字の数を調整します。そうでない場合は、新規に@samp{\}を挿入します。しかしリージョンの最後の行は特別に扱われます。この行には@samp{\}は挿入されず、もし@samp{\}がある場合は削除します。
+
+@item M-x cpp-highlight-buffer
+@cindex preprocessor highlighting
+@findex cpp-highlight-buffer
+プリプロセッサー条件に対応するテキスト部分を、ハイライトします。このコマンドは@file{*CPP
+Edit*}という名前の別のバッファーを表示します。これは特定の条件とその内容をどのように表示するかを選択するための、グラフィックメニューを供します。さまざまなセッティングを変更した後に、@samp{[A]pply
+these settings}をクリック(またはそのバッファーで@kbd{a}をタイプ)すると、それに応じてCモードのバッファーが再ハイライトされます。
+
+@item C-c C-s
+@findex c-show-syntactic-information
+@kindex C-c C-s @r{(C mode)}
+カレントソース行の構文的な情報を表示します(@code{c-show-syntactic-information})。この情報は、その行がどのようにインデントされるべきか決定するために使用されます。
+
+@item M-x cwarn-mode
+@itemx M-x global-cwarn-mode
+@findex cwarn-mode
+@findex global-cwarn-mode
+@vindex global-cwarn-mode
+@cindex CWarn mode
+@cindex suspicious constructions in C, C++
+CWarnマイナーモードは、ある種の疑わしいCおよびC++の構文をハイライトします。
+
+@itemize @bullet{}
+@item
+式の中での値の割り当て。
+@item
+@samp{if}、@samp{for}、@samp{while}(@samp{do @dots{} while}命令は除く)の直後のセミコロン。
+@item
+参照パラメーターをともなうC++関数。
+@end itemize
+
+@noindent
+このモードを1つのバッファーにたいして有効にするにはコマンド@kbd{M-x
+cwarn-mode}、すべての適合するバッファーにたいして有効にするにはコマンド@kbd{M-x
+global-cwarn-mode}、または変数@code{global-cwarn-mode}をカスタマイズします。これが機能するためには、Font
+Lockモードも有効にしなければなりません。
+
+@item M-x hide-ifdef-mode
+@findex hide-ifdef-mode
+@cindex Hide-ifdef mode
+@vindex hide-ifdef-shadow
+Hide-ifdefマイナーモードは、プリプロセッサーブロック@samp{#if}および@samp{#ifdef}の中の選択されたコードを隠します。変数@code{hide-ifdef-shadow}を@code{t}に変更した場合、Hide-ifdefマイナーモードははプリプロセッサーブロックを隠すかわりに、より目立たないフェイスでそれらのブロックを``shadows''します。詳細は、@code{hide-ifdef-mode}のドキュメント文字列を参照してください。
+
+@item M-x ff-find-related-file
+@cindex related files
+@findex ff-find-related-file
+@vindex ff-related-file-alist
+カレントバッファーでvisitされたファイルに``関連する''ファイルを、特別な方法で検索します。通常これはC/C++ソースファイルにたいするヘッダーファイル、またはその逆です。変数@code{ff-related-file-alist}は、関連するファイル名をどのように計算するかを指定します。
+@end table
+
+@node Asm Mode
+@section Asmモード
+
+@cindex Asm mode
+@cindex assembler mode
+Asmモードは、アセンブラーコードのファイルを編集するためのメジャーモードです。このモードは、以下の3つのコマンドを定義します:
+
+@table @kbd
+@item @key{TAB}
+@c FIXME: Maybe this should be consistent with other programming modes.
+@code{tab-to-tab-stop}.
+@item C-j
+改行を挿入してから、@code{tab-to-tab-stop}を使ってインデントします。
+@item :
+コロンを挿入してから、コロンの前のラベルからインデントを削除します。その後、@code{tab-to-tab-stop}を実行します。
+@item ;
+コメントの挿入または位置揃えをします。
+@end table
+
+  変数@code{asm-comment-char}はアセンブラー構文でコメントを開始する文字を指定します。
+
+@ifnottex
+@include fortran-xtra.texi
+@end ifnottex

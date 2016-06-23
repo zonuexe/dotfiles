@@ -1,0 +1,110 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 1985-1987, 1993-1995, 2001-2015 Free Software
+@c Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@iftex
+@chapter Emacsの起動と終了
+
+  この章では、Emacsを起動する方法、および終了する方法を説明します。
+@end iftex
+
+@ifnottex
+@raisesections
+@end ifnottex
+
+@node Entering Emacs
+@section Emacsの起動
+@cindex entering Emacs
+@cindex starting Emacs
+
+  Emacsを呼び出す通常の方法は、シェルコマンド@command{emacs}です。Xウィンドウシステムで実行される端末ウィンドウからは、@command{emacs
+&}によりEmacsをバックグラウンドで実行できます。この方法だとEmacsが端末ウィンドウに結びつけられないため、他のシェルコマンドを実行できます。
+
+@cindex startup screen
+  Emacsを起動すると、初期フレームは@samp{*GNU
+Emacs*}という名前の特別なバッファーを表示します。この@dfn{スタートアップ画面(startup
+screen)}には、Emacsについての情報と、初心者にとって便利な一般的タスクへのリンクが含まれています。たとえば@samp{Emacs
+Tutorial}というリンクはEmacsのチュートリアルを開きます。これはコマンド@kbd{C-h t}
+(@code{help-with-tutorial})と同じです。リンクをアクティブにするには、ポイントをそこに動かして@kbd{@key{RET}}をタイプするか、@kbd{mouse-1}(マウスの左ボタン)をクリックしてください。
+
+  コマンドライン引数を使うと、Emacsが起動直後に1つ以上のファイルをアクセスするよう指示できます。たとえば@command{emacs
+foo.txt}は、@samp{foo.txt}の内容を表示するバッファーとともにEmacsを起動します。これは他のエディターとの互換性により存在する機能で、シェルから短い編集セッションを始めるときのためにデザインされています。Emacsをこの方法で呼び出すと、初期フレームは2つのウィンドウに分割されます。1つは指定されたファイルで、もう1つはスタートアップ画面です。@ref{Windows}を参照してください。
+
+  一般的に、ファイルを編集するたびに新たにEmacsを起動するのは不必要で無駄です。Emacsを使うときの推奨方法は、Emacsを1度だけ起動する方法で、ログインしたら起動して、同じEmacsセッションですべての編集作業を行うのです。1つ以上のファイルをアクセスする方法は、@ref{Files}を参照してください。この方法でEmacsを使うと、Emacsのセッションはキルリング(kill
+ring)、レジスター(registers)、アンドゥヒストリー(undo history)、マークリング(mark
+ring)などの、値をもつコンテキストを蓄積するので、これを共有すれば編集がより快適になります。これらの機能については、このマニュアルの後で説明します。
+
+  Emacsを実行中に、他のプログラムからファイルを編集する場合、既存のEmacsセッションのファイルを開くために、@command{emacsclient}というヘルパープログラムを使うことができます。@ref{Emacs
+Server}を参照してください。
+
+  コマンドライン引数を使って、EmacsにLispファイルをロードして初期フレームに適用させたりできます。@ref{Emacs
+Invocation}を参照してください。
+
+@vindex inhibit-startup-screen
+  変数@code{inhibit-startup-screen}が非@code{nil}の場合、Emacsはスタートアップ画面を表示しません。この場合、コマンドラインに1つ以上のファイルが指定されていれば、Emacsは単にそれらのファイルを表示し、指定されていないときはLispの式を対話的に評価できる、@file{*scratch*}という名前のバッファーを表示します。@ref{Lisp
+Interaction}を参照してください。変数@code{inhibit-startup-screen}のセットは、Emacsのカスタマイズ機能(@ref{Easy
+Customization}を参照してください)を使うか、初期設定ファイル(@ref{Init
+File}を参照してください)を編集して行うことができます。@footnote{@file{site-start.el}の中で@code{inhibit-startup-screen}をセットしても機能しません。なぜならスタートアップ画面は@file{site-start.el}が読み込まれる前にセットアップされるからです。@file{site-start.el}についての情報は、@ref{Init
+File}を参照してください。}
+
+  変数@code{initial-buffer-choice}にファイルやディレクトリーの名前をセットすることにより、Emacsのスタートアップ時にファイルやディレクトリーを表示させることもできます。@code{initial-buffer-choice}の値に、その後に表示するバッファーを戻す関数(引数なし)をセットすることもできます。
+@ignore
+@c I do not think this should be mentioned.  AFAICS it is just a dodge
+@c around inhibit-startup-screen not being settable on a site-wide basis.
+@code{initial-buffer-choice} may also be @code{t} in which case the
+@file{*scratch*} buffer will be shown.
+@end ignore
+@code{initial-buffer-choice}が非@code{nil}の場合、コマンドラインにファイルを指定しても、それらのファイルは表示されますが、初期画面としては表示されません。
+
+@node Exiting
+@section Emacsの終了
+@cindex exiting
+@cindex killing Emacs
+@cindex leaving Emacs
+@cindex quitting Emacs
+
+@table @kbd
+@item C-x C-c
+Emacsをkill(終了)します。(@code{save-buffers-kill-terminal})。
+@item C-z
+テキスト端末ではEmacsをサスペンドします。グラフィカルなディスプレーでは選択されたフレームを``最小化''します。(@code{suspend-emacs})。
+@end table
+
+@kindex C-x C-c
+@findex save-buffers-kill-terminal
+  Emacsを@dfn{Kill}するというのは、Emacsプログラムを終了するという意味です。これを行うには、@kbd{C-x C-c}
+(@code{save-buffers-kill-terminal})とタイプします。2文字キーシーケンスが使われているのは、アクシデントにより間違ってタイプしづらくするためです。もし変更されたファイルがある場合、@kbd{C-x
+C-c}をタイプすると、Emacsとそれらのバッファーを巡回して、バッファーを保存するか問い合わせます。それらすべてを保存しない場合、未保存の変更が失われてしまう前に、もう一度問い合わせます。サブプロセスがまだ実行中の場合にも、Emacsをkillするとサブプロセスもkillされるので、問い合わせを行います(@ref{Shell}を参照してください)。
+
+  もしEmacsをサーバーとして使っている場合、@kbd{C-x
+C-c}は特別に振る舞います。もし``クライアントフレーム''からタイプした場合は、クライアントのコネクションをクローズします。@ref{Emacs
+Server}を参照してください。
+
+  Emacsはオプションで、killしたときに表示していたファイルなどの、セッション情報を記録することができます。この情報は次回Emacsを起動するとき利用可能です。@ref{Saving
+Emacs Sessions}を参照してください。
+
+@vindex confirm-kill-emacs
+  変数@code{confirm-kill-emacs}の値が非@code{nil}の場合、@kbd{C-x
+C-c}はその値が関数だとみなして、その関数を呼び出します。その関数呼び出しの結果が非@code{nil}の場合、セッションはkillされ、そうでない場合、Emacsは実行を続けます。@code{confirm-kill-emacs}の値として使うのに適した関数の1つが、@code{yes-or-no-p}です。@code{confirm-kill-emacs}のデフォルト値は@code{nil}です。
+
+@findex kill-emacs
+  保存の問い合わせを行わずにEmacsをkillするときは、@kbd{M-x kill-emacs}とタイプします。
+
+@kindex C-z
+@findex suspend-frame
+@cindex minimizing
+@cindex iconifying
+@cindex suspending
+  @kbd{C-z}は、コマンド@code{suspend-frame}を実行します。グラフィカルなディスプレーでは、このコマンドは選択されたEmacsのフレームを後で戻れるように、@dfn{最小化}(または@dfn{アイコン化})して隠します(どのように隠されるかはウィンドウシステムに依存します)。テキスト端末では、@kbd{C-z}はEmacsを@dfn{サスペンド(休止)}します。プログラムは一時的に停止し、制御は親プロセス(通常はシェル)に戻ります。ほとんどのシェルではシェルのコマンド@command{%emacs}で、サスペンド中のEmacsを再開できます。
+
+  テキスト端末は、通常、実行中のプログラムをkillしたりサスペンドする、特定の特殊文字を監視しています。@b{この端末の機能は、Emacsではオフになっています。}Emacsでの@kbd{C-z}や@kbd{C-x
+C-c}のキーの意味は、いくつかのオペレーティングシステムでプログラムを休止させたり終了させたりするために用いる文字、@kbd{C-z}と@kbd{C-c}にヒントを得たものですが、オペレーティングシステムとの関係はそれだけです。これらのキーは、他のコマンドを実行するようにカスタマイズできます(@ref{Keymaps}を参照してください)。
+
+@ifnottex
+@lowersections
+@end ifnottex

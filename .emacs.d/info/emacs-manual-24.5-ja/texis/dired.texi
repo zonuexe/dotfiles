@@ -1,0 +1,1022 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 1985-1987, 1993-1995, 1997, 2000-2015 Free Software
+@c Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@node Dired
+@chapter Dired (ディレクトリーエディター)
+@c This node is referenced in the tutorial.  When renaming or deleting
+@c it, the tutorial needs to be adjusted.
+@cindex Dired
+@cindex file management
+
+  Diredはディレクトリー、およびオプションでそれのサブディレクトリーのリストを含む、Emacsバッファーを作成します。このバッファー内を移動するために、通常のEmacsコマンドと、リストされたファイルを操作するための、特別なコマンドを使うことができます。
+
+    Diredバッファーは``読み取り専用''で、テキストの挿入はできません。@kbd{d}や@kbd{x}のような通常のプリント文字は、特別なDiredコマンドに再定義されています。Diredコマンドには、@dfn{カレントファイル}(カレント行のファイルのこと)を@dfn{マーク}したり、@dfn{フラグ}をつけるものがいくつかあり、他のコマンドは、マークされたファイルやフラグがつけられたファイルにたいして処理を行ないます。最初に特定のファイルをマークして、それらすべてにたいして1つのコマンドで操作を行なうのです。
+
+  Dired-Xパッケージは、Diredモードのためのさまざまな特別の機能を提供します。@ref{Top, Dired-X,,dired-x, Dired
+Extra User's Manual}を参照してください。
+
+  ディレクトリーのファイルのリストは、@kbd{C-x C-d}
+(@code{list-directory})でも閲覧することができます。Diredとは異なり、このコマンドではリストされたファイルにたいする操作はできません。@ref{Directories}を参照してください。
+
+@menu
+* Enter: Dired Enter.        Diredの呼び出し方。
+* Navigation: Dired Navigation.  Diredバッファーでの特別な移動コマンド。
+* Deletion: Dired Deletion.  Diredでのファイルの削除。
+* Flagging Many Files::      ファイル名にもとづくファイルへのフラグ付け。
+* Visit: Dired Visiting.     Diredによるその他のファイル操作。
+* Marks vs Flags::           削除のためのフラグとマーク。
+* Operating on Files::       1つまたは複数ファイルにたいするコピー、リネーム、プリント、圧縮など。
+* Shell Commands in Dired::  マークしたファイルにたいするシェルコマンドの実行。
+* Transforming File Names::  複数ファイルのリネームにパターンを使う。
+* Comparison in Dired::      Diredの様式で@code{diff}を実行する。
+* Subdirectories in Dired::  Diredバッファーにたいするサブディレクトリーの追加。
+@ifnottex
+* Subdir Switches:: Diredでのサブディレクトリーのスイッチ。
+@end ifnottex
+* Subdirectory Motion::      サブディレクトリー間の移動、上下への移動。
+* Hiding Subdirectories::    サブディレクトリーの表示・非表示。
+* Updating: Dired Updating.  重要でないファイル行の削除。
+* Find: Dired and Find.      Diredでファイルを選択するために@code{find}を使う。
+* Wdired::                   Diredバッファーの編集によりファイルを操作する。
+* Image-Dired::              Diredでのイメージサムネイルの閲覧。
+* Misc: Misc Dired Features.  その他のさまざまな機能。
+@end menu
+
+@node Dired Enter
+@section Diredの起動
+
+@findex dired
+@kindex C-x d
+@vindex dired-listing-switches
+  Diredを呼び出すには、@kbd{C-x d}
+(@code{dired})とタイプします。これはミニバッファーを使用してディレクトリー名を読み取り、そのディレクトリーのファイルを一覧するする@dfn{Diredバッファー}を開きます。ミニバッファーの引数に、ワイルドカードによるファイル名パターンを与えることもできます。この場合、Dliredバッファーには、そのパターンにマッチする、すべてのファイルが一覧されます。ミニバッファーでは、通常のヒストリーコマンドと、補完コマンドを使うことができます。特に@kbd{M-n}は、(もしあれば)visitされたファイルの名前をミニバッファーに配します(@ref{Minibuffer
+History}を参照してください)。
+
+  @kbd{C-x C-f} (@code{find-file})にディレクトリー名を与えて、Diredを呼び出すこともできます。
+
+  変数@code{dired-listing-switches}は、ディレクトリーをリストするために、@command{ls}に与えるオプションを指定します。この文字列には、@samp{-l}が@emph{含まれていなければなりません}。@code{dired}コマンドにプレフィクス引数を使用した場合、ディレクトリーの指定の前に、@command{ls}のためのスイッチを指定できます。スイッチが指定される方法は問いません。@command{ls}のスイッチには、引数を要求しない短いオプション(1文字)と、長いオプション(@samp{--}で始まり、引数は@samp{=}で指定される)を含めることができます。
+
+@vindex dired-use-ls-dired
+  システムの@command{ls}コマンドが@samp{--dired}オプションをサポートする場合、Diredは自動的にそのオプションを渡します。これにより、Diredが名前を解析できないという特殊なファイル名にたいして、@command{ls}が特別なエスケープシーケンスを付します。Emacsセッションで最初にDiredを実行するとき、@command{ls}コマンドに@samp{--dired}オプションを指定して呼び出すことにより、そのスイッチをサポートするかどうかチェックします。exitコードが0の場合、それ以降Diredは@samp{--dired}オプションを使用し、それ以外の場合は使用しません。変数@code{dired-use-ls-dired}をカスタマイズすることにより、このチェックを抑止することができます。値@code{unspecified}(デフォルト)は、チェックを行なうことを意味します。その他の非@code{nil}値は、@samp{--dired}オプションを使用することを意味します。@code{nil}は、@samp{--dired}オプションを使用しないことを意味します。
+
+  MS-WindowsおよびMS-DOSシステムでは、Emacsが@command{ls}をエミュレートします。このエミュレーションのオプションと特性については、@ref{ls
+in Lisp}を参照してください。
+
+@findex dired-other-window
+@kindex C-x 4 d
+@findex dired-other-frame
+@kindex C-x 5 d
+  Diredバッファーを他のウィンドウに表示するには、@kbd{C-x 4 d}
+(@code{dired-other-window})を使用します。@kbd{C-x 5 d}
+(@code{dired-other-frame})は、Diredバッファーを別のフレームに表示します。
+
+@kindex q @r{(Dired)}
+@findex quit-window
+  @kbd{q}
+(@code{quit-window})とタイプすると、Diredバッファーは隠され(bury)ます。ウィンドウがそのバッファーのためだけに作成された場合は、そのウィンドウを削除します。
+
+@node Dired Navigation
+@section Diredバッファーでの移動
+
+@kindex C-n @r{(Dired)}
+@kindex C-p @r{(Dired)}
+  Emacsの通常のカーソル移動コマンドは、Diredバッファーでも利用可能です。キー@kbd{C-n}および@kbd{C-p}は、行の先頭ではなくファイル名の先頭にカーソルを配するように、再定義されています。
+
+@kindex SPC @r{(Dired)}
+  特に利便性のために、Diredでの@key{SPC}および@kbd{n}は、@kbd{C-n}と等価になっています。@kbd{p}は@kbd{C-p}と等価です(行の移動はDiredでは一般的な操作なので、タイプしやすいようにするべきです)。@key{DEL}(上に移動してフラグを外す)は、単なる上への移動でも便利なときがあります(@ref{Dired
+Deletion}を参照してください)。
+
+@findex dired-goto-file
+@kindex j @r{(Dired)}
+  @kbd{j}
+(@code{dired-goto-file})は、ミニバッファーを使用してファイル名の入力を求め、Diredバッファーで、そのファイルが記述されている行にポイントを移動します。
+
+@cindex searching Dired buffers
+@findex dired-isearch-filenames
+@vindex dired-isearch-filenames
+@findex dired-isearch-filenames-regexp
+@kindex M-s f C-s @r{(Dired)}
+@kindex M-s f M-C-s @r{(Dired)}
+  @kbd{M-s f C-s}
+(@code{dired-isearch-filenames})は、Diredバッファーで前方へのインクリメンタル検索を行ないます。これはファイル名にたいするマッチだけを検索し、それ以外のバッファーのテキストは無視します。@kbd{M-s
+f M-C-s}
+(@code{dired-isearch-filenames-regexp})も同じことを行ないますが、これは正規表現による検索です。変数@code{dired-isearch-filenames}を@code{t}に変更した場合、通常の検索コマンドも検索対象がファイル名だけに制限されるようになります。たとえば@kbd{C-s}は、@kbd{M-s
+f
+C-s}と同様に振る舞います。変数の値が@code{dwim}の場合、ポイントの最初の位置がファイル名にあるときだけ、検索コマンドはファイル名にマッチします。インクリメンタル検索についての情報は、@ref{Search}を参照してください。
+
+  複数ディレクトリーにたいするものも含めて、Diredバッファーでは追加の移動コマンドが利用可能です。@ref{Subdirectory
+Motion}を参照してください。
+
+@node Dired Deletion
+@section Diredでのファイルの削除について
+@cindex flagging files (in Dired)
+@cindex deleting files (in Dired)
+
+  もっともよく使われるDiredの使用法は、最初にファイルを削除するために@dfn{フラグ(flag)}をつけて、その後にフラグがつけられたファイルを削除をする方法です。
+
+@table @kbd
+@item d
+削除するために、このファイルにフラグをつけます(@code{dired-flag-file-deletion})。
+@item u
+削除フラグを外します(@code{dired-unmark})。
+@item @key{DEL}
+その行の削除フラグを外して、ポイントを前の行に移動します(@code{dired-unmark-backward})。
+@item x
+削除のフラグがつけられたファイルを削除します(@code{dired-do-flagged-delete})。
+@end table
+
+@kindex d @r{(Dired)}
+@findex dired-flag-file-deletion
+  ファイルが記述されている行に移動して、@kbd{d}
+(@code{dired-flag-file-deletion})とタイプすることにより、ファイルを削除するためのフラグをつけることができます。削除フラグは行頭に@samp{D}が表示されます。このコマンドはポイントを次の行に移動するので、@kbd{d}コマンドを繰り返すことにより、連続してファイルにフラグをつけることができます。数引数は繰り返し回数を指定します。負の引数は前のファイルにフラグをつけることを意味します。
+
+  リージョンがアクティブの場合、@kbd{d}コマンドはリージョンのすべてのファイルに削除のフラグをつけます。この場合、コマンドはポイントを移動せず、プレフィクス引数も無視します。
+
+@kindex u @r{(Dired deletion)}
+@kindex DEL @r{(Dired)}
+  ファイルを即座に削除せず、削除のフラグをファイルにつける理由は、意図しないファイルを削除する危険を軽減するためです。フラグがついたファイルをDiredに削除をさせる前に、コマンド@kbd{u}または@key{DEL}で、削除フラグを外すことができます。@kbd{u}
+(@code{dired-unmark})は@kbd{d}と同じように機能しますが、これはフラグをつけるのではなくフラグを外します。@key{DEL}
+(@code{dired-unmark-backward})は、上に移動してフラグを外します。これは@kbd{u}に引数@minus{}1を指定するのと同じです。どちらのコマンドも、数引数は繰り返し回数で、負の引数は反対方向にフラグを外していくことを意味します。リージョンがアクティブの場合、ポイントを移動せずにリージョン内のすべてのファイルのフラグを外します。
+
+@kindex x @r{(Dired)}
+@findex dired-do-flagged-delete
+  フラグがついたファイルを削除するには、@kbd{x}
+(@code{dired-do-flagged-delete})とタイプします。このコマンドは削除フラグがついた、すべてのファイルのリストを表示して、確認を求めます。もしこれに@kbd{yes}と応えた場合、Diredはフラグがついたファイルを削除して、それらのファイルにたいするDiredバッファーの行を削除します。Diredバッファーの行数は少し減り、バッファーは選択されたまま残ります。
+
+  確認を求められたとき@kbd{no}と応えるか、@kbd{C-g}で中断した場合は、即座にDiredに戻ります。バッファーの削除フラグはそのまま残り、実際に削除されたファイルはありません。
+
+@cindex recursive deletion
+@vindex dired-recursive-deletes
+  空のディレクトリーは他のファイルと同じように削除できますが、Diredは通常、空でないディレクトリーは削除できません。変数@code{dired-recursive-deletes}が非@code{nil}の場合、Diredはディレクトリーの内容も含めて、空でないディレクトリーを削除できますが、これは少し危険です。
+
+@vindex delete-by-moving-to-trash
+  変数@code{delete-by-moving-to-trash}を@code{t}に変更した場合、上記の削除コマンドは対象となるファイルおよびディレクトリーを削除するかわりに、システムのTrash(ゴミ箱)に移動します。@ref{Misc
+File Ops}を参照してください。
+
+@node Flagging Many Files
+@section 大量のファイルに一度にフラグをつける
+@cindex flagging many files for deletion (in Dired)
+
+  コマンド@kbd{#}、@kbd{~}、@kbd{.}、@kbd{% &}、@kbd{% d}は、ファイル名にもとづき多くのファイルにフラグをつけます。
+
+@table @kbd
+@item #
+すべての自動保存ファイル(名前の最初と最後が@samp{#}のファイル)にたいして、削除のフラグをつけます(@ref{Auto
+Save}を参照してください)。
+
+@item ~
+すべてのバックアップファイル(名前の最後が@samp{~}のファイル)にたいして、削除のフラグをつけます(@ref{Backup}を参照してください)。
+
+@item .@: @r{(ピリオド)}
+余分な番号付きバックアップファイルに、削除のフラグをつけます。一番古いものと、一番新しいバックアップのいくつかは除外され、その中間のファイルにフラグがつけられます。
+
+@item % &
+簡単にファイルを再作成できることを示唆する、特定の種類の名前をもつすべてのファイルに削除のフラグをつけます。
+
+@item % d @var{regexp} @key{RET}
+正規表現@var{regexp}にマッチする名前の、すべてのファイルに削除のフラグをつけます。
+@end table
+
+@kindex # @r{(Dired)}
+@findex dired-flag-auto-save-files
+@cindex deleting auto-save files
+  @kbd{#} (@code{dired-flag-auto-save-files})は、名前が自動保存ファイルに見える ---
+つまり名前の最初と最後が@samp{#}の、すべてのファイルにフラグをつけます。@ref{Auto Save}を参照してください。
+
+@kindex ~ @r{(Dired)}
+@findex dired-flag-backup-files
+  @kbd{~} (@code{dired-flag-backup-files})は、名前がバックアップファイルであることを告げる ---
+つまり名前の最後が@samp{~}の、すべてのファイルにフラグをつけます。@ref{Backup}を参照してください。
+
+@kindex . @r{(Dired)}
+@vindex dired-kept-versions
+@findex dired-clean-directory
+  @kbd{.}
+(ピリオド、@code{dired-clean-directory})は、いくつかのバックアップファイルだけに削除のフラグをつけます。つまり、最古と最新のいくつかのファイルを除く、すべてのファイルです。残すべき最新バージョンの数は通常、変数@code{dired-kept-versions}(@code{kept-new-versions}では@emph{ありません}。これは保存時だけ適用されます)で与えられます。残すべき最古バージョンの数は、変数@code{kept-old-versions}により与えられます。
+
+  @kbd{C-u 3
+.}のように、ピリオドに正の数引数を指定すると、@code{dired-kept-versions}をオーバーライドして、残すべき最新バージョンの数を指定します。負の引数は@code{kept-old-versions}をオーバーライドします。引数の値にマイナスをつけると、残すべき最古バージョンの数を指定します。
+
+@kindex % & @r{(Dired)}
+@findex dired-flag-garbage-files
+@vindex dired-garbage-files-regexp
+@cindex deleting some backup files
+  @kbd{% &}
+(@code{dired-flag-garbage-files})は、変数@code{dired-garbage-files-regexp}で指定される正規表現に、名前がマッチするファイルにフラグをつけます。デフォルトでは、@TeX{}により生成される@samp{.bak}ファイルと、@code{patch}により生成される@samp{.orig}ファイルと@samp{.rej}ファイルにマッチします。
+
+@findex dired-flag-files-regexp
+@kindex % d @r{(Dired)}
+  @kbd{%
+d}は、指定された正規表現に名前がマッチするすべてのファイルにフラグをつけます(@code{dired-flag-files-regexp})。マッチングにはファイル名の非ディレクトリー部分だけが使用されます。マッチのアンカーとして@samp{^}と@samp{$}を使用できます。@kbd{%
+d}を使用するとき、特定のサブディレクトリーを隠して除外できます。@ref{Hiding Subdirectories}を参照してください。
+
+@node Dired Visiting
+@section Diredのファイルをvisitする
+
+  Diredバッファーにリストされたファイルをvisitしたり、調べるためのDiredコマンドが、いくつかあります。これらのコマンドは、すべてカレント行のファイルに適用されます。そのファイルが実際にはディレクトリーの場合、これらのコマンドは(別のDiredバッファーを作成して)、そのサブディレクトリーにたいしてDiredを呼び出します。
+
+@table @kbd
+@item f
+@kindex f @r{(Dired)}
+@findex dired-find-file
+@kbd{C-x
+C-f}とタイプしてファイル名を指定したときと同じように、カレント行に記述されたファイルをvisitします(@code{dired-find-file})。@ref{Visiting}を参照してください。
+
+@item @key{RET}
+@itemx e
+@kindex RET @r{(Dired)}
+@kindex e @r{(Dired)}
+@kbd{f}と等価です。
+
+@ignore @c This command seems too risky to document at all.
+@item a
+@kindex a @r{(Dired)}
+@findex dired-find-alternate-file
+Like @kbd{f}, but replaces the contents of the Dired buffer with
+that of an alternate file or directory (@code{dired-find-alternate-file}).
+@end ignore
+
+@item o
+@kindex o @r{(Dired)}
+@findex dired-find-file-other-window
+@kbd{f}と同じですが、そのファイルのバッファーに別のウィンドウを使用します(@code{dired-find-file-other-window})。Diredバッファーは、最初のウィンドウに表示されたまま残ります。これは@kbd{C-x
+4 C-f}を使用して、ファイルをvisitするのと似ています。@ref{Windows}を参照してください。
+
+@item C-o
+@kindex C-o @r{(Dired)}
+@findex dired-display-file
+カレント行に記述されたファイルをvisitし、そのバッファーを別のウィンドウで表示しますが、そのウィンドウを選択しません(@code{dired-display-file})。
+
+@item Mouse-1
+@itemx Mouse-2
+@findex dired-mouse-find-file-other-window
+クリックした名前のファイルをvisitします(@code{dired-mouse-find-file-other-window})。これは@kbd{o}コマンドのように、ファイルの表示に別のウィンドウを使います。
+
+@item v
+@kindex v @r{(Dired)}
+@findex dired-view-file
+カレント行に記述されたファイルを、Viewモードで表示します(@code{dired-view-file})。Viewモードは、バッファーを移動するための便利なコマンドを提供しますが、バッファーの変更はできません。@ref{View
+Mode}を参照してください。
+
+@item ^
+@kindex ^ @r{(Dired)}
+@findex dired-up-directory
+カレントディレクトリーの親ディレクトリーをvisitします(@code{dired-up-directory})。これは、@file{..}の行に移動して@kbd{f}をタイプするのと等価です。
+@end table
+
+@node Marks vs Flags
+@section Diredでのマークとフラグ
+
+@cindex marking many files (in Dired)
+  ファイルに@samp{D}というフラグをつけるのではなく、他の文字(通常は@samp{*})でファイルを@dfn{マーク}することもできます。ほとんどのDiredコマンドは、@samp{*}でマークされたファイルにたいしてコマンドを処理します。フラグ付けされたファイルだけに作用するコマンドは、それらのファイルを削除する@kbd{x}だけです。
+
+  以下は@samp{*}でマークしたり、マークを外したり、マークにたいして操作を行なうコマンドです(ファイルにたいしてフラグをつけたり外すコマンドについては、@ref{Dired
+Deletion}を参照してください)。
+
+@table @kbd
+@item m
+@itemx * m
+@kindex m @r{(Dired)}
+@kindex * m @r{(Dired)}
+@findex dired-mark
+カレントファイルを@samp{*}でマークします(@code{dired-mark})。リージョンがアクティブの場合、かわりにリージョン内のすべてのファイルをマークします。そうでない場合、数引数@var{n}が与えられたときは、カレント行から数えて、次の@var{n}個のファイルまでをマークします(@var{n}が負の場合、前の@minus{}@var{n}個のファイルをマークします)。
+
+@item * *
+@kindex * * @r{(Dired)}
+@findex dired-mark-executables
+@cindex marking executable files (in Dired)
+すべての実行ファイルを@samp{*}でマークします(@code{dired-mark-executables})。数引数を指定すると、それらのファイルのマークを外します。
+
+@item * @@
+@kindex * @@ @r{(Dired)}
+@findex dired-mark-symlinks
+@cindex marking symbolic links (in Dired)
+すべてのシンボリックリンクを、@samp{*}でマークします(@code{dired-mark-symlinks})。数引数を指定すると、それらのファイルのマークを外します。
+
+@item * /
+@kindex * / @r{(Dired)}
+@findex dired-mark-directories
+@cindex marking subdirectories (in Dired)
+@file{.}と@file{..}を除く、すべてのディレクトリーを@samp{*}でマークします(@code{dired-mark-directories})。数引数を指定すると、それらのディレクトリーのマークを外します。
+
+@item * s
+@kindex * s @r{(Dired)}
+@findex dired-mark-subdir-files
+@file{.}と@file{..}を除く、カレントのサブディレクトリー内のすべてのファイルをマークします(@code{dired-mark-subdir-files})。
+
+@item u
+@itemx * u
+@kindex u @r{(Dired)}
+@kindex * u @r{(Dired)}
+@findex dired-unmark
+この行の任意のマークを外します(@code{dired-unmark})。リージョンがアクティブの場合は、かわりにリージョン内のすべてのファイルのマークを外します。そうでない場合、数引数@var{n}が与えられた場合は、カレントファイルから数えて、次の@var{n}個のファイルのマークを外します(@var{n}が負の場合、前の@minus{}@var{n}個のファイルのマークを外します)。
+
+@item @key{DEL}
+@itemx * @key{DEL}
+@kindex * DEL @r{(Dired)}
+@findex dired-unmark-backward
+@cindex unmarking files (in Dired)
+ポイントを前の行に移動して、その行のマークを外します(@code{dired-unmark-backward})。リージョンがアクティブの場合、かわりにリージョン内のすべてのファイルのマークを外します。そうでない場合、数引数@var{n}が与えられたときは、カレントファイルから数えて、前の@var{n}個のファイルのマークを外します(@var{n}が負の場合、次の@minus{}@var{n}個のファイルのマークを外します)。
+
+@item * !
+@itemx U
+@kindex * ! @r{(Dired)}
+@kindex U @r{(Dired)}
+@findex dired-unmark-all-marks
+Diredバッファーの、すべてのファイルのマークを外します(@code{dired-unmark-all-marks})。
+
+@item * ? @var{markchar}
+@itemx M-@key{DEL}
+@kindex * ? @r{(Dired)}
+@kindex M-DEL @r{(Dired)}
+@findex dired-unmark-all-files
+文字@var{markchar}を使用する、すべてのマークを外します(@code{dired-unmark-all-files})。引数は1文字です
+--- これを終了させるために@key{RET}を使用しないでください。以下の@kbd{*
+c}の説明を参照してください。これは1つのマーク文字を、他の文字に置換します。
+
+数引数を指定した場合、このコマンドはマークされたファイルごとに、マークを外すか確認します。@kbd{y}はyes(はい)で、@kbd{n}はno(いいえ)、@kbd{!}は残りのファイルにたいして確認を行なわずにマークを外します。
+
+@item * C-n
+@itemx M-@}
+@findex dired-next-marked-file
+@kindex * C-n @r{(Dired)}
+@kindex M-@} @r{(Dired)}
+次にマークされたファイルへ下に移動します(@code{dired-next-marked-file})。``マークされた''ファイルとは、任意の種類のマークがついているファイルです。
+
+@item * C-p
+@itemx M-@{
+@findex dired-prev-marked-file
+@kindex * C-p @r{(Dired)}
+@kindex M-@{ @r{(Dired)}
+前のマークされたファイルへ、上に移動します(@code{dired-prev-marked-file})。
+
+@item t
+@itemx * t
+@kindex t @r{(Dired)}
+@kindex * t @r{(Dired)}
+@findex dired-toggle-marks
+@cindex toggling marks (in Dired)
+すべてのマークを切り替えます(@code{dired-toggle-marks})。つまり、@samp{*}でマークされたファイルのマークを外し、マークされていないファイルを@samp{*}でマークします。他の方法でマークされたファイルは影響を受けません。
+
+@item * c @var{old-markchar} @var{new-markchar}
+@kindex * c @r{(Dired)}
+@findex dired-change-marks
+文字@var{old-markchar}を使ったすべてのマークを、文字@var{new-markchar}を使ったマークに置き換えます(@code{dired-change-marks})。このコマンドは主に@samp{*}や@samp{D}以外の文字を使用したマークを作成するのに使われます。引数は1文字です
+--- 終了させるために@key{RET}を使用しないでください。
+
+このコマンドは、マーク文字としてほとんどの任意の文字を使用できるので、ファイルをさまざまなクラスに分類することができます。@var{old-markchar}がスペース(@samp{
+})の場合、このコマンドは、すべてのマークされていないファイルにたいして処理を行ないます。@var{new-markchar}がスペースの場合、このコマンドは対象となるファイルのマークを外します。
+
+このコマンドの威力を知る例として、以下ではマークされていないファイルすべてにフラグ@samp{D}をセットして、すでに@samp{D}フラグがついているものはフラグを外しています:
+
+@example
+* c D t  * c @key{SPC} D  * c t @key{SPC}
+@end example
+
+この例では、すでに@samp{t}でマークされたファイルがないと仮定しています。
+
+@item % m @var{regexp} @key{RET}
+@itemx * % @var{regexp} @key{RET}
+@findex dired-mark-files-regexp
+@kindex % m @r{(Dired)}
+@kindex * % @r{(Dired)}
+名前が正規表現@var{regexp}にマッチするすべてのファイルを、(@samp{*}で)マークします(@code{dired-mark-files-regexp})。このコマンドは@kbd{%
+d}と似ていますが、@samp{D}のフラグをつけるかわりに、@samp{*}でマークします。
+
+マッチングには、ファイル名のディレクトリー部分以外だけが使用されます。マッチのアンカーとして、@samp{^}と@samp{$}が使用できます。サブディレクトリーを一時的に隠すことにより、それらを除外できます(@ref{Hiding
+Subdirectories}を参照してください)。
+
+@item % g @var{regexp} @key{RET}
+@findex dired-mark-files-containing-regexp
+@kindex % g @r{(Dired)}
+@cindex finding files containing regexp matches (in Dired)
+ファイルの@emph{内容}が正規表現@var{regexp}にマッチする、すべてのファイルを(@samp{*}で)マークします(@code{dired-mark-files-containing-regexp})。このコマンドは@kbd{%
+m}と似ていますが、ファイル名ではなくファイル内容を検索します。
+
+@item C-/
+@itemx C-x u
+@itemx C-_
+@kindex C-_ @r{(Dired)}
+@findex dired-undo
+Diredバッファーでの、マークの追加や削除などの変更をアンドゥします(@code{dired-undo})。@emph{このコマンドは実際のファイル操作をリバートしたり、失われたファイルを回復しません!}
+これは単にバッファー自身にたいする変更をアンドゥするだけです。
+
+ファイルを操作するコマンドの後でこれを使用することにより、問題が起こる場合もあります。たとえば1つ以上のファイルをリネームしてから、Diredバッファーで@code{dired-undo}により元の名前にリストアした場合、Diredバッファーと、そのディレクトリーの実際の内容が、同期しなくなります。
+@end table
+
+@node Operating on Files
+@section ファイルにたいする操作
+@cindex operating on files in Dired
+
+  このセクションでは、1つまたは複数のファイルを操作する、基本的なDiredコマンドを説明します。これらのコマンドはすべて大文字で、引数を読み取ったり、実際に動作する前に確認を求めるのに、ミニバッファーを使用します。これらのコマンドはすべて、以下の方法により操作するファイルを指定します:
+
+@itemize @bullet
+@item
+コマンドに数引数@var{n}を与えると、カレントファイルから数えて、次の@var{n}個のファイルを操作します(@var{n}が負の場合、コマンドはカレント行の前の、@minus{}@var{n}個のファイルを操作します)。
+
+@item
+上記以外の場合、@samp{*}でマークされたファイルがあるときは、コマンドはそれらすべてのファイルを操作します。
+
+@item
+上記以外の場合、コマンドはカレントファイルだけを操作します。
+@end itemize
+
+@noindent
+コマンド@kbd{!}や@samp{%}のような他のDiredコマンドにも、操作対象となるファイルを決定するのに、同じ規則を使うものがあります。
+
+@vindex dired-dwim-target
+@cindex two directories (in Dired)
+  ファイルのコピーやリネーム、それらにたいするリンクを作成するような、対象ディレクトリーを尋ねるコマンドは、操作のためにデフォルトの対象ディレクトリーの推論を試みます。これらのコマンドは通常、Diredバッファーのデフォルトディレクトリーを提案しますが、変数@code{dired-dwim-target}が非@code{nil}で、次のウィンドウに他のDiredバッファーが存在しない場合は、その他のバッファーのディレクトリーをかわりに提案します。
+
+  以下は、ファイルにたいして操作を行なうDiredコマンドです。
+
+@table @kbd
+@findex dired-do-copy
+@kindex C @r{(Dired)}
+@cindex copying files (in Dired)
+@item C @var{new} @key{RET}
+指定されたファイルをコピーします(@code{dired-do-copy})。引数@var{new}はコピー先のディレクトリー、または(1つのファイルをコピーする場合は)新しいファイル名です。これはシェルコマンド@code{cp}と似ています。
+
+@vindex dired-copy-preserve-time
+@code{dired-copy-preserve-time}が非@code{nil}の場合、このコマンドでコピーすることにより、@samp{cp
+-p}でコピーしたときのように、古いファイルの最終修正時刻(modification time)が保持されます。
+
+@vindex dired-recursive-copies
+@cindex recursive copying
+変数@code{dired-recursive-copies}は、(@samp{cp
+-r}のように)ディレクトリーを再帰的にコピーするかを制御します。デフォルトは@code{top}で、これはディレクトリーを再帰的にコピーする前に、確認を求めることを意味します。
+
+@item D
+@findex dired-do-delete
+@kindex D @r{(Dired)}
+指定されたファイルを削除します(@code{dired-do-delete})。これはシェルコマンド@code{rm}と似ています。
+
+このセクションの他のコマンドと同様、このコマンドは@emph{マークされたファイル}、または次の@var{n}個のファイルを操作します。対照的に@kbd{x}
+(@code{dired-do-flagged-delete})は、@dfn{フラグがついた}すべてのファイルを削除します。
+
+@findex dired-do-rename
+@kindex R @r{(Dired)}
+@cindex renaming files (in Dired)
+@cindex moving files (in Dired)
+@item R @var{new} @key{RET}
+指定されたファイルをリネームします(@code{dired-do-rename})。1つのファイルをリネームする場合、引数@var{new}はファイルの新しい名前です。複数のファイルをリネームする場合、引数@var{new}はファイルを移動するディレクトリーです(これはシェルコマンド@command{mv}と似ています)。
+
+Diredはリネームされたファイルに関連付けられたバッファーによりvisitされたファイルの名前を自動的に変更するので、これらのバッファーは新しい名前を参照します。
+
+@findex dired-do-hardlink
+@kindex H @r{(Dired)}
+@cindex hard links (in Dired)
+@item H @var{new} @key{RET}
+指定されたファイルのハードリンクを作成します(@code{dired-do-hardlink})。これはシェルコマンド@command{ln}と似ています。引数@var{new}はリンクを中に作成するディレクトリー、または(1つのリンクだけを作成する場合は)リンクに与える名前です。
+
+@findex dired-do-symlink
+@kindex S @r{(Dired)}
+@cindex symbolic links (creation in Dired)
+@item S @var{new} @key{RET}
+指定されたファイルのシンボリックリンクを作成します(@code{dired-do-symlink})。これは@samp{ln
+-s}と似ています。引数@var{new}はリンクを中に作成するディレクトリー、または(1つのリンクだけを作成する場合は)リンクに与える名前です。
+
+@findex dired-do-chmod
+@kindex M @r{(Dired)}
+@cindex changing file permissions (in Dired)
+@item M @var{modespec} @key{RET}
+指定されたファイルのモード(@dfn{パーミッションビット}とも呼ばれる)を変更します(@code{dired-do-chmod})。@var{modespec}には、@command{chmod}プログラムで扱われる引数のような、8進かシンボル表記を指定できます。
+
+@findex dired-do-chgrp
+@kindex G @r{(Dired)}
+@cindex changing file group (in Dired)
+@item G @var{newgroup} @key{RET}
+指定されたファイルのグループを、@var{newgroup}に変更します(@code{dired-do-chgrp})。
+
+@findex dired-do-chown
+@kindex O @r{(Dired)}
+@cindex changing file owner (in Dired)
+@item O @var{newowner} @key{RET}
+指定されたファイルの所有者を。@var{newowner}に変更します(@code{dired-do-chown}。ほとんどのシステムでは、これを行なうことができるのはスーパーユーザーだけです)。
+
+@vindex dired-chown-program
+変数@code{dired-chown-program}は、処理を行なうために使用するプログラムの名前を指定します(システムが異なると、@command{chown}が違う場所に配されている場合があります)。
+
+@findex dired-do-touch
+@kindex T @r{(Dired)}
+@cindex changing file time (in Dired)
+@item T @var{timestamp} @key{RET}
+指定されたファイルにtouchします。これはファイルの修正時刻を、現在時刻で更新することを意味します。これはシェルコマンド@code{touch}に似ています。
+
+@findex dired-do-print
+@kindex P @r{(Dired)}
+@cindex printing files (in Dired)
+@item P @var{command} @key{RET}
+指定されたファイルを印刷します(@code{dired-do-print})。それらを印刷するためのコマンドを指定しなければなりませんが、ミニバッファー開始時には、変数@code{lpr-command}および@code{lpr-switches}(@code{lpr-buffer}が使用するのと同じ変数。@ref{Printing}を参照してください)を使用することにより推定された、適切な初期値が示されます。
+
+@findex dired-do-compress
+@kindex Z @r{(Dired)}
+@cindex compressing files (in Dired)
+@item Z
+指定されたファイルを圧縮します(@code{dired-do-compress})。ファイルがすでに圧縮されているように見える場合は、それらを解凍します。
+
+@findex epa-dired-do-decrypt
+@kindex :d @r{(Dired)}
+@cindex decrypting files (in Dired)
+@item :d
+指定されたファイルを復号化します(@code{epa-dired-do-decrypt})。@ref{Dired integration,,, epa,
+EasyPG Assistant User's Manual}を参照してください。
+
+@findex epa-dired-do-verify
+@kindex :v @r{(Dired)}
+@cindex verifying digital signatures on files (in Dired)
+@item :v
+指定されたファイルのデジタル署名を検証します(@code{epa-dired-do-verify})。@ref{Dired integration,,,
+epa, EasyPG Assistant User's Manual}を参照してください。
+
+@findex epa-dired-do-sign
+@kindex :s @r{(Dired)}
+@cindex signing files (in Dired)
+@item :s
+指定されたファイルにデジタル署名します(@code{epa-dired-do-sign})。@ref{Dired integration,,, epa,
+EasyPG Assistant User's Manual}を参照してください。
+
+@findex epa-dired-do-encrypt
+@kindex :e @r{(Dired)}
+@cindex encrypting files (in Dired)
+@item :e
+指定されたファイルを暗号化します(@code{epa-dired-do-encrypt})。@ref{Dired integration,,, epa,
+EasyPG Assistant User's Manual}を参照してください。
+
+@findex dired-do-load
+@kindex L @r{(Dired)}
+@cindex loading several files (in Dired)
+@item L
+指定されたEmacs Lispファイルをロードします(@code{dired-do-load})。@ref{Lisp
+Libraries}を参照してください。
+
+@findex dired-do-byte-compile
+@kindex B @r{(Dired)}
+@cindex byte-compiling several files (in Dired)
+@item B
+指定されたEmacs Lispファイルをバイトコンパイルします(@code{dired-do-byte-compile})。@ref{Byte
+Compilation,, Byte Compilation, elisp, The Emacs Lisp Reference
+Manual}を参照してください。
+
+@kindex A @r{(Dired)}
+@findex dired-do-search
+@cindex search multiple files (in Dired)
+@item A @var{regexp} @key{RET}
+指定されたすべてのファイルにたいして、正規表現@var{regexp}を検索します(@code{dired-do-search})。
+
+このコマンドは@code{tags-search}の変種です。検索は、最初のマッチが見つかると停止します。@kbd{M-,}を使用して検索を再開し、次のマッチを探します。@ref{Tags
+Search}を参照してください。
+
+@kindex Q @r{(Dired)}
+@findex dired-do-query-replace-regexp
+@cindex search and replace in multiple files (in Dired)
+@item Q @var{regexp} @key{RET} @var{to} @key{RET}
+指定された各ファイルにたいして@code{query-replace-regexp}を行い、@var{regexp}にたいするマッチを、文字列@var{to}に置換します(@code{dired-do-query-replace-regexp})。
+
+このコマンドは@code{tags-query-replace}の変種です。問い合わせ置換のループを抜けた場合、@kbd{M-,}を使用して、より多くのマッチにたいする検索と置換を再開できます。@ref{Tags
+Search}を参照してください。
+@end table
+
+@node Shell Commands in Dired
+@section Diredでのシェルコマンド
+@cindex shell commands, Dired
+
+@findex dired-do-shell-command
+@kindex ! @r{(Dired)}
+@kindex X @r{(Dired)}
+Diredコマンド@kbd{!}
+(@code{dired-do-shell-command})は、ミニバッファーでシェルのコマンド文字列を読み取り、そのシェルコマンドを1つ以上のファイルにたいして実行します。シェルコマンドが処理するファイルは、Diredコマンドが操作するファイルを決定する方法と同じです(@ref{Operating
+on Files}を参照してください)。コマンド@kbd{X}は、@kbd{!}の別名です。
+
+  コマンド@kbd{&}
+(@code{dired-do-async-shell-command})は同じことを行ないますが、これはシェルコマンドを非同期で実行する点が異なります(@kbd{!}でシェルコマンドの最後に文字@samp{&}を追加しても、同じことを行なうことができます)。コマンドが複数のファイルを処理する場合、ファイルごとに指定したシェルコマンドの複数コピーを並行で実行します。例外として、指定されたシェルコマンドが@samp{;}または@samp{;&}で終わる場合、バックグラウンドで実行されるシェルコマンドは、各ファイルにたいして順番に実行されます。Emacsは次のコマンドを実行する前に、呼び出したシェルコマンドが終了するのを待ちます。
+
+  @kbd{!}と@kbd{&}のどちらも、シェルコマンドの作業ディレクトリーは、Diredバッファーのトップレベルのディレクトリーです。
+
+  @kbd{!}または@kbd{&}に複数ファイルを処理させる場合、シェルコマンド文字列は、シェルコマンドにそれらのファイルを渡す方法を決定します。
+
+@itemize @bullet
+@item
+コマンド文字列の中で、空白文字に囲まれた@samp{*}を使用した場合、コマンドは1度だけ実行され、@samp{*}はファイル名のリストに置換されます。ファイル名の順番は、Diredバッファーでの出現順になります。
+
+したがって@kbd{! tar cf foo.tar *
+@key{RET}}は、ファイル名全体のリストにたいして@code{tar}を実行し、それらをtarファイル@file{foo.tar}に格納します。
+
+空白文字で囲まれたシェルのワイルドカードとして@samp{*}を使用したい場合は、@samp{*""}と記述します。シェルではこれは@samp{*}と等価です。しかし@samp{*}が空白文字で囲まれていないので、Diredはこれを特別に扱うことができるのです。
+
+@item
+上記以外の場合で、コマンド文字列が空白文字で囲まれた@samp{?}を含むとき、Emacsは@emph{各ファイル}ごとに一度シェルコマンドを実行します。その際、@samp{?}はカレントファイルに置換されます。コマンドで複数回@samp{?}を使用でき、それぞれ同じファイル名に置換されます。
+
+@item
+コマンド文字列が@samp{*}と@samp{?}のどちらも含まない場合、Emacsは各ファイルにたいしてシェルコマンドを1度実行し、その際ファイル名はコマンド文字列の最後に追加されます。たとえば@kbd{!
+uudecode @key{RET}}は、各ファイルにたいして@code{uudecode}を実行します。
+@end itemize
+
+  もっと複雑な方法でファイル名を繰り返すには、明示的なシェルループを使用します。たとえば以下は、各ファイルをuuencodeして、入力ファイル名に@samp{.uu}を追加して出力ファイル名を作成する例です:
+
+@example
+for file in * ; do uuencode "$file" "$file" >"$file".uu; done
+@end example
+
+  コマンド@kbd{!}および@kbd{&}は、新しいファイル、または変更されたファイルを表示するために、Diredバッファーを更新しようとはしません。なぜならこれらのコマンドは、どのファイルが変更されたかを知らないからです。Diredバッファーを更新するには、@kbd{g}を使用します(@ref{Dired
+Updating}を参照してください)。
+
+  Diredの外でシェルコマンドを実行する情報に関しては、@ref{Single Shell}を参照してください。
+
+@node Transforming File Names
+@section Diredでのファイル名の変更
+
+  このセクションでは、ファイル名を系統的な方法で変更する、Diredコマンドを説明します。各コマンドは、既存の名前を変換することにより作成される新しい名前を使って、マークされたファイルのいくつか、またはすべてのマークされたファイルを操作します。
+
+  基本的なDiredのファイル操作コマンド(@ref{Operating on
+Files}を参照してください)と同じように、ここで説明するコマンドは次の@var{n}ファイル、または@samp{*}でマークされたすべてのファイル、またはカレントファイルにたいして操作を行ないます(ファイルをマークする方法は@ref{Marks
+vs Flags}で説明されています)。
+
+  このセクションで説明するすべてのコマンドは、@emph{対話的}に機能します。つまり候補となるファイルごとに確認を求めます。したがって、実際に操作が必要なファイルより多くのファイルを選択(たとえばregexpにより多くのファイルを選択)して、コマンドが確認を求めるときに@kbd{y}または@kbd{n}をタイプすることにより、選択されたファイルを絞り込むことができます。
+
+@table @kbd
+@findex dired-upcase
+@kindex % u @r{(Dired)}
+@cindex upcase file names
+@item % u
+選択されたファイルを、大文字の名前にリネームします(@code{dired-upcase})。古いファイル名が@file{Foo}と@file{bar}の場合、新しい名前は@file{FOO}と@file{BAR}になります。
+
+@item % l
+@findex dired-downcase
+@kindex % l @r{(Dired)}
+@cindex downcase file names
+選択されたファイルを、小文字の名前にリネームします(@code{dired-downcase})。古いファイル名が@file{Foo}と@file{bar}の場合、新しい名前は@file{foo}と@file{bar}になります。
+
+@item % R @var{from} @key{RET} @var{to} @key{RET}
+@kindex % R @r{(Dired)}
+@findex dired-do-rename-regexp
+@itemx % C @var{from} @key{RET} @var{to} @key{RET}
+@kindex % C @r{(Dired)}
+@findex dired-do-copy-regexp
+@itemx % H @var{from} @key{RET} @var{to} @key{RET}
+@kindex % H @r{(Dired)}
+@findex dired-do-hardlink-regexp
+@itemx % S @var{from} @key{RET} @var{to} @key{RET}
+@kindex % S @r{(Dired)}
+@findex dired-do-symlink-regexp
+これら4つのコマンドは、それぞれリネーム、コピー、ハードリンクの作成、ソフトリンクの作成を行い、古いファイル名にたいして正規表現による置換を行って、新しい名前を作成します。
+@end table
+
+  正規表現の置換を行なう4つのコマンドは、実際には選択されたファイルの名前にたいして検索と置換を行ないます。これらのコマンドは2つの引数を読み取ります。それは式@var{from}と、置換パターン@var{to}です。これらは``古い''ファイル名にマッチした@var{from}を、@var{to}に置き換えます。@code{replace-regexp}
+(@ref{Regexp
+Replace}を参照してください)のように、古い名前にマッチしたパターンの全体または一部を参照するために、@var{to}の中で@samp{\&}や@samp{\@var{digit}}を使用できます。正規表現がファイル名の複数の箇所にマッチする場合は、最初のマッチだけが置換されます。
+
+  たとえば@kbd{% R ^.*$ @key{RET} x-\&
+@key{RET}}は、選択された各ファイルの名前の前に@samp{x-}を追加してリネームします。逆に各ファイル名の前の@samp{x-}を削除することも可能です。1つは@kbd{%
+R ^x-\(.*\)$ @key{RET} \1 @key{RET}}とする方法です。他にも@kbd{% R ^x- @key{RET}
+@key{RET}}とする方法もあります(ファイル名の範囲を指定するために、アンカーへのマッチ@samp{^}および@samp{$}を使用しています)。
+
+  置換処理は通常、ファイルのディレクトリー名は考慮しません。これはディレクトリーにあるファイル名だけを操作します。しかし数引数を0にした場合、置換はディレクトリー名を含めた絶対ファイル名に作用します(非0の引数は、操作するファイルの個数を指定します)。
+
+  一連のファイルを操作対象に選択するために、それらを操作するときに使うのと同じ正規表現@var{from}を使いたいと思うかもしれません。これを行なうには@kbd{%
+m @var{from}
+@key{RET}}でそれらのファイルをマークして、それらのファイルを操作するコマンドで同じ正規表現を使用します。もっと便利にするために、ファイルを操作する@kbd{%}コマンドは、最後の@kbd{%}コマンドで指定された正規表現をデフォルトで使用します。
+
+@node Comparison in Dired
+@section Diredでのファイル比較
+@cindex file comparison (in Dired)
+@cindex compare files (in Dired)
+
+@findex dired-diff
+@kindex = @r{(Dired)}
+  @kbd{=}
+(@code{dired-diff})コマンドは、@command{diff}プログラムを使用して、カレントファイル(ポイント位置のファイル)と他のファイル(ミニバッファーを使用して指定)を比較します。ミニバッファーで指定されたファイルは、@command{diff}の1番目の引数となり、ポイント位置のファイルは2番目の引数になります。@command{diff}プログラムの出力は、Diffモードを使用するバッファーで表示されます(@ref{Comparing
+Files}を参照してください)。
+
+  リージョンがアクティブの場合、ミニバッファーを使って読み取られるファイル名のデフォルトは、マーク(Diredのマークではなく、Emacsの通常のマークのこと。@ref{Setting
+Mark}を参照してください)の位置のファイルになります。リージョンがアクティブでない場合、ポイント位置のファイルがバックアップファイル(@ref{Backup}を参照してください)のときは、それがデフォルトになります。
+
+@node Subdirectories in Dired
+@section Diredでのサブディレクトリー
+@cindex subdirectories in Dired
+@cindex expanding subdirectories in Dired
+
+  Diredバッファーは通常、1つのディレクトリーだけを表示しますが、オプションでサブディレクトリーも同様に含めることができます。
+
+  1つのDiredバッファーに複数のディレクトリーを含める一番簡単な方法は、@command{ls}にオプション@samp{-lR}を指定して実行する方方です(Diredを実行するとき数引数を指定すると、ミニバッファーでこれらのオプションを指定できます)。これはすべてのサブディレクトリーの、すべてのレベルにたいして、再帰的にディレクトリーを一覧します。
+
+  特定のサブディレクトリーだけを見たいときもあります。これは@kbd{i}
+(@code{dired-maybe-insert-subdir})により行なうことができます:
+
+@table @kbd
+@findex dired-maybe-insert-subdir
+@kindex i @r{(Dired)}
+@item i
+@cindex inserted subdirectory (Dired)
+@cindex in-situ subdirectory (Dired)
+サブディレクトリーの内容を、バッファーの最後に挿入します。
+@end table
+
+@noindent
+ディレクトリーを記述する行でこのコマンドを使用した場合、同じDiredバッファーにそのディレクトリーの内容を挿入して、そこに移動します。サブディレクトリーの内容は、@samp{ls
+-lR}の出力と同じように、Diredバッファーのトップレベルのディレクトリーの後に挿入されます。
+
+  サブディレクトリーの内容がすでにバッファーに表示されている場合、@kbd{i}コマンドはそこに移動するだけです。
+
+  どちらの場合もm@kbd{i}は移動する前にマークをセットするので、@kbd{C-u
+C-@key{SPC}}でDiredバッファーの元の位置に戻ることができます(@ref{Setting
+Mark}を参照してください)。@samp{^}を使って、同じDiredバッファーの親ディレクトリーに戻ることもできます(@ref{Dired
+Visiting}を参照してください)。
+
+  @kbd{l}
+(@code{dired-do-redisplay})コマンドを使用すると、サブディレクトリーの内容を更新し、サブディレクトリーのヘッダー行で@kbd{C-u
+k}を使用すると、サブディレクトリーのリストを削除します(@ref{Dired
+Updating}を参照してください)。挿入したサブディレクトリーを、隠したり表示したりすることもできます(@ref{Hiding
+Subdirectories}を参照してください)。
+
+@ifnottex
+@include dired-xtra.texi
+@end ifnottex
+
+@node Subdirectory Motion
+@section サブディレクトリー間の移動
+
+  Diredバッファーがサブディレクトリーを一覧している場合、ディレクトリー全体を移動するためのページ移動コマンド@kbd{C-x
+[}および@kbd{C-x ]}を使用することができます。
+
+@cindex header line (Dired)
+@cindex directory header lines
+  以下のコマンドは、ディレクトリー単位で移動したり、Diredバッファーのディレクトリーツリーを上下に移動します。これらのコマンドは、@dfn{ディレクトリーヘッダー行}に移動します。ディレクトリーヘッダー行とは、ディレクトリーの名前を示す行で、ディレクトリー内容の最初に表示されます。
+
+@table @kbd
+@findex dired-next-subdir
+@kindex C-M-n @r{(Dired)}
+@item C-M-n
+ディレクトリーのレベルに関係なく、次のサブディレクトリーのヘッダー行に移動します(@code{dired-next-subdir})。
+
+@findex dired-prev-subdir
+@kindex C-M-p @r{(Dired)}
+@item C-M-p
+ディレクトリーのレベルに関係なく、前のサブディレクトリーのヘッダー行に移動します(@code{dired-prev-subdir})。
+
+@findex dired-tree-up
+@kindex C-M-u @r{(Dired)}
+@item C-M-u
+親ディレクトリーのヘッダー行に移動します(@code{dired-tree-up})。
+
+@findex dired-tree-down
+@kindex C-M-d @r{(Dired)}
+@item C-M-d
+次のサブディレクトリーのヘッダー行に、ディレクトリーツリーを下に移動します(@code{dired-tree-down})。
+
+@findex dired-prev-dirline
+@kindex < @r{(Dired)}
+@item <
+前のディレクトリーファイル行に、上へ移動します(@code{dired-prev-dirline})。これは親ディレクトリーのファイルとして、ディレクトリーが記述されている行のことです。
+
+@findex dired-next-dirline
+@kindex > @r{(Dired)}
+@item >
+次のディレクトリーファイル行に、下へ移動します(@code{dired-prev-dirline})。
+@end table
+
+@node Hiding Subdirectories
+@section サブディレクトリーを隠す
+@cindex hiding subdirectories (Dired)
+@cindex showing hidden subdirectories (Dired)
+
+  サブディレクトリーを@dfn{隠す}とは、ヘッダー行を除きそれを非表示にすることを意味します。
+
+@table @kbd
+@item $
+@findex dired-hide-subdir
+@kindex $ @r{(Dired)}
+ポイント位置のサブディレクトリーを隠す、または表示します(@code{dired-hide-subdir})。これは切り替えコマンドです。数引数は繰り返し回数として機能します。
+
+@item M-$
+@findex dired-hide-all
+@kindex M-$ @r{(Dired)}
+Diredバッファーのすべてのサブディレクトリーを、ヘッダー行だけを残して隠します(@code{dired-hide-all})。1つでも隠されたサブディレクトリーがある場合、すべてのサブディレクトリーを再表示します。非常に深いディレクトリーツリーの概観を得たり、離れた場所のサブディレクトリーに素早く移動するために、このコマンドを使うことができます。
+@end table
+
+  通常のDiredコマンドは、隠されたサブディレクトリーの中のファイルは考慮しません。たとえばマークされたファイルを操作するコマンドは、たとえファイルがマークされていても、それが隠されたディレクトリーの中にある場合は、それらを無視します。したがって、サブディレクトリーのファイルにつけられたDiredマークを外さなくても、そのサブディレクトリーを一時的に隠せば、操作対象から除外することができます。
+
+サブディレクトリーのリストを挿入する方法については@ref{Subdirectories in
+Dired}を、それを削除する方法については@ref{Dired Updating}を参照してください。
+
+@node Dired Updating
+@section Diredバッファーの更新
+@cindex updating Dired buffer
+@cindex refreshing displayed files
+
+  このセクションでは、外部(Diredではない)のディレクトリーやファイルに対する変更を反映してDiredバッファーを更新したり、Diredバッファーの一部を削除するコマンドを説明します。
+
+@table @kbd
+@item g
+Diredバッファーの内容全体を更新します(@code{revert-buffer})。
+
+@item l
+指定したファイルを更新します(@code{dired-do-redisplay})。@kbd{l}にたいするファイルの指定は、ファイル操作にたいするファイル指定と同じ方法で行ないます。
+
+@item k
+指定した@emph{ファイル行}(ファイルではなく、その行だけ)を削除します(@code{dired-do-kill-lines})。
+
+@item s
+並び替えをアルファベット順、日時順に切り替えます(@code{dired-sort-toggle-or-edit})。
+
+@item C-u s @var{switches} @key{RET}
+@var{switches}を@code{dired-listing-switches}に使用して、Diredバッファーを更新します。
+@end table
+
+@kindex g @r{(Dired)}
+@findex revert-buffer @r{(Dired)}
+  @kbd{g}
+(@code{revert-buffer})とタイプすると、リストされたファイルやディレクトリーにたいする変更にもとづき、Diredバッファーの内容を更新します。消されたファイルを除き、すでにあるマークはすべて保持されます。隠されたサブディレクトリーも更新されますが、隠されたまま残ります。
+
+@kindex l @r{(Dired)}
+@findex dired-do-redisplay
+  いくつかのファイルだけ更新するには、@kbd{l}
+(@code{dired-do-redisplay})とタイプします。Diredのファイル操作コマンドと同様に、このコマンドは次の@var{n}ファイル(または前の@minus{}@var{n}ファイル)、または(もしあれば)マークされたファイル、またはカレントファイルを操作します。ファイルの更新とは、ファイルの現在の状態を読み取り、バッファーの対応する行がその状態を示すように、その行を更新することを意味します。
+
+  サブディレクトリーのヘッダー行で@kbd{l}を使用した場合、対応するサブディレクトリーの内容を更新します。
+
+@vindex dired-auto-revert-buffer
+  @kbd{C-x
+d}や他のDiredコマンドを使用して、すでにDiredバッファーで表示されているディレクトリーをvisitする場合、Diredはそのバッファーに切り替えますが更新はしません。そのバッファーが最新でない場合、Diredは@key{g}をタイプして更新するよう警告を表示します。再visitしたとき、自動的にDiredバッファーをリバートするようEmacsに指示するには、変数@code{dired-auto-revert-buffer}を非@code{nil}値にセットしてください。
+
+@kindex k @r{(Dired)}
+@findex dired-do-kill-lines
+  バッファーから@emph{ファイル行} --- 実際のファイルではなく ｰｰｰ を削除するには、@kbd{k}
+(@code{dired-do-kill-lines})とタイプします。ファイル操作コマンドと同じように、このコマンドは次の@var{n}ファイル、またはもしあればマークされたファイルを操作します。しかし、間違って@kbd{k}をタイプしたとき面倒なので、カレントファイルは操作しません。
+
+  すでにDiredバッファーにサブディレクトリーとして挿入したディレクトリーファイル行で、@kbd{k}(@pxref{Subdirectories in
+Dired}を参照してください)とタイプすると、これはサブディレクトリーのリストも同様に削除します。サブディレクトリーのヘッダー行で@kbd{C-u
+k}とタイプしても、Diredバッファーからサブディレクトリーの行を削除できます。
+
+  この方法でkillした個別の行は@kbd{g}で元通り表示されますが、サブディレクトリーについては、@kbd{i}を使ってサブディレクトリーを再挿入しなければなりません。
+
+@cindex Dired sorting
+@cindex sorting Dired buffer
+@kindex s @r{(Dired)}
+@findex dired-sort-toggle-or-edit
+  Diredバッファーのファイルは通常、ファイル名のアルファベット順で一覧されます。かわりにDiredは日時順でソートすることもできます。Diredコマンド@kbd{s}
+(@code{dired-sort-toggle-or-edit})は2、つのソートモードを切り替えます。Diredバッファーのモードラインには、現在のソート方法がby
+nameやby dateのように示されます。
+
+  @kbd{C-u s @var{switches}
+@key{RET}}で、@code{dired-listing-switches}に新しい値を指定できます。
+
+@node Dired and Find
+@section Diredと@code{find}
+@cindex @code{find} and Dired
+
+  ファイルを選択するために@command{find}ユーティリティーを使うことにより、Diredバッファーに表示する一連のファイルを、より柔軟に選択できます。
+
+@findex find-name-dired
+  ワイルドカードパターンに名前がマッチするファイルを検索するには、@kbd{M-x
+find-name-dired}を使います。これは引数@var{directory}と@var{pattern}を読み取り、@var{directory}およびそのサブディレクトリーで、名前が@var{pattern}にマッチするすべてのファイルを選択します。
+
+  これにより選択されたファイルはDiredバッファーに表示され、通常のDiredコマンドが利用可能です。
+
+@findex find-grep-dired
+  ファイルの名前ではなく内容をテストしたいときは、@kbd{M-x
+find-grep-dired}を使用します。ものコマンドはミニバッファーで2つの引数@var{directory}と@var{regexp}を読み取ります。これは@var{directory}またはそれのサブディレクトリーで、内容が@var{regexp}にマッチするすべてのファイルを選択します。このコマンドは、プログラム@command{find}および@command{grep}を実行することにより機能します。@ref{Grep
+Searching}の@kbd{M-x
+grep-find}も参照してください。正規表現を記述するときは、Emacsにたいしてではなく、@command{grep}にたいして記述することを忘れないでください(与えられたregexpに内容がマッチするファイルを表示する別の方法として、@kbd{%
+g @var{regexp}}があります。@ref{Marks vs Flags}を参照してください)。
+
+@findex find-dired
+  この系列でもっとも一般的なコマンドは@kbd{M-x
+find-dired}で、これは@command{find}がテストできる任意の条件を指定することができます。これはミニバッファーで2つの引数@var{directory}と@var{find-args}を受け取ります。このコマンドは、@command{find}がどのような条件でテストを行なうかを指定する@var{find-args}を引数として、@var{directory}で@command{find}を実行します。このコマンドを使うためには、@command{find}の使い方を理解する必要があります。
+
+@vindex find-ls-option
+  これらのコマンドで生成されるリストの書式は変数@code{find-ls-option}により制御されます。これは一対のオプションです。1番目にファイル一覧を生成するために@command{find}をどのように呼び出すか、2番目にその出力をDiredが解析するかを指定します。
+
+@findex locate
+@findex locate-with-filter
+@cindex file database (locate)
+@vindex locate-command
+  コマンド@kbd{M-x locate}は、@command{locate}プログラムと似たインターフェースを提供します。@kbd{M-x
+locate-with-filter}も同様ですが、与えられた正規表現に名前がマッチするファイルだけを保持します。
+
+  これらのバッファーは、通常のDiredバッファーと完全に同じようには機能しません。ファイル操作は機能しますが、常にバッファーを自動的に更新するわけではありません。@kbd{g}でバッファーをリバートすると、挿入されたサブディレクトリーは削除され、フラグとマークはすべてリセットされます。
+
+@node Wdired
+@section Diredバッファーの編集
+
+@cindex wdired mode
+@findex wdired-change-to-wdired-mode
+  Wdiredは、Diredバッファーを直接変更することによりファイル操作を行なうことができる、特別なモードです(``Wdired''の``W''は、``writable:
+書き込み可能''が由来です)。Wdiredモードに入るには、Diredバッファーで@kbd{C-x C-q}
+(@code{dired-toggle-read-only})とタイプします。かわりに、メニューアイテムの@samp{Immediate / Edit
+File Names}を使うこともできます。
+
+@findex wdired-finish-edit
+  Wdiredモードでは、Diredバッファーに表示されているファイルの名前を編集することにより、ファイルをリネームできます。矩形操作や@code{query-replace}も含めて、通常のEmacs編集コマンドがすべて利用できます。編集を終えたら@kbd{C-c
+C-c} (@code{wdired-finish-edit})とタイプします。これにより変更が適用され、通常のDiredモードに戻ります。
+
+  単なるファイルのリネーム以外に、ファイルの新しい名前をタイプすることにより(絶対ファイル名でも相対ファイル名でも可)、ファイルを他のディレクトリーに移動することもできます。ファイルに削除のマークをつけるには、ファイル名全体を削除します。シンボリックリンクのリンク先を変更するには、リンク名の隣に表示されているリンク先の名前を編集します。
+
+  ファイルサイズや修正時刻など、バッファーの残りのテキストは読み込み専用にマークされているので、編集できません。しかし@code{wdired-allow-to-change-permissions}を@code{t}にセットした場合、ファイルのパーミッションを編集できます。たとえば@samp{-rw-r--r--}を@samp{-rw-rw-rw-}に変更することにより、そのファイルを誰でも書き込めるようにできます。これらの変更は、@kbd{C-c
+C-c}をタイプしたときに効果をもちます。
+
+@node Image-Dired
+@section Diredでのイメージとサムネイルの閲覧
+@cindex image-dired mode
+@cindex image-dired
+
+  Image-Diredは、イメージファイルをブラウズする機能です。これはイメージファイルにたいして、Emacs内または外部ビューアーを用いた、サムネイルまたはフルサイズでの閲覧を提供します。
+
+@kindex C-t d @r{(Image-Dired)}
+@findex image-dired-display-thumbs
+  Image-Diredに入るには、Diredバッファーで見たいイメージファイルを、通常のように@kbd{m}を使ってマークします。それから@kbd{C-t
+d}
+(@code{image-dired-display-thumbs})とタイプします。これはマークしたファイルに対応するimage-diredのバッファーを作成して切り替えます。
+
+  @kbd{M-x
+image-dired}とタイプすることにより、直接Image-Diredに入ることもできます。これはディレクトリーの入力を求めるので、イメージファイルがあるディレクトリーを指定します。これによりそのディレクトリーにある、すべてのイメージファイルのサムネイルが作成され、それらは``thumbnailバッファー''に表示されます。ディレクトリーに大量のイメージファイルがある場合は長時間を要するため、イメージファイルの数が、@code{image-dired-show-all-from-dir-max-files}を越える場合は確認を求めます。
+
+  thumbnailバッファーのサムネイルにポイントを移動して、@key{RET}
+(@code{image-dired-display-thumbnail-original-image})とタイプすると、サイズ調整されたバージョンを別のウィンドウに表示します。これはイメージをウィンドウにフィットするようにサイズ調整します。バッファー内の移動は矢印キーを使用します。簡単にブラウズするには、次のイメージに移動して、それを表示する@key{SPC}
+(@code{image-dired-display-next-thumbnail-original})を使用します。@key{DEL}
+(@code{image-dired-display-previous-thumbnail-original})とタイプすると、前のサムネイルに戻って、かわりにそれを表示します。
+
+@vindex image-dired-external-viewer
+  イメージをオリジナルのサイズで閲覧するには、@key{RET}を押す前にプレフィクス引数(@kbd{C-u})を与えるか、@kbd{C-@key{RET}}
+(@code{image-dired-thumbnail-display-external})とタイプして、イメージを外部ビューアーで表示します。これは最初に、@code{image-dired-external-viewer}を設定しなければなりません。
+
+  Image-Diredを通じて、イメージを削除することもできます。@kbd{d}
+(@code{image-dired-flag-thumb-original-file})とタイプすると、Diredバッファーでそのイメージに削除のフラグをつけます。thumbnailバッファーで@kbd{C-d}
+(@code{image-dired-delete-char})とタイプすることにより、サムネイルイメージを削除することもできます。
+
+  さらに上級の機能として、@dfn{イメージタグ(image
+tags)}があります。これはイメージをカテゴリー分けするために使用されるメタデータです。このタグは、@code{image-dired-db-file}により設定されるプレーンテキストファイルに格納されます。
+
+  イメージファイルにタグ付けするには、それらをDiredバッファーでマークして(thumbnailバッファーで@kbd{m}をタイプして、Diredのファイルをマークすることもできます)、@kbd{C-t
+t}
+(@code{image-dired-tag-files})とタイプします。このコマンドはミニバッファーでタグ名読み取ります。特定のタグをもつファイルをマークするには、@kbd{C-t
+f}
+(@code{image-dired-mark-tagged-files})とタイプします。特定のタグをもつイメージファイルをマークした後は、@kbd{C-t
+d}を使ってそれらを閲覧することができます。
+
+  thumbnailバッファーから直接ファイルにタグ付けするには@kbd{t t}とタイプし、タグを削除するには@kbd{t
+r}とタイプします。各ファイルにたいして、``コメント''と呼ばれる特別な``タグ''があります(コメントは他のタグと正確に同じ意味でのタグではありません。コメントは若干異なる扱いをされるからです)。コメントタグは、イメージについてのコメントや説明を入力するのに使用されます。thumbnailバッファーでコメントするには、@kbd{c}とタイプします。これはコメントの入力を求めます。Diredからコメントを追加するには、@kbd{C-t
+c} (@code{image-dired-dired-comment-files})とタイプしてください。
+
+  Image-Diredは、シンプルなイメージ操作も提供します。thumbnailバッファーで@kbd{L}とタイプすると、オリジナルのイメージを反時計回りに90度ローテートし、@kbd{R}で時計回りにローテートします。このローテーションは損失がなく、JpegTRANと呼ばれる外部ユーティリティーを使用します。
+
+@node Misc Dired Features
+@section その他のDiredの機能
+
+@kindex + @r{(Dired)}
+@findex dired-create-directory
+  コマンド@kbd{+}
+(@code{dired-create-directory})はディレクトリー名を読み取り、そのディレクトリーを作成します。そのディレクトリーがすでに存在する場合は、エラーをシグナルします。
+
+@cindex searching multiple files via Dired
+@kindex M-s a C-s @r{(Dired)}
+@kindex M-s a M-C-s @r{(Dired)}
+@findex dired-do-isearch
+@findex dired-do-isearch-regexp
+  コマンド@kbd{M-s a C-s}
+(@code{dired-do-isearch})は、マークされたファイルにたいして、``複数ファイル''にたいするインクリメンタル検索を開始します。ファイル終端で検索が失敗した場合、@kbd{C-s}とタイプすると、マークされた次のファイルで検索を繰り返します。マークされた最後のファイルの終端に達すると、マークされた最初のファイルに戻って検索します。コマンド@kbd{M-s
+a M-C-s}
+(@code{dired-do-isearch-regexp})は、同じことを正規表現検索で行ないます。検索の繰り返しに関する情報は、@ref{Repeat
+Isearch}を参照してください。
+
+@cindex adding to the kill ring in Dired
+@kindex w @r{(Dired)}
+@findex dired-copy-filename-as-kill
+  コマンド@kbd{w}
+(@code{dired-copy-filename-as-kill})は、マークされたファイル(または次の@var{n}ファイル)の名前を、あたかも@kbd{C-w}でkillしたかのように、killリングに配します。ファイル名はスペースで区切られます。
+
+  プレフィクス引数に0を指定した場合、マークされた各ファイルの絶対ファイル名を使用します。プレフィクス引数に@kbd{C-u}だけを指定した場合、Diredバッファーのデフォルトディレクトリーからの相対ファイル名を使用します(サブディレクトリーから行なった場合はスラッシュが含まれます)。特別なケースとして、ポイントがディレクトリーのヘッダー行にある場合、@kbd{w}で、そのディレクトリーの絶対パスを得ることができます。この場合、プレフィクス引数とマークされたファイルは無視されます。
+
+  このコマンドの主な目的は、他のEmacsコマンドの引数として、ファイル名をyankすることです。これはkillリングに何が追加されたかも表示するので、現在マークされているファイルを、エコーエリアに表示するためにも使用できます。
+
+@kindex ( @r{(Dired)}
+@findex dired-hide-details-mode
+@vindex dired-hide-details-hide-symlink-targets
+@vindex dired-hide-details-hide-information-lines
+@cindex hiding details in Dired
+  コマンド@kbd{(}
+(@code{dired-hide-details-mode})は、カレントのDiredバッファーでの、ファイル所有者やファイルパーミッションなどの、詳細表示を切り替えます。デフォルトでは、シンボリックリンクのリンク先や、ヘッダー行とファイルやディレクトリーの一覧以外のすべての行も隠します。これを変更するには、オプション@code{dired-hide-details-hide-symlink-targets}と@code{dired-hide-details-hide-information-lines}をカスタマイズしてください。
+
+@cindex Dired and version control
+  visitしているディレクトリーが、バージョンコントロール(@ref{Version
+Control})の配下にある場合、選択されたファイルにたいして、通常のVC diffおよびVC logコマンドが処理を行ないます。
+
+@findex dired-compare-directories
+  コマンド@kbd{M-x
+dired-compare-directories}は、カレントのDiredバッファーと、他のディレクトリーを比較するために使用されます。2つのディレクトリーで``異なる''、すべてのファイルがマークされます。カレントのDiredバッファーも含めて、それらのファイルをリストする、すべてのDiredバッファーでマークが付されます。
+
+  (入力を求められたとき@key{RET}をタイプすると使用される)デフォルトの比較方法では、ファイル名だけを比較します ---
+つまり別のディレクトリーに存在しないファイルは、``異なる''とされます。Lisp式を入力して、より厳密な比較を指定することができます。この場合、変数@code{size1}と@code{size2}はファイルサイズ、@code{mtime1}と@code{mtime2}は最終修正時刻を秒で表した浮動小数点数、@code{fa1}と@code{fa2}はファイルの属性リスト(関数@code{file-attributes}で返される形式)です。この比較は、同じ名前のファイルごとに評価され、式の値が非@code{nil}の場合、それらのファイルは``異なる''とされます。
+
+  たとえばシーケンス@code{M-x dired-compare-directories @key{RET} (> mtime1 mtime2)
+@key{RET}}は、別のディレクトリーよりこのディレクトリーのファイルが新しい場合はマークし、このディレクトリーより別のディレクトリーのファイルが古い場合にマークします。相手がいないファイルも、両方のディレクトリーでマークが付されます。
+
+@cindex drag and drop, Dired
+  X
+Windowシステムでは、Emacsは``ドラッグアンドドロップ''をサポートします。ファイルオブジェクトを他のプログラムにドラッグしたり、Diredバッファーにドロップできます。これは、そのディレクトリーのファイルの移動、コピー、またはリンクを作成します。正確に言うと、どのアクションが選択されるかは、プログラムの動作により決定されます。Diredバッファーの外へのファイルのドラッグは、現在のところサポートされていません。

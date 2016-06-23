@@ -1,0 +1,306 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 1985-1987, 1993-1995, 1997, 2000-2015 Free Software
+@c Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@node Modes
+@chapter メジャーモードとマイナーモード
+
+  Emacsには多くの@dfn{編集用モード(editing
+modes)}が含まれており、これは基本的な振る舞いを、編集に便利な方法に変更します。これらの編集用モードは@dfn{メジャーモード(major
+modes)}と@dfn{マイナーモード(minor modes)}に分けられます。
+
+  メジャーモードは、Cソースファイル(@ref{Programs}を参照してください)などの特定のファイルタイプや、shellバッファー(@ref{Shell}を参照してください)などの、特別なタイプの非ファイルバッファーにたいして作業するための特別な機能を提供します。メジャーモードは互いに排他であり、各バッファーは常に1つのメジャーモードをもちます。
+
+  マイナーモードはオンとオフを切り替えることができるオプションの機能で、ファイルやバッファーのタイプに特定する必要はありません。たとえばAuto
+Fillモードは、単語の間にタイプした@key{SPC}で行を区切るマイナーモードです(@ref{Auto
+Fill}を参照してください)。マイナーモードは互いに独立していて、選択されたメジャーモードからも独立しています。
+
+@menu
+* Major Modes::              Textモード vs. Lispモード 
+                               vs. Cモード...
+* Minor Modes::              マイナーモードは他と独立して有効にできる機能です。
+* Choosing Modes::           ファイルをvisitしたときにモードが選択される方法。
+@end menu
+
+@node Major Modes
+@section メジャーモード
+@cindex major modes
+@cindex mode, major
+@kindex TAB @r{(and major modes)}
+@kindex DEL @r{(and major modes)}
+@kindex C-j @r{(and major modes)}
+
+  すべてのバッファーはメジャーモードをもっており、そのバッファーがカレントである間の編集の動作を決定します。モードラインには通常カレントのメジャーモード名がカッコ内に表示されます(@ref{Mode
+Line}を参照してください)。
+
+  もっとも特殊化されていないメジャーモードは、@dfn{Fundamental(基本)モード}と呼ばれます。このモードには、モード独自の再定義や変数設定がないので、各Emacsコマンドはもっとも一般的な振る舞いをし、各ユーザーオプションはデフォルトの状態になっています。
+
+  Lispや英文テキストのように、Emacsが認識できる特定のタイプのテキスト編集には、LispモードやTextモードのような、より特殊化されたメジャーモードを通常は使用します。ほとんどのメジャーモードは3つのグループに分けられます。最初のグループはプレインまたはマークアップされた通常テキストのためのモードを含みます。これにはTextモード、HTMLモード、SGMLモード、@TeX{}モードやOutlineモードなどが含まれます。2番目のグループはプログラミング言語特有のモードです。これらは、Lispモード(いくつかの変種を有する)、Cモード、Fortranモードなどが含まれます。3番目のグループはファイルに直接関連付けられていないメジャーモードが含まれます。これらはEmacsが特別の目的のために作るバッファーで使用されるもので、Diredが作成するバッファーのためのDiredモード(@ref{Dired}を参照してください)、@kbd{C-x
+m}で作成されるバッファーのためのMessageモード(@ref{Sending
+Mail}を参照してください)、下位のシェルプロセスとの通信用のバッファーのためのShellモード(@ref{Interactive
+Shell}を参照してください)などが含まれます。
+
+  通常、メジャーモードは最初にファイルをvisitしたとき、またはバッファーを作成したときに、Emacsにより自動的にセットされます。@kbd{M-x}コマンドを使うことにより、新しいメジャーモードを明示的に選択することができます。モードの名前に@code{-mode}を追加することにより、モードを選択するコマンド名を得ることができます(たとえば、Lispモードを選択する場合は@kbd{M-x
+lisp-mode})。
+
+@vindex major-mode
+  バッファーローカルな変数@code{major-mode}の値は、メジャーモードコマンドと同じ名前のシンボル(たとえば@code{lisp-mode})です。この変数は自動的にセットされます。あなた自身が変更するべきではありません。
+
+  @code{major-mode}のデフォルト値は、メジャーモードが指定されていないファイルを使うときや、@kbd{C-x
+b}で作成した新しいバッファーのメジャーモードを決定します。通常、デフォルト値はFundamentalモードを指定する、シンボル@code{fundamental-mode}です。Customizationインターフェースを通じて、このデフォルト値を変更できます(@ref{Easy
+Customization}を参照してください)。initファイルに以下のような行を追加しても変更できます(@ref{Init
+File}を参照してください):
+
+@example
+(setq-default major-mode 'text-mode)
+@end example
+
+@noindent
+@code{major-mode}のデフォルト値が@code{nil}の場合、メジャーモードは前のカレントバッファーから引き継がれます。
+
+  特殊化されたメジャーモードは、特定のキーにたいして、そのモードにより適した何かを行うよう、意味づけが変更される場合があります。たとえばプログラミングに関連するモードでは、@key{TAB}には、カレント行をその言語のルールにしたがってインデントする機能がバインドされます(@ref{Indentation}を参照してください)。一般的に変更されるキーは@key{TAB}、@key{DEL}、@kbd{C-j}です。多くのモードがモード自身の特別なコマンドを定義しており、それらは通常、プレフィクスキーが@kbd{C-c}のコマンドにバインドされます。メジャーモードはユーザーオプションと変数も変更できます。たとえばプログラミングに間するモードは通常、変数@code{comment-start}にバッファーローカルな値をセットします。これはソースコードのコメントがどのように区切られるかを決定します(@ref{Comments}を参照してください)。
+
+@findex describe-mode
+@kindex C-h m
+  カレントメジャーモードのキーバインディング一覧も含めたドキュメントを閲覧するには、@code{C-h m}
+(@code{describe-mode})とタイプします。
+
+@cindex mode hook
+@vindex text-mode-hook
+@vindex prog-mode-hook
+  Fundamentalモード以外のすべてのメジャーモードは、@dfn{モードフック(mode
+hook)}を定義します。これはバッファーでそのモードが有効になるたびに実行される、カスタマイズ可能なLisp関数のリストです。フックに間する詳細は、@ref{Hooks}を参照してください。各モードフックはメジャーモード名の後に名前がつけられます。たとえばFortranモードのモードフックは、@code{fortran-mode-hook}です。さらにすべてのテキストベースのメジャーモードは、@code{text-mode-hook}、すべてのプログラミング言語のモードは、その言語モード自身のモードフックの前に、@code{prog-mode-hook}を実行します。フック関数は変数@code{major-mode}の値を調べて、どのモードに入ろうとしているか調べることができます。
+
+  モードフックは、一般的にマイナーモードを有効にするために使用されます(@ref{Minor
+Modes}を参照してください)。たとえば以下の行をinitファイルに記述すると、すべてのテキストベースのメジャーモードでFlyspellマイナーモード(@ref{Spelling}を参照してください)を、Emacs
+LispモードでEldocマイナーモード(@ref{Lisp Doc}を参照してください)を有効にすることができます:
+
+@example
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+@end example
+
+@node Minor Modes
+@section マイナーモード
+@cindex minor modes
+@cindex mode, minor
+
+  マイナーモードは明確な方法でEmacsの動作を変更する、オプションの編集用モードです。メジャーモードとは異なり、いつでも任意の数のマイナーモードを有効にできます。いくつかのマイナーモードは@dfn{バッファーローカル(buffer-local)}で、特定のバッファーにたいしてオン(有効)にして、他のバッファーではオフ(無効)に切り替えることができます。それ以外のマイナーモードは@dfn{グローバル(global)}で、それが有効な間はEmacsセッションのすべてのバッファーで行う、すべての操作に影響します。ほとんどのマイナーモードはデフォルトで無効ですが、デフォルトで有効なものもいくつかあります。
+
+  ほとんどのバッファーローカルなマイナーモードは、モードラインのメジャーモード標識のすぐ後ろに有効であることを示します。たとえばモードラインに@samp{Fill}と表示されているとき、それはAuto
+Fillモードが有効であることを意味します。@ref{Mode Line}を参照してください。
+
+@cindex mode commands for minor modes
+  メジャーモードと同様に、各マイナーモードは@dfn{モードコマンド(mode
+command)}に関連付けられていて、それはモード名の後ろに@samp{-mode}を付けた名前です。たとえばAuto
+Fillモードのモードコマンドは@code{auto-fill-mode}です。しかしメジャーモードのコマンドは、単純にそのモードを有効にするだけですが、マイナーモードのモードコマンドは、モードを有効または無効にすることができます。
+
+@itemize
+@item
+@kbd{M-x}を通じて、またはバインドしたキー(@ref{Key
+Bindings}を参照してください)をタイプすることにより、モードコマンドをプレフィクスキーなしで直接呼び出すと、それはマイナーモードを@dfn{切り替え(toggles)}ます。つまり、マイナーモードがオフのときはオンに、オンのときはオフに切り替えます。
+
+@item
+プレフィクス引数を指定してモードコマンドを呼び出すと、引数が0または負のときは無条件にマイナーモードをオフにし、それ以外のときは無条件にオンに切り替えます。
+
+@item
+Lispからモードコマンドが呼び出された場合、引数が省略されているか@code{nil}のとき、マイナーモードは無条件にオンになります。これはメジャーモードのモードフックからマイナーモードをオンに切り替えるのを簡単にします(@ref{Major
+Modes}を参照してください)。非@code{nil}の引数は、上で説明したインタラクティブなプレフィクス引数と同様に処理されます。
+@end itemize
+
+  ほとんどのマイナーモードは、モードコマンドと同じ名前の@dfn{モード変数(mode
+variable)}をもっています。変数の値が非@code{nil}のときはモードが有効で、@code{nil}なら無効です。一般的に、Lispから直接モード変数を変更して、モードを有効または無効にするべきではありません。かわりにモードコマンドを使うべきです。しかしCustomizeインターフェース(@ref{Easy
+Customization}を参照してください)を通じてのノード変数のセットは、Customizeが自動的にモードコマンドを実行するので、常に正しくモードを有効または無効にします。
+
+  以下にいくつかのバッファーローカルなマイナーモードのリストを示します:
+
+@itemize @bullet
+@item
+Abbrevモードは、事前に定義された省略形(abbreviation)の定義にもとづいて、テキストを自動的に展開します。@ref{Abbrevs}を参照してください。
+
+@item
+Auto Fillモードは、行が長くなりすぎるのを防ぐため、タイプされた文字にしたがって改行を挿入します。@ref{Filling}を参照してください。
+
+@item
+Auto Saveモードはバッファー内容を定期的に保存して、クラッシュした場合等に失われる作業量を減らします。@ref{Auto
+Save}を参照してください。
+
+@item
+Enrichedモードは、書式つきのテキストの編集と保存を可能にします。@ref{Enriched Text}を参照してください。
+
+@item
+Flyspellモードは、自動的に間違ったスペルの単語をハイライトします。@ref{Spelling}を参照してください。
+
+@item
+Font-Lockモードは、プログラム内で見つかった特定のテキスト単位を自動的にハイライトします。このモードはデフォルトでグローバルに有効になっていますが、個別のバッファーで無効にすることができます。@ref{Faces}を参照してください。
+
+@findex linum-mode
+@cindex Linum mode
+@item
+Linumモードは、各行の行番号をウィンドウの左端に表示します。
+
+@item
+Outline minorモードは、Outlineモードと呼ばれるメジャーモードと同様な機能を提供します。@ref{Outline
+Mode}を参照してください。
+
+@cindex Overwrite mode
+@cindex mode, Overwrite
+@findex overwrite-mode
+@kindex INSERT
+@item
+Overwriteモードは、通常のプリント文字の挿入により、後の文字をずらすかわりに、既存のテキストを置き換えます。たとえば、ポイントが@samp{FOOBAR}の@samp{B}の前にある場合、@kbd{G}をタイプすると通常は@samp{FOOGBAR}となりますが、Overwriteモードでは@samp{FOOGAR}になります。Overwriteモードでは、コマンド@kbd{C-q}は次の文字が何であれ、たとえそれが数字であってもその文字を挿入します
+---
+これにより既存のテキストを置き換える代わりに文字を挿入する方法が与えられます。モードコマンド@code{overwrite-mode}は、@key{Insert}キーにバインドされています。
+
+@findex binary-overwrite-mode
+@item
+Binary
+Overwriteモードは、バイナリーファイルを編集するための、Overwriteモードの変種です。このモードは改行とタブを他の文字と同じように扱うので、他の文字を上書きしたり、他の文字で上書きさせたりすることができます。Binary
+Overwriteモードでは@kbd{C-q}の後の数字は、通常どおり8進文字コードを指定します。
+
+@item
+Visual Lineモードは、 ``単語単位の折り返し(word
+wrapping)''を処理します。これにより長い行は単語境界で折り返されます。@ref{Visual Line Mode}を参照してください。
+@end itemize
+
+@noindent
+以下に便利なグローバルマイナーモードをいくつか示します:
+
+@itemize @bullet
+@item
+Column Numberモードは、現在の列番号をモードラインに表示します。@ref{Mode Line}を参照してください。
+
+@item
+Delete
+Selectionモードでは、リージョンがアクティブの場合、最初にリージョンのテキストを削除してからテキストを挿入します。@ref{Using
+Region}を参照してください。
+
+@item
+Icompleteモードは、ミニバッファーで補完がアクティブのとき、利用可能な候補を表示します。@ref{Icomplete}を参照してください。
+
+@item
+Line Numberモードは、現在の行番号をモードラインに表示します。このモードはデフォルトで有効です。@ref{Mode
+Line}を参照してください。
+
+@item
+Menu Barモードは、各フレームにメニューバーを表示します。このモードはデフォルトで有効です。@ref{Menu Bars}を参照してください。
+
+@item
+Scroll
+Barモードは、各ウィンドウにスクロールバーを表示します。このモードはデフォルトで有効ですが、スクロールバーが表示されるのはグラフィカルな端末だけです。@ref{Scroll
+Bars}を参照してください。
+
+@item
+Tool
+Barモードは、各フレームにツールバーを表示します。このモードはデフォルトで有効ですが、ツールバーが表示されるのはグラフィカルな端末だけです。@ref{Tool
+Bars}を参照してください。
+
+@item
+Transient
+Markモードはリージョンをハイライトして、マークがアクティブなときはEmacsの多くのコマンドがリージョンにたいして操作を行うようになります。このモードはデフォルトで有効です。@ref{Mark}を参照してください。
+@end itemize
+
+@node Choosing Modes
+@section ファイルのモードを選択する
+
+@cindex choosing a major mode
+@cindex choosing a minor mode
+@vindex auto-mode-alist
+  ファイルをvisitしたとき、Emacsは自動的にメジャーモードを選択します。これは通常、ファイル名にもとづいて選択されます---たとえば名前が@samp{.c}で終わるファイルは通常、Cモードで編集されます
+---
+が、ファイル内の特別なテキストにもとづいてメジャーモードが選択されるときもあります。この特別なテキストは、バッファーローカルなマイナーモードを有効にするためにも使用されます。
+
+  以下は、これの正確な手順です:
+
+  最初にEmacsは、ファイルにファイルローカル(file-local)なモード変数が含まれているかチェックします。@ref{File
+Variables}を参照してください。メジャーモードを指定するファイルローカル変数が存在する場合、Emacsは他の条件をすべて無視してそのメジャーモードを使用します。ファイルローカル変数を使用してメジャーモードを指定する方法はいくつかあります。一番単純なのは、空行でない最初の行に、そのモードの名前と、モード名の前後に@samp{-*-}を記述する方法です。他のテキストがその行にあっても問題はありません。たとえば、
+
+@example
+; -*-Lisp-*-
+@end example
+
+@noindent
+これはEmacsにLispモードを使用するよう指示します。Lispがこの行をコメントとして扱うように、セミコロンがどのように使われているか注意してください。以下のように書くこともできます
+
+@example
+; -*- mode: Lisp;-*-
+@end example
+
+@noindent
+ファイルローカル変数を使用して、バッファーローカルなマイナーモードを指定することもできます。これは@code{eval}指定を使用して行います。たとえば、空行でない最初の行に以下を記述すると、これはバッファーをLispモードにして、Auto-Fillモードを有効にします。
+
+@example
+; -*- mode: Lisp; eval: (auto-fill-mode 1); -*-
+@end example
+
+@noindent
+しかし、ほとんどのマイナーモードはユーザー個人の好みが表れるものなので、この方法でマイナーモードを有効にするのは、通常は不適切です。特定のファイルタイプにたいしてマイナーモードを個人的に使用したい場合は、メジャーモードフックを通じてマイナーモードを有効にするのが、より良い方法です。
+
+@vindex interpreter-mode-alist
+  2番目に、メジャーモードを指定するファイル変数が存在しない場合、Emacsは最初の行が@samp{#!}で開始されていないかチェックします。もし該当したら、それはそのファイルがファイルの最初の行に記述された名前のインタープリターを実行する(ファイルの残りはインタープリターへの入力として使用されます)ことにより機能する、実行可能なシェルコマンドであることを示します。したがってEmacsはインタープリター名を使って、モードの選択を試みます。たとえば、@samp{#!/usr/bin/perl}で始まるファイルは、Perlモードで開かれます。変数@code{interpreter-mode-alist}は、インタープリター名とメジャーモードの対応を指定します。
+
+  最初の行が@samp{#!}で開始されている場合、最初の行で@samp{-*-}の機能は通常は使用できません。なぜならインタープリターを実行するときにシステムが混乱するからです。そのため、Emacsはそのようなファイルにたいしては、1行目と同じように2行目の@samp{-*-}を探します。これはマジック文字列@samp{'\"}で開始されるman
+pageで、troffプリプロセッサーのリストを指定することと同じです。
+
+@vindex magic-mode-alist
+  3番目に、Emacsは変数@code{magic-mode-alist}にもとづいて、バッファーの先頭のテキストを調べて、メジャーモードの決定を試みます。デフォルトではこの変数は@code{nil}(空のリスト)なので、Emacsはこのステップをスキップしますが、initファイルでこれをカスタマイズできます(@ref{Init
+File}を参照してください)。変数の値には、以下の形式のリスト要素を指定します
+
+@example
+(@var{regexp} . @var{mode-function})
+@end example
+
+@noindent
+ここで@var{regexp}は正規表現(@ref{Regexps}を参照してください)で、@var{mode-function}はメジャーモード関数です。ファイルの先頭のテキストが@var{regexp}にマッチした場合、Emacsは@var{mode-function}で指定したメジャーモードを選択します。
+
+@code{magic-mode-alist}の要素は、以下の形式でも指定できます
+
+@example
+(@var{match-function} . @var{mode-function})
+@end example
+
+@noindent
+ここで@var{match-function}は、バッファーの先頭で呼び出されるLisp関数です。この関数が非@code{nil}を返した場合、Emacsはメジャーモードを@var{mode-function}にセットします。
+
+  4番目に ---Emacsが適正なメジャーモードをまだ見つけていない場合 ---
+今度はファイル名を調べます。ファイル名とメジャーモードの対応付けは、変数@code{auto-mode-alist}で制御されます。この変数の値は、各要素が以下の形式のリストです。
+
+@example
+(@var{regexp} . @var{mode-function})
+@end example
+
+@noindent
+または以下の形式です
+
+@example
+(@var{regexp} @var{mode-function} @var{flag})
+@end example
+
+@noindent
+たとえば、通常見られるようなリストの要素は、@code{(@t{"\\.c\\'"}
+.
+c-mode)}のような形式で、これは名前が@file{.c}で終わるファイルにたいして、Cモードを選択する役目を負っています(正規表現で@samp{.}がもつ特別な意味を打ち消すために、文字列に@samp{\}を含めなければなりません。これはLisp構文では@samp{\\}と記述する必要があります)。要素が@code{(@var{regexp}
+@var{mode-function}
+@var{flag})}の形式をもち、@var{flag}が非@code{nil}の場合、Emacsは@var{mode-function}を呼び出した後、Emacsは@var{regexp}とマッチした接尾辞を捨てて、ほかのマッチを検索します。
+
+@vindex auto-mode-case-fold
+  GNU/Linuxおよび、ファイル名の大文字小文字を区別する他のシステムでは、Emacsは@code{auto-mode-alist}の検索で大文字小文字を区別します。この検索が失敗すると、2回目は大文字小文字を区別せずにalistを再検索します。2回目の検索を行わないようにするには、変数@code{auto-mode-case-fold}を@code{nil}に変更します。Microsoft
+Windowsのような、ファイル名の大文字小文字を区別しないシステムでは、Emacsは大文字小文字を区別しないで@code{auto-mode-alist}を検索します。
+
+@vindex magic-fallback-mode-alist
+  最後に、Emacsが@emph{まだ}使用するメジャーモードを見つけられない場合、Emacsはバッファーの先頭のテキストと、変数@code{magic-fallback-mode-alist}を比較します。この変数は上述した@code{magic-mode-alist}と同じように機能しますが、@code{auto-mode-alist}の後に調べられるという点が異なります。デフォルトでは@code{magic-fallback-mode-alist}にはイメージファイル、HTML/XML/SGMLファイル、PostScriptファイルをチェックする形式が含まれています。
+
+@findex normal-mode
+  バッファーのメジャーモードを変更したとき、@kbd{M-x
+normal-mode}とタイプすると、Emacsが自動的に選択するメジャーモードに戻ることができます。この関数は@code{find-file}がメジャーモードを選択するために呼び出す関数と同じです。この関数は、(もしあれば)ファイルの@samp{-*-}
+行およびローカル変数リストも処理します。@ref{File Variables}を参照してください。
+
+@vindex change-major-mode-with-file-name
+  コマンド@kbd{C-x
+C-w}および@code{set-visited-file-name}は、新しいファイル名が何らかのモードに関係がある場合は、新しいメジャーコードに変更します(そのバッファーがファイルをvisitしていない場合、@kbd{C-x
+C-s}も同じことを行います)。しかしバッファーの内容がメジャーモードを指定していて、ある種の``特別''なメジャーモードはモードの変更を許しません。このモード変更機能をオフにするには、@code{change-major-mode-with-file-name}を@code{nil}にセットして下さい。

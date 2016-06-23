@@ -1,0 +1,294 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 1985-1987, 1993-1995, 1997, 2001-2015 Free Software
+@c Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@node Registers
+@chapter レジスター
+@cindex registers
+
+  Emacsの@dfn{レジスター(registers)}は、テキストや矩形領域、位置、その他、後で使うものを保存するための小部屋です。一度テキストや矩形領域をレジスターに保存すれば、それをバッファーに何度もコピーできます。一度場所をレジスターに保存すれば、何度でもその場所にジャンプして戻ることができます。
+
+  各レジスターは1文字からなる名前があり、ここでは@var{r}と表記することにします。@var{r}には、英字(@samp{a}など)または数字(@samp{1}など)を使用できます。大文字小文字は区別されるので、レジスター@samp{a}とレジスター@samp{A}は同じではありません。
+
+@findex view-register
+  レジスターには位置、テキスト、矩形領域、数字、ウィンドウの設定、ファイル名が保存できますが、一度に保存できるのは1つです。レジスターに何か保存すると、他の何かをそのレジスターに保存するまで残ります。レジスター@var{r}に何が含まれているのか見るには。@kbd{M-x
+view-register}を使います:
+
+@table @kbd
+@item M-x view-register @key{RET} @var{r}
+レジスター@var{r}に何が含まれるかの説明を表示します。
+@end table
+
+@vindex register-preview-delay
+@cindex preview of registers
+  レジスター名の入力を求めるコマンドはすべて、既存のレジスターを一覧する``プレビュー(preview)''ウィンドウを遅延表示します。遅延の長さは@code{register-preview-delay}でカスタマイズできます。遅延を無効にするには、@code{nil}をセットしてください。この場合、@kbd{C-h}か@key{F1}で、明示的にプレビューウィンドウを要求できます。
+
+  @dfn{ブックマーク(Bookmarks)}はファイルと位置を記録するので、ファイルを再び見るときは記録された位置から閲覧できます。ブックマークも本質的にレジスター同じなので、このチャプターに記載します。
+
+@menu
+* Position Registers::       位置をレジスターに保存する。
+* Text Registers::           テキストをレジスターに保存する。
+* Rectangle Registers::      矩形領域をレジスターに保存する。
+* Configuration Registers::  ウィンドウの設定をレジスターに保存する。
+* Number Registers::         レジスターの中の数字。
+* File Registers::           レジスターの中のファイル名。
+* Keyboard Macro Registers::  レジスターの中のキーボードマクロ。
+* Bookmarks::                レジスターと似ているが永続性があるブックマーク。
+@end menu
+
+@node Position Registers
+@section レジスターに位置を保存する
+@cindex saving position in a register
+
+@table @kbd
+@item C-x r @key{SPC} @var{r}
+現在のバッファーのポイント位置をレジスター@var{r}に記録します(@code{point-to-register})。
+@item C-x r j @var{r}
+レジスター@var{r}に記録されたバッファーの位置にジャンプします(@code{jump-to-register})。
+@end table
+
+@kindex C-x r SPC
+@findex point-to-register
+  @kbd{C-x r @key{SPC}}
+(@code{point-to-register})と、それに続けて文字@kbd{@var{r}}をタイプすると、ポイント位置と現在のバッファーの両方をレジスター@var{r}も保存します。レジスターは他の何かが保存されるまでこの情報を保持します。
+
+@kindex C-x r j
+@findex jump-to-register
+  コマンド@kbd{C-x r j
+@var{r}}は、@var{r}に記録されたバッファーに切り替えて、記録された位置にポイントを移動します。レジスターの内容は変わらないので、保存した位置に何度でもジャンプできます。
+
+  @kbd{C-x r j}を使って保存した位置に移動するとき、保存されたバッファがkillされていた場合、@kbd{C-x r
+j}は同じファイルをvisitしてバッファーを生成しようと試みます。もちろんこれはファイルをvisitしたバッファーだけの動作です。
+
+@node Text Registers
+@section レジスターにテキストを保存する
+@cindex saving text in a register
+
+  同じテキストのコピーを何回も挿入したいとき、killリングからyankするのは不便です。なぜなら何かkillするたびに、そのエントリーはリングの下の方へ移動してしまうからです。代替として、テキストをレジスターに保存して、後で取り出す方法があります。
+
+@table @kbd
+@item C-x r s @var{r}
+リージョンをレジスター@var{r}にコピーします(@code{copy-to-register})。
+@item C-x r i @var{r}
+レジスター@var{r}からテキストを挿入します(@code{insert-register})。
+@item M-x append-to-register @key{RET} @var{r}
+リージョンをレジスター@var{r}のテキストに追加します。
+
+@kindex C-x r +
+レジスター@var{r}の内容がテキストの場合、そのレジスターに追加するのに@kbd{C-x r +}
+(@code{increment-register})も使用できます。レジスター@var{r}に数値が含まれている場合、コマンド@kbd{C-x r
++}は違う動作をすることに注意してください。@ref{Number Registers}を参照してください。
+
+@item M-x prepend-to-register @key{RET} @var{r}
+リージョンをレジスター@var{r}の先頭に追加します。
+@end table
+
+@kindex C-x r s
+@findex copy-to-register
+  @kbd{C-x r s
+@var{r}}は、リージョンのテキストのコピーを、@var{r}という名前のレジスターに保存します。マークが非アクティブのとき、Emacsはまず最後にセットされたマークをアクティブにします。マークはこのコマンドの最後に非アクティブになります。@ref{Mark}を参照してください。同じコマンドにプレフィクス引数を指定した@kbd{C-u
+C-x r s
+@var{r}}は、テキストのコピーをレジスター@var{r}に保存してから、バッファーのテキストを削除します。これはリージョンのテキストを、レジスターに``移動''したと考えることができます。
+
+@findex append-to-register
+@findex prepend-to-register
+  @kbd{M-x append-to-register @key{RET}
+@var{r}}は、リージョンのテキストのコピーを、@var{r}という名前のレジスターにすでに保存されているテキストに追加します。プレフィクス引数を指定した場合、レジスターに追加した後にリージョンを削除します。コマンド@code{prepend-to-register}も同様ですが、これはリージョンのテキストをレジスターのテキストの@emph{最後}ではなく@emph{先頭}に追加します。
+
+@vindex register-separator
+  @code{append-to-register}と@code{prepend-to-register}を使ってテキストを集める場合、セパレーターを使って個々に集めたテキストを分割したい場合があります。そのようなときは@code{register-separator}を構成して、セパレーター文字列をそのレジスターに保存します。たとえばテキストを収集する過程で、個々のテキストを2つの改行で分けたい場合、以下の設定を使うことができます。
+
+@example
+(setq register-separator ?+)
+(set-register register-separator "\n\n")
+@end example
+
+@kindex C-x r i
+@findex insert-register
+  @kbd{C-x r i
+@var{r}}は、レジスター@var{r}のテキストをバッファーに挿入します。通常はポイントをテキストの前に置き、非アクティブのマークをテキストの後ろにセットします。数引数を指定したときは、ポイントをテキストの後ろ、マークをテキストの前にセットします。
+
+@node Rectangle Registers
+@section レジスターに矩形領域を保存する
+@cindex saving rectangle in a register
+
+  レジスターには線形のテキストだけでなく、矩形領域も保存できます。バッファーで矩形領域を指定する方法は、@ref{Rectangles}を参照してください。
+
+@table @kbd
+@findex copy-rectangle-to-register
+@kindex C-x r r
+@item C-x r r @var{r}
+矩形リージョンをレジスター@var{r}にコピーします(@code{copy-rectangle-to-register})。数引数を指定するとコピー後に矩形リージョンを削除します。
+@item C-x r i @var{r}
+レジスター@var{r}に矩形リージョンが保存されている場合、それを挿入します(@code{insert-register})。
+@end table
+
+  前に@ref{Text Registers}でも説明した@kbd{C-x r i @var{r}}
+(@code{insert-register})コマンドは、レジスターに矩形領域が保存されているときはテキストではなく矩形領域を挿入します。
+
+@node Configuration Registers
+@section レジスターにウィンドウ設定を保存する
+@cindex saving window configuration in a register
+
+@findex window-configuration-to-register
+@findex frameset-to-register
+@kindex C-x r w
+@kindex C-x r f
+  選択されたフレームのウィンドウの設定や、すべてのフレームのすべてのウィンドウの設定もレジスターに保存して、後で設定を復元することができます。ウィンドウの設定については、@ref{Windows}を参照してください。
+
+@table @kbd
+@item C-x r w @var{r}
+選択されたフレームのウィンドウの設定を、レジスター@var{r}に保存します(@code{window-configuration-to-register})。
+@item C-x r f @var{r}
+すべてのフレームおよびフレームに含まれるすべてのウィンドウの状態を、レジスター@var{r}に保存します(@code{frameset-to-register})。
+@end table
+
+  @kbd{C-x r j
+@var{r}}を使うと、ウィンドウまたはフレームの設定を復元できます。これはカーソル位置を復元するコマンドと同じです。フレームの設定を復元するとき、設定に含まれていないフレームは非表示になります。もしこれらのフレームを削除したいときは、かわりに@kbd{C-u
+C-x r j @var{r}}を使います。
+
+@node Number Registers
+@section レジスターに数字を保存する
+@cindex saving number in a register
+
+  数字をレジスターに保存して、その数字(10進)をバッファーに挿入したり、増加させるコマンドがあります。これらのコマンドはキーボードマクロで使うと便利です(@ref{Keyboard
+Macros}を参照してください)。
+
+@table @kbd
+@item C-u @var{number} C-x r n @var{r}
+@kindex C-x r n
+@findex number-to-register
+@var{number}をレジスター@var{r}に保存します(@code{number-to-register})。
+@item C-u @var{number} C-x r + @var{r}
+@kindex C-x r +
+@findex increment-register
+@var{r}に数字が保存しているときは、レジスターの数字を@var{number}だけ増加させます。コマンド@kbd{C-x r +}
+(@code{increment-register})は、@var{r}にテキストが保存されているときは異なる動作をすることに注意してください。@ref{Text
+Registers}を参照してください。
+@item C-x r i @var{r}
+レジスター@var{r}の数字をバッファーに挿入します。
+@end table
+
+  @kbd{C-x r i}は、他のレジスターの内容をバッファーに挿入するコマンドと同じです。@kbd{C-x r
++}に数字の引数を与えない場合、レジスターの値は1増加します。@kbd{C-x r n}に数字の引数を与えない場合、レジスターには0が保存されます。
+
+@node File Registers
+@section レジスターにファイル名を保存する
+@cindex saving file name in a register
+
+  特定の名前のファイルを頻繁にvisitする場合、その名前をレジスターにセットしておけば、より便利にファイルをvisitすることができます。以下は@var{name}というファイルをレジスター@var{r}にセットするLispコードです:
+
+@smallexample
+(set-register @var{r} '(file . @var{name}))
+@end smallexample
+
+@need 3000
+@noindent
+たとえば
+
+@smallexample
+(set-register ?z '(file . "/gd/gnu/emacs/19.0/src/ChangeLog"))
+@end smallexample
+
+@noindent
+はレジスター@samp{z}にファイル名をセットします。
+
+  レジスター@var{r}に名前がセットされているファイルをvisitするには、@kbd{C-x r j
+@var{r}}とタイプします。これはある位置にジャンプしたり、フレームの設定を復元するのと同じコマンドです。
+
+@node Keyboard Macro Registers
+@section キーボードマクロのレジスター
+@cindex saving keyboard macro in a register
+@cindex keyboard macros, in registers
+
+@kindex C-x C-k x
+@findex kmacro-to-register
+  あるキーボードマクロ(@ref{Keyboard
+Macros}を参照してください)を頻繁に実行する必要がある場合、それをレジスターにセットしたり保存することができればより便利でしょう(@ref{Save
+Keyboard Macro}を参照してください)。@kbd{C-x C-k x @var{r}}
+(@code{kmacro-to-register})は、最後のキーボードマクロをレジスター@var{r}に保存します。
+
+  レジスター@var{r}のキーボードマクロを実行するには、@kbd{C-x r j
+@var{r}}とタイプします(これはある位置にジャンプしたりフレームを復元するのと同じコマンドです)。
+
+@node Bookmarks
+@section ブックマーク
+@cindex bookmarks
+
+  @dfn{ブックマーク(Bookmarks)}とは、ジャンプしたい位置を記録するレジスターのようなものです。レジスターとの違いは、長い名前をもつことができ、次のEmacsセッションに自動的に引き継がれることです。ブックマークの典型的な使い方は、さまざまなファイルの``どこを読んでいたか''を記録することです。
+
+@table @kbd
+@item C-x r m @key{RET}
+visitしているファイルのポイント位置に、ブックマークをセットします。
+
+@item C-x r m @var{bookmark} @key{RET}
+@findex bookmark-set
+ポイント位置に、@var{bookmark}という名前のブックマークをセットします(@code{bookmark-set})。
+
+@item C-x r b @var{bookmark} @key{RET}
+@findex bookmark-jump
+@var{bookmark}という名前のブックマークにジャンプします(@code{bookmark-jump})。
+
+@item C-x r l
+@findex list-bookmarks
+すべてのブックマークを一覧します(@code{list-bookmarks})。
+
+@item M-x bookmark-save
+@findex bookmark-save
+現在のすべてのブックマークの値を、デフォルトのブックマークファイルに保存します。
+@end table
+
+@kindex C-x r m
+@findex bookmark-set
+@kindex C-x r b
+@findex bookmark-jump
+  ブックマークの典型的な使い方は、各ファイルごとに現在の位置を保存することです。そのためブックマークをセットするコマンド@kbd{C-x r
+m}は、ブックマーク名のデフォルトとしてファイル名を使います。ブックマークが指すファイルをもとにブックマークの名前を付ければ、@kbd{C-x r
+b}で任意のファイルを再びvisitして、同時にブックマーク位置に移動するという操作を楽に行えます。
+
+@kindex C-x r l
+  すべてのブックマークのリストを別のバッファーに表示するには、@kbd{C-x r l}
+(@code{list-bookmarks})とタイプします。そのバッファーに切り替えて、ブックマークの定義の編集やブックマークに注釈をつけることができます。ブックマークバッファーで@kbd{C-h
+m}とタイプすれば、特別な編集コマンドに関する情報を見ることができます。
+
+  Emacsを終了するとき、もしブックマークの値を変更していたら、Emacsはブックマークを保存します。@kbd{M-x
+bookmark-save}コマンドで、いつでもブックマークを保存できます。ブックマークは@file{~/.emacs.d/bookmarks}というファイルに保存されます(古いバージョンのEmacsとの互換性を保つため、もし@file{~/.emacs.bmk}というファイルがあればそのファイルに保存します)。ブックマークコマンドは、デフォルトのブックマークファイルを自動的にロードします。この保存とロードにより、ブックマークの内容を次のEmacsセッションに引き継ぐことができるのです。
+
+@vindex bookmark-save-flag
+  @code{bookmark-save-flag}に1をセットすると、ブックマークをセットするコマンドはブックマークの保存も行ないます。こうすることにより、Emacsがクラッシュしてもブックマークを失わずにすみます。この変数の値が数字の場合、それはブックマークを何回変更したら保存するという意味です。この変数に@code{nil}をセットすると、Emacsは明示的に@kbd{M-x
+bookmark-save}を使ったときだけブックマークを保存します。
+
+@vindex bookmark-default-file
+  変数@code{bookmark-default-file}には、ブックマークを保存するデフォルトのファイルを指定します。
+
+@vindex bookmark-search-size
+  ブックマークの位置は、周囲のコンテキストとともに保存されるので、ファイルが少し変更されていても、@code{bookmark-jump}は正確な位置を見つけることができます。変数@code{bookmark-search-size}は、ブックマーク位置のコンテキストの前後何文字を記録するかを指定します。
+
+  以下はブックマークを処理する追加のコマンドです:
+
+@table @kbd
+@item M-x bookmark-load @key{RET} @var{filename} @key{RET}
+@findex bookmark-load
+ブックマークのリストを含む、@var{filename}という名前のファイルをロードします。このコマンドは@code{bookmark-write}と同様に、デフォルトのブックマークファイルに加えて、他のファイルのブックマークを使うことができます。
+
+@item M-x bookmark-write @key{RET} @var{filename} @key{RET}
+@findex bookmark-write
+現在のすべてのブックマークをファイル@var{filename}に保存します。
+
+@item M-x bookmark-delete @key{RET} @var{bookmark} @key{RET}
+@findex bookmark-delete
+@var{bookmark}という名前のブックマークを削除します。
+
+@item M-x bookmark-insert-location @key{RET} @var{bookmark} @key{RET}
+@findex bookmark-insert-location
+ブックマーク@var{bookmark}が指すファイル名をバッファーに挿入します。
+
+@item M-x bookmark-insert @key{RET} @var{bookmark} @key{RET}
+@findex bookmark-insert
+ブックマーク@var{bookmark}が指すファイルの@emph{内容}をバッファーに挿入します。
+@end table

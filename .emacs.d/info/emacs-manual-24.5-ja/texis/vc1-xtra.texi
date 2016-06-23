@@ -1,0 +1,303 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 2004-2015 Free Software Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@c
+@c This file is included either in vc-xtra.texi (when producing the
+@c printed version) or in the main Emacs manual (for the on-line version).
+
+@node Miscellaneous VC
+@subsection VCのその他のコマンドと機能
+
+  このセクションでは、それほど頻繁には使用されないVCの機能を説明します。
+
+@menu
+* Change Logs and VC::       logエントリーからChangeLogファイルを生成する。
+* VC Delete/Rename::         バージョンコントロールされたファイルの削除とリネームについて。
+* Revision Tags::            リビジョンにたいするシンボリック名。
+* Version Headers::          作業ファイルへのバージョンコントロールヘッダーの挿入。
+@end menu
+
+@node Change Logs and VC
+@subsubsection 変更ログとVC
+
+  @file{ChangeLog}ファイル
+@iftex
+(@ref{Change Log,,,emacs, the Emacs
+Manual}を参照してください)をもつプロググラムにたいしてRCSやCVSを使用する場合、
+@end iftex
+@ifnottex
+(@ref{Change Log}を参照してください)をもつプロググラムにたいしてRCSやCVSを使用する場合、
+@end ifnottex
+バージョンコントロールの以前のコミットのログエントリーから、ChangeLogのエントリーを生成することができます。
+
+  これはRCSとCVSだけで機能することに注意してください。この手段は特に、現代的な変更セットベースのバージョンコントロールシステムには不適切です。なぜなら、@file{ChangeLog}ファイルへの変更自体が、通常は変更セットの一部としてコミットされるからです。この場合、最初にChangeLogエントリーを記述して、コミットするときにそれを@samp{*vc-log*}バッファーに引用します
+@iftex
+(@ref{Log Buffer,,,emacs, the Emacs Manual}を参照してください)。
+@end iftex
+@ifnottex
+(@ref{Log Buffer}を参照してください)。
+@end ifnottex
+
+@table @kbd
+@item C-x v a
+@kindex C-x v a
+@findex vc-update-change-log
+カレントディレクトリーの@file{ChangeLog}ファイルをvisitして、そのディレクトリーの登録されたファイルにたいして、最新のChangeLogエントリー以降にコミットされたバージョンにたいする、新しいエントリーを作成します。(@code{vc-update-change-log})。
+
+@item C-u C-x v a
+上記と同様ですが、カレントバッファーのファイルにたいするエントリーだけを探します。
+@end table
+
+  たとえば、@file{ChangeLog}の最初の行の日付が1999-04-10で、それ以降のチェックインは1999-05-22のNathaniel
+Bowditchによる@file{rcs2log}だけで、それのログエントリーが@samp{Ignore log messages that start
+with `#'.}だったとします。その場合、@kbd{C-x v a}は@file{ChangeLog}エントリーとして、以下を挿入します:
+
+@iftex
+@medbreak
+@end iftex
+@smallexample
+@group
+1999-05-22  Nathaniel Bowditch  <nat@@apn.org>
+
+        * rcs2log: Ignore log messages that start with `#'.
+@end group
+@end smallexample
+@iftex
+@medbreak
+@end iftex
+
+@noindent
+バージョンコントロールのログエントリーが、(行頭にカッコで括られて記述される)関数名を指定する場合、それは@file{ChangeLog}のエントリーに反映されます。たとえば@file{vc.el}にたいするログエントリーが@samp{(vc-do-command):
+Check call-process status.}の場合、@file{ChangeLog}のエントリーは以下のようになります:
+
+@iftex
+@medbreak
+@end iftex
+@smallexample
+@group
+1999-05-06  Nathaniel Bowditch  <nat@@apn.org>
+
+        * vc.el (vc-do-command): Check call-process status.
+@end group
+@end smallexample
+@iftex
+@medbreak
+@end iftex
+
+  @kbd{C-x v
+a}が複数のChangeLogエントリーを1度に追加するとき、それらがすべて同じ作者に、ほぼ同じ日時にチェックインされている場合、関連するログエントリーとしてそれらをグループ化します。複数のファイルにたいするログエントリーがすべての同じテキストの場合、それらを1つのエントリーにまとめます。
+
+@node VC Delete/Rename
+@subsubsection バージョンコントロールされたファイルの削除とリネーム
+@cindex renaming version-controlled files
+
+@table @kbd
+@item M-x vc-delete-file
+ファイル名の入力を求め、そのファイルを作業ツリーから削除して、コミット時に削除するようスケジュールします。
+
+@item M-x vc-rename-file
+2つのファイル名@var{var}および@var{old}の入力を求め、作業ツリーのファイルをリネームし、コミット時にリネームを行うようスケジュールします。
+@end table
+
+@findex vc-delete-file
+  バージョンコントロールされたファイルを削除したい場合、コマンド@kbd{M-x
+vc-delete-file}を使用します。これはファイル名の入力を求め、バージョンコントロールシステムを通じてそれを削除します。ファイルは作業ツリーから削除され、VC
+Directoryバッファー
+@iftex
+(@ref{VC Directory Mode,,, emacs, the Emacs Manual}を参照してください)
+@end iftex
+@ifnottex
+(@ref{VC Directory Mode}を参照してください)
+@end ifnottex
+では、状態に@samp{removed}が表示されます。それをコミットするとき、リポジトリー内で削除が実行されます。
+
+@findex vc-rename-file
+  バージョンコントロールされたファイルをリネームするには、@kbd{M-x
+vc-rename-file}とタイプします。これは2つの引数の入力を求めます。それはリネームしたいファイルの名前を、それの新しい名前です。そしてバージョンコントロールシステムを通じてリネームを処理します。作業ツリーではリネームは即座に行われます。リネームされたファイルをコミットするとき、リポジトリーに反映されます。
+
+  現代的なバージョンコントロールシステムは、リネームにたいするビルトインのサポートがあり、リネームされたファイルは元のファイルのすべての変更履歴を保持します。CVSおよび古いバージョンコントロールシステムでは、@code{vc-rename-file}コマンドは、実際には古いファイルを新しい名前にコピーして、それを登録してから古いファイルを削除することにより機能します。この場合、変更履歴は保存されません。
+
+@node Revision Tags
+@subsubsection リビジョンタグ
+@cindex revision tag
+@cindex tags for version control
+
+  ほとんどのバージョンコントロールシステムは、バージョンコントロールされたツリーの特定のバージョンにたいして、@dfn{リビジョンタグ(revision
+tag)}を適用できます。現代的な変更セットベースのバージョンコントロールシステムでは、リビジョンタグは単に特定のリビジョンにたいするシンボリック名です。CVSのようなファイルベースの古いシステムで、各タグははバージョンコントロールされた一連のファイル全体に追加され、それらを1つの単位として処理できるようにします。リビジョンタグは一般的にユーザーに配布されるリリースを識別するのに使用されます。
+
+  タグにたいする2つの基本的なコマンドがあります。1つは与えられた名前でタグを作成し、もう1つは名前がつけられたタグを取得するコマンドです。
+
+@table @code
+@kindex C-x v s
+@findex vc-create-tag
+@item C-x v s @var{name} @key{RET}
+カレントディレクトリーまたはその配下のディレクトリーの、すべての登録されたファイルの作業リビジョンにたいする、@var{name}という名前のタグを定義します(@code{vc-create-tag})。
+
+@kindex C-x v r
+@findex vc-retrieve-tag
+@item C-x v r @var{name} @key{RET}
+カレントディレクトリーまたはその配下のディレクトリーの、すべての登録されたファイルにたいして、リビジョンのタグが@var{name}のものを取得します。@var{name}がブランチ名で、バージョンコントロールシステムがタグからブランチを区別する場合、このコマンドはブランチを切り替えます。(@code{vc-retrieve-tag}).
+
+カレントディレクトリーまたは配下のディレクトリーのファイルがロックされている場合、このコマンドは何もせずにエラーを報告します。これは作業中の上書きを避けるためです。
+@end table
+
+  @kbd{C-x v =}または@kbd{C-x v ~}の引数として、タグまたはブランチ名を与えることができます
+@iftex
+(@ref{Old Revisions,,,emacs, the Emacs Manual}を参照してください)。
+@end iftex
+@ifnottex
+(@ref{Old Revisions}を参照してください)。
+@end ifnottex
+したがって、カレントファイルとタグ付けされたバージョンを比較したり、タグ付けされたバージョン同士を比較することができます。
+
+  SCCSでは、VC自身がタグを実装しているので、VCを通じてのみタグを見ることができます。それより新しいほとんどのシステム(CVS、Subversion、bzr、git、hgを含む)は、ネイティブのタグ機能をもっており、利用可能な場合、VCはそれを使用します。これらのタグは、VCを通さなくても見ることができます。
+
+  ファイルベースのバージョンコントロールシステムでは、登録されたファイルをリネームするとき、それのマスターもリネームする必要があります。コマンド@code{vc-rename-file}は、これを自動的に行います
+@iftex
+(@ref{VC Delete/Rename,,,emacs, the Emacs Manual}を参照してください)。
+@end iftex
+@ifnottex
+(@ref{VC Delete/Rename}を参照してください)。
+@end ifnottex
+SCCSを使用している場合、、そのファイルが新しい名前になったことを告げるために、タグの記録も更新しなければなりません(@code{vc-rename-file}もこれを行います)。記録された名前では、すでに存在しないマスターファイルを参照する古いタグは無効になります。VCはそれを取得しません。RCSおよびSCCSでのタグの手修正は、このマニュアルの範囲を超えるでしょう。@code{vc-rename-file}を使用することにより、ファイルを取得できる有効なタグを作成できますが、それですべての問題が解決されるわけではありません。たとえば、プログラムのいくつかのファイルは、他のファイルを名前で参照するかもしれません。少なくともmakefileはリネームしたファイルを参照するでしょう。古いタグを取得した場合、リネームされたファイルは、makefileが期待しない新しい名前で取得されます。そのため、プログラムはうまく機能しないでしょう。
+
+@node Version Headers
+@subsubsection バージョンコントロールヘッダーの挿入
+
+  Subversion、CVS、RCS、SCCSでは、@dfn{バージョンヘッダー(version
+headers)}と呼ばれる文字列を、ファイル内に置くことができます。そのファイルがコミットされたとき、バージョンコントロールシステムは自動的にリビジョン番号、コミットしたユーザーの名前、その他関連する情報をバージョンヘッダーに挿入します。
+
+@vindex vc-consult-headers
+  VCは通常、バージョンヘッダーの情報を使用しません。例外として、RCSを使用している場合、EmacsはRCSのマスターファイルより信頼できる場合が多いという理由で、ファイルのバージョンを決定するためにバージョンヘッダーを使用します。この方法でバージョンヘッダーを使用するのを禁ずるには、変数@code{vc-consult-headers}を@code{nil}に変更します。
+
+@kindex C-x v h
+@findex vc-insert-headers
+@vindex vc-@var{backend}-header
+  カレントバッファーに適切なヘッダー文字列を挿入するには、@kbd{C-x v h}
+(@code{vc-insert-headers})とタイプします。このコマンドはSubversion、CVS、RCS、SCCSだけで機能します。変数@code{vc-@var{backend}-header}には、バージョンヘッダーに挿入されるキーワードのリストが含まれます。たとえばCVSは@code{vc-cvs-header}を使用し、これのデフォルト値は@code{'("\$Id\$")}です(余分なバックスラッシュは、もしEmacs
+Lispファイルがバージョンコントロールにより保守されるときに、文字列定数がヘッダーと解釈されるのを防ぐためのものです)。@kbd{C-x v
+h}コマンドは。ポイント位置の新しい行にリストのタブで囲まれた各キーワードを挿入し、必要ならばコメント区切りで囲みます。
+
+@vindex vc-static-header-alist
+  変数@code{vc-static-header-alist}は、バッファー名にもとづき追加する文字列を指定します。これの値は、@code{(@var{regexp}
+.
+@var{format})}という形式の要素からなるリストです。@var{regexp}がバッファー名にマッチした場合、バージョンヘッダーの一部として@var{format}も挿入されます。@var{format}の中の@samp{%s}は、そのファイルのバージョンコントロールのタイプに置換されます。
+
+@node Customizing VC
+@subsection VCのカスタマイズ
+
+@vindex vc-handled-backends
+  変数@code{vc-handled-backends}は、どのバージョンコントロールシステムが処理するかを決定します。デフォルト値は@code{(RCS
+CVS SVN SCCS Bzr Git Hg Mtn
+Arch)}で、これには、現在サポートされている、すべてのバージョンコントロールが含まれています。VCにこれらのシステムの1つ以上を無視させたい場合、リストからそのシステムの名前を除外します。VC全体を無効にするには、変数に@code{nil}をセットしてください。
+
+  リストのシステム順序には意味があります。これらのシステムの1つ以上に登録されているファイルをvisitした場合、デフォルトではVCは@code{vc-handled-backends}で最初にくるシステムを使用します。ファイルを最初に登録するときも、この順序が意味をもちます
+@iftex
+(@ref{Registering,,,emacs, the Emacs Manual}を参照してください)。
+@end iftex
+@ifnottex
+(@ref{Registering}を参照してください)。
+@end ifnottex
+
+@menu
+* General VC Options::       複数のバックエンドに適用されるオプション。
+* RCS and SCCS::             RCSとSCCSのためのオプションについて。
+* CVS Options::              CVSにたいするオプションについて
+@end menu
+
+@node General VC Options
+@subsubsection 一般的なオプション
+
+@vindex vc-make-backup-files
+  Emacsは通常、バージョンコントロールにより保守されるソースファイルのバックアップファイルを保存しません。バージョンコントロールを使用したファイルにもバックアップファイルを作成したいときは、変数@code{vc-make-backup-files}に非@code{nil}値をセットしてください。
+
+@vindex vc-follow-symlinks
+@cindex symbolic links (and version control)
+  そのファイルがバージョンコントロールされていると知らずに、シンボリックリンクを通じてバージョンコントロールされたファイルを編集すると、予期せぬ結果を招くことがあります。変数@code{vc-follow-symlinks}は、バージョンコントロールされたファイルを指すシンボリックリンクをvisitしようと試みたときの、Emacsの振る舞いを制御します。値が@code{ask}(デフォルト)の場合、Emacsは確認を求めます。値が@code{nil}の場合、Emacsは警告メッセージを表示するだけです。値が@code{t}の場合、Emacsは自動的にリンクをたどって、かわりに実際のファイルをvisitします。
+
+@vindex vc-suppress-confirm
+  @code{vc-suppress-confirm}が非@code{nil}の場合、@kbd{C-x v v}および@kbd{C-x v
+i}は確認を求めずにカレントバッファーを保存し、@kbd{C-x v u}も確認を求めず処理を行います。
+
+@vindex vc-command-messages
+  VCモードは多くの処理を、バージョンコントロールシステムにたいする適切なシェルコマンドを実行することにより行います。@code{vc-command-messages}が非@code{nil}の場合、VCはそれが実行するシェルコマンドを示すメッセージと、コマンドが終了したときの追加のメッセージを表示します。
+
+@node RCS and SCCS
+@subsubsection RCSとSCCSにたいするオプション
+
+@cindex non-strict locking (RCS)
+@cindex locking, non-strict (RCS)
+  デフォルトでは、複数ユーザーの活動を調停するためにRCSはロックを使用しますが、最初にファイルをロックしなくても変更をチェックインできる、@dfn{厳密でないロック(non-strict
+locking)}と呼ばれるモードもあります。特定のファイルにたいして厳密でないロックに切り替えるには、@samp{rcs
+-U}を使用します。詳細については、@code{rcs}のman-pageを参照してください。
+
+  RCSファイルのバージョンコントロール状態を推論するとき、VCは最初にそのファイルのRCSバージョンヘッダー文字列を調べます(@ref{Version
+Headers}を参照してください)。ヘッダー文字列がない場合、VCは通常、作業ファイルのパーミッションを調べます。これは速い処理です。ファイルのパーミッションが信頼できない状況もあるかもしれません。そのような場合はマスターファイルが調べられます。これはより高価な処理です。マスターファイルから判るのは、@emph{もし}そのファイルにたいして何らかのロックがある場合、作業ファイルが実際にロックされたバージョンを含むかどうか、だけです。
+
+@vindex vc-consult-headers
+  @code{vc-consult-headers}を@code{nil}にセットすることにより、VCがファイル状態を決定するのにバージョンヘッダーを使用しないように指定できます。その場合、VCは常に、(それが信用できると思われる場合は)ファイルのパーミッションを使うか、マスターファイルをチェックします。
+
+@vindex vc-mistrust-permissions
+  変数@code{vc-mistrust-permissions}を設定することにより、ファイルのパーミッションを信頼すべきかの判断基準を指定できます。値が@code{t}(常にファイルのパーミッションを疑い、マスターファイルをチェックする)、@code{nil}(常にファイルのパーミッションを信頼する)、または1つの引数をとってその判断を行う関数です。引数は@file{RCS}サブディレクトリーのディレクトリー名です。その関数が非@code{nil}値を戻した場合、パーミッションを信頼しません。作業ファイルのパーミッションが誤って変更されたのに気づいた場合、@code{vc-mistrust-permissions}を@code{t}にセットします。そうすればVCはファイル状態を決定するために、常にマスターファイルをチェックします。
+
+  VCがSCCSの配下にあるファイルのバージョンコントロール状態を決定する方法は、RCSとほぼ同じです。しかしSCCSのバージョンヘッダーは考慮しません。したがってSCCSを使用する場合、@code{vc-mistrust-permissions}は効果がありますが、@code{vc-consult-headers}は効果がありません。
+
+@node CVS Options
+@subsubsection CVSに特有のオプション
+
+@vindex vc-cvs-global-switches
+  変数@code{vc-cvs-global-switches}で、すべてのCVS操作に渡す追加のコマンドラインオプションを指定できます。これらのスイッチは@code{cvs}コマンドの直後、呼び出す操作名の前に挿入されます。
+
+@vindex vc-stay-local
+@vindex vc-cvs-stay-local
+@cindex remote repositories (CVS)
+  リモートマシンのCVSリポジトリーを使用する場合、VCはネットワークでの通信を最小にしようと試みます。これは変数@code{vc-cvs-stay-local}により制御されます。他の変数@code{vc-stay-local}もあり、これはCVSを含む、それをサポートする他のバックエンドにもこの機能を有効にします。以下では@code{vc-cvs-stay-local}についてだけ説明しますが、すべて@code{vc-stay-local}にも適用できます。
+
+  @code{vc-cvs-stay-local}が@code{only-file}(デフォルト)の場合、VCはローカルのCVSサブディレクトリーのエントリーと、前のCVSコマンドから戻された情報だけを使って、各ファイルのバージョンコントロール状態を決定します。結果として、あなたがファイルを変更しているとき、他の誰かが他の変更をチェックインした場合、それのコミットを試みるまで衝突を通知されません。
+
+  @code{vc-cvs-stay-local}を@code{nil}に変更した場合、ローカルのリポジトリーと同じように、@code{vc-next-action}
+(@kbd{C-x v v})が何を行うか決定する@emph{前}に、VCはリモートのリポジトリーに問い合わせを行います。
+
+  @code{vc-cvs-stay-local}に、リポジトリーのあるホスト名にマッチする正規表現を指定することもできます。この場合、ホスト名がパターンにマッチしたときは、VCはローカルに留まります。
+
+@cindex automatic version backups
+  リモートのリポジトリーを使用する場合、Emacsは通常、編集された各ファイルのオリジナルバージョンである、@dfn{自動バージョンバックアップ(automatic
+version
+backups)}を作成します。これらのローカルのバックアップは、変更を最初にファイルに保存したときに作成され、リポジトリーに変更をコミットした後で削除されます(これらは通常のEmacsのバックアップファイルとは異なることに注意してください。
+@iftex
+@ref{Backup,,,emacs, the Emacs Manual}を参照してください)。
+@end iftex
+@ifnottex
+@ref{Backup}を参照してください)。
+@end ifnottex
+@kbd{C-x v =}や@kbd{C-x v
+u}のようなコマンドは、ネットワークへのアクセスを避けるため、可能な場合は自動バージョンバックアップを使用します。
+
+  @code{vc-cvs-stay-local}を@code{nil}にセットすることにより、自動バージョンバックアップの作成を無効にできます。
+
+@cindex manual version backups
+  自動バージョンバックアップは、@w{@code{@var{file}.~@var{version}.~}}という形式の名前をもちます。これは@kbd{C-x
+v ~}が古いバージョンを保存するときの名前と似ています
+@iftex
+(@ref{Old Revisions,,,emacs, the Emacs Manual}を参照してください)。
+@end iftex
+@ifnottex
+(@ref{Old Revisions}を参照してください)。
+@end ifnottex
+例外は、バージョンの後ろにある追加のドット(@samp{.})です。関連するVCコマンドは、これら両方の種類のバージョンバックアップを使用できます。主な違いは、@kbd{C-x
+v ~}により``手動''で作成されたバージョンバックアップは、コミットしたとき自動的に削除されないことです。
+
+@cindex locking (CVS)
+  デフォルトでCVSはロックを使用しませんが、@env{CVSREAD}または@dfn{watch}の機能を使用して、ロックのような振る舞いを有効にする方法があります。詳細については、CVSのドキュメントを参照してください。そのような場合、ロックベースのバージョンコントロールシステムで行うように、Emacsで@kbd{C-x
+v v}を使用して、ロックを切り替えることができます
+@iftex
+(@ref{VC With A Locking VCS,,,emacs, the Emacs Manual}を参照してください)。
+@end iftex
+@ifnottex
+(@ref{VC With A Locking VCS}を参照してください)
+@end ifnottex

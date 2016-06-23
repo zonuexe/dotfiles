@@ -1,0 +1,833 @@
+@c ===========================================================================
+@c
+@c This file was generated with po4a. Translate the source file.
+@c
+@c ===========================================================================
+@c This is part of the Emacs manual.
+@c Copyright (C) 1985-1987, 1993-1995, 1997, 1999-2015 Free Software
+@c Foundation, Inc.
+@c See file emacs.texi for copying conditions.
+@node Frames
+@chapter フレームとグラフィカルなディスプレー
+@cindex frames
+
+  Emacsがグラフィカルなディスプレー(たとえばXウィンドウシステム)で開始されたときは、システムレベルのグラフィカルな``ウィンドウ''を占有します。このマニュアルではこれを@dfn{フレーム}と呼び、``ウィンドウ''という言葉はフレームでバッファーを表示する部分のために使います。フレームには最初1つのウィンドウが含まれていますが、これを複数のウィンドウに分割することができます。フレームには通常、メニューバー、ツールバー、エコーエリアも含まれます。
+
+  追加のフレームを作ることもできます(@ref{Creating
+Frames}を参照してください)。同じEmacsセッションで作られたすべてのフレームは、背後にあるバッファーや、その他のデータにアクセスします。たとえば１つ以上のフレームで表示されているバッファーは、あるフレームに表示されているものに変更を加えると、即座に他のフレームに反映されます。
+
+  @kbd{C-x
+C-c}とタイプすると、現在表示されているすべてのフレームを閉じて、他に表示されているフレームがなければ、Emacsセッションを終了します(@ref{Exiting}を参照してください)。選択されたフレームだけを閉じるには、@kbd{C-x
+5 0}(これは@kbd{o}ではなくゼロです)とタイプします。
+
+  このセクションでは、グラフィカルなディスプレーに特有の機能(特にマウスコマンド)と、複数フレームを管理する機能について説明します。テキスト端末では、これらの機能の多くは利用できません。しかしテキスト端末で複数の``フレーム''を作ることは可能です。そのようなフレームは1度に１つだけ表示され、テキスト画面全体を占有します(@ref{Non-Window
+Terminals}を参照してください)。テキスト端末の中には、マウスを使うことが可能なものがいくつかあります(GNUおよびUnix
+systemsでこれを行うには、@ref{Text-Only Mouse}を、MS-DOSでこれを使うには、
+@iftex
+@ref{MS-DOS Mouse,,,emacs-xtra,Specialized Emacs Features}を参照してください
+@end iftex
+@ifnottex
+@ref{MS-DOS Mouse}を参照してください
+@end ifnottex
+)。メニューはすべてのテキスト端末でサポートされています。
+
+@menu
+* Mouse Commands::           マウスによる移動、切り取り、貼り付け。
+* Word and Line Mouse::      単語または行全体を選択するマウスコマンド。
+* Mouse References::         リストからアイテムを選択するのにマウスを使う。
+* Menu Mouse Clicks::        メニューを表示させるマウスクリック。
+* Mode Line Mouse::          モードライン上でのマウスクリック。
+* Creating Frames::          さまざまな内容とともに追加のEmacsフレームを作成する。
+* Frame Commands::           フレームのアイコン化とフレームの切り替え。
+* Fonts::                    フレームフォントの変更。
+* Speedbar::                 スピードバーフレームの作り方と使い方。
+* Multiple Displays::        1つのEmacsインスタンスが複数ディスプレーと通信する方法。
+* Frame Parameters::         フレームのカラーや他のモードの変更。
+* Scroll Bars::              スクロールバーの有効と無効、および使い方。
+* Drag and Drop::            ファイルを開いたりテキストを挿入するのにドラッグアンドドロップを使う。
+* Menu Bars::                メニューバーの有効と無効。
+* Tool Bars::                ツールバーの有効と無効。
+* Dialog Boxes::             ダイアログボックス使用の制御。
+* Tooltips::                 マウスの現在位置の情報の表示。
+* Mouse Avoidance::          マウスポインターがテキストを隠すのを防ぐ。
+* Non-Window Terminals::     フレームを1つだけ表示する端末での複数フレーム。
+* Text-Only Mouse::          テキスト端末でのマウスの使用。
+@end menu
+
+@node Mouse Commands
+@section 編集のためのマウスコマンド
+@cindex mouse buttons (what they do)
+@cindex mouse, selecting text using
+
+@kindex Mouse-1
+@kindex Mouse-2
+@kindex Mouse-3
+@table @kbd
+@item Mouse-1
+クリックした場所にポイントを移動します(@code{mouse-set-point})。
+
+@item Drag-Mouse-1
+ドラッグにより選択されたテキストを取り囲むリージョンをアクティブ化して、そのテキストをプライマリー選択に置きます(@code{mouse-set-region})。
+
+@item Mouse-2
+クリックした場所にポイントを移動して、そこにプライマリー選択の内容を挿入します(@code{mouse-yank-primary})。
+
+@item Mouse-3
+リージョンがアクティブなときは、近くにあるリージョンの終端をクリックした位置に移動します。アクティブでないときは現在のポイントにマークをセットして、ポイントをクリックした位置に移動します。結果となるリージョンはkillリングに保存されます。2回目のクリックでリージョンをkillします(@code{mouse-save-then-kill})。
+@end table
+
+@findex mouse-set-point
+  もっとも基本的なマウスコマンドは@code{mouse-set-point}で、これはウィンドウのテキスト領域でマウスの左ボタン、@kbd{Mouse-1}をクリックすることにより呼び出されます。これはポイントをクリックされた位置に移動します。そのウィンドウが選択されたウィンドウでなかったとき、そのウィンドウが選択されたウィンドウになります。
+
+@vindex x-mouse-click-focus-ignore-position
+  クリックしたフレームが選択されたフレームでなかった場合は通常、クリックされたフレームが選択されたフレームになるのに加えて、ウィンドウも選択されカーソルがセットされます。Xウィンドウシステムでは、変数@code{x-mouse-click-focus-ignore-position}を@code{t}にセットすることにより、これを変更できます。この場合、選択されていないフレームへの最初のクリックではフレームだけを選択し、他は変更しません。次にクリックするとそのウィンドウを選択してカーソルをその位置にセットします。
+
+@cindex mouse, dragging
+@findex mouse-set-region
+  @kbd{Mouse-1}を押してテキストの周辺を``ドラッグ''すると、最初にマウスボタンを押した位置にマークが置かれ、ボタンを離した位置にポイントがセットされ(@ref{Mark}を参照してください)、その領域がアクティブになります(@code{mouse-set-region})。それに加えてリージョンのテキストがプライマリー選択となります(@ref{Primary
+Selection}を参照してください)。
+
+@vindex mouse-drag-copy-region
+  変数@code{mouse-drag-copy-region}を非@code{nil}値に変更すると、テキストの周囲をドラッグすることにより、そのテキストをkillリングに追加します。デフォルトは@code{nil}です。
+
+@vindex mouse-scroll-min-lines
+  ドラッグしている途中でマウスがウィンドウの上または下を超えた場合、マウスがウィンドウ内に戻るまで、ウィンドウが一定の割合でスクロールします。この方法により、スクリーン全体に収まらないリージョンを選択できます。1度に何行スクロールするかは、マウスがウィンドウの縁からどれだけ離れたかに依存します。変数@code{mouse-scroll-min-lines}は、最小ステップサイズを指定します。
+
+@findex mouse-yank-primary
+@findex mouse-yank-at-click
+  マウスの真ん中のボタン、@kbd{Mouse-2}をクリックすると、クリックした位置にポイントを移動して、プライマリー選択の内容を挿入します(@code{mouse-yank-primary})。@ref{Primary
+Selection}を参照してください。この振る舞いは、他のXアプリケーションと一貫性があります。かわりに@kbd{Mouse-2}を、@code{mouse-yank-at-click}にバインドできます。これはクリックした位置にyankするコマンドです。
+
+@vindex mouse-yank-at-point
+  変数@code{mouse-yank-at-point}を非@code{nil}値に変更すると、@kbd{Mouse-2}はポイントを移動しません。これはどこをクリックしたか、フレームのどのウィンドウをクリックしたかに関係なく、ポイントのある位置にテキストを挿入します。この変数は@code{mouse-yank-primary}と@code{mouse-yank-at-click}の両方に影響します。
+
+@findex mouse-save-then-kill
+  マウスの右ボタン、@kbd{Mouse-3}をクリックすると、コマンド@code{mouse-save-then-kill}が実行されます。これはどこをクリックしたかと、リージョンの状態に依存していくつかのアクションを処理します。
+
+@itemize @bullet
+@item
+アクティブなリージョンがないときは、@kbd{Mouse-3}のクリックにより、ポイントがあった位置にマークをセットし、クリックした位置にポイントを置いて、リージョンをアクティブにします。
+
+@item
+リージョンがアクティブなときは、@kbd{Mouse-3}のクリックにより、クリックした位置に近いリージョンの終端を、クリックした位置に調整します。調整されたリージョンのテキストは、killリングにコピーされます。元のリージョンのテキストがすでにkillリングにある場合は、それを置き換えます。
+
+@item
+元のリージョンが@kbd{Mouse-1}のダブルクリックまたはトリプルクリックで選択されたものである場合、リージョンは単語全体、または行全体にたいして定義されているので(@ref{Word
+and Line Mouse}を参照してください)、@kbd{Mouse-3}によるリージョンの調整も単語全体または行全体を単位として行われます。
+
+@item
+同じ場所で連続して2回@kbd{Mouse-3}を使うことにより、すでに選択されているリージョンをkillできます。したがってマウスでテキストをkillする簡単な方法は、まずリージョンの始端を決めるため@kbd{Mouse-1}をクリックして、もう一方の終端で@kbd{Mouse-3}を2回クリックします。テキストを削除せずにkillリングにコピーするには、@kbd{Mouse-3}を1回だけクリックするか、テキスト範囲をドラッグします。その後は適当な場所でyankしてコピーできます。
+@end itemize
+
+  @code{mouse-save-then-kill}コマンドは、変数@code{mouse-drag-copy-region}の値にもしたがいます(上記参照)。変数の値が非@code{nil}のときは、コマンドがアクティブなリージョンをセットまたは調整したとき、常にリージョンのテキストはkillリングにも追加されます。一番最近のkillリングのエントリーが同じ方法で追加されたものである場合、新しいエントリーを作成せず、そのエントリーを置き換えます。
+
+  上記で説明した任意のマウスコマンドを使ってセットしたリージョンは、シフト選択以外のマウス移動コマンド、および通常のマークを非アクティブ化する方法により、マークが非アクティブになります。@ref{Shift
+Selection}を参照してください。
+
+@cindex mouse wheel
+@findex mouse-wheel-mode
+@cindex Mouse Wheel minor mode
+@cindex mode, Mouse Wheel
+@vindex mouse-wheel-follow-mouse
+@vindex mouse-wheel-scroll-amount
+@vindex mouse-wheel-progressive-speed
+  スクロールに使うことができる``ホイール''があるマウスもいくつかあります。Emacsはデフォルトで、マウスホイールによるウィンドウのスクロールを、ほとんどのグラフィカルなディスプレーでサポートします。この機能を切り替えるには、@kbd{M-x
+mouse-wheel-mode}を使います。変数@code{mouse-wheel-follow-mouse}および@code{mouse-wheel-scroll-amount}は、(どこでホイールによるスクロール操作が行われたかによる)スクロール対象の選択方法と、バッファーがスクロールされる量を決定します。変数@code{mouse-wheel-progressive-speed}は、スクロールの早さがホイールを移動した早さにリンクするかを決定します。
+
+@node Word and Line Mouse
+@section 単語と行にたいするマウスコマンド
+
+  以下の@kbd{Mouse-1}の変種は、1度に単語全体または行全体を選択します。Emacsは選択されたテキスト周辺のリージョンをアクティブにして、killリングにもコピーされます。
+
+@table @kbd
+@item Double-Mouse-1
+クリックした単語周辺のテキストを選択します。
+
+``シンボル''の構文をもつ文字(C
+modeでのアンダースコアーなど)をダブルクリックすると、シンボルを取り囲むその文字を選択します。開きカッコ(または閉じカッコ)の構文をもつ文字をダブルクリックすると、そのカッコで始まる(または終わる)グループを選択します。区切り文字の構文をもつ文字(Cのシングルクォーテーションやダブルクォーテーション)をダブルクリックすると、文字列定数を選択します(Emacsはその文字により開始するのか(または終了するのか)を、発見的な手法を使って見つけ出します)。
+
+@item Double-Drag-Mouse-1
+単語全体の形式で、ドラッグした箇所のテキストを選択します。
+
+@item Triple-Mouse-1
+クリックした行を選択します。
+
+@item Triple-Drag-Mouse-1
+行全体の形式で、ドラッグした箇所のテキストを選択します。
+@end table
+
+@node Mouse References
+@section マウスで参照をフォローする
+@kindex Mouse-1 @r{(on buttons)}
+@kindex Mouse-2 @r{(on buttons)}
+@cindex hyperlinks
+@cindex links
+@cindex text buttons
+@cindex buttons
+
+@vindex mouse-highlight
+  Emacsのバッファーには@dfn{ボタン}や、アクティブ化(例えばクリック)したとき何らかのアクション(例えば参照をフォローする)を行う、@dfn{ハイパーリンク}を含むものがあります。ボタンのテキストは通常、アンダーラインが引かれていたり、周囲にボックスが描かれて、視覚的にハイライトされています。ボタンの上にマウスを移動すると、マウスカーソルの形状が変化して、ボタンがライトアップされます。変数@code{mouse-highlight}を@code{nil}に変更すると、Emacsはこのハイライト機能を無効にします。
+
+  ボタンをアクティブにするには、ポイントをそこに移動して@key{RET}をタイプするか、@kbd{Mouse-1}または@kbd{Mouse-2}でボタンをクリックします。たとえばDiredバッファーでは、ファイル名がボタンです。これをアクティブにすることにより、Emacsはそのファイルをvisitします(@ref{Dired}を参照してください)。@file{*Compilation*}バッファーでは、各エラーメッセージがボタンです。これをアクティブにすることにより、そのエラーにたいするソースコードをvisitします(@ref{Compilation}を参照してください)。
+
+  ボタンを@kbd{Mouse-1}でクリックすると、ボタンがアクティブになりますが、マウスボタンを押してから離すまで一定時間(厳密に言うと450ミリ秒以上)が経過すると、Emacsはボタンをアクティブにせず、ポイントをクリックした場所に移動します。この方法によりボタンをアクティブにせずにポイントを移動するのに、マウスを使用できます。マウスをボタンの上にドラッグすると、通常どおりリージョンをセットして、ボタンはアクティブにしません。
+
+  ボタンにたいして@kbd{Mouse-1}がどのように適用されるかは、@code{mouse-1-click-follows-link}をカスタマイズすることにより変更できます。変数の値が正の整数の場合、それはボタンのアクティブ化を取り消すのに、何ミリ秒マウスボタンを押しつづける必要があるかを指定します。前のパラグラフで説明したように、デフォルトは450です。値が@code{nil}の場合、@kbd{Mouse-1}は単にクリックした場所にポイントを移動するだけで、ボタンをアクティブにしません。値が@code{double}の場合、シングルクリックでポイントのセット、ダブルクリックでボタンをアクティブにします。
+
+@vindex mouse-1-click-in-non-selected-windows
+  選択されていないウィンドウのボタンでも通常、@kbd{Mouse-1}でクリックすればボタンがアクティブになります。変数@code{mouse-1-click-in-non-selected-windows}を@code{nil}に変更した場合、選択されていないウィンドウのボタンを@kbd{Mouse-1}でクリックすると、クリックした位置にポイントを移動してウィンドウを選択しますが、ボタンはアクティブになりません。
+
+@node Menu Mouse Clicks
+@section メニューにたいするマウスクリック
+
+  @key{CTRL}および@key{SHIFT}で修飾されたマウスクリックにより、メニューが表示されるものがいくつかあります。
+
+@table @kbd
+@item C-Mouse-1
+@kindex C-Mouse-1
+このメニューはバッファーを選択するためのものです。
+
+MSB(``mouse select buffer'')グローバルマイナーモードは、このメニューをスマートで、よりカスタマイズ可能なものにします。
+@ref{Buffer Menus}を参照してください。
+
+@item C-Mouse-2
+@kindex C-Mouse-2
+このメニューには、フェイスや他のテキストプロパティーをテストしたり、それらを設定するものが含まれます(後者は主にEnriched
+textを編集するのに便利です。@ref{Enriched Text}を参照してください)。
+
+@item C-Mouse-3
+@kindex C-Mouse-3
+このメニューは、モードに特有なメニューです。Menu-barモードがオンの場合、ほとんどのモードでは、このメニューに、そのモード特有なメニューバーのメニューと同じアイテムを表示します。このボタンに異なるメニューを指定するモードもいくつかあります。Menu-barモードがオフの場合、このメニューにはモード特有のメニューだけでなく、本来メニューバーに含まれるべきすべてのアイテムが含まれるので、メニューバーを表示せずに、それらにアクセスすることができます。
+
+@item S-Mouse-1
+このメニューはそのウィンドウのバッファーの、デフォルトのフェイスを変更するためのものです。@ref{Text Scale}を参照してください。
+@end table
+
+  グラフィカルなアプリケーションには、@kbd{Mouse-3}をモード特有なメニューに使うものもいくつかあります。@kbd{Mouse-3}で@code{mouse-save-then-kill}コマンドを実行するかわりに、Emacsにこのようなメニューを表示させるには、以下の行をinitファイルに追加して@kbd{Mouse-3}をリバインドします(@ref{Init
+Rebinding}を参照してください)。
+
+@smallexample
+(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)
+@end smallexample
+
+@node Mode Line Mouse
+@section モードラインのマウスコマンド
+@cindex mode line, mouse
+@cindex mouse on mode line
+
+  ウィンドウのモードラインをマウスでクリックして、ウィンドウを選択したり操作することができます。
+
+  モードラインのいくつかの領域、たとえばバッファー名や、メジャーモードおよびマイナーモードは、独自のマウスバインディングをもっています。これらの領域にマウスを移動すると、その領域がハイライトされ、特別なバインディングが表示されます(@ref{Tooltips}を参照してください)。このセクションのコマンドは、それらの領域には適用できません。
+
+@table @kbd
+@item Mouse-1
+@kindex Mouse-1 @r{(mode line)}
+モードラインを@kbd{Mouse-1}でクリックすると、それが属するウィンドウを選択します。モードライン上で@kbd{Mouse-1}でドラッグすることにより、それを移動することができるので、ウィンドウの高さを変更することができます。マウスでの高さの変更により、ウィンドウが削除されることはありません。ウィンドウの高さが定められた最小値より小さくなる場合は、拒絶されます。
+
+@item Mouse-2
+@kindex Mouse-2 @r{(mode line)}
+モードラインを@kbd{Mouse-2}でクリックすると、そのウィンドウがフレーム全体に表示されます。
+
+@item Mouse-3
+@kindex Mouse-3 @r{(mode line)}
+モードラインを@kbd{Mouse-3}でクリックすると、それが属するウィンドウを削除します。フレームにウィンドウが1つしかないときは、何もしません。
+
+@item C-Mouse-2
+@kindex C-mouse-2 @r{(mode line)}
+モードラインを@kbd{C-Mouse-2}でクリックすると、クリックした位置でウィンドウを左右に分割します(@ref{Split
+Window}を参照してください)。
+@end table
+
+@kindex Mouse-1 @r{(scroll bar)}
+  さらに、左右に並んだモードラインの間にある分割線を、@kbd{Mouse-1}でクリックしてドラッグすることにより、垂直の境界線を左右に移動できます。
+
+  ウィンドウのサイズ変更は、@code{window-resize-pixelwise}の値に影響されることに注意してください。詳細は@ref{Split
+Window}を参照してください。
+
+@node Creating Frames
+@section フレームの作成
+@cindex creating frames
+
+@kindex C-x 5
+  プレフィクスキー@kbd{C-x 5}は、@kbd{C-x 4}に類似しています。@kbd{C-x
+4}コマンドが、選択されたフレームの別ウィンドウにバッファーを表示するのにたいして、@kbd{C-x
+5}は異なるフレームを使います。可視またはアイコン化(``最小化'')されたフレームで、すでに要求されたバッファーが表示されている場合、そのフレームを手前に表示して非アイコン化(``最小化解除'')されます。それ以外の場合は、新しいフレームが現在の表示端末に作成されます。
+
+  以下の@kbd{C-x 5}コマンドは、選択するバッファーを検索したり作成する方法が異なります。
+
+@table @kbd
+@item C-x 5 2
+@kindex C-x 5 2
+@findex make-frame-command
+新しいフレームを作成します(@code{make-frame-command})。
+@item C-x 5 b @var{bufname} @key{RET}
+バッファー@var{bufname}を他のフレームで選択します。これは@code{switch-to-buffer-other-frame}を実行します。
+@item C-x 5 f @var{filename} @key{RET}
+ファイル@var{filename}をvisitして、そのバッファーを他のフレームで選択します。これは@code{find-file-other-frame}を実行します。@ref{Visiting}を参照してください。
+@item C-x 5 d @var{directory} @key{RET}
+ディレクトリー@var{directory}にたいするDiredバッファーを、他のフレームで選択します。これは@code{dired-other-frame}を実行します。@ref{Dired}を参照してください。
+@item C-x 5 m
+他のフレームでメールメッセージの作成を開始します。これは@code{mail-other-frame}を実行します。これは@kbd{C-x
+m}の異なるフレーム版です。@ref{Sending Mail}を参照してください。
+@item C-x 5 .
+他のフレームでカレントtagテーブルのtagを検索します。これは@code{find-tag-other-frame}を実行する、@kbd{M-.}の複数フレーム版です。@ref{Tags}を参照してください。
+@item C-x 5 r @var{filename} @key{RET}
+@kindex C-x 5 r
+@findex find-file-read-only-other-frame
+ファイル@var{filename}を読み取り専用でvisitして、そのバッファーを他のフレームで選択します。これは@code{find-file-read-only-other-frame}を実行します。@ref{Visiting}を参照してください。
+@end table
+
+  @dfn{フレームパラメーター(frame
+parameters)}を指定することにより、新しく作成されるフレームの外見と動作を制御できます。@ref{Frame
+Parameters}を参照してください。
+
+@node Frame Commands
+@section フレームコマンド
+
+  以下のコマンドは、フレームを削除したり操作するために使われます:
+
+@table @kbd
+@item C-x 5 0
+@kindex C-x 5 0
+@findex delete-frame
+選択されたフレームを削除します(@code{delete-frame})。1つしかフレームがないときは、エラーをシグナルします。
+
+@item C-z
+@kindex C-z @r{(X windows)}
+@findex suspend-frame
+選択されたEmacsフレームを最小化(またはアイコン化)します(@code{suspend-frame})。@ref{Exiting}を参照してください。
+
+@item C-x 5 o
+@kindex C-x 5 o
+@findex other-frame
+他のフレームを選択して手前に表示します。このコマンドを繰り返すと、端末のすべてのフレームを循環することができます。
+
+@item C-x 5 1
+@kindex C-x 5 1
+@findex delete-other-frames
+現在の端末の、選択されたフレーム以外のすべてのフレームを削除します。
+
+@item M-<F10>
+@kindex M-<F10>
+@findex toggle-frame-maximized
+カレントフレームの最大化を切り替えます。フレームが最大化されているときはスクリーン全体に表示されます。
+
+@item <F11>
+@kindex <F11>
+@findex toggle-frame-fullscreen
+カレントフレームのフルスクリーンモードを切り替えます(``フルスクリーン''と``最大化''の違いは、前者がウィンドウマネージャーの装飾を隠すことで、これによりEmacs自身のスクリーンスペースが若干増えます)。
+@end table
+
+@vindex frame-resize-pixelwise
+  フレームを本当に``最大化''または``フルスクリーン''にするためには、変数@code{frame-resize-pixelwise}を非@code{nil}値にカスタマイズする必要があるウィンドウマネージャーもいくつかあります。この変数を非@code{nil}値にセットすると、一般的にフレームのサイズ変更を行や列の整数倍ではなく、ピクセル単位で行うことができます。
+
+  @kbd{C-x 5 0}
+(@code{delete-frame})コマンドは、選択されたフレームを削除します。しかしEmacsセッションとの対話能力が失われるのを防ぐため、Emacsセッションの最後のフレームの削除は拒絶します。Emacsがデーモンとして実行されているとき(@ref{Emacs
+Server}を参照してください)は、普通の対話的なフレームがすべて削除された後も、常に``仮想的なフレーム(virtual
+frame)''が残ります。この場合、@kbd{C-x 5
+0}は最後の対話的なフレームを削除できます。Emacsセッションに再接続するには、@command{emacsclient}を使うことができます。
+
+  @kbd{C-x 5 1}
+(@code{delete-other-frames})コマンドは、現在の端末(端末にはグラフィカルなディスプレーとテキスト端末の両方が含まれます)の、カレントのフレーム以外のすべてのフレームを削除します。@ref{Non-Window
+Terminals}を参照してください)。他のグラフィカルなディスプレー、またはテキスト端末で開いたフレームをもっている場合、これらは削除されません。
+
+@vindex focus-follows-mouse
+  @kbd{C-x 5 o}
+(@code{other-frame})コマンドは、現在の端末の次のフレームを選択します。EmacsをXウィンドウシステム上のウィンドウマネージャーで使っていて、どんなフレームだろうと、マウスカーソルが上にくるとそのフレームを選択(または@dfn{フォーカスを与える})するようになっている場合、このコマンドが正常に機能するために、変数@code{focus-follows-mouse}を@code{t}に変更する必要があります。これは@kbd{C-x
+5 o}を呼び出し、マウスカーソルを選択されたフレームにワープさせます。
+
+@node Fonts
+@section フォント
+@cindex fonts
+
+  デフォルトでは、Emacsはグラフィカルなディスプレーでテキストを表示するのに、10ポイントのmonospaceフォントを使います。違うフォントを指定する異なる方法がいくつかあります:
+
+@itemize
+@item
+@samp{Options}メニューの@samp{Set Default
+Font}をクリックします。これは既存のグラフィカルなフレームすべてのデフォルトを、選択したフォントにします。これを将来のセッションのために保存するには、@samp{Options}メニューの@samp{Save
+Options}をクリックしてください。
+
+@item
+以下のように、@code{font}パラメーターを指定するように、変数@code{default-frame-alist}を変更する行をinitファイルに追加します:
+
+@example
+(add-to-list 'default-frame-alist
+             '(font . "DejaVu Sans Mono-10"))
+@end example
+
+@noindent
+これはこのinitファイルで再起動した後の、Emacsが作るすべてのグラフィカルなフレームのデフォルトを、指定したフォントにします。
+
+@cindex X defaults file
+@cindex X resources file
+@item
+以下のようにXリソースファイルに、Xリソースセッティング@samp{emacs.font}を追加します:
+
+@example
+emacs.font: DejaVu Sans Mono-12
+@end example
+
+@noindent
+Xリソースファイルが効果を表すには、Xを再起動するか@command{xrdb}コマンドを使わなければなりません。@ref{Resources}を参照してください。Xリソースファイルでは、フォント名をクォートしないでください。
+
+@item
+EmacsをGNOMEデスクトップで実行している場合、変数@code{font-use-system-font}を@code{t}(デフォルトは@code{nil})にセットして、Emacsにデフォルトのシステムフォントを使うように指示できます。これが機能するには、EmacsがGconfサポートつきでコンパイルされていなければなりません。
+
+@item
+コマンドラインオプション@samp{-fn}(または@samp{--font})を使います。@ref{Font X}を参照してください。
+@end itemize
+
+  現在使っているフォントをチェックするには、@kbd{C-u C-x
+=}コマンドが有用です。これはポイント位置の文字の説明と、それを描画しているフォント名を表示します。
+
+@cindex fontconfig
+  Xでは、``フォント名''を表現する異なる方法がいくつか存在します。1番目は@dfn{Fontconfigパターン}を使う方法です。Fontconfigパターンは以下の形式をもちます:
+
+@example
+@var{fontname}[-@var{fontsize}][:@var{name1}=@var{values1}][:@var{name2}=@var{values2}]...
+@end example
+
+@noindent
+このフォーマットでは、大カッコ(braces)の中の要素は省略可能です。@var{fontname}は、@samp{Monospace}や@samp{DejaVu
+Sans
+Mono}のような、フォントの@dfn{ファミリー名}です。@var{fontsize}は、フォントの@dfn{ポイントサイズ}(1@dfn{プリンターポイント}はおよそ1/72インチです)で、エントリー@samp{@var{name}=@var{values}}は、フォントのslantやweightなどのセッティングを指定します。@var{values}には1つの値か、カンマで区切られた値のリストを指定します。それらに加えていくつかのプロパティー値は、ある種のプロパティー名だけで有効なものがあり、それらについては@samp{@var{name}=}部分を省略できます。
+
+以下は、一般的なフォントプロパティーの一覧です:
+
+@table @samp
+@item slant
+@samp{italic}、@samp{oblique}、@samp{roman}のうちの、どれか1つです。
+
+@item weight
+@samp{light}、@samp{medium}、@samp{demibold}、@samp{bold}、@samp{black}のうちの、どれか1つです。
+
+@item style
+slantとweightを組み合わせた、特別なstyleを定義するフォントがいくつかあります。たとえば@samp{Dejavu
+Sans}は、@samp{book} styleを定義し、これはslantおよびweightプロパティーをオーバーライドします。
+
+@item width
+@samp{condensed}、@samp{normal}、@samp{expanded}のうちの、どれか1つです。
+
+@item spacing
+@samp{monospace}、@samp{proportional}、@samp{dual-width}、@samp{charcell}のうちの、どれか1つです。
+@end table
+
+@noindent
+以下はFontconfigパターンの例です:
+
+@example
+Monospace
+Monospace-12
+Monospace-12:bold
+DejaVu Sans Mono:bold:italic
+Monospace-12:weight=bold:slant=italic
+@end example
+
+Fontconfigパターンの、より詳細な説明は、Fontconfigのマニュアルを参照してください。これはFontconfigとともに配布されており、@url{http://fontconfig.org/fontconfig-user.html}からオンラインで利用可能です。
+
+@cindex GTK font pattern
+  フォントを指定する2番目の方法は、@dfn{GTKフォントパターン}を使う方法です。これらは以下の構文を使います。
+
+@example
+@var{fontname} [@var{properties}] [@var{fontsize}]
+@end example
+
+@noindent
+@var{fontname}はファミリー名、@var{properties}はスペースで区切られたプロパティー値のリストで、@var{fontsize}はポイントサイズです。GTKフォントパターンで指定するプロパティーは以下のようなものでしょう:
+
+@itemize
+@item
+Slantプロパティー:
+@samp{Italic}、@samp{Oblique}。省略したときはデフォルトのslant(roman)が暗に指定されます。
+@item
+Weightプロパティー:
+@samp{Bold}、@samp{Book}、@samp{Light}、@samp{Medium}、@samp{Semi-bold}、@samp{Ultra-light}。省略したときは@samp{Medium}
+weightが暗に指定されます。
+@item
+Widthプロパティー:
+@samp{Semi-Condensed}、@samp{Condensed}。省略したときはデフォルトのwidthが使用されます。
+@end itemize
+
+@noindent
+以下にGTKフォントパターンの例をいくつか示します:
+
+@example
+Monospace 12
+Monospace Bold Italic 12
+@end example
+
+@cindex XLFD
+@cindex X Logical Font Description
+  フォントを指定する3番目の方法は、@dfn{XLFD}(@dfn{X Logical Font
+Description})を使う方法です。これはXでフォントを指定する際の伝統的な手法です。以下のように、各XLFDは14の単語か数字をダッシュで区切ったものからなります:
+
+@example
+-misc-fixed-medium-r-semicondensed--13-*-*-*-c-60-iso8859-1
+@end example
+
+@noindent
+XLFDでのワイルドカード文字(@samp{*})は、任意の文字の並び(noneを含む)にマッチし、@samp{?}は任意の1文字にマッチします。しかしマッチングは実装依存で、長い名前の中のダッシュにたいするワイルドカードのマッチが不正確なことがあります。信頼できる結果を得るためには、14個すべてのダッシュを指定して、ワイルドカードを1つのフィールドだけに使います。XLFDでは大文字小文字の違いは重要ではありません。XLFDの構文は以下のとおりです:
+
+@example
+-@var{maker}-@var{family}-@var{weight}-@var{slant}-@var{widthtype}-@var{style}@dots{}
+@dots{}-@var{pixels}-@var{height}-@var{horiz}-@var{vert}-@var{spacing}-@var{width}-@var{registry}-@var{encoding}
+@end example
+
+@noindent
+エントリーは以下の意味をもちます:
+
+@table @var
+@item maker
+フォントのmanufacturer(製造者名)です。
+@item family
+フォントのファミリー名です(たとえば@samp{courier})。
+@item weight
+フォントのweightで、通常は@samp{bold}、@samp{medium}、@samp{light}のどれかです。他の値をサポートするフォント名もいくつかあります。
+@item slant
+フォントのslantで、通常は@samp{r}(roman)、@samp{i}(italic)、@samp{o}(oblique)、@samp{ri}(reverse
+italic)、@samp{ot}(other)のどれかです。他の値をサポートするフォント名もいくつかあります。
+@item widthtype
+フォントのwidthで、通常は@samp{normal}、@samp{condensed}、@samp{semicondensed}、@samp{extended}のどれかです。他の値をサポートするフォント名もいくつかあります。
+@item style
+任意の補足的なstyle名です。通常は空で、ほとんどのXLFDでは、この場所に連続して2つのハイフンが記述されます。
+@item pixels
+フォントのheightをピクセルで指定します。
+@item height
+プリンターのポイントの1/10を単位とした、スクリーン上のフォントのheightです。フォントのポイントサイズの10倍です。垂直解像度(vertical
+resolution)を与えれば、@var{height}と@var{pixels}は比例します。したがって一方を指定して、もう一方に@samp{*}を指定するのが一般的です。
+@item horiz
+フォントが意図するインチあたりのピクセル数で表した、水平解像度(horizontal resolution)です。
+@item vert
+フォントが意図するインチあたりのピクセル数で表した、垂直解像度(vertical
+resolution)です。通常、システムのフォント解像度は、スクリーンにたいして正しい値になっています。したがって、これと@var{horiz}には@samp{*}を指定するのが普通です。
+@item spacing
+これには@samp{m}(monospace)、@samp{p}(proportional)、@samp{c}(character
+cell)を指定します。
+@item width
+ピクセル単位で表した文字の平均widthの10倍です。
+@item registry
+@itemx encoding
+フォントを描画するXフォント文字セット(X font character
+set)です(Xフォント文字セットはEmacs文字セットと同じではありませんが、似ています)。フォントの選択をチェックするのに、@command{xfontsel}コマンドを使うことができます。通常は、@var{registry}に@samp{iso8859}、@var{encoding}に@samp{1}を使うべきです。
+@end table
+
+  フォントを指定する4番目の方法は、``フォントニックネーム(font
+nickname)''を使う方法です。特定のフォントは通常のフォント指定のかわりに、短いニックネームをもつものがあります。たとえば@samp{6x13}は以下と同じです
+
+@example
+-misc-fixed-medium-r-semicondensed--13-*-*-*-c-60-iso8859-1
+@end example
+
+@cindex client-side fonts
+@cindex server-side fonts
+  X上でのEmacsは、2つのタイプのフォントを認識します。1つは@dfn{クライアントサイド}のフォントで、これはXftおよびFontconfigライブラリーにより提供されます。もう1つは@dfn{サーバーサイド}のフォントで、これはXサーバー自身により提供されます。ほとんどのクライアントサイドフォントは、アンチエイリアシング(antialiasing)やサブピクセルンティング(subpixel
+hinting)などの、サーバーサイドフォントにはない、進んだフォント機能をサポートします。FontconfigとGTKパターンは、クライアントサイドフォントだけにマッチします。
+
+@cindex listing system fonts
+  すべての文字が同じ幅をもつ固定幅フォントを使いたいと思うでしょう。XftおよびFontconfigフォントでは、@command{fc-list}コマンドを使って、以下のようにして利用可能な固定幅フォントを一覧することができます。
+
+@example
+fc-list :spacing=mono
+fc-list :spacing=charcell
+@end example
+
+@noindent
+サーバーサイドのXフォントにたいしては、@command{xlsfonts}プログラムを使って、以下のようにして利用可能な固定幅フォントを一覧することができます。
+
+@example
+xlsfonts -fn '*x*' | egrep "^[0-9]+x[0-9]+"
+xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-m*'
+xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-c*'
+@end example
+
+@noindent
+XLFDの@var{spacing}フィールドが、@samp{m}または@samp{c}のフォントは固定幅フォントです。特定のフォントの外見を見るには、以下のように@command{xfd}コマンドを使います:
+
+@example
+xfd -fn 6x13
+@end example
+
+@noindent
+これはフォント@samp{6x13}の全体を表示します。
+
+  Emacsを実行しているときは、特定の種類のテキスト(@ref{Faces}を参照してください)や、特定のフレーム(@ref{Frame
+Parameters}を参照してください)のフォントをセットすることもできます。
+
+@node Speedbar
+@section スピードバーフレーム
+@cindex speedbar
+
+@cindex attached frame (of speedbar)
+  @dfn{スピードバー(speedbar)}は、簡単に他のフレームを操作したり処理するための、特別なフレームです。スピードバーが存在するとき、それは常に@dfn{アタッチされたフレーム(attached
+frame)}と呼ばれる、特定のフレームに対応しています。すべてのスピードバー操作は、そのフレームにたいして処理されます。
+
+  @kbd{M-x
+speedbar}とタイプすると、スピードバーを作成して、カレントフレームに関連付けます。スピードバーを解除するには、再度@kbd{M-x
+speedbar}とタイプするか、スピードバーを選択して@kbd{q}とタイプします(他のEmacsフレームを削除するのと同じ方法で、スピードバーフレームを削除することもできます)。スピードバーを他のフレームに関連付けたいときは、一旦解除してから、そのフレームで@kbd{M-x
+speedbar}を呼び出します。
+
+  スピードバーは、さまざまなモードを処理できます。デフォルトモードは@dfn{File
+Display(ファイル表示)}モードで、これはアタッチされたフレームの、選択されたウィンドウのカレントディレクトリーのファイルを、1行に1ファイルずつ表示します。ファイル名をクリックすると、アタッチされたフレームの、選択されたウィンドウでそのファイルをvisitし、ディレクトリー名をクリックすると、スピードバーでそのディレクトリーを表示します(@ref{Mouse
+References}を参照してください)。各行には@samp{[+]}や@samp{<+>}が記されたボックスがあり、それをクリックすると、そのアイテムの内容を@dfn{展開}します。ディレクトリーを展開すると、ディレクトリーの内容を、ディレクトリー自身の行の下に加えてスピードバー表示します。通常のファイルを展開すると、ファイルの中のtagリストをスピードバー表示に加えます。tag名をクリックして、アタッチされたフレームの選択されたウィンドウで、tagにジャンプできます。ファイルまたはディレクトリーが展開されているときは、@samp{[+]}が@samp{[-]}に変化します。ボックスを再度クリックすると、アイテムを収納して、内容を隠すことができます。
+
+  キーボードを使ってスピードバーを操作することもできます。スピードバーでポイントのある行で@key{RET}をタイプするのは、そのアイテムをクリックするのと等しく、@key{SPC}はアイテムを展開または収納します。@kbd{U}は、カレントディレクトリーの親ディレクトリーを表示します。カレント行のファイルをコピー、削除、リネーム<するには、@kbd{C}、@kbd{D}、@kbd{R}をタイプします。新しいディレクトリーを作成するには、@kbd{M}をタイプします。
+
+  スピードバーのモードで、他に一般的な目的に使われるのは@dfn{Buffer
+Display(バッファー表示)}モードです。このモードでは、スピードバーはEmacsバッファーのリストを表示します。このモードに切り替えるにはスピードバーで@kbd{b}をタイプします。File
+Displayモードに戻るには、@kbd{f}をタイプします。スピードバーのウィンドウのどこかを@kbd{mouse-3}でクリック(またはモードラインを@kbd{mouse-1}でクリック)して、ポップアップメニューの@samp{Displays}を選択しても、表示モードを変更することができます。
+
+  Rmailモード、Info、GUDを含むいくつかのメジャーモードは、スピードバーに選択可能な便利なアイテムを配する、特別な方法をもっています。たとえばRmailモードでは、スピードバーはRmailファイルのリストを表示し、カレントメッセージを他のRmailファイルに移動する場合は、それの@samp{<M>}ボックスをクリックします。
+
+  スピードバーの使い方とプログラミングに関する詳細は、@ref{Top, Speedbar,,speedbar, Speedbar
+Manual}を参照してください。
+
+@node Multiple Displays
+@section 複数ディスプレー
+@cindex multiple displays
+
+  1つのEmacsが、1つ以上のXディスプレーと通信できます。最初、Emacsは環境変数@env{DISPLAY}、または@samp{--display}オプション(@ref{Initial
+Options}を参照してください)で指定された、ただ1つのディスプレーに表示されます。他のディスプレーに接続するには、コマンド@code{make-frame-on-display}を使います:
+
+@findex make-frame-on-display
+@table @kbd
+@item M-x make-frame-on-display @key{RET} @var{display} @key{RET}
+ディスプレー@var{display}に新しいフレームを作成します。
+@end table
+
+  1つのXサーバーは、1つ以上のスクリーンを処理できます。1つのサーバーに属する2つのスクリーンでフレームを開いた場合、Emacsはそれらが1つのキーボードを共有するのを知っているので、これらのスクリーンから到着するすべてのコマンドを1つの入力ストリームとして扱います。
+
+  異なるXサーバーでフレームを開いた場合、Emacsは各サーバーごとに別な入力ストリームを作成します。各サーバーは、それぞれ選択されたフレームをもちます。特定のXサーバーで入力したコマンドは、そのサーバーの選択されたフレームに適用されます。
+
+@node Frame Parameters
+@section フレームパラメーター
+@cindex default-frame-alist
+
+  変数@code{default-frame-alist}の中の、@dfn{フレームパラメーター(frame
+parameters)}のデフォルトリストを指定することにより、すべてのフレームのデフォルトの外見と振る舞いを制御することができます。この値はエントリーのリストで、各エントリーにはパラメーター名と、そのパラメーターの値を指定します。これらのエントリーはEmacsが新しいフレームを作るとき(初期フレームを含む)に効果を及ぼします。
+
+@cindex frame size, specifying default
+  たとえば以下のファイルをinitファイル(@ref{Init
+File}を参照してください)に追加することにより、デフォルトのフレーム幅が90列、デフォルトのフレーム高さが40行、デフォルトフォントに@samp{Monospace-10}を指定します。
+
+@example
+(add-to-list 'default-frame-alist '(width  . 90))
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(font . "Monospace-10"))
+@end example
+
+  フレームパラメーターのリストと、その効果については、@ref{Frame Parameters,,, elisp, The Emacs Lisp
+Reference Manual}を参照してください.
+
+@cindex initial-frame-alist
+  変数@code{initial-frame-alist}をカスタマイズすることにより、初期フレームだけに適用されるフレームパラメーターのリストを指定することもできます。
+
+  EmacsがX
+ツールキットを使ってコンパイルされている場合、カラーとフォントを指定するフレームパラメーターは、メニューとメニューバーには影響を及ぼしません。なぜなら、それらはEmacsが直接描画しているのではなく、ツールキットにより描画されているからです。
+
+@node Scroll Bars
+@section スクロールバー
+@cindex Scroll Bar mode
+@cindex mode, Scroll Bar
+
+  グラフィカルなディスプレーでは、Emacsウィンドの横に@dfn{スクロールバー}があります。スクロールバーのupボタンまたはdownボタンを@kbd{Mouse-1}でクリックすると、ウィンドウを1行ずつスクロールします。スクロールバー内部のボックスの上または下を@kbd{Mouse-1}でクリックすると、@kbd{M-v}または@kbd{C-v}と同様に、ほぼウィンドウ全体の高さ分スクロールします(@ref{Moving
+Point}を参照してください)。スクロールバー内部のボックスをドラッグすると、連続してスクロールします。
+
+  EmacsがXウィンドウシステム上でXツールキットサポートなしでコンパイルされている場合、スクロールバーは違った振る舞いをします。スクロールバーの任意の箇所を@kbd{Mouse-1}でクリックすると@kbd{C-v}のように前方にスクロールし、@kbd{Mouse-3}でクリックすると@kbd{M-v}のように後方にスクロールします。スクロールバーで@kbd{Mouse-2}をクリックすると、スクロールバー内部のボックスを上下にドラッグできます。
+
+@findex scroll-bar-mode
+@findex toggle-scroll-bar
+  スクロールバーの使用を切り替えるには、@kbd{M-x
+scroll-bar-mode}とタイプします。このコマンドは、まだ作成されていないフレームも含めて、すべてのフレームに適用されます。選択されたフレームのスクロールバーだけ切り替えたい場合は、コマンド@kbd{M-x
+toggle-scroll-bar}を使用してください。
+
+@vindex scroll-bar-mode
+  起動時にスクロールバーの使用を制御するには、変数@code{scroll-bar-mode}をカスタマイズします。この変数の値は、@code{right}(ウィンドウの右にスクロールバーを配します)、@code{left}(ウィンドウの左にスクロールバーを配します)、@code{nil}(スクロールバーを無効にします)のどれかです。EmacsがXウィンドウシステム上でGTK+サポートつきでコンパイルされている、またはMS-Windows、Mac
+OSの場合、デフォルトでは右にスクロールバーを配します。EmacsがXウィンドウシステム上でGTK+サポートなしでコンパイルされている場合、(古いXアプリケーションの慣例にしたがって)スクロールバーを左に配します。
+
+@vindex scroll-bar-width
+@cindex width of the scroll bar
+  Xリソース@samp{verticalScrollBars}を使って、スクロールバーを有効または無効にすることができます(@ref{Resources}を参照してください)。スクロールバーの幅を制御するにはフレームパラメーター@code{scroll-bar-width}を変更してください(@ref{Frame
+Parameters,,, elisp, The Emacs Lisp Reference Manual}を参照してください)。
+
+@vindex scroll-bar-adjust-thumb-portion
+@cindex overscrolling
+(GTK+またはMotifとともに)X上でEmacsを使っている場合、変数@code{scroll-bar-adjust-thumb-portion}をカスタマイズして、スクロールバーの@dfn{オーバースクロール(overscrolling:
+たとえばバッファーの最後が表示されていてもさらに下にスクロールします)}を制御できます。変数の値が非@code{nil}の場合、バッファーの最後が表示されていてもスクロールバーを下にドラッグできます。@code{nil}の場合、バッファーの最後が表示されたとき、内部のボックスはスクロールバーの最下になります。バッファー全体が表示されているときは、オーバースクロールできません。
+
+@cindex scroll-bar face
+  スクロールバーの視覚的な外見は、@code{scroll-bar}フェイスにより制御されます。
+
+@node Drag and Drop
+@section ドラッグアンドドロップ
+@cindex drag and drop
+
+  ほとんどのグラフィカルなデスクトップ環境で、Emacsは@dfn{ドラッグアンドドロップ(drag and
+drop)}操作にたいする、基本的なサポートを提供します。たとえばEmacsのフレームにテキストをドロップすると、ドロップされた箇所にテキストを挿入し、ファイルをドロップすると、Emacsフレームはそのファイルをvisitします。特別なケースとしては、Diredバッファーにファイルをドロップすることにより、バッファーに表示されているディレクトリーにファイルを移動またはコピーします(アプリケーションの慣例に基づきます)。
+
+@vindex dnd-open-file-other-window
+  ファイルをドロップすると、通常はドロップされたウィンドウでファイルをvisitします。そのような場合に、新しいウィンドウでファイルをvisitしたいときは、変数@code{dnd-open-file-other-window}をカスタマイズします。
+
+  現在のところ、XDNDおよびMotif drag and drop protocolsと、古いKDE 1.x protocolがサポートされています。
+
+@node Menu Bars
+@section メニューバー
+@cindex Menu Bar mode
+@cindex mode, Menu Bar
+@findex menu-bar-mode
+@vindex menu-bar-mode
+
+  @kbd{M-x
+menu-bar-mode}で、メニューバーの使用を切り替えることができます。引数を指定しないと、このコマンドはグローバルマイナーモードのMenu
+Barを切り替えます。引数を指定した場合、引数が正ならMenu
+Barモードをオンにして、負ならオフにします。起動時にメニューバーの使用を制御するには、変数@code{menu-bar-mode}をカスタマイズしてください。
+
+@kindex C-Mouse-3 @r{(when menu bar is disabled)}
+  熟練したユーザーは、テキストのために更なる行を得るために、メニューをオフにしている場合がしばしばあります(特にテキスト端末時)。メニューバーがオフでも、ポップアップメニューをサポートするディスプレーなら、@kbd{C-Mouse-3}でメニュー内容を含むポップアップメニューを表示できます。@ref{Menu
+Mouse Clicks}を参照してください。
+
+  メニューバーのコマンドを呼び出す方法については、@ref{Menu
+Bar}を参照してください。メニューバーのメニューの視覚的な外見をカスタマイズする方法は、@ref{X Resources}を参照してください。
+
+@node Tool Bars
+@section ツールバー
+@cindex Tool Bar mode
+@cindex mode, Tool Bar
+@cindex icons, toolbar
+
+  グラフィカルなディスプレーでは、Emacsはフレームのトップ、メニューバーの直下に@dfn{ツールバー(tool
+bar)}を配します。これはマウスでクリックすることにより、さまざまなコマンドを呼び出すことができるアイコンが1列に並んだものです。
+
+  (デフォルトの)グローバルツールバーは、一般的なコマンドを含みます。自身のツールバーを定義するメジャーモードもいくつか存在します。バッファーがそれらのメジャーモードの場合、モードのツールバーにより、グローバルツールバーが置き換えられます。
+
+@findex tool-bar-mode
+@vindex tool-bar-mode
+  ツールバーの使用を切り替えるには、@kbd{M-x
+tool-bar-mode}とタイプします。このコマンドは、まだ作成されていないフレームを含むすべてのフレームに適用されます。起動時にツールバーの使用を制御するには、変数@code{tool-bar-mode}をカスタマイズします。
+
+@vindex tool-bar-style
+@cindex Tool Bar style
+  EmacsがGTK+サポートつきでコンパイルされている場合、ツールバーアイテムには、イメージ、テキストラベル、またはそれら両方を含むことができます。デフォルトではEmacsはGnomeデスクトップの、ツールバースタイルセッティングにしたがいます。もし何も定義されていない場合、ツールバーのアイテムにはイメージだけが表示されます。特定のツールバースタイルを強要するには、変数@code{tool-bar-style}をカスタマイズしてください。
+
+@cindex Tool Bar position
+  フレームパラメーター@code{tool-bar-position}で、GTK+ツールバーのためのツールバーの配置を制御することもできます。@ref{Frame
+Parameters,,, elisp, The Emacs Lisp Reference Manual}を参照してください。
+
+@node Dialog Boxes
+@section ダイアログボックスの使用
+@cindex dialog boxes
+
+@vindex use-dialog-box
+  ダイアログボックスとは、yes-or-noの質問(はい／いいえで応える問いかけ)をしたり、他の何か特別な質問を問いかけるための、特別な種類のメニューです。コマンドを呼び出すためにマウスを使い、それがユーザーへの質問を要するような操作の場合、多くのEmacsコマンドはyes-or-noを問うために、ダイアログボックスを使います。
+
+  ダイアログボックスの使用を無効にするには、変数@code{use-dialog-box}を@code{nil}に変更します。この場合、Emacsはエコーエリアとキーボード入力を使ってyes-or-noプロンプトを処理します。この変数はファイル選択ウィンドウの使用も制御します(しかしこれらはすべてのプラットフォームでサポートされているわけではありません)。
+
+@vindex use-file-dialog
+@cindex file selection dialog, how to disable
+  ファイル選択ウィンドウはファイル名を問うための、特別な種類のダイアログボックスです。変数@code{use-file-dialog}をカスタマイズすれば、他の種類のダイアログボックスの使用して、ファイル選択ウィンドウを使用しないようにできます。変数@code{use-dialog-box}ですべてのダイアログボックスを使用しないようにしている場合、この変数は効果がありません。
+
+@vindex x-gtk-show-hidden-files
+@vindex x-gtk-file-dialog-help-text
+@cindex hidden files, in GTK+ file chooser
+@cindex help text, in GTK+ file chooser
+  EmacsがGTK+サポートつきでコンパイルされている場合、EmacsはGTK+の``ファイル選択''ダイアログを使います。Emacsは非表示のファイル(名前がドットで始まるファイル)の表示の有効・無効を切り替えるボタンを、ダイアログボックスに追加します。この切り替えをデフォルトで有効にしたい場合、変数@code{x-gtk-show-hidden-files}を@code{t}に変更します。さらにEmacsは、GTK+ファイル選択ダイアログにヘルプテキストを追加します。このヘルプテキストを無効にするには、変数@code{x-gtk-file-dialog-help-text}を@code{nil}に変更してください。
+
+@node Tooltips
+@section ツールチップ
+@cindex tooltips
+
+  @dfn{ツールチップ}は、小さなウィンドウに現在のマウス位置のテキスト情報を表示します。ツールチップはウィンドウの重要なテキストの上や、ツールバーのボタンやメニューアイテムのような、Emacsフレームの他の部分の上でマウスを停止させたときにアクティブになります。
+
+@findex tooltip-mode
+  ツールチップの使用は、コマンド@kbd{M-x
+tooltip-mode}で切り替えることができます。Tooltipモードが無効な場合、ヘルプテキストは、かわりにエコーエリアに表示されます。ツールチップの使用を起動時に制御するには、変数@code{tooltip-mode}をカスタマイズしてください。
+
+@vindex tooltip-delay
+  変数@code{tooltip-delay}は、ツールチップを表示するまでEmacsがどれだけ待つべきかを指定します。ツールチップの表示についての追加のカスタマイズオプションは、@kbd{M-x
+customize-group @key{RET} tooltip @key{RET}}を使います。
+
+@vindex x-gtk-use-system-tooltips
+  EmacsがGTK+サポートつきでビルドされている場合、ツールチップはGTK+を通じて、GTK+のツールチップのデフォルトの外見を使います。これを無効にするには、変数@code{x-gtk-use-system-tooltips}を@code{nil}に変更します。これを行うか、EmacsがGTK+サポートなしでビルドされた場合は、ツールチップテキストのほとんどの属性は@code{tooltip}フェイスとXリソース(@ref{X
+Resources}を参照してください)により指定されます。
+
+  @dfn{GUDツールチップ}は、プログラムをGUDでデバッグしているときに変数の値を表示する、特別なツールチップです。@ref{Debugger
+Operation}を参照してください。
+
+@node Mouse Avoidance
+@section マウスの回避
+@cindex avoiding mouse in the way of your typing
+@cindex mouse avoidance
+
+  グラフィカルな端末では、マウスポインターがEmacsフレームのテキストを隠してしまうことがありえます。この問題を避けるために、Emacsは2つの方法を提供します。
+
+@vindex make-pointer-invisible
+  1番目の方法は、ユーザーが自己挿入文字をタイプしたとき、Emacsがマウスポインターを非表示にして、マウスポインターを動かしたときに、ポインターがEmacsフレームの内側にあるときは、再びポインターを表示する方法です。この機能を無効にするには、変数@code{make-pointer-invisible}を@code{nil}にセットしてください。
+
+@vindex mouse-avoidance-mode
+  2番目の方法はMouse Avoidance(マウス回避)モードを使って、マウスポインターをポイントから遠ざける方法です。Mouse
+Avoidanceモードを使うには、変数@code{mouse-avoidance-mode}をカスタマイズします。この変数にさまざまな値をセットすることにより、マウスを遠ざけるいくつかの方法を選択できます。
+
+@table @code
+@item banish
+キーが押されたらポインターをフレームの隅に移動します。ポインターをどこに遠ざけるかは、変数@code{mouse-avoidance-banish-position}でカスタマイズできます。
+@item exile
+カーソルがポインターに近づきすぎたときだけポインターを遠ざけて、カーソルが離れたらポインターを元に戻します。
+@item jump
+カーソルがポインターに近づきすぎたら、ランダムな方向と距離にポインターを移動します。
+@item animate
+@code{jump}と同様ですが、移動モーションをアニメ化します。
+@item cat-and-mouse
+@code{animate}と同じです。
+@item proteus
+@code{animate}と同様ですが、マウスポインターの外見も変更します。
+@end table
+
+@findex mouse-avoidance-mode
+コマンド@kbd{M-x mouse-avoidance-mode}を使って、このモードを有効にすることもできます。Mouse
+Avoidanceモードがマウスを移動したときは、常にそのフレームを前に表示します。
+
+@node Non-Window Terminals
+@section 非ウィンドウ端末
+@cindex text terminal
+
+  テキスト端末では、Emacsは1度に1つのEmacsフレームしか表示できません。それでも複数のEmacsフレームを作成して、それらを切り替えることができます。これらの端末でフレームを切り替えるのは、異なるウィンドウの設定を切り替えるのによく似ています。
+
+  @kbd{C-x 5 2}を使うと新しいフレームを作成してそれに切り替えます。@kbd{C-x 5
+o}を使うと既存のフレームを巡回します。@kbd{C-x 5 0}を使うと、カレントフレームを削除します。
+
+  各フレームには区別するための番号があります。端末が1度に1つのフレームしか表示できない場合、選択されたフレームの番号@var{n}が、モードラインの先頭に近い位置に、@samp{F@var{n}}という形式で表示されます。
+
+@findex set-frame-name
+@findex select-frame-by-name
+  @samp{F@var{n}}は、フレームの実際の初期名称です。フレームにもっと意味のある名前を与えて、その名前でフレームを選択できます。コマンド@kbd{M-x
+set-frame-name @key{RET} @var{name}
+@key{RET}}を使うと、選択されたフレームに新しい名前を指定し、@kbd{M-x select-frame-by-name @key{RET}
+@var{name}
+@key{RET}}を使うとその名前に一致するフレームを選択します。指定した名前は、そのフレームが選択されたときに、モードラインに表示されます。
+
+@node Text-Only Mouse
+@section テキスト端末でのマウスの使用
+@cindex mouse support
+@cindex terminal emulators, mouse support
+
+端末ウィンドウでのマウスクリックをサポートするテキスト端末がいくつかあります。
+
+@cindex xterm
+  @command{xterm}と互換性のある端末エミュレーターでは、@kbd{M-x
+xterm-mouse-mode}を使って、Emacsに簡単なマウスの使用 --- 基本的には修飾なしのシングルクリックだけがサポートされます ---
+を制御させることができます。そのようなクリックにたいする通常の@command{xterm}のマウス機能は、マウスボタンを押すときに@kbd{SHIFT}キーを押すことにより、利用できます。Xterm
+Mouseモードはグローバルマイナーモードです(@ref{Minor
+Modes}を参照してください)。コマンドを繰り返すと、このモードを再びオフにします。
+
+@findex gpm-mouse-mode
+  GNU/Linuxのコンソールでは、@kbd{M-x
+gpm-mouse-mode}を使ってマウスサポートを有効にできます。これが機能するためにはgpmサーバーがインストールされていて、システムで実行されていなければなりません。
+
+@iftex
+MS-DOSでのマウスサポートに関する情報は、@ref{MS-DOS Mouse,,,emacs-xtra,Specialized Emacs
+Features}を参照してください
+@end iftex
+@ifnottex
+MS-DOSでのマウスサポートに関する情報は、@ref{MS-DOS Mouse}を参照してください
+@end ifnottex
+。
