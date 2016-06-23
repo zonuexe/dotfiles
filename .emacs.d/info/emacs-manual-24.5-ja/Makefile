@@ -38,7 +38,7 @@ texinfodir = .
 prefix = /usr/local
 datarootdir = ${prefix}/share
 datadir = ${datarootdir}
-PACKAGE_TARNAME = emacs
+PACKAGE_TARNAME = emacs-ja
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 htmldir = ${docdir}
@@ -74,10 +74,10 @@ DVIPS = dvips
 ENVADD = TEXINPUTS="$(srcdir):$(texinfodir):$(TEXINPUTS)" \
          MAKEINFO="$(MAKEINFO) $(MAKEINFO_OPTS)"
 
-DVI_TARGETS = emacs.dvi emacs-xtra.dvi
-HTML_TARGETS = emacs.html
-PDF_TARGETS = emacs.pdf emacs-xtra.pdf
-PS_TARGETS = emacs.ps emacs-xtra.ps
+DVI_TARGETS = emacs-ja.dvi emacs-xtra-ja.dvi
+HTML_TARGETS = emacs-ja.html
+PDF_TARGETS = emacs-ja.pdf emacs-xtra-ja.pdf
+PS_TARGETS = emacs-ja.ps emacs-ja-xtra.ps
 
 EMACS_XTRA= \
 	${srcdir}/emacs-xtra.texi \
@@ -150,7 +150,7 @@ mkinfodir = @${MKDIR_P} ${buildinfodir}
 .dvi.ps:
 	$(DVIPS) -o $@ $<
 
-info: $(buildinfodir)/emacs$(INFO_EXT)
+info: $(buildinfodir)/emacs-ja$(INFO_EXT)
 dvi: $(DVI_TARGETS)
 html: $(HTML_TARGETS)
 pdf: $(PDF_TARGETS)
@@ -160,14 +160,14 @@ ps: $(PS_TARGETS)
 # There is no provision for Info files to exist in the build directory.
 # In a distribution of Emacs, the Info files should be up to date.
 # Note: "<" is not portable in ordinary make rules.
-$(buildinfodir)/emacs$(INFO_EXT): ${EMACSSOURCES}
+$(buildinfodir)/emacs-ja$(INFO_EXT): ${EMACSSOURCES}
 	$(mkinfodir)
 	$(MAKEINFO) $(MAKEINFO_OPTS) $(INFO_OPTS) -o $@ ${srcdir}/emacs.texi
 
-emacs.dvi: ${EMACSSOURCES}
+emacs-ja.dvi: ${EMACSSOURCES}
 	$(ENVADD) $(TEXI2DVI) ${srcdir}/emacs.texi
 
-emacs.pdf: ${EMACSSOURCES}
+emacs-ja.pdf: ${EMACSSOURCES}
 	$(ENVADD) $(TEXI2PDF) ${srcdir}/emacs.texi
 
 emacs.html: ${EMACSSOURCES}
