@@ -170,7 +170,7 @@ emacs-ja.dvi: ${EMACSSOURCES}
 emacs-ja.pdf: ${EMACSSOURCES}
 	$(ENVADD) $(TEXI2PDF) ${srcdir}/emacs.texi
 
-emacs.html: ${EMACSSOURCES}
+emacs-ja.html: ${EMACSSOURCES}
 	$(MAKEINFO) $(MAKEINFO_OPTS) $(HTML_OPTS) -o $@ ${srcdir}/emacs.texi
 
 emacs-xtra.dvi: $(EMACS_XTRA)
