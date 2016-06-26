@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sete
+# key: sete
+# --
+set -euxo pipefail

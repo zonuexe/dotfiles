@@ -2,4 +2,4 @@
 # name: var_dump
 # key: vd
 # --
-var_dump($1);
+var_dump($0);
