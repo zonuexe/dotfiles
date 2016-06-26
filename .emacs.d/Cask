@@ -140,6 +140,7 @@
 (depends-on "projectile-rails")
 (depends-on "psysh")
 (depends-on "qiita")
+(depends-on "quickrun")
 (depends-on "rainbow-mode")
 (depends-on "recentf-ext")
 (depends-on "request-deferred")
