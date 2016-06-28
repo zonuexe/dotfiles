@@ -212,6 +212,11 @@
 (custom-set-variables '(helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
 (bind-key "C-:" 'helm-ag)
 
+;; ispell
+(custom-set-variables
+ '(ispell-program-name "hunspell")
+ '(ispell-really-hunspell t))
+
 ;; Auto-Complete
 (use-package auto-complete
   :diminish auto-complete-mode
@@ -219,6 +224,7 @@
   (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
   (require 'auto-complete-config)
   (ac-config-default)
+  (ac-ispell-setup)
   (global-auto-complete-mode t))
 
 ;; Magit
@@ -974,6 +980,13 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
  '(indent-guide-delay 0.5)
  '(indent-guide-recursive t))
 (indent-guide-global-mode)
+
+;; pomodoro
+(custom-set-variables
+ '(pomodoro-sound-player "mpv"))
+
+;; info
+(add-to-list 'Info-default-directory-list (locate-user-emacs-file "./info/emacs-manual-24.5-ja"))
 
 (message "Emacs finished loading (%d GCs)." gcs-done)
 
