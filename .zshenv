@@ -1,3 +1,5 @@
+# -*- sh-shell: zsh;
+
 path=(
     ~/.rbenv/bin(N-/)
     ~/.phpenv/bin(N-/)
@@ -48,15 +50,10 @@ then
     eval "$(phpenv init -)"
 fi
 
-
 # if [ -f $HOME/.phpbrew/bashrc ]
 # then
 #     . $HOME/.phpbrew/bashrc
 # fi
-
-export GOPATH=$HOME
-
-export PERL5LIB=$HOME/perl5/lib/perl5
 
 if which launchctl > /dev/null
 then

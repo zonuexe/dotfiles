@@ -7,6 +7,7 @@
 (depends-on "ac-html")
 (depends-on "ac-ispell")
 (depends-on "actionscript-mode")
+(depends-on "adoc-mode")
 (depends-on "ag")
 (depends-on "anaphora")
 (depends-on "annotate")
