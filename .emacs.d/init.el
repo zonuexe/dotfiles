@@ -5,7 +5,7 @@
 ;; Package-Requires: ((emacs "24.3"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
-;; Modified: 2015-05-15
+;; Modified: 2016-06-28
 ;; Version: 10.10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
@@ -922,6 +922,31 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
            (let ((x (format-time-string "%z")))
              (concat (substring x 0 3) ":" (substring x 3 5)))
            "\"")))
+
+(defun my/find-file-temporary-file-directory ()
+  ""
+  (interactive)
+  (let ((default-directory temporary-file-directory))
+    (call-interactively 'find-file nil)))
+
+(defun my/php-vars-to-array ()
+  ""
+  (interactive)
+  (let ((string (buffer-substring-no-properties (region-beginning) (region-end)))
+        result)
+    (setq result
+          (with-temp-buffer
+            (insert "[")
+            (insert string)
+            (insert "]")
+            (goto-char (point-min))
+            (message (buffer-substring-no-properties (point-min) (point-max)))
+            (while (re-search-forward "\\(\\$[_a-z0-9]+\\)" nil t)
+              (replace-match "'\\1' => \\1")
+              (message (buffer-substring-no-properties (point-min) (point-max))))
+            (buffer-substring-no-properties (point-min) (point-max))))
+    (delete-region (region-beginning) (region-end))
+    (insert result)))
 
 (defun my/insert-tetosan ()
   "Kimiwa jitsuni bakadana."
