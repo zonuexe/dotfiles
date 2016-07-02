@@ -50,16 +50,6 @@ then
     eval "$(phpenv init -)"
 fi
 
-# if [ -f $HOME/.phpbrew/bashrc ]
-# then
-#     . $HOME/.phpbrew/bashrc
-# fi
-
-if which launchctl > /dev/null
-then
-    launchctl setenv GOPATH $GOPATH
-fi
-
 if [ -d /usr/local/opt/openssl ]
 then
     export CPPFLAGS="-I/usr/local/opt/openssl/include"
