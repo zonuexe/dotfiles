@@ -744,6 +744,10 @@
   :init
   (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode))
 
+(use-package idle-highlight-mode :defer t
+  :init
+  (add-hook 'prog-mode-hook 'idle-highlight-mode))
+
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
 (use-package multiple-cursors
