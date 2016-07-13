@@ -326,6 +326,26 @@
 (add-to-list 'auto-mode-alist '("/Gemfile.lock\\'" . conf-mode))
 
 ;; PHP
+(defun my/turn-on-php-eldoc ()
+  "Turn on php-eldoc."
+  (when (require 'php-eldoc nil t)
+    (php-eldoc-enable)))
+
+(defun my/php-mode-hook ()
+  "My PHP-mode hook."
+  (my/turn-on-php-eldoc)
+  (subword-mode t)
+  (setq show-trailing-whitespace t)
+  (c-set-style "psr2")
+
+  (flycheck-mode t)
+  (when (and buffer-file-name (string-match "/pixiv/" buffer-file-name))
+    (require 'pixiv-dev nil t)
+    (pixiv-dev-mode t))
+
+  (when (eq 0 (buffer-size))
+    (insert "<?php\n\n")))
+
 (use-package php-mode :defer t
   :config
   ;;(require 'php-extras)
@@ -333,22 +353,7 @@
   ;;(use-package php-auto-yasnippets)
   ;;(require 'ac-php)
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
-  (defun my/php-mode-hook ()
-    (when (require 'php-eldoc nil t)
-      (php-eldoc-enable))
-    (subword-mode t)
-    (setq show-trailing-whitespace t)
-    (c-set-style "psr2")
 
-    (when (eq 0 (buffer-size))
-      (insert "<?php\n\n"))
-
-    (flycheck-mode t)
-    (when (and buffer-file-name (string-match "/pixiv/" buffer-file-name))
-      (require 'pixiv-dev nil t)
-      (pixiv-dev-mode t))
-    ;;(payas/ac-setup)
-    )
   (custom-set-variables
    '(php-refactor-keymap-prefix (kbd "C-c v")))
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
@@ -360,6 +365,10 @@
   (add-hook 'php-mode-hook 'my/php-mode-hook)
   (add-hook 'php-mode-hook 'php-refactor-mode))
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
+
+(use-package psysh :defer t
+  :init
+  (add-hook 'psysh-mode-hook 'my/turn-on-php-eldoc))
 
 (use-package pixiv-dev :defer t
   :init
