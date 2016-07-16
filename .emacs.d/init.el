@@ -362,6 +362,7 @@
   (bind-key "C-)" 'cedit-slurp php-mode-map)
   (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
+  (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
   (add-hook 'php-mode-hook 'my/php-mode-hook)
   (add-hook 'php-mode-hook 'php-refactor-mode))
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
@@ -746,6 +747,7 @@
 
 (use-package idle-highlight-mode :defer t
   :init
+  (custom-set-variables '(idle-highlight-idle-time 2.5))
   (add-hook 'prog-mode-hook 'idle-highlight-mode))
 
 ;; multiple-cursors
