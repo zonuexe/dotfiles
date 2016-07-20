@@ -339,6 +339,8 @@
   (c-set-style "psr2")
 
   (flycheck-mode t)
+  (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
+
   (when (and buffer-file-name (string-match "/pixiv/" buffer-file-name))
     (require 'pixiv-dev nil t)
     (pixiv-dev-mode t))
