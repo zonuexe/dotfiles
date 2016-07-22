@@ -749,7 +749,7 @@
 
 (use-package idle-highlight-mode :defer t
   :init
-  (custom-set-variables '(idle-highlight-idle-time 2.5))
+  (custom-set-variables '(idle-highlight-idle-time 0.7))
   (add-hook 'prog-mode-hook 'idle-highlight-mode))
 
 ;; multiple-cursors
