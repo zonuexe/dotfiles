@@ -800,6 +800,7 @@
 
 (use-package emoji-fontset
   :init
+  (custom-set-variables '(emoji-fontset-check-version nil))
   (emoji-fontset-enable "Symbola"))
 
 ;; TRAMP
