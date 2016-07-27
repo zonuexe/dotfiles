@@ -29,6 +29,7 @@
 (depends-on "copyit-pandoc")
 (depends-on "counsel")
 (depends-on "counsel-osx-app")
+(depends-on "crux")
 (depends-on "csv-mode")
 (depends-on "dash")
 (depends-on "datetime-format")

@@ -792,6 +792,23 @@
    '(smooth-scroll/vscroll-step-size 7))
   (smooth-scroll-mode t))
 
+(use-package crux
+  :init
+  (require 'crux)
+  (bind-key "C-c o"   'crux-open-with)
+  (bind-key "M-o"     'crux-smart-open-line-above)
+  (bind-key "C-c n"   'crux-cleanup-buffer-or-region)
+  (bind-key "C-c u"   'crux-view-url)
+  (bind-key "C-x 4 t" 'crux-transpose-windows)
+  (bind-key "C-c d"   'crux-duplicate-current-line-or-region)
+  (bind-key "C-c M-d" 'crux-duplicate-and-comment-current-line-or-region)
+  (bind-key "C-c r"   'crux-rename-file-and-buffer)
+  (bind-key "C-c M-t" 'crux-visit-term-buffer)
+  (bind-key "C-c k"   'crux-kill-other-buffers)
+  (bind-key "C-M-z"   'crux-indent-defun)
+  (bind-key "C-^"     'crux-top-join-lines)
+  (bind-key "C-DEL"   'crux-kill-line-backwards))
+
 ;; UCS Utility
 ;;(use-package ucs-utils :defer t)
 
