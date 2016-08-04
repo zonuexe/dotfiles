@@ -148,7 +148,7 @@
   (bind-key  "C-S-w"       'delete-frame)
   (bind-key  "C-c :"       'right-click-context-menu)
   (bind-key  "C-c R"       'revert-buffer)
-  (bind-key  "C-c i"       'my/display-file-info)
+  (bind-key  "C-c S-i"     'my/display-file-info)
   (bind-key  "C-x j"       'dired-jump)
   (bind-key  "C-x C-S-e"   'pp-eval-last-sexp)
   (bind-key  "C-x お"      'other-window)
@@ -792,6 +792,10 @@
    '(smooth-scroll/vscroll-step-size 7))
   (smooth-scroll-mode t))
 
+;; ciel.el https://github.com/cs14095/ciel.el
+(ciel-mode t)
+
+;; crux
 (use-package crux
   :init
   (require 'crux)
@@ -855,6 +859,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 
 (safe-diminish "abbrev" 'abbrev-mode)
 (safe-diminish "beacon" 'beacon-mode)
+(safe-diminish "ciel" 'ciel-mode)
 (safe-diminish "face-remap" 'buffer-face-mode)
 (safe-diminish "eldoc" 'eldoc-mode)
 (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
