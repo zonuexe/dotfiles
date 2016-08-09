@@ -171,6 +171,7 @@
 (depends-on "sql-drill" :git "git@github.com:KeenS/sql-drill.el.git")
 (depends-on "ssh-config-mode")
 (depends-on "stylus-mode")
+(depends-on "suggest")
 (depends-on "swoop")
 (depends-on "test-simple")
 (depends-on "threes")
