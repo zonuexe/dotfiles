@@ -793,7 +793,10 @@
   (smooth-scroll-mode t))
 
 ;; ciel.el https://github.com/cs14095/ciel.el
-(ciel-mode t)
+(use-package ciel
+  :init
+  (bind-key "C-c i" 'ciel-ci)
+  (bind-key "C-c o" 'ciel-co))
 
 ;; crux
 (use-package crux
