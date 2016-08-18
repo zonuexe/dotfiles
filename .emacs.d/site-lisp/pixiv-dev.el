@@ -85,7 +85,8 @@
             (not (string-prefix-p working-dir buffer-file-name)))
         (error "File is not in pixiv repository!")
       (setq path (concat pixiv-dev-repository-web "/tree/master/"
-                         (replace-regexp-in-string working-dir "" buffer-file-name)))
+                         (replace-regexp-in-string working-dir "" buffer-file-name)
+                         "#L" (number-to-string (1+ (count-lines 1 (point))))))
       (kill-new path)
       (message (format "Copy `%s'!" path)))))
 
