@@ -554,6 +554,7 @@
 
 ;; YAML
 ;;(use-package yaml-mode :defer t)
+(add-to-list 'auto-mode-alist '("/\\.gemrc\\'" . yaml-mode))
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
