@@ -336,7 +336,6 @@
   (my/turn-on-php-eldoc)
   (subword-mode t)
   (setq show-trailing-whitespace t)
-  (c-set-style "psr2")
 
   (flycheck-mode t)
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
@@ -357,6 +356,7 @@
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
 
   (custom-set-variables
+   '(php-mode-coding-style 'psr2)
    '(php-refactor-keymap-prefix (kbd "C-c v")))
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
   (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
