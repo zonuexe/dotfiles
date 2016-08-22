@@ -131,6 +131,7 @@
 (depends-on "pallet")
 (depends-on "pandoc")
 (depends-on "paredit")
+(depends-on "pcap-mode" :git "git@github.com:orgcandman/pcap-mode.git")
 (depends-on "pdf-tools")
 (depends-on "peep-dired")
 (depends-on "php-auto-yasnippets")

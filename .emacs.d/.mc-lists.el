@@ -36,6 +36,7 @@
         paredit-open-round
         paredit-open-square
         paredit-semicolon
+        paredit-splice-sexp-killing-backward
         sp-remove-active-pair-overlay
         subword-left
         subword-right
