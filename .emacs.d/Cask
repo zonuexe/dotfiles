@@ -175,6 +175,8 @@
 (depends-on "stylus-mode")
 (depends-on "suggest")
 (depends-on "swoop")
+(depends-on "term+" :git "git@github.com:zonuexe/term-plus-el.git")
+(depends-on "term+key-intercept")
 (depends-on "test-simple")
 (depends-on "threes")
 (depends-on "thrift")

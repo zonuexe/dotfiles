@@ -1054,6 +1054,15 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (custom-set-variables
  '(pomodoro-sound-player "mpv"))
 
+;; term+
+(require 'term+)
+(require 'xterm-256color)
+
+(defun my/term-mode-hook ()
+  ""
+  (yas-minor-mode -1))
+(add-hook 'term-mode-hook 'my/term-mode-hook)
+
 ;; info
 (add-to-list 'Info-default-directory-list (locate-user-emacs-file "./info/emacs-manual-24.5-ja"))
 
