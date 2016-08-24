@@ -149,7 +149,10 @@ alias be="bundle exec"
 alias tmxu=tmux
 alias tumx=tmux
 alias Tree=$(which tree)
-alias tree="tree -C | less -R"
+
+tree(){
+    Tree -C $* | less -R
+}
 
 if which xsel > /dev/null
 then
