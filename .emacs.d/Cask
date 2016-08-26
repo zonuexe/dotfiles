@@ -75,6 +75,7 @@
 (depends-on "gnugo")
 (depends-on "go-mode")
 (depends-on "grapnel")
+(depends-on "hamburger-menu")
 (depends-on "haml-mode")
 (depends-on "haskell-mode")
 (depends-on "helm")

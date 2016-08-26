@@ -1050,6 +1050,10 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
  '(indent-guide-recursive t))
 (indent-guide-global-mode)
 
+;; hamburger-menu
+;; https://melpa.org/#/hamburger-menu
+(global-hamburger-menu-mode 1)
+
 ;; pomodoro
 (custom-set-variables
  '(pomodoro-sound-player "mpv"))
