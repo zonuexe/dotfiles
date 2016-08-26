@@ -339,6 +339,7 @@
 
   (flycheck-mode t)
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
+  (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
 
   (when (and buffer-file-name (string-match "/pixiv/" buffer-file-name))
     (require 'pixiv-dev nil t)
