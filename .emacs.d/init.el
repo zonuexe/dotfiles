@@ -1060,8 +1060,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
  '(pomodoro-sound-player "mpv"))
 
 ;; term+
-(require 'term+)
-(require 'xterm-256color)
+;; (require 'term+)
+;; (require 'xterm-256color)
 
 (defun my/term-mode-hook ()
   ""
