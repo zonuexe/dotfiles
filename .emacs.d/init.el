@@ -94,6 +94,16 @@
   (let ((fontset (format "%s-%.1f" my/font-family my/font-size)))
     (add-to-list 'default-frame-alist `(font . ,fontset))))
 
+(defvar my/mincho-face
+  (let ((f (make-face 'my-mincho-face)))
+    (set-face-font f (font-spec :family "IPAex明朝" :size 16.5))
+    f))
+
+(defun my/buffer-minchonize ()
+  ""
+  (interactive)
+  (ov (point-min) (point-max) 'face my/mincho-face))
+
 ;;; Packages:
 (when (or (require 'cask "~/.cask/cask.el" t)
 	  (require 'cask nil t))
