@@ -1071,6 +1071,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; info
 (add-to-list 'Info-default-directory-list (locate-user-emacs-file "./info/emacs-manual-24.5-ja"))
 
-(message "Emacs finished loading (%d GCs)." gcs-done)
+;; (message "Emacs finished loading (%d GCs)." gcs-done)
 
 ;;; init.el ends here
