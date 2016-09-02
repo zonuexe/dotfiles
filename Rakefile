@@ -15,6 +15,7 @@ dotfiles = %w(
   .zshenv
   .zshrc
   .tigrc
+  .vimrc
 )
 
 desc "Make symbolic link"
