@@ -1063,6 +1063,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 ;; hamburger-menu
 ;; https://melpa.org/#/hamburger-menu
+(custom-set-variables
+ '(hamburger-menu-symbol "ﾐ田"))
 (global-hamburger-menu-mode 1)
 
 ;; pomodoro
