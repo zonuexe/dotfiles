@@ -102,6 +102,7 @@
 (defun my/buffer-minchonize ()
   ""
   (interactive)
+  (require 'ov)
   (ov (point-min) (point-max) 'face my/mincho-face))
 
 ;;; Packages:
