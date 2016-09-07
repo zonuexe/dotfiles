@@ -1,0 +1,21 @@
+{
+    "autoclose": true,
+    "autoindent": true,
+    "colorscheme": "atom-dark-tc",
+    "cursorline": true,
+    "gofmt": true,
+    "goimports": false,
+    "ignorecase": false,
+    "indentchar": " ",
+    "infobar": true,
+    "linter": true,
+    "ruler": true,
+    "savecursor": false,
+    "saveundo": false,
+    "scrollmargin": 3,
+    "scrollspeed": 2,
+    "statusline": true,
+    "syntax": true,
+    "tabsize": 4,
+    "tabstospaces": false
+}
