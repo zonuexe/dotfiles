@@ -163,6 +163,7 @@ then
 fi
 
 export RAILS_ENV=development
+export MICRO_TRUECOLOR=1
 
 # iTerm2 shell integration
 [[ -e $HOME/.iterm2_shell_integration.zsh ]] && . $HOME/.iterm2_shell_integration.zsh
