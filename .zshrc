@@ -1,3 +1,5 @@
+# -*- sh-shell: zsh; -*-
+
 [[ "$MY_ZSHENV" = MY_ZSHENV ]] && . ~/.zshenv
 
 bindkey -e

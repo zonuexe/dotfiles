@@ -1,4 +1,4 @@
-# -*- sh-shell: zsh;
+# -*- sh-shell: zsh; -*-
 
 path=(
     ~/.rbenv/bin(N-/)
@@ -29,6 +29,7 @@ manpath=(
 typeset -gxU manpath
 
 export NVM_DIR=~/.nvm
+export GOPATH=$HOME/repo/go
 
 if which vim > /dev/null > /dev/null
 then
