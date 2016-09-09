@@ -126,6 +126,7 @@
 (depends-on "org-ac")
 (depends-on "org-rtm")
 (depends-on "org-trello")
+(depends-on "osx-lib")
 (depends-on "ov")
 (depends-on "ox-ioslide")
 (depends-on "pacmacs")
