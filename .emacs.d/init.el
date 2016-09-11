@@ -444,15 +444,19 @@
   (auto-complete-mode 1)
   (setq ac-sources (append ac-sources my/emacs-lisp-ac-sources))
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
-  (set-face-foreground 'font-lock-regexp-grouping-construct "peru"))
+  (set-face-foreground 'font-lock-regexp-grouping-construct "peru")
+  (nameless-mode t))
+
+(use-package nameless :defer t
+  :config
+  (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable")))
 
 (defvar my/emacs-lisp-modes
   '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 (--each my/emacs-lisp-modes
   (add-hook it 'turn-on-eldoc-mode)
   (add-hook it 'elisp-slime-nav-mode)
-  (add-hook it 'my/emacs-lisp-mode-hook)
-  (add-hook it 'nameless-mode))
+  (add-hook it 'my/emacs-lisp-mode-hook))
 (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)
 
 (defalias 'inferior-emacs-lisp 'ielm
