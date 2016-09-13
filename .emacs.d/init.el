@@ -1065,6 +1065,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
  '(indent-guide-delay 0.5)
  '(indent-guide-recursive t))
 (indent-guide-global-mode)
+;; (set-face-attribute 'indent-guide-face nil :slant 'normal)
+;; (set-face-background 'indent-guide-face "dimgray")
 
 ;; hamburger-menu
 ;; https://melpa.org/#/hamburger-menu
