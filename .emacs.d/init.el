@@ -94,17 +94,6 @@
   (let ((fontset (format "%s-%.1f" my/font-family my/font-size)))
     (add-to-list 'default-frame-alist `(font . ,fontset))))
 
-(defvar my/mincho-face
-  (let ((f (make-face 'my-mincho-face)))
-    (set-face-font f (font-spec :family "IPAex明朝" :size 16.5))
-    f))
-
-(defun my/buffer-minchonize ()
-  ""
-  (interactive)
-  (require 'ov)
-  (ov (point-min) (point-max) 'face my/mincho-face))
-
 ;;; Packages:
 (when (or (require 'cask "~/.cask/cask.el" t)
 	  (require 'cask nil t))
@@ -1007,6 +996,17 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
             (buffer-substring-no-properties (point-min) (point-max))))
     (delete-region (region-beginning) (region-end))
     (insert result)))
+
+(defun my/mincho-face ()
+  "Return Mincho anonymous face."
+  (require 'dash)
+  `(:family ,(--first (member it (font-family-list)) '("YuMincho" "Hiragino Mincho ProN" "IPAexMincho"))))
+
+(defun my/buffer-minchoize ()
+  "Minchoize current buffer."
+  (interactive)
+  (require 'ov)
+  (ov (point-min) (point-max) 'face (my/mincho-face)))
 
 (defun my/insert-tetosan ()
   "Kimiwa jitsuni bakadana."
