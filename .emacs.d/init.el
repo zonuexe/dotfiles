@@ -189,6 +189,7 @@
 (key-chord-define-global "rt" 'toggle-load-theme)
 (key-chord-define-global "wr" 'writeroom-mode)
 (key-chord-define-global "m," 'reload-major-mode)
+(key-chord-define-global "mc" 'my/buffer-minchoize)
 
 ;; (use-package sequential-command
 ;;   :config
