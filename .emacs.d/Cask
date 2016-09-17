@@ -114,6 +114,7 @@
 (depends-on "magit-find-file")
 (depends-on "markdown-mode")
 (depends-on "markdown-preview-eww")
+(depends-on "maruo-macro-mode")
 (depends-on "minesweeper")
 (depends-on "multiple-cursors")
 (depends-on "nameless")
