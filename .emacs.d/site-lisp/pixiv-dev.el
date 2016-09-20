@@ -69,7 +69,7 @@
           "\tlevel:error" "\tdesc:" (message) line-end)
    (warning line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
             "\tlevel:" (+ alnum) "\tdesc:" (message) line-end))
-  :mode '(php-mode)
+  :modes (php-mode)
   :next-checkers (php))
 ;; (flycheck-select-checker 'pixiv-dev-lint)
 ;; flycheck-pixiv-dev-lint-executable
