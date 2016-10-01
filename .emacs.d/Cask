@@ -42,6 +42,7 @@
 (depends-on "drag-stuff")
 (depends-on "edbi")
 (depends-on "edbi-sqlite")
+(depends-on "ede-php-autoload")
 (depends-on "edit-server")
 (depends-on "editorconfig")
 (depends-on "elisp-slime-nav")
