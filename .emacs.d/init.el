@@ -367,7 +367,8 @@
   (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
-  (bind-key "C-c C--" 'my/insert-php-current-class php-mode-map)
+  (bind-key "C-c C--" 'php-util-insert-current-class php-mode-map)
+  (bind-key "C-c C-=" 'php-util-insert-current-namespace php-mode-map)
   (add-hook 'php-mode-hook 'my/php-mode-hook)
   (add-hook 'php-mode-hook 'php-refactor-mode))
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
@@ -1089,12 +1090,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (interactive)
   (when buffer-file-name
     (setq default-directory (f-dirname buffer-file-name))))
-
-(defun my/insert-php-current-class ()
-  "Insert current class.  Inspired by nameless.el."
-  (interactive)
-  (require 'phpunit)
-  (insert (phpunit-get-current-class)))
 
 (defun my/term-mode-hook ()
   ""
