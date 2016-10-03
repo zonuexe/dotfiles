@@ -1083,6 +1083,12 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; (require 'term+)
 ;; (require 'xterm-256color)
 
+(defun my/reset-default-directory-by-buffer-file-name ()
+  "Set default-directory by `buffer-file-name'."
+  (interactive)
+  (when buffer-file-name
+    (setq default-directory (f-dirname buffer-file-name))))
+
 (defun my/term-mode-hook ()
   ""
   (yas-minor-mode -1))
