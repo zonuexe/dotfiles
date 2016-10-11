@@ -166,7 +166,9 @@ export RAILS_ENV=development
 export MICRO_TRUECOLOR=1
 
 # iTerm2 shell integration
-[[ -e $HOME/.iterm2_shell_integration.zsh ]] && . $HOME/.iterm2_shell_integration.zsh
+[[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
+
+[[ -e "${HOME}/pixiv/dev-script/init_nodenv" ]] && eval "$("${HOME}/pixiv/dev-script/init_nodenv" -)"
 
 #PERL_MB_OPT="--install_base \"/Users/megurine/perl5\""; export PERL_MB_OPT;
 #PERL_MM_OPT="INSTALL_BASE=/Users/megurine/perl5"; export PERL_MM_OPT;
