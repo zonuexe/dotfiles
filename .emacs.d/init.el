@@ -570,7 +570,7 @@
   :mode ("\\.md\\'" . gfm-mode)
   :config
   (add-hook 'markdown-mode-hook 'orgtbl-mode)
-  ;;(unbind-key "`" markdown-mode-map)
+  (unbind-key "`" gfm-mode-map)
   (visual-line-mode nil))
 
 ;;(use-package 'realtime-preview :defer t)
