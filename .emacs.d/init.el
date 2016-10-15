@@ -100,6 +100,10 @@
   (cask-initialize))
 (package-initialize)
 
+;; benchmark-init
+;; https://github.com/dholm/benchmark-init-el
+;; (benchmark-init/activate)
+
 (require 'use-package)
 (pallet-mode t)
 
@@ -1099,6 +1103,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 ;; info
 (add-to-list 'Info-default-directory-list (locate-user-emacs-file "./info/emacs-manual-24.5-ja"))
+
+;; (benchmark-init/deactivate)
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)
 
