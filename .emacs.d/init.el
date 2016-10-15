@@ -224,7 +224,7 @@
  '(ispell-really-hunspell t))
 
 ;; Auto-Complete
-(use-package auto-complete
+(use-package auto-complete :defer t
   :diminish auto-complete-mode
   :config
   (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
@@ -657,7 +657,7 @@
    '((python . t))))
 
 ;; Org-IO Slide
-(require 'ox-ioslide-helper)
+;;(require 'ox-ioslide-helper)
 
 ;; navi2ch
 (use-package navi2ch :defer t
