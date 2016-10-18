@@ -191,7 +191,6 @@
 (depends-on "tss")
 (depends-on "twindrill-mode" :git "git@github.com:zonuexe/twindrill-mode.git" :branch "master")
 (depends-on "ucs-utils")
-(depends-on "undercover")
 (depends-on "undo-tree")
 (depends-on "use-package")
 (depends-on "vagrant-tramp")
