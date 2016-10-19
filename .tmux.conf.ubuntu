@@ -1,3 +1,4 @@
 set-option -g default-shell /bin/zsh
 set-option -g prefix C-b
+set-window-option -g xterm-keys on
 bind C-b next-window
