@@ -573,6 +573,7 @@
 (use-package markdown-mode :defer t
   :mode ("\\.md\\'" . gfm-mode)
   :config
+  (require 'org-table)
   (add-hook 'markdown-mode-hook 'orgtbl-mode)
   (unbind-key "`" gfm-mode-map)
   (visual-line-mode nil))
