@@ -13,9 +13,9 @@
         c-electric-slash
         c-electric-star
         delete-indentation
+        end-of-buffer
         goto-line
         kill-region
-        magit-status
         markdown-electric-backquote
         markdown-exdent-or-delete
         mouse-set-region
@@ -54,5 +54,6 @@
         align-regexp
         helm-find-files
         magit-find-file-completing-read
+        magit-status
         rectangle-mark-mode
         ))
