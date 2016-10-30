@@ -1098,7 +1098,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (require 'twindrill-mode)
   (let* ((method "POST")
          (url "https://api.twitter.com/1.1/statuses/update.json")
-         (params (list (cons "status" status)))
+         (params (list (cons "status" (encode-coding-string status 'utf-8 t))))
          (oauth-auth-str
           (twindrill-oauth-auth-str-access method url params
                                            denwa--twitter-api-consumer-key
@@ -1109,6 +1109,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
      url
      :type method
      :data params
+     :parser 'json-read
      :headers (list (cons "Authorization" oauth-auth-str)))))
 
 (defun my/reset-default-directory-by-buffer-file-name ()
