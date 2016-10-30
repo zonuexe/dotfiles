@@ -1091,6 +1091,26 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; (require 'term+)
 ;; (require 'xterm-256color)
 
+(defun denwa (status)
+  "Tiny twitter client.  Denwa ni denwa."
+  (interactive "sDenwa: ")
+  (require 'request)
+  (require 'twindrill-mode)
+  (let* ((method "POST")
+         (url "https://api.twitter.com/1.1/statuses/update.json")
+         (params (list (cons "status" status)))
+         (oauth-auth-str
+          (twindrill-oauth-auth-str-access method url params
+                                           denwa--twitter-api-consumer-key
+                                           denwa--twitter-api-consumer-secret
+                                           denwa-twitter-api-access-token
+                                           denwa-twitter-api-access-token-secret)))
+    (request
+     url
+     :type method
+     :data params
+     :headers (list (cons "Authorization" oauth-auth-str)))))
+
 (defun my/reset-default-directory-by-buffer-file-name ()
   "Set default-directory by `buffer-file-name'."
   (interactive)
