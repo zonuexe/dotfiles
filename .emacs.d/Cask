@@ -12,6 +12,7 @@
 (depends-on "anaphora")
 (depends-on "annotate")
 (depends-on "apache-mode")
+(depends-on "atomic-chrome")
 (depends-on "auto-complete")
 (depends-on "beacon")
 (depends-on "benchmark-init")

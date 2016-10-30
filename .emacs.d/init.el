@@ -1091,6 +1091,12 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; (require 'term+)
 ;; (require 'xterm-256color)
 
+;; Atomic Chrome for Emacs
+;; https://github.com/alpha22jp/atomic-chrome
+(use-package atomic-chrome :defer 3
+  :init
+  (atomic-chrome-start-server))
+
 (defun denwa (status)
   "Tiny twitter client.  Denwa ni denwa."
   (interactive "sDenwa: ")
