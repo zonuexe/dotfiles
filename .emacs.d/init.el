@@ -1124,6 +1124,18 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (when buffer-file-name
     (setq default-directory (f-dirname buffer-file-name))))
 
+(defun my/make-file-by-buffer (to-file from-buf)
+  "Write file `TO-FILE' from opened buffer `FROM-BUF'."
+  (interactive (list (read-file-name "Write to: ")
+                     (read-buffer "From buffer: ")))
+  (when (or (not (f-exists? to-file))
+            (yes-or-no-p "Overwrite? "))
+    (let ((content (with-current-buffer from-buf
+                     (set-buffer-multibyte nil)
+                     (setq buffer-file-coding-system 'binary)
+                     (buffer-substring-no-properties (point-min) (point-max)))))
+      (f-write-bytes content to-file))))
+
 (defun my/term-mode-hook ()
   ""
   (yas-minor-mode -1))
