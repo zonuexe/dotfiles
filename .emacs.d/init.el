@@ -150,6 +150,7 @@
   (bind-key  "M-ESC ESC"   'keyboard-quit)
   (bind-key  "C-S-n"       'make-frame)
   (bind-key  "C-S-w"       'delete-frame)
+  (bind-key  "M-N"         'my/new-untitled-buffer)
   (bind-key  "C-c :"       'right-click-context-menu)
   (bind-key  "C-c R"       'revert-buffer)
   (bind-key  "C-c S-i"     'my/display-file-info)
@@ -1135,6 +1136,11 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
                      (setq buffer-file-coding-system 'binary)
                      (buffer-substring-no-properties (point-min) (point-max)))))
       (f-write-bytes content to-file))))
+
+(defun my/new-untitled-buffer ()
+  "Create and switch to untitled buffer."
+  (interactive)
+  (switch-to-buffer (generate-new-buffer "Untitled")))
 
 (defun my/term-mode-hook ()
   ""
