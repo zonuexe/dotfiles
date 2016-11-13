@@ -54,7 +54,7 @@
 (defun pixiv-dev--working-dir ()
   "Wokring directory of `pixiv.git'."
   (or pixiv-dev-working-dir
-      (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
+      (format "/scp:%s:/mnt/ssd2/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
 
 ;; Flycheck
 
