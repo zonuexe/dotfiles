@@ -22,6 +22,7 @@
 /projectile-*
 /recentf*
 /request/
+/session.*
 /site-lisp/*.elc
 /smex-*
 /tramp
