@@ -277,6 +277,8 @@
 (use-package flycheck
   :diminish flycheck-mode
   :init
+  (eval-after-load 'flycheck
+    '(add-hook 'flycheck-mode-hook #'flycheck-cask-setup))
   (global-flycheck-mode t)
   :config
   (flycheck-package-setup))
