@@ -333,8 +333,6 @@
                '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
   (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
 
-(add-to-list 'auto-mode-alist '("/Gemfile.lock\\'" . conf-mode))
-
 ;; PHP
 (defun my/turn-on-php-eldoc ()
   "Turn on php-eldoc."
