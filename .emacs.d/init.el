@@ -257,7 +257,7 @@
 ;; Conf-Mode
 (require 'generic-x)
 (add-to-list 'auto-mode-alist '("/\\.env\\'" . conf-mode))
-(add-to-list 'auto-mode-alist '("/\\.*conf\\(ig\\)?\\'" . conf-mode) t)
+(add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
 (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t)
 
 ;; SSH
