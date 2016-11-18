@@ -40,6 +40,7 @@
 (depends-on "datetime-format")
 (depends-on "diminish")
 (depends-on "dired-k")
+(depends-on "dired-toggle" :git "git@github.com:zonuexe/dired-toggle.git")
 (depends-on "direx")
 (depends-on "drag-stuff")
 (depends-on "edbi")
