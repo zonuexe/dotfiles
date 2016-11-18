@@ -57,6 +57,7 @@
 (depends-on "emoji-cheat-sheet-plus")
 (depends-on "emoji-fontset")
 (depends-on "enh-ruby-mode")
+(depends-on "enlive")
 (depends-on "ensime")
 (depends-on "esa")
 (depends-on "eshell-fringe-status")
