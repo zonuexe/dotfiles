@@ -163,6 +163,7 @@
 (depends-on "quickrun")
 (depends-on "rainbow-mode")
 (depends-on "recentf-ext")
+(depends-on "region-convert")
 (depends-on "request-deferred")
 (depends-on "restclient")
 (depends-on "right-click-context" :git "git@github.com:zonuexe/right-click-context.git")
