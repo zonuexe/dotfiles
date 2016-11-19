@@ -153,6 +153,7 @@
   (bind-key  "C-S-w"       'delete-frame)
   (bind-key  "M-N"         'my/new-untitled-buffer)
   (bind-key  "C-c :"       'right-click-context-menu)
+  (bind-key  "C-c ;"       'imenu)
   (bind-key  "C-c R"       'revert-buffer)
   (bind-key  "C-c S-i"     'my/display-file-info)
   (bind-key  "C-x j"       'dired-jump)
