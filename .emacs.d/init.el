@@ -2,7 +2,7 @@
 
 ;; Filename: init.el
 ;; Description: zonuexe's .emacs
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
 ;; Modified: 2016-06-28
@@ -761,6 +761,20 @@
   :init
   (add-hook 'prog-mode-hook 'yafolding-mode))
 
+;; NeoTree
+(use-package neotree :defer t
+  :config
+  (bind-key "M-w" 'my/neotree-kill-filename-at-point neotree-mode-map))
+
+(defun my/neotree-kill-filename-at-point ()
+  "Kill full path of note at point."
+  (interactive)
+  (message "Copy %s"
+           (kill-new (neo-buffer--get-filename-current-line))))
+
+(with-eval-after-load 'neotree
+  (define-key neotree-mode-map (kbd "M-w") 'my/neotree-kill-filename-at-point))
+
 ;; vi-tilde-fringe
 (use-package vi-tilde-fringe :defer t
   :init
@@ -1010,6 +1024,11 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
             (buffer-substring-no-properties (point-min) (point-max))))
     (delete-region (region-beginning) (region-end))
     (insert result)))
+
+(defun my/htmlize-current-buffer ()
+  ""
+  (interactive)
+  (display-buffer (htmlize-buffer)))
 
 (defun my/mincho-face ()
   "Return Mincho anonymous face."

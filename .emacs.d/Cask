@@ -126,6 +126,7 @@
 (depends-on "multiple-cursors")
 (depends-on "nameless")
 (depends-on "navi2ch")
+(depends-on "neotree")
 (depends-on "nodejs-repl")
 (depends-on "nyan-mode")
 (depends-on "ob-ipython")
