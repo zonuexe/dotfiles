@@ -328,6 +328,8 @@
   :init
   (add-hook 'web-mode-hook 'my/web-mode-hook)
   (add-hook 'web-mode-hook 'emmet-mode)
+  ;;(add-hook 'web-mode-hook 'web-mode-edit-element-minor-mode)
+
   (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\(\\.html\\)?\\.erb\\'")
     (add-to-list 'auto-mode-alist (cons it 'web-mode)))
   :config
@@ -1025,10 +1027,18 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
     (delete-region (region-beginning) (region-end))
     (insert result)))
 
-(defun my/htmlize-current-buffer ()
-  ""
+(defun my/display-htmlize-current-buffer ()
+  "Display HTMLized buffer from current buffer."
   (interactive)
   (display-buffer (htmlize-buffer)))
+
+(defun my/kill-htmlize-current-buffer ()
+  "Kill HTMLized content from current buffer."
+  (interactive)
+  (let ((buf (htmlize-buffer)))
+    (kill-new (with-current-buffer buf
+                (buffer-substring-no-properties (point-min) (point-max))))
+    (kill-buffer buf)))
 
 (defun my/mincho-face ()
   "Return Mincho anonymous face."
