@@ -60,18 +60,8 @@ fi
 [ -z "$include" ] && (typeset -xT INCLUDE include; typeset -U include)
 typeset -U path cdpath fpath manpath ld_library_path
 
-ld_library_path=(
-    $HOME/.linuxbrew/lib(N-/)
-    /usr/local/opt/curl/lib(N-/)
-    /usr/local/opt/openssl/lib(N-/)
-    /usr/local/opt/sqlite/lib(N-/)
-    /usr/local/opt/libzip/lib(N-/)
-    /usr/local/opt/icu4c/lib(N-/)
-    /usr/local/opt/gettext/lib(N-/)
-    /usr/local/opt/libxml2/lib(N-/)
-    /usr/local/opt/zlib/lib(N-/)
-    $ld_library_path
-)
+export LD_LIBRARY_PATH=$HOME/local/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig/
 #include=(${HOME}/include(N-/) $include)
 
 MY_ZSHENV=MY_ZSHENV
