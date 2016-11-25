@@ -169,7 +169,7 @@
   (bind-key  "C-M-S-y"     'my/kill-buffer-file-name)
   (bind-key  "M-<f5>"      'compile)
   (bind-key  "<f5>"        'quickrun)
-  (bind-key  "<f12>"       'dired-toggle)
+  (bind-key  "<f12>"       'neotree-toggle)
   (bind-key* "C-c <left>"  'windmove-left)
   (bind-key* "C-c <down>"  'windmove-down)
   (bind-key* "C-c <up>"    'windmove-up)
