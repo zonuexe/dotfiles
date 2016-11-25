@@ -5,6 +5,7 @@ endif
 
 " Required:
 set runtimepath+=/Users/megurine/.vim/dein/repos/github.com/Shougo/dein.vim
+set runtimepath+=/home/tadsan/.vim/repos/github.com/Shougo/dein.vim
 
 " Required:
 call dein#begin(expand('~/.vim/dein'))
@@ -17,9 +18,11 @@ call dein#add('Shougo/dein.vim')
 call dein#add('Shougo/neosnippet.vim')
 call dein#add('Shougo/neosnippet-snippets')
 call dein#add('itchyny/calendar.vim')
+call dein#add('editorconfig/editorconfig-vim')
 
 " You can specify revision/branch/tag.
-call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
+call dein#add('Shougo/vimshell')
 
 " Required:
 call dein#end()
