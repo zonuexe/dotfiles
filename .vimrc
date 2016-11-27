@@ -4,7 +4,7 @@ if &compatible
 endif
 
 " Required:
-set runtimepath+=/Users/megurine/.vim/dein/repos/github.com/Shougo/dein.vim
+set runtimepath+=/Users/megurine/.vim/repos/github.com/Shougo/dein.vim
 set runtimepath+=/home/tadsan/.vim/repos/github.com/Shougo/dein.vim
 
 " Required:
@@ -58,6 +58,8 @@ nnoremap ZQ <Nop>
 
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
 
+" Coding defaults
+
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -69,6 +71,10 @@ let php_baselib = 1
 let php_htmlInStrings = 1
 let php_noShortTags = 1
 let php_parent_error_close = 1
+
+" Terminal titlebar
+let &t_ti .= "\e[22;0t"
+let &t_te .= "\e[23;0t"
 
 " SQL
 let g:sql_type_default='mysql'
