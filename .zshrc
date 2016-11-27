@@ -156,6 +156,9 @@ tree(){
     Tree -C $* | less -R
 }
 
+
+jqless(){ cat ${1:--} | jq ${2:-.} -C | less -R }
+
 if which xsel > /dev/null
 then
     alias pbcopy='xsel --clipboard --input'

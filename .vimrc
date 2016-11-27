@@ -19,6 +19,8 @@ call dein#add('Shougo/neosnippet.vim')
 call dein#add('Shougo/neosnippet-snippets')
 call dein#add('itchyny/calendar.vim')
 call dein#add('editorconfig/editorconfig-vim')
+call dein#add('scrooloose/nerdtree')
+call dein#add('mattn/emmet-vim')
 
 " You can specify revision/branch/tag.
 call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
