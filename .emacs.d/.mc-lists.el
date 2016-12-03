@@ -28,6 +28,7 @@
         org-end-of-line
         org-force-self-insert
         org-self-insert-command
+        org-yank
         orgtbl-hijacker-command-102
         orgtbl-hijacker-command-109
         orgtbl-self-insert-command
