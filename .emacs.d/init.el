@@ -149,9 +149,9 @@
 ;; Key config ;(use-package bind-key)
 (progn
   (bind-key  "M-ESC ESC"   'keyboard-quit)
-  (bind-key  "C-S-n"       'my/new-untitled-buffer)
+  (bind-key  "C-S-n"       'make-frame)
   (bind-key  "C-S-w"       'delete-frame)
-  (bind-key  "M-N"         'make-frame)
+  (bind-key  "M-N"         'my/new-untitled-buffer)
   (bind-key  "C-c :"       'right-click-context-menu)
   (bind-key  "C-c ;"       'imenu)
   (bind-key  "C-c R"       'revert-buffer)
