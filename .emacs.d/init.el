@@ -190,15 +190,16 @@
 (custom-set-variables
  '(key-chord-two-keys-delay 0.02))
 (key-chord-mode t)
-(key-chord-define-global "df" 'find-function)
-(key-chord-define-global "fh" 'describe-function)
-(key-chord-define-global "fv" 'find-variable)
-(key-chord-define-global "@p" 'package-install)
-(key-chord-define-global "kl" 'align-regexp)
-(key-chord-define-global "rt" 'toggle-load-theme)
-(key-chord-define-global "wr" 'writeroom-mode)
-(key-chord-define-global "m," 'reload-major-mode)
-(key-chord-define-global "mc" 'my/buffer-minchoize)
+(progn
+  (key-chord-define-global "df" 'find-function)
+  (key-chord-define-global "fh" 'describe-function)
+  (key-chord-define-global "fv" 'find-variable)
+  (key-chord-define-global "@p" 'package-install)
+  (key-chord-define-global "kl" 'align-regexp)
+  (key-chord-define-global "rt" 'toggle-load-theme)
+  (key-chord-define-global "wr" 'writeroom-mode)
+  (key-chord-define-global "m," 'reload-major-mode)
+  (key-chord-define-global "mc" 'my/buffer-minchoize))
 
 ;; (use-package sequential-command
 ;;   :config
