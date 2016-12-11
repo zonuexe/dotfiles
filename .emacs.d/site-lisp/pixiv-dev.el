@@ -6,7 +6,8 @@
 ;; Created: 2016-04-01
 ;; Modified: 2016-04-07
 ;; Version: 0.4.0
-;; Keywords: php
+;; Keywords: processes tools php
+;; Package-Requires: ((emacs "24") (flycheck "1") (psysh "0.0.4"))
 ;; URL: https://github.com/zonuexe/dotfiles/tree/master/.emacs.d/site-lisp
 
 ;; This file is NOT part of GNU Emacs.
