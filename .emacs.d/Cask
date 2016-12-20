@@ -116,6 +116,7 @@
 (depends-on "logalimacs")
 (depends-on "logview")
 (depends-on "lua-mode")
+(depends-on "macrostep")
 (depends-on "magic-filetype")
 (depends-on "magit")
 (depends-on "magit-find-file")
