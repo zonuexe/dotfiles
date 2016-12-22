@@ -43,6 +43,7 @@
 (depends-on "dired-k")
 (depends-on "dired-toggle" :git "git@github.com:zonuexe/dired-toggle.git")
 (depends-on "direx")
+(depends-on "dockerfile-mode")
 (depends-on "drag-stuff")
 (depends-on "edbi")
 (depends-on "edbi-sqlite")
