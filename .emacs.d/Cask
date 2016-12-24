@@ -153,7 +153,7 @@
 (depends-on "php-mode")
 (depends-on "php-refactor-mode")
 (depends-on "php-util" :git "git@github.com:zonuexe/php-util.el.git")
-(depends-on "phpunit" :git "git@github.com:zonuexe/phpunit.el.git" :branch "edge")
+(depends-on "phpunit")
 (depends-on "pixiv-novel-mode")
 (depends-on "pomodoro")
 (depends-on "ponylang-mode")
