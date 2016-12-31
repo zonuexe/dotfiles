@@ -897,19 +897,20 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
   `(with-eval-after-load ,file
      (diminish ,mode ,new-name)))
 
-(safe-diminish "abbrev" 'abbrev-mode)
-(safe-diminish "beacon" 'beacon-mode)
-(safe-diminish "ciel" 'ciel-mode)
-(safe-diminish "face-remap" 'buffer-face-mode)
-(safe-diminish "editorconfig" 'editorconfig-mode)
-(safe-diminish "eldoc" 'eldoc-mode)
-(safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
-(safe-diminish "flyspell" 'flyspell-mode)
-(safe-diminish "indent-guide" 'indent-guide-mode)
-(safe-diminish "nameless" 'nameless-mode)
-(safe-diminish "simple" 'auto-fill-function)
-(safe-diminish "subword" 'subword-mode)
-(safe-diminish "vi-tilde-fringe" 'vi-tilde-fringe-mode)
+(progn
+  (safe-diminish "abbrev" 'abbrev-mode)
+  (safe-diminish "beacon" 'beacon-mode)
+  (safe-diminish "ciel" 'ciel-mode)
+  (safe-diminish "face-remap" 'buffer-face-mode)
+  (safe-diminish "editorconfig" 'editorconfig-mode)
+  (safe-diminish "eldoc" 'eldoc-mode)
+  (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
+  (safe-diminish "flyspell" 'flyspell-mode)
+  (safe-diminish "indent-guide" 'indent-guide-mode)
+  (safe-diminish "nameless" 'nameless-mode)
+  (safe-diminish "simple" 'auto-fill-function)
+  (safe-diminish "subword" 'subword-mode)
+  (safe-diminish "vi-tilde-fringe" 'vi-tilde-fringe-mode))
 
 (defvar my/disable-trailing-modes
   '(buffer-face-mode
