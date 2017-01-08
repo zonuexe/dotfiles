@@ -53,6 +53,7 @@
 (setq mc/cmds-to-run-once
       '(
         align-regexp
+        elscreen-next
         helm-find-files
         magit-find-file-completing-read
         magit-status
