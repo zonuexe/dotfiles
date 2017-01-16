@@ -133,6 +133,7 @@
 (depends-on "nodejs-repl")
 (depends-on "nyan-mode")
 (depends-on "ob-ipython")
+(depends-on "ob-nim")
 (depends-on "ob-php")
 (depends-on "open-junk-file")
 (depends-on "org-ac")
