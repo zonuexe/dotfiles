@@ -130,6 +130,7 @@
 (depends-on "navi2ch")
 (depends-on "neotree")
 (depends-on "nim-mode")
+(depends-on "nlinum")
 (depends-on "nodejs-repl")
 (depends-on "nyan-mode")
 (depends-on "ob-ipython")
