@@ -55,6 +55,7 @@
         align-regexp
         elscreen-next
         helm-find-files
+        helm-smex
         magit-find-file-completing-read
         magit-status
         rectangle-mark-mode
