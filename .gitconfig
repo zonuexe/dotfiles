@@ -2,6 +2,7 @@
 	name = USAMI Kenta
 	email = tadsan@zonu.me
 [alias]
+	f = fetch
 	s = status
 	l = log --graph
 	d = diff
