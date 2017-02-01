@@ -170,6 +170,7 @@
 (depends-on "qiita")
 (depends-on "quickrun")
 (depends-on "rainbow-mode")
+(depends-on "rebecca-theme")
 (depends-on "recentf-ext")
 (depends-on "region-convert")
 (depends-on "request-deferred")
