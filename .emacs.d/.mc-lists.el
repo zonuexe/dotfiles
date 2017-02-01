@@ -15,7 +15,9 @@
         delete-indentation
         end-of-buffer
         goto-line
+        indent-for-tab-command
         kill-region
+        mark-whole-buffer
         markdown-electric-backquote
         markdown-exdent-or-delete
         mouse-set-region
