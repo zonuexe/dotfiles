@@ -154,6 +154,7 @@
   (bind-key  "C-S-n"       'make-frame)
   (bind-key  "C-S-w"       'delete-frame)
   (bind-key  "M-N"         'untitled-new-buffer)
+  (bind-key  "C-M-S-d"     'projectile-dired)
   (bind-key  "C-c :"       'right-click-context-menu)
   (bind-key  "C-c ;"       'imenu)
   (bind-key  "C-c R"       'revert-buffer)
