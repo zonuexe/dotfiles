@@ -92,6 +92,7 @@
 (depends-on "helm-descbinds")
 (depends-on "helm-emms")
 (depends-on "helm-git-files")
+(depends-on "helm-img-tiqav")
 (depends-on "helm-migemo")
 (depends-on "helm-projectile")
 (depends-on "helm-smex")
