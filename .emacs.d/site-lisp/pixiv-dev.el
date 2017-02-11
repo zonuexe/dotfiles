@@ -108,7 +108,6 @@
     (if (fboundp 'psysh-mode)
         (apply #'psysh-run pixiv-dev-psysh-buffer-process)
       (setq buffer (make-comint "pixiv-shell" "dev-script/shell.php"))
-      (cd current-dir)
       (switch-to-buffer buffer))))
 
 ;; pixiv-dev-mode
