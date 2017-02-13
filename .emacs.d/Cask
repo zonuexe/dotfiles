@@ -132,6 +132,7 @@
 (depends-on "nameless")
 (depends-on "navi2ch")
 (depends-on "neotree")
+(depends-on "nginx-mode")
 (depends-on "nim-mode")
 (depends-on "nlinum")
 (depends-on "nodejs-repl")
