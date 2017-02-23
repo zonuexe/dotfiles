@@ -21,6 +21,7 @@ call dein#add('itchyny/calendar.vim')
 call dein#add('editorconfig/editorconfig-vim')
 call dein#add('scrooloose/nerdtree')
 call dein#add('mattn/emmet-vim')
+call dein#add('StanAngeloff/php.vim')
 
 " You can specify revision/branch/tag.
 call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
@@ -73,6 +74,8 @@ let php_baselib = 1
 let php_htmlInStrings = 1
 let php_noShortTags = 1
 let php_parent_error_close = 1
+" g:php_syntax_extensions_enabled
+
 
 " Terminal titlebar
 let &t_ti .= "\e[22;0t"
@@ -82,3 +85,13 @@ let &t_te .= "\e[23;0t"
 let g:sql_type_default='mysql'
 
 syntax on
+
+function! PhpSyntaxOverride()
+  hi! def link phpDocTags  phpDefine
+  hi! def link phpDocParam phpType
+endfunction
+
+augroup phpSyntaxOverride
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
