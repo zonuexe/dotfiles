@@ -175,6 +175,8 @@ export PHAN_BIN=$HOME/.composer/vendor/bin/phan
 
 [[ -e "${HOME}/pixiv/dev-script/init_nodenv" ]] && eval "$("${HOME}/pixiv/dev-script/init_nodenv" -)"
 
+[[ -e "$HOME/local/dotfiles/ttcopy/ttcp_activate.sh" ]] && . "$HOME/local/dotfiles/ttcopy/ttcp_activate.sh"
+
 #PERL_MB_OPT="--install_base \"/Users/megurine/perl5\""; export PERL_MB_OPT;
 #PERL_MM_OPT="INSTALL_BASE=/Users/megurine/perl5"; export PERL_MM_OPT;
 
