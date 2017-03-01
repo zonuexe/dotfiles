@@ -84,6 +84,7 @@
 (depends-on "go-mode")
 (depends-on "grapnel")
 (depends-on "habitica")
+(depends-on "hacker-typer")
 (depends-on "hamburger-menu")
 (depends-on "haml-mode")
 (depends-on "haskell-mode")
