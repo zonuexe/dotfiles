@@ -794,6 +794,11 @@
   (custom-set-variables '(idle-highlight-idle-time 0.7))
   (add-hook 'prog-mode-hook 'idle-highlight-mode))
 
+;; goto-addr
+(progn
+  (add-hook 'prog-mode-hook 'goto-address-prog-mode)
+  (add-hook 'text-mode-hook 'goto-address-mode))
+
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
 (use-package multiple-cursors
