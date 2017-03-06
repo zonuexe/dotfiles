@@ -46,6 +46,7 @@
 (depends-on "direx")
 (depends-on "dockerfile-mode")
 (depends-on "drag-stuff")
+(depends-on "ecukes")
 (depends-on "edbi")
 (depends-on "edbi-sqlite")
 (depends-on "ede-php-autoload")
