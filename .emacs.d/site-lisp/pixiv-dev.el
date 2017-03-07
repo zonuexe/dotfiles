@@ -123,6 +123,9 @@
   "Minor mode for editing pixiv PHP project."
   nil pixiv-dev-mode-lighter pixiv-dev-mode-map
   (setq psysh-comint-buffer-process pixiv-dev-psysh-buffer-process)
+  (let ((path-to-tags (concat (pixiv-dev--working-dir) "TAGS")))
+    (when (file-exists-p path-to-tags)
+      (setq tags-file-name path-to-tags)))
   (when (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint"))
     (flycheck-select-checker 'pixiv-dev-lint)))
 
