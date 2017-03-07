@@ -376,6 +376,7 @@
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
 
   (custom-set-variables
+   '(php-manual-url 'ja)
    '(php-mode-coding-style 'psr2)
    '(php-refactor-keymap-prefix (kbd "C-c v")))
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
