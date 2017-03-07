@@ -4,10 +4,10 @@
 
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2016-04-01
-;; Modified: 2016-04-07
-;; Version: 0.4.0
+;; Modified: 2016-03-07
+;; Version: 1.0.0
 ;; Keywords: processes tools php
-;; Package-Requires: ((emacs "24") (flycheck "1") (psysh "0.0.4"))
+;; Package-Requires: ((emacs "24.3") (flycheck "1") (psysh "0.0.4"))
 ;; URL: https://github.com/zonuexe/dotfiles/tree/master/.emacs.d/site-lisp
 
 ;; This file is NOT part of GNU Emacs.
@@ -125,7 +125,7 @@
   (setq psysh-comint-buffer-process pixiv-dev-psysh-buffer-process)
   (let ((path-to-tags (concat (pixiv-dev--working-dir) "TAGS")))
     (when (file-exists-p path-to-tags)
-      (setq tags-file-name path-to-tags)))
+      (setq-local tags-file-name path-to-tags)))
   (when (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint"))
     (flycheck-select-checker 'pixiv-dev-lint)))
 
