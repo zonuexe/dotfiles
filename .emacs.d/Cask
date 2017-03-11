@@ -76,6 +76,7 @@
 (depends-on "flycheck-rust")
 (depends-on "font-lock-studio")
 (depends-on "font-utils")
+(depends-on "format-sql")
 (depends-on "fsharp-mode")
 (depends-on "geben")
 (depends-on "geiser")

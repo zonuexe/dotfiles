@@ -13,6 +13,7 @@
         c-electric-slash
         c-electric-star
         delete-indentation
+        electric-newline-and-maybe-indent
         end-of-buffer
         goto-line
         indent-for-tab-command
