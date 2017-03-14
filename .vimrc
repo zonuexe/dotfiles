@@ -7,28 +7,31 @@ endif
 set runtimepath+=/Users/megurine/.vim/repos/github.com/Shougo/dein.vim
 set runtimepath+=/home/tadsan/.vim/repos/github.com/Shougo/dein.vim
 
-" Required:
-call dein#begin(expand('~/.vim/dein'))
+if dein#load_state(expand('~/.vim/dein'))
+   " Required:
+   call dein#begin(expand('~/.vim/dein'))
 
-" Let dein manage dein
-" Required:
-call dein#add('Shougo/dein.vim')
+   " Let dein manage dein
+   " Required:
+   call dein#add('Shougo/dein.vim')
 
-" Add or remove your plugins here:
-call dein#add('Shougo/neosnippet.vim')
-call dein#add('Shougo/neosnippet-snippets')
-call dein#add('itchyny/calendar.vim')
-call dein#add('editorconfig/editorconfig-vim')
-call dein#add('scrooloose/nerdtree')
-call dein#add('mattn/emmet-vim')
-call dein#add('StanAngeloff/php.vim')
+   " Add or remove your plugins here:
+   call dein#add('Shougo/neosnippet.vim')
+   call dein#add('Shougo/neosnippet-snippets')
+   call dein#add('itchyny/calendar.vim')
+   call dein#add('editorconfig/editorconfig-vim')
+   call dein#add('scrooloose/nerdtree')
+   call dein#add('mattn/emmet-vim')
+   call dein#add('StanAngeloff/php.vim')
 
-" You can specify revision/branch/tag.
-call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
-call dein#add('Shougo/vimshell')
+   " You can specify revision/branch/tag.
+   call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
+   call dein#add('Shougo/vimshell')
 
-" Required:
-call dein#end()
+   " Required:
+   call dein#end()
+   call dein#save_state()
+endif
 
 " Required:
 filetype plugin indent on
