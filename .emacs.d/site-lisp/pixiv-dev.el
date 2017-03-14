@@ -102,9 +102,8 @@
 (defun pixiv-dev-shell ()
   "Run PHP interactive shell for pixiv."
   (interactive)
-  (let ((current-dir default-directory)
+  (let ((default-directory (pixiv-dev--working-dir))
         buffer)
-    (cd (pixiv-dev--working-dir))
     (if (fboundp 'psysh-mode)
         (apply #'psysh-run pixiv-dev-psysh-buffer-process)
       (setq buffer (make-comint "pixiv-shell" "dev-script/shell.php"))
