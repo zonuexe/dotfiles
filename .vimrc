@@ -4,8 +4,8 @@ if &compatible
 endif
 
 " Required:
-set runtimepath+=/Users/megurine/.vim/repos/github.com/Shougo/dein.vim
-set runtimepath+=/home/tadsan/.vim/repos/github.com/Shougo/dein.vim
+set runtimepath+=/Users/megurine/.vim/dein/repos/github.com/Shougo/dein.vim
+set runtimepath+=/home/tadsan/.vim/dein/repos/github.com/Shougo/dein.vim
 
 if dein#load_state(expand('~/.vim/dein'))
    " Required:
