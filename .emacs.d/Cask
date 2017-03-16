@@ -1,6 +1,7 @@
 (source gnu)
 (source melpa)
 
+(depends-on "0xc")
 (depends-on "2048-game")
 (depends-on "aa-edit-mode")
 (depends-on "ac-geiser")
@@ -12,6 +13,7 @@
 (depends-on "all-the-icons-dired")
 (depends-on "anaphora")
 (depends-on "annotate")
+(depends-on "aozora-view")
 (depends-on "apache-mode")
 (depends-on "atomic-chrome")
 (depends-on "auto-complete")
