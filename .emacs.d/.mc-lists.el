@@ -36,6 +36,7 @@
         orgtbl-hijacker-command-109
         orgtbl-self-insert-command
         paredit-close-round
+        paredit-close-square
         paredit-doublequote
         paredit-forward-delete
         paredit-kill

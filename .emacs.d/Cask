@@ -15,6 +15,7 @@
 (depends-on "apache-mode")
 (depends-on "atomic-chrome")
 (depends-on "auto-complete")
+(depends-on "auto-read-only")
 (depends-on "beacon")
 (depends-on "benchmark-init")
 (depends-on "bind-key")
