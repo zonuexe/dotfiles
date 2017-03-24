@@ -62,5 +62,6 @@
         helm-smex
         magit-find-file-completing-read
         magit-status
+        quickrun
         rectangle-mark-mode
         ))
