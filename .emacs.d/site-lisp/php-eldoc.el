@@ -1,4 +1,5 @@
 ;;; php-eldoc.el --- eldoc backend for php
+
 ;;; Version: 0.1
 ;;; Author: sabof
 ;;; URL: https://github.com/sabof/php-eldoc
@@ -1882,38 +1883,38 @@
                 (list (thing-at-point 'symbol)
                       nil)))
             (save-excursion
-              (while (in-string-p)
+              (while (nth 3 (syntax-ppss))
                 (backward-char))
-              (let* (( closing-paren
-                       (save-excursion
-                         (when (search-backward ")" nil t)
-                           (point))))
-                     ( boundary
-                       (save-excursion (search-backward "(")
-                                       (when (and closing-paren
-                                                  (> closing-paren (point)))
-                                         (error "not inside argument list"))
-                                       (point)))
-                     ( argument-number
-                       (let ((counter 0))
-                         (while (search-backward "," boundary t)
-                           (incf counter))
-                         counter))
-                     ( function-name
-                       (progn (goto-char boundary)
-                              (re-search-backward function-name-chars-regex)
-                              (forward-char)
-                              (setq boundary (point))
-                              (ignore-errors
-                                (while
-                                    (progn (backward-char)
-                                           (when (looking-at
-                                                  function-name-chars-regex)
-                                             (if (equal (point) (point-min))
-                                                 (error "beginning of buffer")
-                                                 t))))
-                                (forward-char))
-                              (buffer-substring (point) boundary))))
+              (let* ((closing-paren
+                      (save-excursion
+                        (when (search-backward ")" nil t)
+                          (point))))
+                     (boundary
+                      (save-excursion (search-backward "(")
+                                      (when (and closing-paren
+                                                 (> closing-paren (point)))
+                                        (error "Not inside argument list"))
+                                      (point)))
+                     (argument-number
+                      (let ((counter 0))
+                        (while (search-backward "," boundary t)
+                          (incf counter))
+                        counter))
+                     (function-name
+                      (progn (goto-char boundary)
+                             (re-search-backward function-name-chars-regex)
+                             (forward-char)
+                             (setq boundary (point))
+                             (ignore-errors
+                               (while
+                                   (progn (backward-char)
+                                          (when (looking-at
+                                                 function-name-chars-regex)
+                                            (if (equal (point) (point-min))
+                                                (error "Beginning of buffer")
+                                              t))))
+                               (forward-char))
+                             (buffer-substring (point) boundary))))
                 (list function-name argument-number)))))
     (error nil
            ;; (message "php-eldoc Error: %s "
@@ -1933,7 +1934,7 @@
               (concat arguments
                       (if (equal counter (second func))
                           (propertize arg 'face '(:weight bold))
-                          arg)
+                        arg)
                       ", "))
         (incf counter)))
     (when (>= (length arguments) 2)
@@ -1975,9 +1976,9 @@
 
 (eval-after-load 'auto-complete
   '(ac-define-source php-eldoc
-    '((candidates . php-eldoc-ac-candidates)
-      (cache)
-      (symbol . "f"))))
+     '((candidates . php-eldoc-ac-candidates)
+       (cache)
+       (symbol . "f"))))
 
 ;;;###autoload
 (defun php-eldoc-enable ()
