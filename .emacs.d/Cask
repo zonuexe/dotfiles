@@ -143,6 +143,7 @@
 (depends-on "nim-mode")
 (depends-on "nlinum")
 (depends-on "nodejs-repl")
+(depends-on "nord-theme")
 (depends-on "nyan-mode")
 (depends-on "ob-ipython")
 (depends-on "ob-nim")
