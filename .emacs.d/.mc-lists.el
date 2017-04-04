@@ -40,6 +40,7 @@
         paredit-close-square
         paredit-doublequote
         paredit-forward-delete
+        paredit-forward-slurp-sexp
         paredit-kill
         paredit-open-round
         paredit-open-square
