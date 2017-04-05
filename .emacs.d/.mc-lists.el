@@ -15,6 +15,7 @@
         delete-indentation
         electric-newline-and-maybe-indent
         end-of-buffer
+        goto-address-at-point
         goto-line
         indent-for-tab-command
         kill-region
