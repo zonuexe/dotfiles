@@ -21,6 +21,7 @@ path=(
     /usr/local/opt/go/libexec/bin(N-/)
     /usr/local/heroku/bin(N-/)
     /Applications/mpv.app/Contents/MacOS(N-/)
+    /Applications/Wireshark.app/Contents/MacOS(N-/)
     $path
 )
 
