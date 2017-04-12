@@ -1193,6 +1193,10 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; info
 (add-to-list 'Info-default-directory-list (locate-user-emacs-file "./info/emacs-manual-24.5-ja"))
 
+;; keyfreq
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)
+
 ;; (benchmark-init/deactivate)
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)
