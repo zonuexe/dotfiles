@@ -152,6 +152,7 @@
 (depends-on "open-junk-file")
 (depends-on "org-ac")
 (depends-on "org-rtm")
+(depends-on "org-table-sticky-header")
 (depends-on "org-trello")
 (depends-on "osx-lib")
 (depends-on "ov")

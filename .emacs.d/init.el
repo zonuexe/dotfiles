@@ -1193,6 +1193,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; info
 (add-to-list 'Info-default-directory-list (locate-user-emacs-file "./info/emacs-manual-24.5-ja"))
 
+(with-eval-after-load 'dash
+  (dash-enable-font-lock))
+
 ;; keyfreq
 (keyfreq-mode 1)
 (keyfreq-autosave-mode 1)
