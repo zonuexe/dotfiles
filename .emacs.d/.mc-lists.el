@@ -28,9 +28,11 @@
         nameless-insert-name
         nxml-electric-slash
         org-beginning-of-line
+        org-cycle
         org-delete-char
         org-end-of-line
         org-force-self-insert
+        org-kill-line
         org-self-insert-command
         org-yank
         orgtbl-hijacker-command-102
@@ -46,6 +48,7 @@
         paredit-open-square
         paredit-semicolon
         paredit-splice-sexp-killing-backward
+        php-current-class
         sp-remove-active-pair-overlay
         subword-left
         subword-right
