@@ -12,6 +12,7 @@
         c-electric-semi&comma
         c-electric-slash
         c-electric-star
+        coffee-dedent-line-backspace
         delete-indentation
         electric-newline-and-maybe-indent
         end-of-buffer
