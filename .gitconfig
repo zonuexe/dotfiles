@@ -13,5 +13,8 @@
 	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
 [core]
 	excludesfile = ~/.gitexclude
+	filemode = false
+	autocrlf = false
+	precomposeunicode = true
 [push]
 	default = tracking

@@ -47,6 +47,7 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set softtabstop=1
+set backspace=indent,eol,start
 
 " PHP
 let php_sql_query = 1

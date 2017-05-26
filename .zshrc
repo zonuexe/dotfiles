@@ -81,6 +81,12 @@ case ${UID} in
 esac
 }
 
+fpath=(
+    $HOME/local/zsh/completions(N-/)
+    $HOME/local/zsh/functions(N-/)
+    $fpath
+)
+
 case ${UID} in
 0)
     PROMPT="%{${fg[blue]}%}%n%{${reset_color}%} %{${fg[blue]}%}#%{${reset_color}%} "
