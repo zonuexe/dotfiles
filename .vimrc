@@ -29,6 +29,9 @@ if dein#load_state(expand('~/.vim/dein'))
    call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
    call dein#add('Shougo/vimshell')
 
+   call dein#add('tpope/vim-speeddating')
+   call dein#add('jceb/vim-orgmode')
+
    " Required:
    call dein#end()
    call dein#save_state()
