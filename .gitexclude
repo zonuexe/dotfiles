@@ -10,3 +10,8 @@ GRTAGS
 \#*\#
 .\#*
 .tramp_history
+phan.log
+phan-master.log
+filter.log
+filter-master.log
+test.php
