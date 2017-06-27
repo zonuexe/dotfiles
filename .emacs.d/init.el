@@ -471,8 +471,7 @@
   (add-hook it 'my/emacs-lisp-mode-hook))
 (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)
 
-(defalias 'inferior-emacs-lisp 'ielm
-  "λ...")
+(defalias 'inferior-emacs-lisp 'ielm "λ...")
 
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
