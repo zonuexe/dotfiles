@@ -1203,4 +1203,5 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)
 
+(provide 'init)
 ;;; init.el ends here
