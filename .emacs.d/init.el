@@ -405,6 +405,9 @@
   (custom-set-variables
    '(pixiv-dev-user-name "tadsan")))
 
+(use-package phan :defer t
+  :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode)))
+
 ;; Ruby
 (use-package enh-ruby-mode :defer t
   :mode (("\\.rb\\'" . enh-ruby-mode))
