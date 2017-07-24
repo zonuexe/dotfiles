@@ -81,15 +81,31 @@
 (defun pixiv-dev-copy-file-url ()
   "Copy pixiv repository file URL."
   (interactive)
-  (let (path (working-dir (pixiv-dev--working-dir)))
-    (if (or (null buffer-file-name)
+  (let ((url (pixiv-dev-make-file-url (pixiv-dev--working-dir))))
+    (when url
+      (kill-new url)
+      (message (format "Copy `%s'!" url)))))
+
+;;;###autoload
+(defun pixiv-dev-make-file-url (working-dir)
+  "Make pixiv repository file URL by `WORKING-DIR'."
+  (when (or (null buffer-file-name)
             (not (string-prefix-p working-dir buffer-file-name)))
-        (error "File is not in pixiv repository!")
-      (setq path (concat pixiv-dev-repository-web "/tree/master/"
-                         (replace-regexp-in-string working-dir "" buffer-file-name)
-                         "#L" (number-to-string (1+ (count-lines 1 (point))))))
-      (kill-new path)
-      (message (format "Copy `%s'!" path)))))
+    (error "File is not in pixiv repository!"))
+  (let ((current-line (1+ (count-lines 1 (point)))))
+    (concat pixiv-dev-repository-web "/tree/master/"
+            (replace-regexp-in-string working-dir "" buffer-file-name)
+            (if (eq 1 current-line) "" (concat "#L" (number-to-string current-line))))))
+
+;;;###autoload
+(defun pixiv-dev-copy-file-url-as-markdown ()
+  "Copy pixiv repository file URL."
+  (interactive)
+  (let* (markdown (url (pixiv-dev-make-file-url (pixiv-dev--working-dir))))
+    (when url
+      (setq markdown (format "[`%s`](%s)" (php-util-copyit-fqsen) url))
+      (kill-new markdown)
+      (message (format "Copy `%s'!" markdown)))))
 
 ;;;###autoload
 (defun pixiv-dev-find-file ()
