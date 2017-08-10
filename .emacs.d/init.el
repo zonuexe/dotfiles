@@ -368,6 +368,9 @@
   (when (eq 0 (buffer-size))
     (insert "<?php\n\n")))
 
+(add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
+(add-to-list 'auto-minor-mode-alist '("/pixiv/" . auto-deployment-mode))
+
 (use-package php-mode :defer t
   :config
   ;;(require 'php-extras)
@@ -913,6 +916,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 
 (progn
   (safe-diminish "abbrev" 'abbrev-mode)
+  (safe-diminish "auto-deployment" 'auto-deployment-mode)
   (safe-diminish "beacon" 'beacon-mode)
   (safe-diminish "ciel" 'ciel-mode)
   (safe-diminish "face-remap" 'buffer-face-mode)
