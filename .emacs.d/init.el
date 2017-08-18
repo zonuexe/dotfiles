@@ -225,8 +225,10 @@
   (helm-mode t))
 
 ;; (use-package helm-ag :defer t)
-(custom-set-variables '(helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
-(bind-key "C-:" 'helm-ag)
+(custom-set-variables
+ '(helm-ag-base-command "rg --vimgrep --no-heading")
+ '(helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
+(bind-key "C-:" 'helm-ag-project-root)
 
 ;; ispell
 (custom-set-variables
@@ -247,7 +249,7 @@
 ;; (use-package magit :defer t)
 (setq-default magit-auto-revert-mode nil)
 (setq vc-handled-backends '())
-(eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
+(eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook))
 (bind-key "C-x m" 'magit-status)
 (bind-key "C-c l" 'magit-blame)
 
@@ -356,6 +358,7 @@
   (setq show-trailing-whitespace t)
 
   (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face))
+  (setq-local page-delimiter "\\_<\\(class\\|function\\|namespace\\)\\_>.+$")
 
   (flycheck-mode t)
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
