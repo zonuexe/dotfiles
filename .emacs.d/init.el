@@ -369,7 +369,6 @@
     (insert "<?php\n\n")))
 
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
-(add-to-list 'auto-minor-mode-alist '("/pixiv/" . auto-deployment-mode))
 
 (use-package php-mode :defer t
   :config
@@ -916,7 +915,6 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 
 (progn
   (safe-diminish "abbrev" 'abbrev-mode)
-  (safe-diminish "auto-deployment" 'auto-deployment-mode)
   (safe-diminish "beacon" 'beacon-mode)
   (safe-diminish "ciel" 'ciel-mode)
   (safe-diminish "face-remap" 'buffer-face-mode)
@@ -1205,6 +1203,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; keyfreq
 (keyfreq-mode 1)
 (keyfreq-autosave-mode 1)
+
+;; Auto deployment
+(global-copy-file-on-save-mode 1)
 
 ;; (benchmark-init/deactivate)
 
