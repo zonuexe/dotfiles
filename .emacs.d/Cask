@@ -17,7 +17,6 @@
 (depends-on "apache-mode")
 (depends-on "atomic-chrome")
 (depends-on "auto-complete")
-(depends-on "auto-deployment" :git "git@github.com:zonuexe/emacs-auto-deployment.git")
 (depends-on "auto-minor-mode")
 (depends-on "auto-read-only")
 (depends-on "beacon")
@@ -250,4 +249,5 @@
 (depends-on "yaml-mode")
 (depends-on "yard-mode")
 (depends-on "yasnippet")
+(depends-on "yasnippet-snippets")
 (depends-on "zenity-color-picker")

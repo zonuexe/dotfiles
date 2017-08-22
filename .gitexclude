@@ -6,6 +6,7 @@ GPATH
 GTAGS
 GRTAGS
 .DS_Store
+.dir-locals.el
 .idea
 \#*\#
 .\#*
