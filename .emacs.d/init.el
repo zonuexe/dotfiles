@@ -67,8 +67,6 @@
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
 
-(require 'my/private "my-private.el" t)
-
 ;; http://ergoemacs.org/emacs/emacs_n_unicode.html
 ;; set Unicode data file location. (used by what-cursor-position and describe-char)
 (when nil
@@ -103,6 +101,10 @@
 	  (require 'cask nil t))
   (cask-initialize))
 (package-initialize)
+
+;; load private config
+(require 'my/private "my-private.el" t)
+
 
 ;; benchmark-init
 ;; https://github.com/dholm/benchmark-init-el
