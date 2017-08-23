@@ -207,7 +207,6 @@
 (depends-on "sly")
 (depends-on "smart-newline")
 (depends-on "smartchr" :git "git@github.com:imakado/emacs-smartchr.git")
-(depends-on "smartparens")
 (depends-on "smartrep")
 (depends-on "smex")
 (depends-on "smooth-scroll")

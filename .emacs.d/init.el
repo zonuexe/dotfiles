@@ -295,11 +295,8 @@
   :config
   (flycheck-package-setup))
 
-;; Smartparens
-(use-package smartparens
-  :diminish smartparens-mode)
-(require 'smartparens-config)
-(smartparens-global-mode t)
+;; elec-pair
+(electric-pair-mode 1)
 
 ;; which-func
 (which-function-mode t)
