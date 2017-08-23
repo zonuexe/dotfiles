@@ -385,8 +385,7 @@
 
   (custom-set-variables
    '(php-manual-url 'ja)
-   '(php-mode-coding-style 'psr2)
-   '(php-refactor-keymap-prefix (kbd "C-c v")))
+   '(php-mode-coding-style 'psr2))
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
   (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
   (bind-key "C-}" 'cedit-barf php-mode-map)
