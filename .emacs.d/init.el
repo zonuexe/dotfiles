@@ -1151,6 +1151,12 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   :init
   (atomic-chrome-start-server))
 
+(use-package google-translate :defer t
+  :init
+  (custom-set-variables
+   '(google-translate-default-source-language "en")
+   '(google-translate-default-target-language "ja")))
+
 (defun denwa (status)
   "Tiny twitter client.  Denwa ni denwa."
   (interactive "sDenwa: ")
