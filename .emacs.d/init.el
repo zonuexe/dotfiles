@@ -1208,6 +1208,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Auto deployment
 (global-copy-file-on-save-mode 1)
 
+(setq find-function-C-source-directory (f-expand "~/local/src/emacs/src"))
+
 ;; (benchmark-init/deactivate)
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)
