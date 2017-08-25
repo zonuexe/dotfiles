@@ -392,8 +392,7 @@
   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
   (bind-key "C-c C--" 'php-current-class php-mode-map)
   (bind-key "C-c C-=" 'php-current-namespace php-mode-map)
-  (add-hook 'php-mode-hook 'my/php-mode-hook)
-  (add-hook 'php-mode-hook 'php-refactor-mode))
+  (add-hook 'php-mode-hook 'my/php-mode-hook))
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
 (use-package psysh :defer t
