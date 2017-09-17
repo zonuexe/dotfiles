@@ -194,6 +194,7 @@
 (depends-on "restclient")
 (depends-on "review-mode")
 (depends-on "right-click-context" :git "git@github.com:zonuexe/right-click-context.git")
+(depends-on "ripgrep")
 (depends-on "robe")
 (depends-on "robots-txt-mode")
 (depends-on "rust-mode")
