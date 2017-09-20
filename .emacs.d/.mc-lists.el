@@ -54,7 +54,6 @@
         subword-left
         subword-right
         subword-right
-        toggle-load-theme
         wgrep-finish-edit
         yaml-electric-backspace
         yas-expand
@@ -68,6 +67,8 @@
         helm-smex
         magit-find-file-completing-read
         magit-status
+        switch-to-buffer
+        toggle-load-theme
         quickrun
         rectangle-mark-mode
         ))
