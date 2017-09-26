@@ -129,6 +129,7 @@
 (depends-on "key-combo")
 (depends-on "keyfreq")
 (depends-on "less-css-mode")
+(depends-on "lispxmp")
 (depends-on "load-theme-buffer-local")
 (depends-on "logalimacs")
 (depends-on "logview")
