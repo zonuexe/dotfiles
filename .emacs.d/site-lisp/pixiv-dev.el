@@ -70,7 +70,7 @@
           "\tlevel:error" "\tdesc:" (message) line-end)
    (warning line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
             "\tlevel:" (+ alnum) "\tdesc:" (message) line-end))
-  :modes (php-mode web-mode text-mode fundamental-mode nxml-mode sh-mode json-mode js2-mode)
+  :modes (php-mode web-mode text-mode nxml-mode js2-mode)
   :next-checkers (php))
 ;; (flycheck-select-checker 'pixiv-dev-lint)
 ;; flycheck-pixiv-dev-lint-executable
@@ -142,7 +142,8 @@
     (when (file-exists-p path-to-tags)
       ;(setq-local tags-file-name path-to-tags)
       ))
-  (when (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint"))
+  (when (and (memq major-mode '(php-mode web-mode text-mode nxml-mode js2-mode))
+             (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint")))
     (flycheck-select-checker 'pixiv-dev-lint)))
 
 ;;;###autoload
