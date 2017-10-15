@@ -27,6 +27,7 @@
 /session.*
 /site-lisp/*.elc
 /smex-*
+/srecode-map.el
 /tramp
 /tutorial
 /url/
