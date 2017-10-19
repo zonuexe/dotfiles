@@ -201,6 +201,7 @@
   (key-chord-define-global "df" 'find-function)
   (key-chord-define-global "fh" 'describe-function)
   (key-chord-define-global "fv" 'find-variable)
+  (key-chord-define-global "jb" 'jetbrains-open-buffer-file)
   (key-chord-define-global "@p" 'package-install)
   (key-chord-define-global "kl" 'align-regexp)
   (key-chord-define-global "rt" 'toggle-load-theme)
