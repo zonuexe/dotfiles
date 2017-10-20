@@ -15,6 +15,7 @@
         coffee-dedent-line-backspace
         delete-indentation
         electric-newline-and-maybe-indent
+        electric-pair-delete-pair
         end-of-buffer
         goto-address-at-point
         goto-line
@@ -67,8 +68,8 @@
         helm-smex
         magit-find-file-completing-read
         magit-status
-        switch-to-buffer
-        toggle-load-theme
         quickrun
         rectangle-mark-mode
+        switch-to-buffer
+        toggle-load-theme
         ))
