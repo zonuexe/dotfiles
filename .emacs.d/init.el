@@ -1023,11 +1023,11 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
              (concat (substring x 0 3) ":" (substring x 3 5)))
            "\"")))
 
-(defun my/find-file-temporary-file-directory ()
-  ""
-  (interactive)
-  (let ((default-directory temporary-file-directory))
-    (call-interactively 'find-file nil)))
+(defun my/find-file-temporary-file-directory (filename)
+  "Find file `FILENAME' in `temporary-file-directory'."
+  (interactive
+   (list (read-file-name "Find files: " temporary-file-directory)))
+  (find-file filename))
 
 (defun my/php-vars-to-array ()
   ""
