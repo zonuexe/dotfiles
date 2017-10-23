@@ -123,6 +123,7 @@
 (depends-on "ivs-edit")
 (depends-on "ivy")
 (depends-on "jade-mode")
+(depends-on "jetbrains")
 (depends-on "js2-mode")
 (depends-on "json-mode")
 (depends-on "key-chord")
