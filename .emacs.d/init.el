@@ -383,6 +383,7 @@
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
 
   (custom-set-variables
+   '(psysh-doc-display-function #'popwin:display-buffer)
    '(php-manual-url 'ja)
    '(php-mode-coding-style 'psr2))
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
