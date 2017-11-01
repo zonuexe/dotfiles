@@ -1100,6 +1100,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (add-hook 'init-open-recentf-before-hook #'my/insert-tetosan)
 (init-open-recentf)
 
+;; El-Screeのウィンドウを一個つくる
 (elscreen-create)
 
 ;; Right Click
