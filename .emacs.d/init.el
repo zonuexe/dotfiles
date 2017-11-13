@@ -376,6 +376,8 @@
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
 
 (use-package php-mode :defer t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
   :config
   ;;(require 'php-extras)
   ;;(php-extras-eldoc-documentation-function)
