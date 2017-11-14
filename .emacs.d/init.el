@@ -283,7 +283,7 @@
   (use-package helm-projectile)
   (custom-set-variables
    '(projectile-completion-system 'helm))
-  ;;(projectile-mode 1)
+  (projectile-mode 1)
   (helm-projectile-on)
   (add-hook 'projectile-mode-hook 'projectile-rails-on))
 
