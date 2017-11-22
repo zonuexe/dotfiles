@@ -415,6 +415,8 @@
 
 (use-package phan :defer t
   :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode)))
+(when (fboundp 'phan-flycheck-setup)
+  (phan-flycheck-setup))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
