@@ -4,8 +4,8 @@
 
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2016-04-01
-;; Modified: 2016-03-07
-;; Version: 1.0.0
+;; Modified: 2017-11-28
+;; Version: 1.1.0
 ;; Keywords: processes tools php
 ;; Package-Requires: ((emacs "24.3") (flycheck "1") (psysh "0.0.4"))
 ;; URL: https://github.com/zonuexe/dotfiles/tree/master/.emacs.d/site-lisp
@@ -29,6 +29,8 @@
 
 ;;; Commentary:
 
+;; A minor mode for pixiv.net development.
+
 ;;; Code:
 (require 'psysh nil t)
 (require 'flycheck)
@@ -39,15 +41,26 @@
 
 (defcustom pixiv-dev-user-name user-login-name
   "Login name for pixiv-dev(LDAP) or E-mail address.")
+(put 'pixiv-dev-user-name 'safe-local-variable #'stringp)
 
 (defcustom pixiv-dev-host "pixiv-dev"
   "Host name of your pixiv develop server.")
+(put 'pixiv-dev-host 'safe-local-variable #'stringp)
 
-(defcustom pixiv-dev-working-dir nil
+(defvar pixiv-dev-working-dir nil
   "`pixiv.git' working directory.")
+(make-local-variable 'pixiv-dev-working-dir)
+(put 'pixiv-dev-working-dir 'safe-local-variable #'stringp)
+
+(defvar pixiv-dev-remote-working-dir nil
+  "`pixiv.git' working directory on remote server.")
+(make-local-variable 'pixiv-dev-remote-working-dir)
+(put 'pixiv-dev-remote-working-dir 'safe-local-variable #'stringp)
 
 (defvar pixiv-dev-repository-web "http://gitlab.pixiv.private/pixiv/pixiv"
   "URL of `pixiv.git' repository web.")
+(make-local-variable 'pixiv-dev-repository-web)
+(put 'pixiv-dev-repository-web 'safe-local-variable #'stringp)
 
 (defvar pixiv-dev-psysh-buffer-process
   '("pixiv-shell" "dev-script/shell.php"))
