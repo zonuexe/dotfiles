@@ -8,6 +8,7 @@
 	d = diff
 	ds = diff --staged
 	c = checkout
+	c- = !git checkout $(git branch | peco)
 	b = branch
 	pr = pull --rebase
 	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
