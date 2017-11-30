@@ -69,6 +69,11 @@
   "Wokring directory of `pixiv.git'."
   (or pixiv-dev-working-dir
       (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
+
+(defun pixiv-dev--remote-working-dir ()
+  "Wokring directory of `pixiv.git'."
+  (or pixiv-dev-remote-working-dir
+      (format "/scp:%s:/mnt/ssd1/home/%s/pixiv/" pixiv-dev-host pixiv-dev-user-name)))
 
 ;; Flycheck
 
@@ -106,7 +111,7 @@
             (not (string-prefix-p working-dir buffer-file-name)))
     (error "File is not in pixiv repository!"))
   (let ((current-line (1+ (count-lines 1 (point)))))
-    (concat pixiv-dev-repository-web "/tree/master/"
+    (concat pixiv-dev-repository-web "/tree/master"
             (replace-regexp-in-string working-dir "" buffer-file-name)
             (if (eq 1 current-line) "" (concat "#L" (number-to-string current-line))))))
 
@@ -131,7 +136,7 @@
 (defun pixiv-dev-shell ()
   "Run PHP interactive shell for pixiv."
   (interactive)
-  (let ((default-directory (pixiv-dev--working-dir))
+  (let ((default-directory (pixiv-dev--remote-working-dir))
         buffer)
     (if (fboundp 'psysh-mode)
         (apply #'psysh-run pixiv-dev-psysh-buffer-process)
