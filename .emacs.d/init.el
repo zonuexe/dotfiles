@@ -1013,9 +1013,9 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
 (defun my/insert-kbd-sequence ()
   "Insert (kbd) sequence."
   (interactive)
-  (insert (concat "(kbd \""
-                  (key-description (read-key-sequence "input> "))
-                  "\")")))
+  (insert "(kbd \""
+          (key-description (read-key-sequence "input> "))
+          "\")"))
 ;; my/insert-kbd-sequence ends here
 
 (defun my/insert-datetime-attr ()
