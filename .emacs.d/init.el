@@ -1219,6 +1219,11 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (keyfreq-mode 1)
 (keyfreq-autosave-mode 1)
 
+;; dmacro
+(custom-set-variables
+ '(dmacro-default-key (kbd "C-.")))
+(global-dmacro-mode 1)
+
 ;; Auto deployment
 (global-copy-file-on-save-mode 1)
 
