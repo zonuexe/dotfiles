@@ -51,6 +51,7 @@
 (depends-on "dired-k")
 (depends-on "dired-toggle" :git "git@github.com:zonuexe/dired-toggle.git")
 (depends-on "direx")
+(depends-on "dmacro" :git "git@github.com:zonuexe/dmacro.git")
 (depends-on "dockerfile-mode")
 (depends-on "drag-stuff")
 (depends-on "ecukes")
