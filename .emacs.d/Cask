@@ -29,7 +29,6 @@
 ;;(depends-on "calfw-syobocal" :git "https://gist.github.com/1fd257fc1e8907d4d92e.git" :files ("*.el"))
 (depends-on "cask")
 (depends-on "cedit")
-(depends-on "ciel")
 (depends-on "cmake-mode")
 (depends-on "codic")
 (depends-on "coffee-mode")
