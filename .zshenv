@@ -5,6 +5,7 @@ path=(
     ~/.phpenv/bin(N-/)
     ~/.rbenv/shims(N-/)
     ~/.phpenv/shims(N-/)
+    ~/.config/composer/vendor/bin(N-/)
     ~/.composer/vendor/bin(N-/)
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
