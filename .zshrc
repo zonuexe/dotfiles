@@ -189,3 +189,7 @@ export PHAN_BIN=$HOME/.composer/vendor/bin/phan
 phptags(){
     ctags -e --php-types=c+i+d+f $(git ls-files '*.php')
 }
+
+vld () {
+    php -dvld.active=1 -dvld.execute=0 "$@"
+}
