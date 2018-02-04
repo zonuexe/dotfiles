@@ -191,5 +191,5 @@ phptags(){
 }
 
 vld () {
-    php -dvld.active=1 -dvld.execute=0 "$@"
+    php -dvld.active=1 -dvld.execute=0 "$@" 2>&1
 }
