@@ -111,7 +111,8 @@
             (not (string-prefix-p working-dir buffer-file-name)))
     (error "File is not in pixiv repository!"))
   (let ((current-line (1+ (count-lines 1 (point)))))
-    (concat pixiv-dev-repository-web "/tree/master"
+    (concat pixiv-dev-repository-web
+            (format "/%s/master" (if (eq major-mode 'dired-mode) "tree" "blob"))
             (replace-regexp-in-string working-dir "" buffer-file-name)
             (if (eq 1 current-line) "" (concat "#L" (number-to-string current-line))))))
 
