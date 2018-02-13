@@ -216,7 +216,6 @@
 (depends-on "smex")
 (depends-on "smooth-scroll")
 (depends-on "sokoban")
-(depends-on "spike-theme")
 ;;(depends-on "sql-drill")
 (depends-on "ssh-config-mode")
 (depends-on "stylus-mode")
