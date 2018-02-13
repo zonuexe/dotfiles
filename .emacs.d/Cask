@@ -108,7 +108,7 @@
 (depends-on "helm-migemo")
 (depends-on "helm-projectile")
 (depends-on "helm-smex")
-(depends-on "helm-swoop")
+(depends-on "helm-swoop" :git "git@github.com:steckerhalter/helm-swoop.git")
 (depends-on "helm-themes")
 (depends-on "ht")
 (depends-on "htmlize")
