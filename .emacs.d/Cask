@@ -1,5 +1,6 @@
 (source gnu)
 (source melpa)
+(source org)
 
 (depends-on "0xc")
 (depends-on "2048-game")
@@ -108,7 +109,7 @@
 (depends-on "helm-migemo")
 (depends-on "helm-projectile")
 (depends-on "helm-smex")
-(depends-on "helm-swoop" :git "git@github.com:steckerhalter/helm-swoop.git")
+(depends-on "helm-swoop")
 (depends-on "helm-themes")
 (depends-on "ht")
 (depends-on "htmlize")
