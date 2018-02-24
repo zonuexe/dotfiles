@@ -356,7 +356,8 @@
 (defun my/php-mode-hook ()
   "My PHP-mode hook."
   (my/turn-on-php-eldoc)
-  (subword-mode t)
+  (php-enable-psr2-coding-style)
+  (subword-mode 1)
   (setq show-trailing-whitespace t)
 
   (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face))
@@ -378,6 +379,10 @@
 (use-package php-mode :defer t
   :init
   (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
+  (custom-set-variables
+   '(psysh-doc-display-function #'popwin:display-buffer)
+   '(php-manual-url 'ja)
+   '(php-template-compatibility nil))
   :config
   ;;(require 'php-extras)
   ;;(php-extras-eldoc-documentation-function)
@@ -385,10 +390,6 @@
   ;;(require 'ac-php)
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
 
-  (custom-set-variables
-   '(psysh-doc-display-function #'popwin:display-buffer)
-   '(php-manual-url 'ja)
-   '(php-mode-coding-style 'psr2))
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
   (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
   ;; (bind-key "C-}" 'cedit-barf php-mode-map)
@@ -399,6 +400,7 @@
   (bind-key "C-c C--" 'php-current-class php-mode-map)
   (bind-key "C-c C-=" 'php-current-namespace php-mode-map)
   (add-hook 'php-mode-hook 'my/php-mode-hook))
+
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
 (use-package psysh :defer t
