@@ -394,6 +394,7 @@
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
 
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
+  (bind-key "@" (smartchr "$this->" "$this" "@") php-mode-map)
   (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
   ;; (bind-key "C-}" 'cedit-barf php-mode-map)
   ;; (bind-key "C-)" 'cedit-slurp php-mode-map)
