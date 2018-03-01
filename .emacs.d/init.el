@@ -356,7 +356,6 @@
 (defun my/php-mode-hook ()
   "My PHP-mode hook."
   (my/turn-on-php-eldoc)
-  (php-enable-psr2-coding-style)
   (subword-mode 1)
   (setq show-trailing-whitespace t)
 
@@ -382,6 +381,7 @@
   (custom-set-variables
    '(psysh-doc-display-function #'popwin:display-buffer)
    '(php-manual-url 'ja)
+   '(php-mode-coding-style 'psr2)
    '(php-template-compatibility nil))
   :config
   ;;(require 'php-extras)
