@@ -103,6 +103,9 @@
   (cask-initialize))
 (package-initialize)
 
+(when (file-directory-p "~/repo/emacs/php-mode")
+  (add-to-list 'load-path "~/repo/emacs/php-mode"))
+
 ;; load private config
 (require 'my/private "my-private.el" t)
 
