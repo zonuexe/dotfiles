@@ -136,6 +136,7 @@
 (depends-on "load-theme-buffer-local")
 (depends-on "logalimacs")
 (depends-on "logview")
+(depends-on "lsp-mode")
 (depends-on "lua-mode")
 (depends-on "macrostep")
 (depends-on "magic-filetype")
