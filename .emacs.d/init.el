@@ -127,7 +127,7 @@
 ;; PATH
 (custom-set-variables
  '(exec-path-from-shell-check-startup-files nil)
- '(exec-path-from-shell-variables '("PATH" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
+ '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
 (exec-path-from-shell-initialize)
 
 ;;; Coding:
