@@ -181,6 +181,7 @@
 (depends-on "php-mode")
 (depends-on "php-util" :git "git@github.com:zonuexe/php-util.el.git")
 (depends-on "php7-mode" :git "git@github.com:emacs-php/Php7mode.git")
+(depends-on "phpstan" :git "git@github.com:emacs-php/phpstan.el.git")
 (depends-on "phpunit" :git "git@github.com:nlamirault/phpunit.el.git" :branch "develop")
 (depends-on "pixiv-novel-mode")
 (depends-on "pomodoro")

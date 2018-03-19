@@ -394,7 +394,6 @@
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
 
   (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
-  (bind-key "@" (smartchr "$this->" "$this" "@") php-mode-map)
   (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
   ;; (bind-key "C-}" 'cedit-barf php-mode-map)
   ;; (bind-key "C-)" 'cedit-slurp php-mode-map)
@@ -495,6 +494,10 @@
 
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
+
+(use-package lsp-mode :defer t
+  :init
+  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
 
 (use-package paredit :defer t
   :diminish paredit-mode
