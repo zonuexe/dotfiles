@@ -686,7 +686,7 @@
 (use-package org-mode :defer t
   :init
   (custom-set-variables
-   '(org-default-notes-file (concat org-directory "/notes.org")))
+   '(org-default-notes-file (concat org-directory "/capture.org")))
   (bind-key "C-c c" 'org-capture)
   :config
   (org-ac/config-default)
