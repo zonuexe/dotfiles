@@ -380,7 +380,6 @@
 
 (use-package php-mode :defer t
   :init
-  (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
   (custom-set-variables
    '(psysh-doc-display-function #'popwin:display-buffer)
    '(php-manual-url 'ja)
@@ -389,7 +388,6 @@
   :config
   ;;(require 'php-extras)
   ;;(php-extras-eldoc-documentation-function)
-  ;;(use-package php-auto-yasnippets)
   ;;(require 'ac-php)
   ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
 
@@ -397,7 +395,6 @@
   (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
   ;; (bind-key "C-}" 'cedit-barf php-mode-map)
   ;; (bind-key "C-)" 'cedit-slurp php-mode-map)
-  (bind-key "C-c C-y" 'yas/create-php-snippet    php-mode-map)
   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
   (bind-key "C-c C--" 'php-current-class php-mode-map)
