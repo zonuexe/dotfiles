@@ -104,7 +104,8 @@
 (package-initialize)
 
 (when (file-directory-p "~/repo/emacs/php-mode")
-  (add-to-list 'load-path "~/repo/emacs/php-mode"))
+  (add-to-list 'load-path "~/repo/emacs/php-mode")
+  (load "~/repo/emacs/php-mode/php-mode-autoloads.el"))
 
 ;; load private config
 (require 'my/private "my-private.el" t)
