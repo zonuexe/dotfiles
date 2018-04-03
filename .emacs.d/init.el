@@ -130,7 +130,6 @@
 ;; (benchmark-init/activate)
 
 (require 'use-package)
-(pallet-mode t)
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 

@@ -171,7 +171,6 @@
 (quelpa 'ox-ioslide)
 (quelpa 'pacmacs)
 (quelpa 'page-break-lines)
-(quelpa 'pallet)
 (quelpa 'pandoc)
 (quelpa 'paredit)
 (quelpa 'pcap-mode '(:fetcher github :repo "orgcandman/pcap-mode"))
