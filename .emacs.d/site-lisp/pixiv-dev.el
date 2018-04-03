@@ -77,7 +77,6 @@
 
 ;; Flycheck
 
-;;;###autoload
 (flycheck-define-checker pixiv-dev-lint
   "Lint for pixiv.git"
   :command ("pixiv-lint" source)

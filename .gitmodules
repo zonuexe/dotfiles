@@ -7,3 +7,6 @@
 [submodule "ttcopy"]
 	path = ttcopy
 	url = https://github.com/greymd/ttcopy.git
+[submodule ".emacs.d/site-lisp/quelpa"]
+	path = .emacs.d/site-lisp/quelpa
+	url = git@github.com:quelpa/quelpa.git

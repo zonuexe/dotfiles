@@ -3,6 +3,12 @@ dotfiles
 
 @zonuexe's dotfiles
 
+## Setup
+
+```
+git submodule update --init
+```
+
 Environment
 -----------
 
@@ -20,4 +26,4 @@ Environment
 * Vim
   * [vim-jp](http://vim-jp.org/) +macvim-kaoriya
 * Emacs
-  * [Cask](http://cask.readthedocs.org/en/latest/)
+  * [Quelpa](https://github.com/quelpa/quelpa) `~/.emacs.d/site-lisp/quelpa`

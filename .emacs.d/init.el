@@ -66,6 +66,7 @@
 (let ((default-directory (locate-user-emacs-file "./site-lisp")))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
+(load (locate-user-emacs-file "./site-lisp/site-lisp-autoloads.el") t)
 
 ;; http://ergoemacs.org/emacs/emacs_n_unicode.html
 ;; set Unicode data file location. (used by what-cursor-position and describe-char)
@@ -97,11 +98,29 @@
   (let ((fontset (format "%s-%.1f" my/font-family my/font-size)))
     (add-to-list 'default-frame-alist `(font . ,fontset))))
 
+;; Set and load custom-vars.el
+(setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 ;;; Packages:
-(when (or (require 'cask "~/.cask/cask.el" t)
-	  (require 'cask nil t))
-  (cask-initialize))
 (package-initialize)
+
+;; Unnecessary to add MELPA
+;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;;; Environment:
+
+;; PATH
+(custom-set-variables
+ '(exec-path-from-shell-check-startup-files nil)
+ '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
+(exec-path-from-shell-initialize)
+
+(defun my/quelpa-setup ()
+  "Setup Quelpa packages."
+  (interactive)
+  (load (locate-user-emacs-file "my-packages")))
 
 (when (file-directory-p "~/repo/emacs/php-mode")
   (add-to-list 'load-path "~/repo/emacs/php-mode")
@@ -116,20 +135,11 @@
 ;; (benchmark-init/activate)
 
 (require 'use-package)
-(pallet-mode t)
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 
 (custom-set-variables '(nyan-bar-length 16))
 (nyan-mode t)
-
-;;; Environment:
-
-;; PATH
-(custom-set-variables
- '(exec-path-from-shell-check-startup-files nil)
- '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
-(exec-path-from-shell-initialize)
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)
@@ -518,11 +528,11 @@
   (add-hook 'scheme-mode-hook #'my/scheme-mode-hook))
 
 ;; Common Lisp
-(use-package sly :defer t
-  :init
-  (require 'sly-autoloads)
-  (custom-set-variables
-   '(inferior-lisp-program "sbcl")))
+;; (use-package sly :defer t
+;;   :init
+;;   (require 'sly-autoloads)
+;;   (custom-set-variables
+;;    '(inferior-lisp-program "sbcl")))
 
 ;; Haskell
 (use-package haskell-mode :defer t
@@ -646,7 +656,7 @@
   (bind-key "C-c t" 'helm-recentf))
 
 ;; Undo Tree
-(use-package undo-tree
+(use-package undo-tree :ensure t
   :diminish undo-tree-mode
   :init
   (global-undo-tree-mode)
