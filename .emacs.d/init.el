@@ -109,8 +109,12 @@
 ;; Unnecessary to add MELPA
 ;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-;; PATH
+;;; Environment:
 
+;; PATH
+(custom-set-variables
+ '(exec-path-from-shell-check-startup-files nil)
+ '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
 (exec-path-from-shell-initialize)
 
 (defun my/quelpa-setup ()
@@ -136,14 +140,6 @@
 
 (custom-set-variables '(nyan-bar-length 16))
 (nyan-mode t)
-
-;;; Environment:
-
-;; PATH
-(custom-set-variables
- '(exec-path-from-shell-check-startup-files nil)
- '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
-(exec-path-from-shell-initialize)
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)

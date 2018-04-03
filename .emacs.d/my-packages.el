@@ -4,6 +4,9 @@
 
 (package-initialize)
 
+(quelpa 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
+
 (quelpa '0xc)
 (quelpa '2048-game)
 (quelpa 'aa-edit-mode)

@@ -1,6 +1,6 @@
 EMACS ?= emacs
 
-ELS = site-lisp/quelpa/quelpa.el site-lisp/exec-path-from-shell/exec-path-from-shell.el
+ELS = site-lisp/quelpa/quelpa.el
 ELCS = $(ELS:.el=.elc)
 
 all: site-autoload elc elpa
