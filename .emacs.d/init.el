@@ -115,6 +115,7 @@
 
 (defun my/quelpa-setup ()
   "Setup Quelpa packages."
+  (interactive)
   (load (locate-user-emacs-file "my-packages")))
 
 (when (file-directory-p "~/repo/emacs/php-mode")
