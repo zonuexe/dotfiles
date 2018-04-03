@@ -25,10 +25,12 @@
 /newsticker/
 /notes
 /projectile-*
+/quelpa/
 /recentf*
 /request/
 /session.*
 /site-lisp/*.elc
+/site-lisp/*-autoloads.el
 /smex-*
 /srecode-map.el
 /tramp
