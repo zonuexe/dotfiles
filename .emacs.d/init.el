@@ -106,6 +106,8 @@
 ;;; Packages:
 (package-initialize)
 
+(require 'dash)
+
 ;; Unnecessary to add MELPA
 ;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
