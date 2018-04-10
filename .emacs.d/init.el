@@ -895,11 +895,6 @@
 ;; Font Utility
 ;;(use-package font-utils)
 
-(use-package emoji-fontset
-  :init
-  (custom-set-variables '(emoji-fontset-check-version nil))
-  (emoji-fontset-enable "Symbola"))
-
 ;; TRAMP
 (use-package tramp :defer t
   :config
