@@ -13,6 +13,7 @@ path=(
     ~/.linuxbrew/bin(N-/)
     ~/.linuxbrew/sbin(N-/)
     ~/bin(N-/)
+    /usr/local/opt/php@7.1/bin(N-/)
     /usr/local/opt/go/libexec/bin(N-/)
     /usr/local/opt/imagemagick@6/bin(N-/)
     /usr/local/sbin(N-/)
