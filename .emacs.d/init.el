@@ -105,11 +105,9 @@
 
 ;;; Packages:
 (package-initialize)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (require 'dash)
-
-;; Unnecessary to add MELPA
-;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 ;;; Environment:
 

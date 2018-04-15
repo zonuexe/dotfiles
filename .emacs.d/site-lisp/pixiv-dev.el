@@ -88,7 +88,7 @@
    (warning line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
             "\tlevel:" (+ alnum) "\tdesc:" (message) line-end))
   :modes (php-mode web-mode text-mode nxml-mode js2-mode)
-  :next-checkers (phpstan-checker php))
+  :next-checkers (phpstan))
 ;; (flycheck-select-checker 'pixiv-dev-lint)
 ;; flycheck-pixiv-dev-lint-executable
 
