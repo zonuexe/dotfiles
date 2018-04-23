@@ -185,6 +185,7 @@
 ;;(quelpa 'php7-mode '(:fetcher github :repo "emacs-php/Php7mode"))
 (quelpa 'phpstan '(:fetcher github :repo "emacs-php/phpstan.el"))
 (quelpa 'phpunit '(:fetcher github :repo "nlamirault/phpunit.el" :branch "develop"))
+(quelpa 'presentation '(:fetcher github :repo "zonuexe/emacs-presentation-mode"))
 (quelpa 'pixiv-novel-mode)
 (quelpa 'pomodoro)
 (quelpa 'ponylang-mode)

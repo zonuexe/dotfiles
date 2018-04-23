@@ -329,6 +329,19 @@
    '(yas-alias-to-yas/prefix-p nil))
   (yas-global-mode t))
 
+(defun my-presentation-on ()
+  (helm-mode -1)
+  (ido-ubiquitous-mode 1)
+  (bind-key "M-x" #'smex))
+
+(defun my-presentation-off ()
+  (ido-ubiquitous-mode -1)
+  (helm-mode 1)
+  (bind-key "M-x" #'helm-smex))
+
+(add-hook 'presentation-on-hook #'my-presentation-on)
+(add-hook 'presentation-off-hook #'my-presentation-off)
+
 ;;; Languages:
 
 (custom-set-variables
