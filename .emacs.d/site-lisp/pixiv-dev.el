@@ -34,17 +34,20 @@
 ;;; Code:
 (require 'psysh nil t)
 (require 'flycheck)
+(require 'flycheck-phpstan)
 
 (defgroup pixiv-dev '()
   "Develop pixiv.net and other services."
   :group 'programming)
 
 (defcustom pixiv-dev-user-name user-login-name
-  "Login name for pixiv-dev(LDAP) or E-mail address.")
+  "Login name for pixiv-dev(LDAP) or E-mail address."
+  :type 'string)
 (put 'pixiv-dev-user-name 'safe-local-variable #'stringp)
 
 (defcustom pixiv-dev-host "pixiv-dev"
-  "Host name of your pixiv develop server.")
+  "Host name of your pixiv develop server."
+  :type 'string)
 (put 'pixiv-dev-host 'safe-local-variable #'stringp)
 
 (defvar pixiv-dev-working-dir nil
@@ -88,7 +91,7 @@
    (warning line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
             "\tlevel:" (+ alnum) "\tdesc:" (message) line-end))
   :modes (php-mode web-mode text-mode nxml-mode js2-mode)
-  :next-checkers (phpstan))
+  :next-checkers ((t . phpstan)))
 ;; (flycheck-select-checker 'pixiv-dev-lint)
 ;; flycheck-pixiv-dev-lint-executable
 
