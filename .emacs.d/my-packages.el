@@ -1,10 +1,21 @@
 ;;; Code:
 
+(require 'package)
 (require 'quelpa (locate-user-emacs-file "site-lisp/quelpa/quelpa"))
 
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
-(quelpa 'exec-path-from-shell)
+(unless (featurep 'use-package)
+  (package-install 'use-package))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+
+(require 'use-package)
+
+(use-package exec-path-from-shell :ensure t)
 (exec-path-from-shell-initialize)
 
 (quelpa '0xc)

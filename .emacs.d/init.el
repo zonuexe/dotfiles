@@ -104,8 +104,8 @@
   (load custom-file))
 
 ;;; Packages:
-(package-initialize)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
 (require 'dash)
 
