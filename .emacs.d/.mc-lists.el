@@ -68,6 +68,7 @@
         helm-smex
         magit-find-file-completing-read
         magit-status
+        mouse-buffer-menu
         quickrun
         rectangle-mark-mode
         switch-to-buffer
