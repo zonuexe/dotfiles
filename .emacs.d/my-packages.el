@@ -194,7 +194,7 @@
 (use-package peep-dired :ensure t)
 (use-package phan :ensure t)
 (use-package php-mode :ensure t)
-(use-package phpstan :ensure t)
+(use-package flycheck-phpstan :ensure t)
 (quelpa '(php-util :fetcher github :repo "zonuexe/php-util.el"))
 ;;(quelpa 'php7-mode '(:fetcher github :repo "emacs-php/Php7mode"))
 (quelpa '(phpunit :fetcher github :repo "nlamirault/phpunit.el" :branch "develop"))
