@@ -1,6 +1,7 @@
 /*.elc
 /*.plstore
 /.cask
+/.cache/
 /.edbi-ds-history
 /abbrev_defs
 /ac-comphist.dat
@@ -18,6 +19,7 @@
 /geben
 /ido.last
 /games/
+/image-dired/
 /hacker-typer/
 /haskell-fun/
 /keyfrek.html
