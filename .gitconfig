@@ -8,9 +8,10 @@
 	d = diff
 	ds = diff --staged
 	c = checkout
-	c- = !git checkout $(git branch | peco)
+	c- = !git checkout "$(git branch | peco | cut -d'*' -f2 | xargs)"
 	b = branch
 	pr = pull --rebase
+	psuh = push
 	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
 [core]
 	excludesfile = ~/.gitexclude
