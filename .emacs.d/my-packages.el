@@ -123,7 +123,6 @@
 (use-package helm-emms :ensure t)
 (use-package helm-git-files :ensure t)
 (use-package helm-img-tiqav :ensure t)
-(use-package helm-migemo :ensure t)
 (use-package helm-projectile :ensure t)
 (use-package helm-smex :ensure t)
 (use-package helm-swoop :ensure t)
