@@ -239,7 +239,6 @@
 (use-package ssh-config-mode :ensure t)
 (use-package stylus-mode :ensure t)
 (use-package sudoku :ensure t)
-(use-package suggest :ensure t)
 (use-package swoop :ensure t)
 (use-package test-simple :ensure t)
 (use-package threes :ensure t)
