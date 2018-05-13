@@ -630,7 +630,7 @@
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
-  :mode ("\\.md\\'" . commonmark-gfm-mode)
+  ;;:mode ("\\.md\\'" . commonmark-gfm-mode)
   :config
   (require 'org-table)
   (add-hook 'markdown-mode-hook 'orgtbl-mode)
