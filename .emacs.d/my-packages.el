@@ -11,8 +11,7 @@
 (add-to-list 'recentf-exclude "/quelpa/packages/.*\\.el\\'")
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(when (version< emacs-version "27")
-  (package-initialize))
+(package-initialize)
 (package-refresh-contents)
 
 (unless (featurep 'use-package)
