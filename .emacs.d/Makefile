@@ -22,4 +22,4 @@ site-autoload: $(ELS)
 clean:
 	@rm $(ELCS) site-lisp/site-lisp-autoloads.el
 
-.PHONY: all clean
+.PHONY: all clean elpa

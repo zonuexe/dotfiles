@@ -14,7 +14,7 @@
 (package-initialize)
 (package-refresh-contents)
 
-(unless (featurep 'use-package)
+(unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
 (require 'use-package)
