@@ -30,6 +30,8 @@ if dein#load_state(expand('~/.vim/dein'))
    call dein#add('tpope/vim-speeddating')
    call dein#add('jceb/vim-orgmode')
 
+   call dein#add('phpactor/phpactor', { 'build': 'composer install' })
+
    " Required:
    call dein#end()
    call dein#save_state()

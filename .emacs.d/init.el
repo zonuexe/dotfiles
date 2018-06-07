@@ -396,9 +396,11 @@
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
   (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
 
-  (when (and buffer-file-name (string-match "/pixiv/" buffer-file-name))
-    (require 'pixiv-dev nil t)
-    (pixiv-dev-mode t))
+  (if (and buffer-file-name (string-match-p "/pixiv/" buffer-file-name))
+      (progn
+        (require 'pixiv-dev nil t)
+        (pixiv-dev-mode t))
+    (flycheck-select-checker 'phpstan))
 
   (when (eq 0 (buffer-size))
     (insert "<?php\n\n")))
