@@ -385,6 +385,7 @@
 
 (defun my/php-mode-hook ()
   "My PHP-mode hook."
+  ;;(require 'company-phpactor)
   (my/turn-on-php-eldoc)
   (subword-mode 1)
   (setq show-trailing-whitespace t)
@@ -396,11 +397,9 @@
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
   (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
 
-  (if (and buffer-file-name (string-match-p "/pixiv/" buffer-file-name))
-      (progn
-        (require 'pixiv-dev nil t)
-        (pixiv-dev-mode t))
-    (flycheck-select-checker 'phpstan))
+  (when (and buffer-file-name (string-match-p "/pixiv/" buffer-file-name))
+    (require 'pixiv-dev nil t)
+    (pixiv-dev-mode t))
 
   (when (eq 0 (buffer-size))
     (insert "<?php\n\n")))
