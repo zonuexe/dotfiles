@@ -31,6 +31,7 @@ if dein#load_state(expand('~/.vim/dein'))
    call dein#add('jceb/vim-orgmode')
 
    call dein#add('phpactor/phpactor', { 'build': 'composer install' })
+   call dein#add('w0rp/ale')
 
    " Required:
    call dein#end()
@@ -90,3 +91,12 @@ augroup phpSyntaxOverride
   autocmd!
   autocmd FileType php call PhpSyntaxOverride()
 augroup END
+
+" Put these lines at the very end of your vimrc file.
+
+" Load all plugins now.
+" Plugins need to be added to runtimepath before helptags can be generated.
+packloadall
+" Load all of the helptags now, after plugins have been loaded.
+" All messages and errors will be ignored.
+silent! helptags ALL
