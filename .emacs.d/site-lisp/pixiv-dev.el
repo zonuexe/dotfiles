@@ -112,7 +112,7 @@
   (when (or (null buffer-file-name)
             (not (string-prefix-p working-dir buffer-file-name)))
     (error "File is not in pixiv repository!"))
-  (let ((current-line (1+ (count-lines 1 (point)))))
+  (let ((current-line (count-lines 1 (point))))
     (concat pixiv-dev-repository-web
             (format "/%s/master" (if (eq major-mode 'dired-mode) "tree" "blob"))
             (replace-regexp-in-string working-dir "" buffer-file-name)
@@ -159,10 +159,6 @@
   "Minor mode for editing pixiv PHP project."
   nil pixiv-dev-mode-lighter pixiv-dev-mode-map
   (setq psysh-comint-buffer-process pixiv-dev-psysh-buffer-process)
-  (let ((path-to-tags (concat (pixiv-dev--working-dir) "TAGS")))
-    (when (file-exists-p path-to-tags)
-      ;(setq-local tags-file-name path-to-tags)
-      ))
   (when (and (memq major-mode '(php-mode web-mode text-mode nxml-mode js2-mode))
              (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint")))
     (flycheck-select-checker 'pixiv-dev-lint)))
