@@ -105,7 +105,7 @@
 
 ;;; Packages:
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://www.mirrorservice.org/sites/melpa.org/packages/") t)
 (when (version< emacs-version "27")
   (package-initialize))
 

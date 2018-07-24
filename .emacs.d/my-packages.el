@@ -10,7 +10,7 @@
 (add-to-list 'recentf-exclude "/elpa/.*-autoloads\\.el\\'")
 (add-to-list 'recentf-exclude "/quelpa/packages/.*\\.el\\'")
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://www.mirrorservice.org/sites/melpa.org/packages/") t)
 (package-initialize)
 (package-refresh-contents)
 
