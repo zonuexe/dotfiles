@@ -182,6 +182,7 @@
   (bind-key  "C-x j"       'dired-jump)
   (bind-key  "C-x C-S-e"   'pp-eval-last-sexp)
   (bind-key  "C-x お"      'other-window)
+  (bind-key  "C-S-v"       'scroll-down-command)
   (bind-key  "M-："        'eval-expression)
   (bind-key  "M-i"         'helm-imenu prog-mode-map)
   (bind-key  "M-ESC ："    'eval-expression)
@@ -1179,9 +1180,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 ;; Atomic Chrome for Emacs
 ;; https://github.com/alpha22jp/atomic-chrome
-(use-package atomic-chrome :defer 3
-  :init
-  (atomic-chrome-start-server))
+;; (use-package atomic-chrome :defer 3
+;;   :init
+;;   (atomic-chrome-start-server))
 
 (use-package google-translate :defer t
   :init
