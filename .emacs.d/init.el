@@ -263,7 +263,7 @@
   (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
   (require 'auto-complete-config)
   (ac-config-default)
-  (ac-ispell-setup)
+  ;;(ac-ispell-setup)
   (global-auto-complete-mode t))
 
 ;; Magit
