@@ -931,7 +931,8 @@
   :config
   (custom-set-variables
    '(twindrill-use-master-password t))
-  (twindrill+tern-on-yorufukurou))
+  ;; (twindrill+tern-on-yorufukurou)
+  )
 
 ;;; Variables:
 (custom-set-variables
