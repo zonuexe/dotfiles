@@ -119,6 +119,9 @@
  '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
 (exec-path-from-shell-initialize)
 
+;; (when (eq window-system 'w32)
+;;   (setenv "GIT_SSH" "C:\\Program Files\\PuTTY\\plink.exe"))
+
 (defun my/quelpa-setup ()
   "Setup Quelpa packages."
   (interactive)
