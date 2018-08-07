@@ -88,6 +88,7 @@
          '(("MegurineUbu1410"  . 12.5)
            ("MegurineUbu1510"  . 12.5)
            ("MegurineUbu1604"  . 12.5)
+           ("Megurine-Manjaro" . 14.0)
            ("tadsan-tpx"       . 12.5)
            ("tadsan-ret.local" . 17.5))))
     (or (cdr (assoc (system-name) size-by-hostname))
