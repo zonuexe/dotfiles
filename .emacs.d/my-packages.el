@@ -231,6 +231,7 @@
 (use-package slim-mode :ensure t)
 (use-package sly :ensure t)
 (use-package smart-newline :ensure t)
+(use-package smart-jump :ensure t)
 (quelpa '(smartchr :repo "imakado/emacs-smartchr" :fetcher github))
 (use-package smartparens :ensure t)
 (use-package smartrep :ensure t)
