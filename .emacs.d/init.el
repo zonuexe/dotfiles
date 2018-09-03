@@ -197,6 +197,8 @@
   (bind-key  "C-x C-S-e"   'pp-eval-last-sexp)
   (bind-key  "C-x お"      'other-window)
   (bind-key  "C-S-v"       'scroll-down-command)
+  (bind-key  "M-o"         'swoop)
+  (bind-key  "C-M-o"       'swoop-multi)
   (bind-key  "M-："        'eval-expression)
   (bind-key  "M-i"         'helm-imenu prog-mode-map)
   (bind-key  "M-ESC ："    'eval-expression)
@@ -908,7 +910,7 @@
   :init
   (require 'crux)
   (bind-key "C-c o"   'crux-open-with)
-  (bind-key "M-o"     'crux-smart-open-line-above)
+  (bind-key "C-S-o"     'crux-smart-open-line-above)
   (bind-key "C-c n"   'crux-cleanup-buffer-or-region)
   (bind-key "C-c u"   'crux-view-url)
   (bind-key "C-x 4 t" 'crux-transpose-windows)
