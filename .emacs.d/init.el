@@ -373,7 +373,7 @@
   (custom-set-variables
    '(web-mode-enable-auto-pairing nil)))
 
-(defun sp-web-mode-is-code-context (id action context)
+(defun sp-web-mode-is-code-context (_id action _context)
   "This snippet is derived from http://web-mode.org/ ."
   (when (and (eq action 'insert)
              (not (or (get-text-property (point) 'part-side)
@@ -940,12 +940,6 @@
 ;;(use-package gnugo :defer t)
 
 ;;; Communication:
-(use-package twindrill-mode :defer t
-  :config
-  (custom-set-variables
-   '(twindrill-use-master-password t))
-  ;; (twindrill+tern-on-yorufukurou)
-  )
 
 ;;; Variables:
 (custom-set-variables
@@ -1206,27 +1200,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (custom-set-variables
    '(google-translate-default-source-language "en")
    '(google-translate-default-target-language "ja")))
-
-(defun denwa (status)
-  "Tiny twitter client.  Denwa ni denwa."
-  (interactive "sDenwa: ")
-  (require 'request)
-  (require 'twindrill-mode)
-  (let* ((method "POST")
-         (url "https://api.twitter.com/1.1/statuses/update.json")
-         (params (list (cons "status" (encode-coding-string status 'utf-8 t))))
-         (oauth-auth-str
-          (twindrill-oauth-auth-str-access method url params
-                                           denwa--twitter-api-consumer-key
-                                           denwa--twitter-api-consumer-secret
-                                           denwa-twitter-api-access-token
-                                           denwa-twitter-api-access-token-secret)))
-    (request
-     url
-     :type method
-     :data params
-     :parser 'json-read
-     :headers (list (cons "Authorization" oauth-auth-str)))))
 
 (defun my/reset-default-directory-by-buffer-file-name ()
   "Set default-directory by `buffer-file-name'."
