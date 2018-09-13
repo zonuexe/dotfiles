@@ -34,8 +34,6 @@
 ;; Nobiscum Sexp.  - S-expression is with us.
 ;;
 ;;; Code:
-(setq-default gc-cons-percentage 0.5)
-
 (if window-system
     (tool-bar-mode -1)
   (menu-bar-mode -1))
@@ -76,14 +74,6 @@
   (normal-top-level-add-subdirs-to-load-path))
 (load (locate-user-emacs-file "./site-lisp/site-lisp-autoloads.el") t)
 
-;; http://ergoemacs.org/emacs/emacs_n_unicode.html
-;; set Unicode data file location. (used by what-cursor-position and describe-char)
-(when nil
-  (let ((file "~/emacs.d/UnicodeData.txt"))
-    (when (file-exists-p file)
-      (custom-set-variables
-       (list 'describe-char-unicodedata-file file)))))
-
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
 ;;;     |わかよたれそ　　つねならむ|
@@ -109,12 +99,13 @@
 
 ;; Set and load custom-vars.el
 (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
+;; (when (file-exists-p custom-file)
+;;   (load custom-file))
 
 ;;; Packages:
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://www.mirrorservice.org/sites/melpa.org/packages/") t)
+
 (when (version< emacs-version "27")
   (package-initialize))
 
