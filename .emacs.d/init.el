@@ -565,13 +565,6 @@
   (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
-;; Scala
-(use-package scala-mode2 :defer t
-  :init
-  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-  :config
-  (use-package ensime))
-
 ;; JavaScript
 (use-package js2-mode :defer t
   :mode ("\\.js\\'" "\\.jsx\\'"))
@@ -829,8 +822,8 @@
 
 ;; NeoTree
 (use-package neotree :defer t
-  :config
-  (bind-key "M-w" 'my/neotree-kill-filename-at-point neotree-mode-map))
+  :bind (:map neotree-mode-map
+         ("M-w" . my/neotree-kill-filename-at-point)))
 
 (defun my/neotree-kill-filename-at-point ()
   "Kill full path of note at point."
@@ -838,13 +831,9 @@
   (message "Copy %s"
            (kill-new (neo-buffer--get-filename-current-line))))
 
-(with-eval-after-load 'neotree
-  (define-key neotree-mode-map (kbd "M-w") 'my/neotree-kill-filename-at-point))
-
 ;; vi-tilde-fringe
 (use-package vi-tilde-fringe :defer t
-  :init
-  (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode))
+  :hook ((prog-mode . vi-tilde-fringe-mode)))
 
 (use-package idle-highlight-mode :defer t
   :init

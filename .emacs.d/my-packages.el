@@ -89,7 +89,6 @@
 (use-package emoji-fontset :ensure t)
 (use-package enh-ruby-mode :ensure t)
 (use-package enlive :ensure t)
-(use-package ensime :ensure t)
 (use-package esa :ensure t)
 (use-package eshell-fringe-status :ensure t)
 (use-package ess :ensure t)
