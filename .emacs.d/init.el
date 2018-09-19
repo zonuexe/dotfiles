@@ -775,18 +775,10 @@
 ;;(use-package color-moccur)
 ;;(use-package moccur-edit)
 
-(use-package ag
-  :bind (("M-C-:" . ag)
-         :map ag-mode-map
-         ("r" . wgrep-change-to-wgrep-mode))
-  :custom
-  (ag-highlight-search t)
-  (ag-reuse-window 'nil)
-  (ag-reuse-buffers 'nil)
-  :init
-  ;; (require 'wgrep-ag)
-  (autoload 'wgrep-ag-setup "wgrep-ag")
-  (add-hook 'ag-mode-hook 'wgrep-ag-setup))
+(use-package rg :defer t
+  :bind (("C-:" . rg)
+         ("M-C-:" . rg-literal))
+  :hook ((rg-mode . wgrep-ag-setup)))
 
 ;; Swoop
 (use-package helm-swoop
