@@ -139,7 +139,7 @@
 
 ;; benchmark-init
 ;; https://github.com/dholm/benchmark-init-el
-;; (benchmark-init/activate)
+(benchmark-init/activate)
 
 (require 'use-package)
 
@@ -1195,20 +1195,26 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (dash-enable-font-lock))
 
 ;; keyfreq
-(keyfreq-mode 1)
-(keyfreq-autosave-mode 1)
+(use-package keyfreq :defer t
+  :init
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
 
 ;; dmacro
-(custom-set-variables
- '(dmacro-default-key (kbd "C-.")))
-(global-dmacro-mode 1)
+(use-package dmacro :defer t
+  :custom
+  (dmacro-default-key (kbd "C-."))
+  :init
+  (global-dmacro-mode 1))
 
 ;; Auto deployment
-(global-copy-file-on-save-mode 1)
+(use-package copy-file-on-save :defer t
+  :init
+  (global-copy-file-on-save-mode 1))
 
 (setq find-function-C-source-directory (f-expand "~/local/src/emacs/src"))
 
-;; (benchmark-init/deactivate)
+(benchmark-init/deactivate)
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)
 
