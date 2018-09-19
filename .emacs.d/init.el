@@ -145,8 +145,11 @@
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 
-(custom-set-variables '(nyan-bar-length 16))
-(nyan-mode t)
+(use-package nyan-mode :defer t
+  :custom
+  (nyan-bar-length 16)
+  :init
+  (nyan-mode t))
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)
@@ -158,10 +161,14 @@
 (custom-set-variables '(uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Show paren
-(show-paren-mode t)
+(use-package paren
+  :init
+  (show-paren-mode t))
 
 ;; Column mode
-(column-number-mode t)
+(use-package simple
+  :init
+  (column-number-mode t))
 
 ;; volatile-highlights.el
 (use-package volatile-highlights
@@ -217,11 +224,12 @@
     (when (boundp it) (set it 'meta)))))
 
 ;; key-chord
-;; (use-package key-chord)
-(custom-set-variables
- '(key-chord-two-keys-delay 0.02))
-(key-chord-mode t)
-(progn
+(use-package key-chord :defer t
+  :custom
+  (key-chord-two-keys-delay 0.02)
+  :init
+  (key-chord-mode 1)
+  :config
   (key-chord-define-global "df" 'find-function)
   (key-chord-define-global "fh" 'describe-function)
   (key-chord-define-global "fv" 'find-variable)
@@ -245,27 +253,35 @@
 ;; Helm
 (use-package helm :defer t
   :diminish helm-mode
+  :bind (("C-x C-f" . helm-find-files)
+         ("M-x" . helm-smex)
+         ("M-X" . helm-smex-major-mode-commands)
+         ("C-:" . helm-ag-project-root))
   :init
   (require 'helm-config)
-  (bind-key "C-x C-f" 'helm-find-files)
-  (bind-key "M-x" 'helm-smex)
-  (bind-key "M-X" 'helm-smex-major-mode-commands)
   (helm-mode t))
 
-;; (use-package helm-ag :defer t)
-(custom-set-variables
- '(helm-ag-base-command "rg --vimgrep --no-heading")
- '(helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
-(bind-key "C-:" 'helm-ag-project-root)
+(use-package helm-ag :defer t
+  :custom
+  (helm-ag-base-command "rg --vimgrep --no-heading")
+  (helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
 
 ;; ispell
-(custom-set-variables
- '(ispell-program-name "hunspell")
- '(ispell-really-hunspell t))
+(use-package ispell
+  :custom
+  (ispell-program-name "hunspell")
+  (ispell-really-hunspell t))
+
+(use-package eldoc :defer t
+  :diminish eldoc-mode
+  :custom
+  (eldoc-minor-mode-string ""))
 
 ;; Auto-Complete
 (use-package auto-complete :defer t
   :diminish auto-complete-mode
+  :custom
+  (ac-ignore-case nil)
   :config
   (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
   (require 'auto-complete-config)
@@ -274,59 +290,65 @@
   (global-auto-complete-mode t))
 
 ;; Magit
-;; (use-package magit :defer t)
-(setq-default magit-auto-revert-mode nil)
-(setq vc-handled-backends '())
-(eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook))
-(bind-key "C-x m" 'magit-status)
-(bind-key "C-c l" 'magit-blame)
+(use-package magit :defer t
+  :bind (("C-x m" . magit-status)
+         ("C-c l" . magit-blame))
+  :init
+  (setq-default magit-auto-revert-mode nil)
+  (setq vc-handled-backends '())
+  (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook)))
 
-;; (use-package magit-find-file :defer t)
-(bind-key "M-t" 'magit-find-file-completing-read)
-;;(bind-key "M-t" 'projectile-find-file)
+(use-package magit-find-file :defer t
+  :bind (("M-t" . magit-find-file-completing-read)))
 
 (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
 
 ;; EditorConfig
-;; (use-package editorconfig)
-(custom-set-variables
- '(editorconfig-get-properties-function 'editorconfig-core-get-properties-hash))
-(editorconfig-mode t)
+(use-package editorconfig :defer t
+  :diminish editorconfig-mode
+  :custom
+  (editorconfig-get-properties-function 'editorconfig-core-get-properties-hash)
+  :init
+  (editorconfig-mode t))
 
 ;; Conf-Mode
-(require 'generic-x)
-(add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
-(add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
-(add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t)
+(use-package conf-mode
+  :init
+  (require 'generic-x)
+  (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
+  (add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
+  (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t))
 
 ;; SSH
 ;;(use-package ssh-config-mode)
 
 ;; Projectile
-(use-package projectile
+(use-package projectile :defer t
+  :hook ((projectile-mode . projectile-rails-on))
+  :custom
+  (projectile-completion-system 'helm))
+
+(use-package helm-projectile :defer t
   :config
-  (use-package helm-projectile)
-  (custom-set-variables
-   '(projectile-completion-system 'helm))
-  (projectile-mode 1)
-  (helm-projectile-on)
-  (add-hook 'projectile-mode-hook 'projectile-rails-on))
+  (helm-projectile-on))
 
 ;; Flycheck
-(use-package flycheck
+(use-package flycheck :defer t
   :diminish flycheck-mode
+  :hook ((flycheck-mode . flycheck-cask-setup))
   :init
-  (eval-after-load 'flycheck
-    '(add-hook 'flycheck-mode-hook #'flycheck-cask-setup))
   (global-flycheck-mode t)
-  :config
   (flycheck-package-setup))
 
 ;; elec-pair
-(electric-pair-mode 1)
+(use-package elec-pair :defer t
+  :init
+  (electric-pair-mode 1))
 
 ;; which-func
-(which-function-mode t)
+(use-package which-func :defer t
+  :init
+  (which-function-mode 1))
 
 ;; smartchr
 (use-package smartchr :defer t
@@ -335,9 +357,9 @@
 ;; YASnippets
 (use-package yasnippet
   :diminish yas-minor-mode
+  :custom
+  (yas-alias-to-yas/prefix-p nil)
   :init
-  (custom-set-variables
-   '(yas-alias-to-yas/prefix-p nil))
   (yas-global-mode t))
 
 (defun my-presentation-on ()
@@ -350,13 +372,14 @@
   (helm-mode 1)
   (bind-key "M-x" #'helm-smex))
 
-(add-hook 'presentation-on-hook #'my-presentation-on)
-(add-hook 'presentation-off-hook #'my-presentation-off)
+(use-package presentation-mode :defer t
+  :hook ((presentation-on  . my-presentation-on)
+         (presentation-off . my-presentation-off)))
 
 ;;; Languages:
-
-(custom-set-variables
- '(sql-product 'mysql))
+(use-package sql :defer t
+  :custom
+  (sql-product 'mysql))
 
 ;; Web
 (defun my/web-mode-hook ()
@@ -372,13 +395,11 @@
     t))
 
 (use-package web-mode :defer t
-  :init
-  (add-hook 'web-mode-hook 'my/web-mode-hook)
-  (add-hook 'web-mode-hook 'emmet-mode)
-  ;;(add-hook 'web-mode-hook 'web-mode-edit-element-minor-mode)
-
-  (--each '("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\(\\.html\\)?\\.erb\\'")
-    (add-to-list 'auto-mode-alist (cons it 'web-mode)))
+  :hook ((web-mode-hook . my/web-mode-hook)
+         (web-mode-hook . emmet-mode))
+  :mode
+  ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'"
+   "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'")
   :config
   (require 'smartparens)
   (add-to-list 'web-mode-ac-sources-alist
@@ -414,13 +435,12 @@
 
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
 
-(use-package php-mode :defer t
-  :init
-  (custom-set-variables
-   '(psysh-doc-display-function #'popwin:display-buffer)
-   '(php-manual-url 'ja)
-   '(php-mode-coding-style 'psr2)
-   '(php-template-compatibility nil))
+(use-package php-mode
+  :hook ((php-mode . my/php-mode-hook))
+  :custom
+  (php-manual-url 'ja)
+  (php-mode-coding-style 'psr2)
+  (php-template-compatibility nil)
   :config
   ;;(require 'php-extras)
   ;;(php-extras-eldoc-documentation-function)
@@ -434,27 +454,30 @@
   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
   (bind-key "C-c C--" 'php-current-class php-mode-map)
-  (bind-key "C-c C-=" 'php-current-namespace php-mode-map)
-  (add-hook 'php-mode-hook 'my/php-mode-hook))
+  (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
+
+(use-package psysh
+  :custom
+  (psysh-doc-display-function #'popwin:display-buffer))
 
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
 (use-package psysh :defer t
-  :init
-  (add-hook 'psysh-mode-hook 'my/turn-on-php-eldoc))
+  :hook ((psysh-mode . my/turn-on-php-eldoc)))
 
 (use-package pixiv-dev :defer t
+  :custom
+  (pixiv-dev-user-name "tadsan")
   :init
   (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
   (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
-  (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t)
-  (custom-set-variables
-   '(pixiv-dev-user-name "tadsan")))
+  (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t))
 
 (use-package phan :defer t
-  :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode)))
-(when (fboundp 'phan-flycheck-setup)
-  (phan-flycheck-setup))
+  :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode))
+  :config
+  (when (fboundp 'phan-flycheck-setup)
+    (phan-flycheck-setup)))
 
 ;; Ruby
 (use-package enh-ruby-mode :defer t
@@ -471,7 +494,6 @@
    '(ruby-deep-indent-paren-style nil))
   (setq-default enh-ruby-not-insert-magic-comment t)
   (add-hook 'robe-mode-hook 'ac-robe-setup))
-(magic-filetype-set-auto-mode 'ruby)
 
 ;;; begin enh-ruby-mode patch
 ;;; http://qiita.com/vzvu3k6k/items/acec84d829a3dbe1427a
@@ -486,11 +508,10 @@
 
 ;; inf-ruby
 (use-package inf-ruby :defer t
-  :config
-  (custom-set-variables
-   '(inf-ruby-default-implementation "pry")
-   '(inf-ruby-eval-binding "Pry.toplevel_binding"))
-  (add-hook 'inf-ruby-mode-hook 'ansi-color-for-comint-mode-on))
+  :hook ((inf-ruby-mode . ansi-color-for-comint-mode-on))
+  :custom
+  (inf-ruby-default-implementation "pry")
+  (inf-ruby-eval-binding "Pry.toplevel_binding"))
 
 ;; Python
 (use-package python :defer t
@@ -511,6 +532,7 @@
   (nameless-mode t))
 
 (use-package nameless :defer t
+  :diminish nameless-mode
   :config
   (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable")))
 
@@ -520,8 +542,8 @@
   (add-hook it 'turn-on-eldoc-mode)
   (add-hook it 'elisp-slime-nav-mode)
   (add-hook it 'my/emacs-lisp-mode-hook))
+
 (add-hook 'lisp-interaction-mode-hook #'turn-on-orgtbl)
-(add-hook 'flycheck-mode-hook #'flycheck-cask-setup)
 
 (defalias 'inferior-emacs-lisp 'ielm "λ...")
 
@@ -529,16 +551,15 @@
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
 
 (use-package lsp-mode :defer t
-  :init
-  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
+  :hook ((lsp-after-open . lsp-enable-imenu)))
 
 (use-package paredit :defer t
   :diminish paredit-mode
+  :bind (:map paredit-mode-map
+         ("C-<right>" . right-word)
+         ("C-<left>"  . left-word))
   :init
-  (--each my/emacs-lisp-modes (add-hook it 'enable-paredit-mode))
-  :config
-  (bind-key "C-<right>" 'right-word paredit-mode-map)
-  (bind-key "C-<left>"  'left-word  paredit-mode-map))
+  (--each my/emacs-lisp-modes (add-hook it 'enable-paredit-mode)))
 
 ;; Scheme
 (use-package scheme :defer t
@@ -561,53 +582,37 @@
 
 ;; Haskell
 (use-package haskell-mode :defer t
-  :init
-  (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+  :hook ((haskell-mode . turn-on-eldoc-mode)
+         (haskell-mode . turn-on-haskell-indent)))
 
 ;; JavaScript
 (use-package js2-mode :defer t
-  :mode ("\\.js\\'" "\\.jsx\\'"))
+  :mode ("\\.js\\'"))
+
+(use-package rjsx-mode :defer t
+  :mode ("\\.jsx\\'"))
+
+;; (use-package typescript :defer t
+;;   :mode (("\\.tsx\\'" . typescript-mode)))
 
 ;; CoffeeScript
 (use-package coffee :defer t
+  :hook ((coffee-mode . my/coffee-hook))
   :config
-  (setq-default coffee-tab-width 2)
-  (defun my/coffee-hook ()
-    (set (make-local-variable 'tab-width) 2))
-  (add-hook 'coffee-mode 'my/coffee-hook))
+  (setq-default coffee-tab-width 2))
 
-;; Facebook JSX
-(defadvice web-mode-highlight-part (around tweak-jsx activate)
-  "This snippet is derived from https://truongtx.me/2014/03/10/emacs-setup-jsx-mode-and-jsx-syntax-checking/ ."
-  (if (equal web-mode-content-type "jsx")
-      (let ((web-mode-enable-part-face nil))
-        ad-do-it)
-    ad-do-it))
-
-(flycheck-define-checker jsxhint-checker
-  "A JSX syntax and style checker based on JSXHint."
-  :command ("jsxhint" source)
-  :error-patterns
-  ((error line-start (1+ nonl) ": line " line ", col " column ", " (message) line-end))
-  :modes (web-mode))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (equal web-mode-content-type "jsx")
-              ;; enable flycheck
-              (flycheck-select-checker 'jsxhint-checker)
-              (add-to-list 'web-mode-comment-formats '("jsx" . "// " ))
-              (flycheck-mode))))
+(defun my/coffee-hook ()
+  (set (make-local-variable 'tab-width) 2))
 
 ;; TypeScript
 (use-package typescript :defer t
   :mode ("\\.ts\\'" . typescript-mode)
+  :custom
+  (tss-popup-help-key "C-:")
+  (tss-jump-to-definition-key "C->")
+  (tss-implement-definition-key "C-c i")
   :config
   (use-package tss)
-  (custom-set-variables
-   '(tss-popup-help-key "C-:")
-   '(tss-jump-to-definition-key "C->")
-   '(tss-implement-definition-key "C-c i"))
   (tss-config-default))
 
 ;; Go
@@ -620,17 +625,17 @@
 ;;(use-package json-mode :defer t)
 
 ;; text-mode
-(add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode))
+(use-package text-mode :defer t
+  :mode ("/LICENSE\\'")
+  :hook ((text-mode . my/text-mode-hook)))
 
 (defun my/text-mode-hook ()
   ""
   (setq line-spacing 5))
 
-(add-hook 'text-mode-hook 'my/text-mode-hook)
-
 ;; YAML
-;;(use-package yaml-mode :defer t)
-(add-to-list 'auto-mode-alist '("/\\.gemrc\\'" . yaml-mode))
+(use-package yaml-mode :defer t
+  :mode "/\\.gemrc\\'")
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
@@ -645,16 +650,16 @@
 
 ;; Emmet-mode
 (use-package emmet-mode :defer t
-  :init
-  (add-hook 'web-mode-hook  'emmet-mode)
-  (add-hook 'css-mode-hook  'emmet-mode))
+  :hook (web-mode-hook css-mode))
 
 ;; pixiv Novel
 ;;(use-package pixiv-novel-mode :defer t)
 
 ;; Magic Filetype
-;;(use-package magic-filetype)
-(magic-filetype-enable-vim-filetype)
+(use-package magic-filetype :defer t
+  :init
+  (magic-filetype-set-auto-mode 'ruby)
+  (magic-filetype-enable-vim-filetype))
 
 ;;; Others:
 
@@ -663,15 +668,16 @@
 
 ;; Recentf
 (use-package recentf-ext
+  :bind (("C-c っ" . helm-recentf)
+         ("C-c t"  . helm-recentf))
+  :custom
+  (recentf-max-saved-items 2000)
+  (recentf-auto-cleanup 'never)
+  (recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores"
+                     "/\\.emacs\\.d/\\.cask/" "/\\newsrc\\(\\.eld\\)?\\'" "/elpa/.*-autoloads\\.el\\'"))
+  (recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
   :init
-  (custom-set-variables
-   '(recentf-max-saved-items 2000)
-   '(recentf-auto-cleanup 'never)
-   '(recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/" "/\\newsrc\\(\\.eld\\)?\\'" "/elpa/.*-autoloads\\.el\\'"))
-   (list 'recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list)))
-  (recentf-mode t)
-  (bind-key "C-c っ" 'helm-recentf)
-  (bind-key "C-c t" 'helm-recentf))
+  (recentf-mode t))
 
 ;; Undo Tree
 (use-package undo-tree :ensure t
@@ -683,24 +689,21 @@
 
 ;; expand-region.el
 (use-package expand-region :defer t
-  :init
-  (bind-key "C-@" 'er/expand-region)
-  (bind-key "C-`" 'er/contract-region))
+  :bind (("C-@" . er/expand-region)
+         ("C-`" . er/contract-region)))
 
 ;; Annotate.el
 (use-package annotate :defer t
-  :init
-  (bind-key "M-@"   'annotate-annotate)
-  (bind-key "C-M-@" 'annotate-clear-annotations))
+  :bind (("M-@"   . annotate-annotate)
+         ("C-M-@" . annotate-clear-annotations)))
 
 ;;; Tools:
 
 ;; Open junk file
 (use-package open-junk-file
-  :init
-  (custom-set-variables
-   '(open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
-  (bind-key "C-c j" 'open-junk-file))
+  :bind (("C-c j" . open-junk-file))
+  :custom
+  (open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
 
 ;; restclient.el
 (use-package restclient :defer t
@@ -757,7 +760,9 @@
   ;;(bind-key "C-t p" 'helm-elscreen)
   (bind-key* "C-<tab>" 'elscreen-next)
   (bind-key* "<C-iso-lefttab>" 'elscreen-previous)
-  (elscreen-start))
+  (elscreen-start)
+  ;; El-Screeのウィンドウを一個つくる
+  (elscreen-create))
 
 ;; Calfw
 ;; (use-package calfw)
@@ -767,58 +772,56 @@
 ;;   (require 'syobo))
 
 ;; moccur
-(use-package color-moccur)
+;;(use-package color-moccur)
 ;;(use-package moccur-edit)
 
 (use-package ag
+  :bind (("M-C-:" . ag)
+         :map ag-mode-map
+         ("r" . wgrep-change-to-wgrep-mode))
+  :custom
+  (ag-highlight-search t)
+  (ag-reuse-window 'nil)
+  (ag-reuse-buffers 'nil)
   :init
-  (custom-set-variables
-   '(ag-highlight-search t)
-   '(ag-reuse-window 'nil)
-   '(ag-reuse-buffers 'nil))
-  (require 'wgrep-ag)
+  ;; (require 'wgrep-ag)
   (autoload 'wgrep-ag-setup "wgrep-ag")
-  (add-hook 'ag-mode-hook 'wgrep-ag-setup)
-  (bind-key "M-C-:" 'ag)
-  :config
-  (bind-key "r" 'wgrep-change-to-wgrep-mode ag-mode-map))
+  (add-hook 'ag-mode-hook 'wgrep-ag-setup))
 
 ;; Swoop
 (use-package helm-swoop
-  :init
-  (bind-key "C-;" 'helm-swoop)
-  (bind-key "M-C-;" 'helm-multi-swoop))
+  :bind (("C-;" . helm-swoop)
+         ("M-C-;" . helm-multi-swoop)))
 
 ;; direx
 (use-package direx :defer t
-  :init
-  (bind-key "M-C-\\" 'direx-project:jump-to-project-root-other-window)
-  (bind-key "M-C-¥"  'direx-project:jump-to-project-root-other-window))
+  :bind (("M-C-\\" . direx-project:jump-to-project-root-other-window)
+         ("M-C-¥"  . direx-project:jump-to-project-root-other-window)))
 
 ;; dired-k
 (use-package dired-k :defer t
-  :init
-  (add-hook 'dired-initial-position-hook 'dired-k)
-  (bind-key "K" 'dired-k dired-mode-map))
+  :bind ((:map dired-mode-map
+          ("K" . dired-k)))
+  :hook ((dired-initial-position-hook . dired-k)))
 
 ;; Wdired
-(use-package wdired)
+;; (use-package wdired :defer t)
 
 ;; Visual
-(bind-key "M-%" 'vr/query-replace)
+(use-package visual-regexp :defer t
+  :bind (("M-%" . vr/query-replace)))
 
 ;; image-mode
 (use-package image-mode :defer t
-  :config
-  (bind-key "<wheel-up>"    'image-previous-line    image-mode-map)
-  (bind-key "<wheel-down>"  'image-next-line        image-mode-map)
-  (bind-key "<wheel-right>" 'image-forward-hscroll  image-mode-map)
-  (bind-key "<wheel-left>"  'image-backward-hscroll image-mode-map))
+  :bind (:map image-mode-map
+         ("<wheel-up>"    . image-previous-line)
+         ("<wheel-down>"  . image-next-line)
+         ("<wheel-right>" . image-forward-hscroll)
+         ("<wheel-left>"  . image-backward-hscroll)))
 
 ;; Yet another folding
 (use-package yafolding :defer t
-  :init
-  (add-hook 'prog-mode-hook 'yafolding-mode))
+  :hook ((prog-mode . yafolding-mode)))
 
 ;; NeoTree
 (use-package neotree :defer t
@@ -833,17 +836,18 @@
 
 ;; vi-tilde-fringe
 (use-package vi-tilde-fringe :defer t
+  :diminish vi-tilde-fringe-mode
   :hook ((prog-mode . vi-tilde-fringe-mode)))
 
 (use-package idle-highlight-mode :defer t
-  :init
-  (custom-set-variables '(idle-highlight-idle-time 0.7))
-  (add-hook 'prog-mode-hook 'idle-highlight-mode))
+  :hook (prog-mode)
+  :custom
+  (idle-highlight-idle-time 0.7))
 
 ;; goto-addr
-(progn
-  (add-hook 'prog-mode-hook 'goto-address-prog-mode)
-  (add-hook 'text-mode-hook 'goto-address-mode))
+(use-package goto-addr
+  :hook ((prog-mode . goto-address-prog-mode)
+         (text-mode . goto-address-mode)))
 
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
@@ -887,21 +891,19 @@
 
 ;; crux
 (use-package crux
-  :init
-  (require 'crux)
-  (bind-key "C-c o"   'crux-open-with)
-  (bind-key "C-S-o"     'crux-smart-open-line-above)
-  (bind-key "C-c n"   'crux-cleanup-buffer-or-region)
-  (bind-key "C-c u"   'crux-view-url)
-  (bind-key "C-x 4 t" 'crux-transpose-windows)
-  (bind-key "C-c d"   'crux-duplicate-current-line-or-region)
-  (bind-key "C-c M-d" 'crux-duplicate-and-comment-current-line-or-region)
-  (bind-key "C-c r"   'crux-rename-file-and-buffer)
-  (bind-key "C-c M-t" 'crux-visit-term-buffer)
-  (bind-key "C-c k"   'crux-kill-other-buffers)
-  (bind-key "C-M-z"   'crux-indent-defun)
-  (bind-key "C-^"     'crux-top-join-lines)
-  (bind-key "C-DEL"   'crux-kill-line-backwards))
+  :bind (("C-c o"   . crux-open-with)
+         ("C-S-o"   . crux-smart-open-line-above)
+         ("C-c n"   . crux-cleanup-buffer-or-region)
+         ("C-c u"   . crux-view-url)
+         ("C-x 4 t" . crux-transpose-windows)
+         ("C-c d"   . crux-duplicate-current-line-or-region)
+         ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
+         ("C-c r"   . crux-rename-file-and-buffer)
+         ("C-c M-t" . crux-visit-term-buffer)
+         ("C-c k"   . crux-kill-other-buffers)
+         ("C-M-z"   . crux-indent-defun)
+         ("C-^"     . crux-top-join-lines)
+         ("C-DEL"   . crux-kill-line-backwards)))
 
 ;; UCS Utility
 ;;(use-package ucs-utils :defer t)
@@ -912,7 +914,6 @@
 ;; TRAMP
 (use-package tramp :defer t
   :config
-  (require 'vagrant-tramp)
   (vagrant-tramp-add-method)
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
@@ -922,11 +923,6 @@
 ;;; Communication:
 
 ;;; Variables:
-(custom-set-variables
- '(ac-ignore-case nil)
- '(eldoc-minor-mode-string "")
- '(shr-max-image-proportion 2.5))
-
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
@@ -936,21 +932,6 @@
 https://github.com/larstvei/dot-emacs/blob/master/init.org"
   `(with-eval-after-load ,file
      (diminish ,mode ,new-name)))
-
-(progn
-  (safe-diminish "abbrev" 'abbrev-mode)
-  (safe-diminish "beacon" 'beacon-mode)
-  (safe-diminish "ciel" 'ciel-mode)
-  (safe-diminish "face-remap" 'buffer-face-mode)
-  (safe-diminish "editorconfig" 'editorconfig-mode)
-  (safe-diminish "eldoc" 'eldoc-mode)
-  (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
-  (safe-diminish "flyspell" 'flyspell-mode)
-  (safe-diminish "indent-guide" 'indent-guide-mode)
-  (safe-diminish "nameless" 'nameless-mode)
-  (safe-diminish "simple" 'auto-fill-function)
-  (safe-diminish "subword" 'subword-mode)
-  (safe-diminish "vi-tilde-fringe" 'vi-tilde-fringe-mode))
 
 (defvar my/disable-trailing-modes
   '(buffer-face-mode
@@ -963,10 +944,17 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     eww-mode
     Info-mode
     term-mode))
-(--each my/disable-trailing-modes
-  (add-hook (intern (concat (symbol-name it) "-hook"))
-            'my/disable-trailing-mode-hook))
 
+(use-package diminish :defer t
+  :init
+  (safe-diminish "face-remap" 'buffer-face-mode)
+  (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
+  (safe-diminish "flyspell" 'flyspell-mode)
+  (safe-diminish "simple" 'auto-fill-function)
+  (safe-diminish "subword" 'subword-mode)
+  (--each my/disable-trailing-modes
+    (add-hook (intern (concat (symbol-name it) "-hook"))
+              'my/disable-trailing-mode-hook)))
 ;;; My Functions:
 (defun reload-major-mode ()
   "Reload current major mode."
@@ -1085,7 +1073,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 (defun my/mincho-face ()
   "Return Mincho anonymous face."
-  (require 'dash)
   `(:family ,(--first (member it (font-family-list)) '("YuMincho" "Hiragino Mincho ProN" "IPAexMincho"))))
 
 (defun my/buffer-minchoize ()
@@ -1112,7 +1099,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ")))
 
 ;; Pandoc-EWW
-(use-package pandoc :defer 2
+(use-package pandoc
   :init
   (pandoc-turn-on-advice-eww))
 
@@ -1120,16 +1107,18 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (add-hook 'init-open-recentf-before-hook #'my/insert-tetosan)
 (init-open-recentf)
 
-;; El-Screeのウィンドウを一個つくる
-(elscreen-create)
-
 ;; Right Click
-(custom-set-variables
- '(right-click-context-mode-lighter ""))
-(right-click-context-mode 1)
+(use-package right-click-context :defer t
+  :custom
+  (right-click-context-mode-lighter "")
+  :init
+  (right-click-context-mode 1))
 
 ;; Beacon — Never lose your cursor again
-(beacon-mode 1)
+(use-package beacon
+  :diminish beacon-mode
+  :init
+  (beacon-mode 1))
 
 ;; Eshell
 (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
@@ -1140,26 +1129,30 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 ;; bm
 (use-package bm :defer t
-  :init
-  (bind-key "<right-fringe> <wheel-down>" 'bm-next-mouse)
-  (bind-key "<right-fringe> <wheel-up>" 'bm-previous-mouse)
-  (bind-key "<right-fringe> <mouse-1>" 'bm-toggle-mouse))
+  :bind (("<right-fringe> <wheel-down>" . bm-next-mouse)
+         ("<right-fringe> <wheel-up>"   . bm-previous-mouse)
+         ("<right-fringe> <mouse-1>"    . bm-toggle-mouse)))
 
 ;; indent-guide.el
 ;; https://github.com/zk-phi/indent-guide
-(custom-set-variables
- '(indent-guide-char "|") ;"█"
- '(indent-guide-delay 0.5)
- '(indent-guide-recursive t))
-(indent-guide-global-mode)
+(use-package indent-guide
+  :diminish indent-guide-mode
+  :custom
+  (indent-guide-char "|") ;"█"
+  (indent-guide-delay 0.5)
+  (indent-guide-recursive t)
+  :init
+  (indent-guide-global-mode))
 ;; (set-face-attribute 'indent-guide-face nil :slant 'normal)
 ;; (set-face-background 'indent-guide-face "dimgray")
 
 ;; hamburger-menu
 ;; https://melpa.org/#/hamburger-menu
-(custom-set-variables
- '(hamburger-menu-symbol "ﾐ田"))
-(global-hamburger-menu-mode 1)
+(use-package hamburger-menu :defer t
+  :custom
+  (hamburger-menu-symbol "ﾐ田")
+  :init
+  (global-hamburger-menu-mode 1))
 
 ;; pomodoro
 (custom-set-variables
@@ -1176,10 +1169,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;   (atomic-chrome-start-server))
 
 (use-package google-translate :defer t
-  :init
-  (custom-set-variables
-   '(google-translate-default-source-language "en")
-   '(google-translate-default-target-language "ja")))
+  :custom
+  (google-translate-default-source-language "en")
+  (google-translate-default-target-language "ja"))
 
 (defun my/reset-default-directory-by-buffer-file-name ()
   "Set default-directory by `buffer-file-name'."
