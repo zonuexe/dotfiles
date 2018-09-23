@@ -2,10 +2,10 @@
 
 ;; Filename: init.el
 ;; Description: zonuexe's .emacs
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "26.1"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
-;; Modified: 2016-06-28
+;; Modified: 2018-09-03
 ;; Version: 10.10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
@@ -1114,10 +1114,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 ;; Eshell
 (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
-
-;; Helm Dash
-(custom-set-variables
- '(helm-dash-browser-func 'eww))
 
 ;; bm
 (use-package bm :defer t
