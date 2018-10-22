@@ -167,7 +167,7 @@
 (defun pixivision ()
   "Visit pixivision on W3M."
   (interactive)
-  (w3m-browse-url "http://www.pixivision.net"))
+  (w3m-browse-url "https://www.pixivision.net"))
 
 (provide 'pixiv-dev)
 ;;; pixiv-dev.el ends here
