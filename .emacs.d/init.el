@@ -292,7 +292,7 @@
 ;; Magit
 (use-package magit :defer t
   :bind (("C-x m" . magit-status)
-         ("C-c l" . magit-blame))
+         ("C-c l" . magit-blame-addition))
   :init
   (setq-default magit-auto-revert-mode nil)
   (setq vc-handled-backends '())
@@ -778,7 +778,7 @@
 (use-package rg :defer t
   :bind (("C-:" . rg)
          ("M-C-:" . rg-literal))
-  :hook ((rg-mode . wgrep-ag-setup)))
+  :hook ((rg-mode . wgrep-rg-setup)))
 
 ;; Swoop
 (use-package helm-swoop
@@ -896,6 +896,12 @@
          ("C-M-z"   . crux-indent-defun)
          ("C-^"     . crux-top-join-lines)
          ("C-DEL"   . crux-kill-line-backwards)))
+
+(use-package ov
+  :init
+  (autoload 'ov "ov.el" "Make an overlay from BEG to END.
+
+If PROPERTIES are specified, set them for the created overlay."))
 
 ;; UCS Utility
 ;;(use-package ucs-utils :defer t)

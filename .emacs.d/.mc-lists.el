@@ -55,7 +55,6 @@
         subword-left
         subword-right
         subword-right
-        wgrep-finish-edit
         yaml-electric-backspace
         yas-expand
         ))
@@ -73,4 +72,6 @@
         rectangle-mark-mode
         switch-to-buffer
         toggle-load-theme
+        wgrep-change-to-wgrep-mode
+        wgrep-finish-edit
         ))
