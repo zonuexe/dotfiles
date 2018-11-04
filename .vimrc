@@ -17,6 +17,7 @@ if dein#load_state(expand('~/.vim/dein'))
    " Add or remove your plugins here:
    call dein#add('Shougo/neosnippet.vim')
    call dein#add('Shougo/neosnippet-snippets')
+   call dein#add('Shougo/echodoc.vim')
    call dein#add('itchyny/calendar.vim')
    call dein#add('editorconfig/editorconfig-vim')
    call dein#add('scrooloose/nerdtree')

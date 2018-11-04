@@ -717,6 +717,7 @@
   (custom-set-variables
    '(org-default-notes-file (concat org-directory "/capture.org")))
   (bind-key "C-c c" 'org-capture)
+  (autoload 'ioslide:helper "ox-ioslide-helper.el" "Key menu for ioslide" t)
   :config
   (org-ac/config-default)
   (org-babel-do-load-languages
