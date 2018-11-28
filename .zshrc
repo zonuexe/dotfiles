@@ -159,7 +159,7 @@ alias tumx=tmux
 alias Tree=$(which tree)
 
 tree(){
-    Tree -C $* | less -R
+    command tree -C $* | less -R
 }
 
 

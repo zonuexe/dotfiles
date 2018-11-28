@@ -33,6 +33,7 @@ if dein#load_state(expand('~/.vim/dein'))
 
    call dein#add('phpactor/phpactor', { 'build': 'composer install' })
    call dein#add('w0rp/ale')
+   call dein#add('ujihisa/repl.vim')
 
    " Required:
    call dein#end()
