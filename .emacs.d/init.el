@@ -95,7 +95,8 @@
 (when window-system
   ;; http://d.hatena.ne.jp/kitokitoki/20110502/p2
   (let ((fontset (format "%s-%.1f" my/font-family my/font-size)))
-    (add-to-list 'default-frame-alist `(font . ,fontset))))
+    (add-to-list 'default-frame-alist `(font . ,fontset)))
+  (add-to-list 'default-frame-alist `(cursor-type . (hbar . ,(1+ (ceiling (/ my/font-size 2)))))))
 
 ;; Set and load custom-vars.el
 (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
