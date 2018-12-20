@@ -213,7 +213,7 @@
 (use-package request-deferred :ensure t)
 (use-package restclient :ensure t)
 (use-package review-mode :ensure t)
-(quelpa '(right-click-context :repo "zonuexe/right-click-context" :fetcher github :files ("right-click-context.el")))
+(use-package right-click-context :ensure t)
 (use-package rg :ensure t)
 (use-package robe :ensure t)
 (use-package robots-txt-mode :ensure t)
