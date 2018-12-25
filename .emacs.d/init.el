@@ -899,6 +899,12 @@
          ("C-^"     . crux-top-join-lines)
          ("C-DEL"   . crux-kill-line-backwards)))
 
+(use-package vlf :defer t
+  :custom
+  (vlf-application 'dont-ask)
+  :init
+  (require 'vlf-setup))
+
 (use-package ov
   :init
   (autoload 'ov "ov.el" "Make an overlay from BEG to END.

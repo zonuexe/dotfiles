@@ -253,6 +253,7 @@
 (use-package vi-tilde-fringe :ensure t)
 (use-package vimrc-mode :ensure t)
 (use-package visual-regexp :ensure t)
+(use-package vlf :ensure t)
 (use-package volatile-highlights :ensure t)
 (use-package w3m :ensure t)
 (use-package wandbox :ensure t)
