@@ -56,6 +56,7 @@
         subword-right
         subword-right
         yaml-electric-backspace
+        yaml-electric-dash-and-dot
         yas-expand
         ))
 
