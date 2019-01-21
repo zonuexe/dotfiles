@@ -111,6 +111,7 @@
   (package-initialize))
 
 (require 'dash)
+(require 'diminish)
 
 ;;; Environment:
 
@@ -674,7 +675,7 @@
   :custom
   (recentf-max-saved-items 2000)
   (recentf-auto-cleanup 'never)
-  (recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores"
+  (recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.cache/"
                      "/\\.emacs\\.d/\\.cask/" "/\\newsrc\\(\\.eld\\)?\\'" "/elpa/.*-autoloads\\.el\\'"))
   (recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
   :init
