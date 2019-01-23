@@ -386,8 +386,8 @@
 ;; Web
 (defun my/web-mode-hook ()
   "Set variables for web-mode."
-  (custom-set-variables
-   '(web-mode-enable-auto-pairing nil)))
+  (when (and buffer-file-name (string= "tsx" (file-name-extension buffer-file-name)))
+    (my-setup-typescript)))
 
 (defun sp-web-mode-is-code-context (_id action _context)
   "This snippet is derived from http://web-mode.org/ ."
@@ -402,8 +402,12 @@
   :mode
   ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'"
    "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'")
+  :custom
+  (web-mode-enable-auto-pairing nil)
+  (web-mode-enable-auto-indentation nil)
   :config
   (require 'smartparens)
+  (flycheck-add-mode 'typescript-tslint 'web-mode)
   (add-to-list 'web-mode-ac-sources-alist
                '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
   (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
@@ -607,15 +611,17 @@
   (set (make-local-variable 'tab-width) 2))
 
 ;; TypeScript
+(defun my-setup-typescript ()
+  "Setup function for TypeScript."
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1))
+
 (use-package typescript :defer t
   :mode ("\\.ts\\'" . typescript-mode)
-  :custom
-  (tss-popup-help-key "C-:")
-  (tss-jump-to-definition-key "C->")
-  (tss-implement-definition-key "C-c i")
-  :config
-  (use-package tss)
-  (tss-config-default))
+  :hook ((typescript-mode . my-setup-typescript)))
 
 ;; Go
 ;;(use-package go-mode :defer t)
