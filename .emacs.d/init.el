@@ -303,7 +303,8 @@
 (use-package magit-find-file :defer t
   :bind (("M-t" . magit-find-file-completing-read)))
 
-(add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" . gitignore-mode))
+(use-package gitignore-mode :defer t
+  :mode ("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))
 
 ;; EditorConfig
 (use-package editorconfig :defer t
