@@ -259,8 +259,6 @@
 (use-package wandbox :ensure t)
 (use-package wc-mode :ensure t)
 (use-package web-mode :ensure t)
-(use-package wgrep :ensure t)
-(use-package wgrep-ag :ensure t)
 (use-package which-key :ensure t)
 (use-package writeroom-mode :ensure t)
 (quelpa '(xterm-keybinder :fetcher github :repo "yuutayamada/xterm-keybinder-el"))
