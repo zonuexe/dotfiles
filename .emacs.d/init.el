@@ -604,12 +604,8 @@
 
 ;; CoffeeScript
 (use-package coffee :defer t
-  :hook ((coffee-mode . my/coffee-hook))
   :config
   (setq-default coffee-tab-width 2))
-
-(defun my/coffee-hook ()
-  (set (make-local-variable 'tab-width) 2))
 
 ;; TypeScript
 (defun my-setup-typescript ()
@@ -634,13 +630,13 @@
 ;;(use-package json-mode :defer t)
 
 ;; text-mode
+(defun my/text-mode-setup ()
+  "Setup function for `text-mode'."
+  (setq line-spacing 5))
+
 (use-package text-mode :defer t
   :mode ("/LICENSE\\'")
-  :hook ((text-mode . my/text-mode-hook)))
-
-(defun my/text-mode-hook ()
-  ""
-  (setq line-spacing 5))
+  :hook ((text-mode . my/text-mode-setup)))
 
 ;; YAML
 (use-package yaml-mode :defer t
@@ -826,15 +822,15 @@
   :hook ((prog-mode . yafolding-mode)))
 
 ;; NeoTree
-(use-package neotree :defer t
-  :bind (:map neotree-mode-map
-         ("M-w" . my/neotree-kill-filename-at-point)))
-
 (defun my/neotree-kill-filename-at-point ()
   "Kill full path of note at point."
   (interactive)
   (message "Copy %s"
            (kill-new (neo-buffer--get-filename-current-line))))
+
+(use-package neotree :defer t
+  :bind (:map neotree-mode-map
+         ("M-w" . my/neotree-kill-filename-at-point)))
 
 ;; vi-tilde-fringe
 (use-package vi-tilde-fringe :defer t
