@@ -385,8 +385,9 @@
   (sql-product 'mysql))
 
 ;; Web
-(defun my/web-mode-hook ()
+(defun my-web-mode-setup ()
   "Set variables for web-mode."
+  (emmet-mode +1)
   (when (and buffer-file-name (string= "tsx" (file-name-extension buffer-file-name)))
     (my-setup-typescript)))
 
@@ -398,11 +399,10 @@
     t))
 
 (use-package web-mode :defer t
-  :hook ((web-mode-hook . my/web-mode-hook)
-         (web-mode-hook . emmet-mode))
+  :hook ((web-mode-hook . my-web-mode-setup))
   :mode
   ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'"
-   "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'")
+   "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")
   :custom
   (web-mode-enable-auto-pairing nil)
   (web-mode-enable-auto-indentation nil)
