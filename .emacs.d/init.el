@@ -399,7 +399,7 @@
     t))
 
 (use-package web-mode :defer t
-  :hook ((web-mode-hook . my-web-mode-setup))
+  :hook ((web-mode . my-web-mode-setup))
   :mode
   ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'"
    "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")
@@ -419,7 +419,7 @@
   (when (require 'php-eldoc nil t)
     (php-eldoc-enable)))
 
-(defun my/php-mode-hook ()
+(defun my-php-mode-setup ()
   "My PHP-mode hook."
   ;;(require 'company-phpactor)
   (my/turn-on-php-eldoc)
@@ -443,7 +443,7 @@
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
 
 (use-package php-mode
-  :hook ((php-mode . my/php-mode-hook))
+  :hook ((php-mode . my-php-mode-setup))
   :custom
   (php-manual-url 'ja)
   (php-mode-coding-style 'psr2)
@@ -487,13 +487,16 @@
     (phan-flycheck-setup)))
 
 ;; Ruby
+(defun my-enh-ruby-mode-setup ()
+  "Setup function for `enh-ruby-mode'."
+  (setq-local ac-ignore-case t))
+
 (use-package enh-ruby-mode :defer t
   :mode (("\\.rb\\'" . enh-ruby-mode))
+  :hook ((enh-ruby-mode . my-enh-ruby-mode-setup))
   :interpreter "pry"
   :config
   (use-package robe)
-  (defun my/enh-ruby-mode-hook ()
-    (set (make-local-variable 'ac-ignore-case) t))
   (subword-mode t)
   (yard-mode t)
   (add-to-list 'ac-modes 'enh-ruby-mode)
@@ -529,14 +532,16 @@
 (defvar my/emacs-lisp-ac-sources
   '(ac-source-features ac-source-functions ac-source-variables ac-source-symbols))
 
-(defun my/emacs-lisp-mode-hook ()
-  ""
+(defun my-emacs-lisp-mode-setup ()
+  "Setup function for Emacs Lisp."
   (rainbow-mode t)
   (auto-complete-mode 1)
   (setq ac-sources (append ac-sources my/emacs-lisp-ac-sources))
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru")
-  (nameless-mode t))
+  (nameless-mode t)
+  (turn-on-eldoc-mode)
+  (elisp-slime-nav-mode +1))
 
 (use-package nameless :defer t
   :diminish nameless-mode
@@ -546,9 +551,7 @@
 (defvar my/emacs-lisp-modes
   '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 (--each my/emacs-lisp-modes
-  (add-hook it 'turn-on-eldoc-mode)
-  (add-hook it 'elisp-slime-nav-mode)
-  (add-hook it 'my/emacs-lisp-mode-hook))
+  (add-hook it #'my-emacs-lisp-mode-setup))
 
 (add-hook 'lisp-interaction-mode-hook #'turn-on-orgtbl)
 
@@ -569,16 +572,16 @@
   (--each my/emacs-lisp-modes (add-hook it 'enable-paredit-mode)))
 
 ;; Scheme
+(defun my-scheme-mode-setup ()
+  "λ..."
+  (paredit-mode t)
+  (ac-geiser-setup))
+
 (use-package scheme :defer t
-  :config
-  (defun my/scheme-mode-hook ()
-    "λ..."
-    (paredit-mode t)
-    (ac-geiser-setup))
-  (custom-set-variables
-   '(geiser-active-implementations '(guile racket)))
-  (add-hook 'geiser-mode-hook #'my/scheme-mode-hook)
-  (add-hook 'scheme-mode-hook #'my/scheme-mode-hook))
+  :hook ((geiser-mode-hook . my/scheme-mode-hook)
+         (scheme-mode-hook . my/scheme-mode-hook))
+  :custom
+  (geiser-active-implementations '(guile racket)))
 
 ;; Common Lisp
 ;; (use-package sly :defer t
@@ -630,17 +633,17 @@
 ;;(use-package json-mode :defer t)
 
 ;; text-mode
-(defun my/text-mode-setup ()
+(defun my-text-mode-setup ()
   "Setup function for `text-mode'."
   (setq line-spacing 5))
 
 (use-package text-mode :defer t
   :mode ("/LICENSE\\'")
-  :hook ((text-mode . my/text-mode-setup)))
+  :hook ((text-mode . my-text-mode-setup)))
 
 ;; YAML
 (use-package yaml-mode :defer t
-  :mode "/\\.gemrc\\'")
+  :mode ("/\\.gemrc\\'"))
 
 ;; Markdown Mode
 (use-package markdown-mode :defer t
