@@ -132,8 +132,12 @@
   (load (locate-user-emacs-file "my-packages")))
 
 (when (file-directory-p "~/repo/emacs/php-mode")
-  (add-to-list 'load-path "~/repo/emacs/php-mode")
+  (add-to-list 'load-path (expand-file-name "~/repo/emacs/php-mode"))
   (load "~/repo/emacs/php-mode/php-mode-autoloads.el"))
+
+(when (file-directory-p "~/repo/emacs/phpactor.el")
+  (add-to-list 'load-path (expand-file-name "~/repo/emacs/phpactor.el"))
+  (load "~/repo/emacs/phpactor.el/phpactor-autoloads.el"))
 
 ;; load private config
 (require 'my/private "my-private.el" t)
