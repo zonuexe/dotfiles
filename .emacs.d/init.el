@@ -433,6 +433,7 @@
   (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face))
   (setq-local page-delimiter "\\_<\\(class\\|function\\|namespace\\)\\_>.+$")
 
+  (require 'flycheck-phpstan)
   (flycheck-mode t)
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
   (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
