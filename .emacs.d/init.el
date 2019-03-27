@@ -111,7 +111,6 @@
   (package-initialize))
 
 (require 'dash)
-(require 'diminish)
 
 ;;; Environment:
 
@@ -147,7 +146,10 @@
 ;; https://github.com/dholm/benchmark-init-el
 (benchmark-init/activate)
 
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)
+(require 'bind-key)
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 
@@ -333,6 +335,7 @@
 (use-package projectile :defer t
   :hook ((projectile-mode . projectile-rails-on))
   :custom
+  (projectile-enable-caching nil)
   (projectile-completion-system 'helm))
 
 (use-package helm-projectile :defer t
@@ -1147,16 +1150,14 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
          ("<right-fringe> <wheel-up>"   . bm-previous-mouse)
          ("<right-fringe> <mouse-1>"    . bm-toggle-mouse)))
 
-;; indent-guide.el
-;; https://github.com/zk-phi/indent-guide
-(use-package indent-guide
-  :diminish indent-guide-mode
+(use-package highlight-indent-guides-method :defer t
+  :diminish highlight-indent-guides-mode
+  :hook ((prog-mode . highlight-indent-guides-mode))
   :custom
-  (indent-guide-char "|") ;"█"
-  (indent-guide-delay 0.5)
-  (indent-guide-recursive t)
-  :init
-  (indent-guide-global-mode))
+  (highlight-indent-guides-method 'character)
+  (highlight-indent-guides-character ?\|)
+  (highlight-indent-guides-delay 0.5))
+
 ;; (set-face-attribute 'indent-guide-face nil :slant 'normal)
 ;; (set-face-background 'indent-guide-face "dimgray")
 
