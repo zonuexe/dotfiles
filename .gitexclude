@@ -10,6 +10,8 @@ GRTAGS
 .idea
 \#*\#
 .\#*
+.dumbjump
+.ignore
 .tramp_history
 phan.log
 phan-master.log
