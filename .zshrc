@@ -154,6 +154,12 @@ then
     alias pbpaste='xsel --clipboard --output'
 fi
 
+if which nproc > /dev/null
+then
+else
+    alias nproc='sysctl -n hw.ncpu'
+fi
+
 export RAILS_ENV=development
 export MICRO_TRUECOLOR=1
 

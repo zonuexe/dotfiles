@@ -190,6 +190,8 @@
 (use-package phan :ensure t)
 (use-package php-mode :ensure t)
 (use-package phpactor :ensure t)
+(use-package posframe :ensure t)
+(use-package flycheck-posframe :ensure t)
 (use-package flycheck-phpstan :ensure t)
 (quelpa '(php-util :fetcher github :repo "zonuexe/php-util.el"))
 ;;(quelpa 'php7-mode '(:fetcher github :repo "emacs-php/Php7mode"))
