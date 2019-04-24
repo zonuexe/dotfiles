@@ -133,7 +133,12 @@ then
 fi
 
 alias Emacs=$(which emacs)
-alias emacs="emacs -nw"
+
+if [ -f /Applications/Emacs.app/Contents/MacOS/Emacs ]
+then
+    alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+fi
+
 alias あ=ag
 alias s=ls
 alias be="bundle exec"
