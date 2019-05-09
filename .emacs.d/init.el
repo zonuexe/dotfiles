@@ -610,9 +610,6 @@
 (use-package rjsx-mode :defer t
   :mode ("\\.jsx\\'"))
 
-;; (use-package typescript :defer t
-;;   :mode (("\\.tsx\\'" . typescript-mode)))
-
 ;; CoffeeScript
 (use-package coffee :defer t
   :config
