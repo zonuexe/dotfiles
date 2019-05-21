@@ -190,6 +190,7 @@
 (use-package peep-dired :ensure t)
 (use-package phan :ensure t)
 (use-package php-mode :ensure t)
+(use-package phpt-mode :ensure t)
 (use-package phpactor :ensure t)
 (use-package posframe :ensure t)
 (use-package flycheck-posframe :ensure t)

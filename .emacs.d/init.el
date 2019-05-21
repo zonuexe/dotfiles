@@ -456,7 +456,7 @@
   :custom
   (php-manual-url 'ja)
   (php-mode-coding-style 'psr2)
-  (php-template-compatibility nil)
+  (php-mode-template-compatibility nil)
   :config
   ;;(require 'php-extras)
   ;;(php-extras-eldoc-documentation-function)
@@ -1155,9 +1155,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-character ?\|)
   (highlight-indent-guides-delay 0.5))
-
-;; (set-face-attribute 'indent-guide-face nil :slant 'normal)
-;; (set-face-background 'indent-guide-face "dimgray")
 
 ;; hamburger-menu
 ;; https://melpa.org/#/hamburger-menu
