@@ -20,3 +20,5 @@
 	precomposeunicode = true
 [push]
 	default = tracking
+[github]
+	user = zonuexe

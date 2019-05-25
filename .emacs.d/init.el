@@ -641,7 +641,8 @@
 ;; text-mode
 (defun my-text-mode-setup ()
   "Setup function for `text-mode'."
-  (setq line-spacing 5))
+  (unless (eq major-mode 'html-mode)
+    (setq line-spacing 5)))
 
 (use-package text-mode :defer t
   :mode ("/LICENSE\\'")
