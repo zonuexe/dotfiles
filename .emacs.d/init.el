@@ -435,7 +435,6 @@
   (setq show-trailing-whitespace t)
 
   (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face))
-  (setq-local page-delimiter "\\_<\\(class\\|function\\|namespace\\)\\_>.+$")
 
   (require 'flycheck-phpstan)
   (flycheck-mode t)
