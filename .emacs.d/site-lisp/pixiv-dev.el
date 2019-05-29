@@ -50,20 +50,19 @@
   :type 'string)
 (put 'pixiv-dev-host 'safe-local-variable #'stringp)
 
-(defvar pixiv-dev-working-dir nil
-  "`pixiv.git' working directory.")
-(make-local-variable 'pixiv-dev-working-dir)
-(put 'pixiv-dev-working-dir 'safe-local-variable #'stringp)
+;;;###autoload
+(progn
+  (defvar-local pixiv-dev-working-dir nil
+    "`pixiv.git' working directory.")
+  (put 'pixiv-dev-working-dir 'safe-local-variable #'stringp)
 
-(defvar pixiv-dev-remote-working-dir nil
-  "`pixiv.git' working directory on remote server.")
-(make-local-variable 'pixiv-dev-remote-working-dir)
-(put 'pixiv-dev-remote-working-dir 'safe-local-variable #'stringp)
+  (defvar-local pixiv-dev-remote-working-dir nil
+    "`pixiv.git' working directory on remote server.")
+  (put 'pixiv-dev-remote-working-dir 'safe-local-variable #'stringp)
 
-(defvar pixiv-dev-repository-web "http://gitlab.pixiv.private/pixiv/pixiv"
-  "URL of `pixiv.git' repository web.")
-(make-local-variable 'pixiv-dev-repository-web)
-(put 'pixiv-dev-repository-web 'safe-local-variable #'stringp)
+  (defvar-local pixiv-dev-repository-web "http://gitlab.pixiv.private/pixiv/pixiv"
+    "URL of `pixiv.git' repository web.")
+  (put 'pixiv-dev-repository-web 'safe-local-variable #'stringp))
 
 (defvar pixiv-dev-psysh-buffer-process
   '("pixiv-shell" "dev-script/shell.php"))
