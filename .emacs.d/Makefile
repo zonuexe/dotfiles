@@ -3,7 +3,7 @@ EMACS ?= emacs
 ELS = site-lisp/quelpa/quelpa.el
 ELCS = $(ELS:.el=.elc)
 
-all: site-autoload elc elpa
+all: site-autoload elpa elc
 
 %.elc: %.el
 	$(EMACS) -Q -batch -L . -f batch-byte-compile $<
@@ -14,7 +14,7 @@ elpa: my-packages.el
 	$(EMACS) -batch -l my-packages.el
 
 site-autoload: $(ELS)
-	$(EMACS) -Q -batch -L . --eval \
+	$(EMACS) -Q -batch -L site-lisp --eval \
 	"(progn \
            (require 'package) \
 	   (package-generate-autoloads \"site-lisp\" (locate-user-emacs-file \"site-lisp\")))"
