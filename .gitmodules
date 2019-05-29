@@ -10,3 +10,9 @@
 [submodule ".emacs.d/site-lisp/quelpa"]
 	path = .emacs.d/site-lisp/quelpa
 	url = git@github.com:quelpa/quelpa.git
+[submodule "leaf"]
+	path = .emacs.d/site-lisp/leaf
+	url = git@github.com:conao3/leaf.el.git
+[submodule "leaf-keywords"]
+	path = .emacs.d/site-lisp/leaf-keywords
+	url = git@github.com:conao3/leaf-keywords.el.git
