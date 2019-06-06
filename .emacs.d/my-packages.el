@@ -1,3 +1,9 @@
+;;; my-packages.el --- Lisp packages installation  -*- lexical-binding: t -*-
+
+;;; Commentary:
+
+;; This file is a script for Lisp packages installation.
+
 ;;; Code:
 
 (require 'package)
@@ -224,7 +230,6 @@
 (use-package review-mode :ensure t)
 (use-package right-click-context :ensure t)
 (use-package rg :ensure t)
-(use-package robe :ensure t)
 (use-package robots-txt-mode :ensure t)
 (use-package rust-mode :ensure t)
 (use-package s :ensure t)
