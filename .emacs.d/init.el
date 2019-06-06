@@ -504,14 +504,12 @@
   :hook ((enh-ruby-mode . my-enh-ruby-mode-setup))
   :interpreter "pry"
   :config
-  (use-package robe)
   (subword-mode t)
   (yard-mode t)
   (add-to-list 'ac-modes 'enh-ruby-mode)
   (custom-set-variables
    '(ruby-deep-indent-paren-style nil))
-  (setq-default enh-ruby-not-insert-magic-comment t)
-  (add-hook 'robe-mode-hook 'ac-robe-setup))
+  (setq-default enh-ruby-not-insert-magic-comment t))
 
 ;;; begin enh-ruby-mode patch
 ;;; http://qiita.com/vzvu3k6k/items/acec84d829a3dbe1427a
