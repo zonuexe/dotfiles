@@ -135,6 +135,10 @@
   (add-to-list 'load-path (expand-file-name "~/repo/emacs/php-mode"))
   (load "~/repo/emacs/php-mode/php-mode-autoloads.el"))
 
+(when (file-directory-p "~/repo/emacs/auto-complete")
+  (add-to-list 'load-path (expand-file-name "~/repo/emacs/auto-complete"))
+  (load "~/repo/emacs/auto-complete/auto-complete-autoloads.el"))
+
 (when (file-directory-p "~/repo/emacs/phpactor.el")
   (add-to-list 'load-path (expand-file-name "~/repo/emacs/phpactor.el"))
   (load "~/repo/emacs/phpactor.el/phpactor-autoloads.el"))
@@ -249,15 +253,6 @@
   (key-chord-define-global "wr" 'writeroom-mode)
   (key-chord-define-global "m," 'reload-major-mode)
   (key-chord-define-global "mc" 'my/buffer-minchoize))
-
-;; (use-package sequential-command
-;;   :config
-;;   (define-sequential-command my/seq-home
-;;     beginning-of-line beginning-of-line beginning-of-defun beginning-of-buffer seq-return)
-;;   (define-sequential-command my/seq-end
-;;     end-of-line end-of-line end-of-defun end-of-buffer seq-return)
-;;   (bind-key "C-a" 'my/seq-home)
-;;   (bind-key "C-e" 'my/seq-end))
 
 ;; Helm
 (use-package helm :defer t
