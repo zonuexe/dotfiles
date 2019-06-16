@@ -7,14 +7,10 @@
 ;;; Code:
 
 (require 'package)
-(require 'quelpa (locate-user-emacs-file "site-lisp/quelpa/quelpa"))
-
 (require 'recentf)
 
 (setq recentf-auto-cleanup 'never)
-
 (add-to-list 'recentf-exclude "/elpa/.*-autoloads\\.el\\'")
-(add-to-list 'recentf-exclude "/quelpa/packages/.*\\.el\\'")
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -23,15 +19,25 @@
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
-(unless (package-installed-p 'leef)
-  (package-install 'leaf))
-
-(unless (package-installed-p 'leef-keywords)
-  (package-install 'leaf-keywords))
-
 (require 'use-package)
 
-(use-package exec-path-from-shell :ensure t)
+
+(unless (package-installed-p 'leaf)
+  (unless (assoc 'leaf package-archive-contents)
+    (package-refresh-contents))
+  (condition-case err
+      (package-install 'leaf)
+    (error
+     (package-refresh-contents)       ; renew local melpa cache if fail
+     (package-install 'leaf))))
+
+(require 'leaf)
+
+(leaf exec-path-from-shell :ensure t)
+(leaf el-get :ensure t)
+
+(leaf leaf-keywords :ensure t
+  :config (leaf-keywords-init))
 
 (when window-system
   (exec-path-from-shell-initialize))
@@ -50,7 +56,6 @@
 (use-package aozora-view :ensure t)
 (use-package apache-mode :ensure t)
 (use-package atomic-chrome :ensure t)
-(use-package auto-complete :ensure t)
 (use-package auto-minor-mode :ensure t)
 (use-package auto-read-only :ensure t)
 (use-package beacon :ensure t)
@@ -59,14 +64,11 @@
 (use-package bm :ensure t)
 (use-package brainfuck-mode :ensure t)
 (use-package calfw :ensure t)
-;;(quelpa 'calfw-git" :git 'https://gist.github.com/d77d9669440f3336bb9d.git)
-;;(quelpa 'calfw-syobocal" :git 'https://gist.github.com/1fd257fc1e8907d4d92e.git" :files ("*.el))
 (use-package cedit :ensure t)
 (use-package cmake-mode :ensure t)
 (use-package codic :ensure t)
 (use-package coffee-mode :ensure t)
 (use-package color-moccur :ensure t)
-(quelpa 'commonmark '(:fetcher github :repo "zonuexe/CommonMark.el"))
 (use-package composer :ensure t)
 (use-package copy-file-on-save :ensure t)
 (use-package copyit :ensure t)
@@ -81,10 +83,10 @@
 (use-package datetime-format :ensure t)
 (use-package diminish :ensure t)
 (use-package dired-k :ensure t)
-(quelpa '(dired-toggle :fetcher github :repo "zonuexe/dired-toggle"))
+(leaf dired-toggle :el-get (dired-toggle :url "https://github.com/zonuexe/dired-toggle.git"))
 (use-package direx :ensure t)
 (use-package dist-file-mode :ensure t)
-(quelpa '(dmacro :fetcher github :repo "zonuexe/dmacro"))
+(leaf dmacro :el-get (dmacro :url "https://github.com/emacs-jp/dmacro.git"))
 (use-package dockerfile-mode :ensure t)
 (use-package drag-stuff :ensure t)
 (use-package ecukes :ensure t)
@@ -175,7 +177,7 @@
 (use-package markdown-preview-eww :ensure t)
 (use-package maruo-macro-mode :ensure t)
 (use-package minesweeper :ensure t)
-(quelpa '(mode-test :fetcher github :repo "emacs-php/mode-test" :files ("mode-test.el")))
+(leaf mode-test :el-get (mode-test :url "https://github.com/emacs-php/mode-test.git" :files ("mode-test.el")))
 (use-package multiple-cursors :ensure t)
 (use-package nameless :ensure t)
 (use-package navi2ch)
@@ -200,7 +202,7 @@
 (use-package page-break-lines :ensure t)
 (use-package pandoc :ensure t)
 (use-package paredit :ensure t)
-(quelpa '(pcap-mode :fetcher github :repo "orgcandman/pcap-mode"))
+(leaf pcap-mode :ensure t)
 (use-package pdf-tools :ensure t)
 (use-package peep-dired :ensure t)
 (use-package phan :ensure t)
@@ -210,9 +212,8 @@
 (use-package posframe :ensure t)
 (use-package flycheck-posframe :ensure t)
 (use-package flycheck-phpstan :ensure t)
-(quelpa '(php-util :fetcher github :repo "zonuexe/php-util.el"))
-;;(quelpa 'php7-mode '(:fetcher github :repo "emacs-php/Php7mode"))
-(quelpa '(phpunit :fetcher github :repo "nlamirault/phpunit.el" :branch "develop"))
+(leaf php-util :el-get (php-util :url "https://github.com/zonuexe/php-util.el.git"))
+(leaf phpunit :el-get (phpunit :url "https://github.comn/lamirault/phpunit.el" :branch "develop"))
 (use-package presentation :ensure t)
 (use-package pixiv-novel-mode :ensure t)
 (use-package pomodoro :ensure t)
@@ -242,13 +243,12 @@
 (use-package slim-mode :ensure t)
 (use-package sly :ensure t)
 (use-package smart-jump :ensure t)
-(quelpa '(smartchr :repo "imakado/emacs-smartchr" :fetcher github))
+(leaf smartchr :el-get (smartchr :url "https://github.com/imakado/emacs-smartchr.git"))
 (use-package smartparens :ensure t)
 (use-package smartrep :ensure t)
 (use-package smex :ensure t)
 (use-package smooth-scroll :ensure t)
 (use-package sokoban :ensure t)
-;;(quelpa 'sql-drill)
 (use-package sql-indent :ensure t)
 (use-package ssh-config-mode :ensure t)
 (use-package stylus-mode :ensure t)
@@ -276,7 +276,7 @@
 (use-package web-mode :ensure t)
 (use-package which-key :ensure t)
 (use-package writeroom-mode :ensure t)
-(quelpa '(xterm-keybinder :fetcher github :repo "yuutayamada/xterm-keybinder-el"))
+(leaf xterm-keybinder :el-get (xterm-keybinder :url "https://github.com/yuutayamada/xterm-keybinder-el.git"))
 (use-package yafolding :ensure t)
 (use-package yaml-mode :ensure t)
 (use-package yard-mode :ensure t)

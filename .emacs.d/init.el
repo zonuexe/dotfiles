@@ -126,11 +126,6 @@
 ;; (when (eq window-system 'w32)
 ;;   (setenv "GIT_SSH" "C:\\Program Files\\PuTTY\\plink.exe"))
 
-(defun my/quelpa-setup ()
-  "Setup Quelpa packages."
-  (interactive)
-  (load (locate-user-emacs-file "my-packages")))
-
 (when (file-directory-p "~/repo/emacs/php-mode")
   (add-to-list 'load-path (expand-file-name "~/repo/emacs/php-mode"))
   (load "~/repo/emacs/php-mode/php-mode-autoloads.el"))
