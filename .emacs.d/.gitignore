@@ -4,6 +4,7 @@
 /.cask
 /.edbi-ds-history
 /.my-private.el
+/forge-database.sqlite
 /META-INF
 /abbrev_defs
 /ac-comphist.dat
