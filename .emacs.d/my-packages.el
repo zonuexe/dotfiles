@@ -23,6 +23,12 @@
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
+(unless (package-installed-p 'leef)
+  (package-install 'leaf))
+
+(unless (package-installed-p 'leef-keywords)
+  (package-install 'leaf-keywords))
+
 (require 'use-package)
 
 (use-package exec-path-from-shell :ensure t)
