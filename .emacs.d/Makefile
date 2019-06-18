@@ -1,6 +1,6 @@
 EMACS ?= emacs
 
-ELS = site-lisp/quelpa/quelpa.el
+ELS = init.el site-lisp/php-eldoc.el site-lisp/pixiv-dev.el
 ELCS = $(ELS:.el=.elc)
 
 all: site-autoload elpa elc
