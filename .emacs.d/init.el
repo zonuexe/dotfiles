@@ -1,4 +1,4 @@
-;;; init.el --- zonuexe's .emacs -*- coding: utf-8 ; lexical-binding: t -*-
+;;; init.el --- The zonuexe's .emacs -*- coding: utf-8 ; lexical-binding: t -*-
 
 ;; Filename: init.el
 ;; Description: zonuexe's .emacs
