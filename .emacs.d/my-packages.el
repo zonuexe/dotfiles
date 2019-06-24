@@ -212,7 +212,6 @@
 (use-package posframe :ensure t)
 (use-package flycheck-posframe :ensure t)
 (use-package flycheck-phpstan :ensure t)
-(leaf php-util :el-get (php-util :url "https://github.com/zonuexe/php-util.el.git"))
 (leaf phpunit :el-get (phpunit :url "https://github.comn/lamirault/phpunit.el" :branch "develop"))
 (use-package presentation :ensure t)
 (use-package pixiv-novel-mode :ensure t)
