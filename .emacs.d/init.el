@@ -127,16 +127,16 @@
 ;;   (setenv "GIT_SSH" "C:\\Program Files\\PuTTY\\plink.exe"))
 
 (when (file-directory-p "~/repo/emacs/php-mode")
-  (add-to-list 'load-path (expand-file-name "~/repo/emacs/php-mode"))
   (load "~/repo/emacs/php-mode/php-mode-autoloads.el"))
 
 (when (file-directory-p "~/repo/emacs/auto-complete")
-  (add-to-list 'load-path (expand-file-name "~/repo/emacs/auto-complete"))
   (load "~/repo/emacs/auto-complete/auto-complete-autoloads.el"))
 
 (when (file-directory-p "~/repo/emacs/phpactor.el")
-  (add-to-list 'load-path (expand-file-name "~/repo/emacs/phpactor.el"))
   (load "~/repo/emacs/phpactor.el/phpactor-autoloads.el"))
+
+(when (file-directory-p "~/repo/emacs/emacs-phps-mode")
+  (load "~/repo/emacs/emacs-phps-mode/phps-mode-autoloads.el"))
 
 ;; load private config
 (require 'my/private "my-private.el" t)
@@ -443,6 +443,7 @@
 (use-package php-mode
   :hook ((php-mode . my-php-mode-setup))
   :custom
+  (php-default-major-mode 'php-mode)
   (php-manual-url 'ja)
   (php-mode-coding-style 'psr2)
   (php-mode-template-compatibility nil)
