@@ -138,6 +138,9 @@
 (when (file-directory-p "~/repo/emacs/emacs-phps-mode")
   (load "~/repo/emacs/emacs-phps-mode/phps-mode-autoloads.el"))
 
+(when (file-directory-p "~/repo/emacs/sunrise-commander")
+  (load "~/repo/emacs/sunrise-commander/sunrise-commander-autoloads.el"))
+
 ;; load private config
 (require 'my/private "my-private.el" t)
 
