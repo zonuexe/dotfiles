@@ -113,6 +113,9 @@
 (when (version< emacs-version "27")
   (package-initialize))
 
+(add-to-list 'load-path (locate-user-emacs-file "el-get"))
+(load (locate-user-emacs-file "el-get/.loaddefs"))
+
 (require 'dash)
 
 ;;; Environment:
