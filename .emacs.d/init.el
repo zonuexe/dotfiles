@@ -255,6 +255,8 @@
 ;; Helm
 (use-package helm :defer t
   :diminish helm-mode
+  :custom
+  (helm-ff-lynx-style-map t)
   :bind (("C-x C-f" . helm-find-files)
          ("M-x" . helm-smex)
          ("M-X" . helm-smex-major-mode-commands)
