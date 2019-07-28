@@ -167,7 +167,6 @@
 (use-package lispxmp :ensure t)
 (use-package logalimacs :ensure t)
 (use-package logview :ensure t)
-(use-package lsp-mode :ensure t)
 (use-package lua-mode :ensure t)
 (use-package macrostep :ensure t)
 (use-package magic-filetype :ensure t)
