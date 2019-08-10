@@ -13,6 +13,7 @@ GRTAGS
 .dumbjump
 .ignore
 .tramp_history
+lsp/
 phan.log
 phan-master.log
 filter.log
