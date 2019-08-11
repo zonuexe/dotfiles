@@ -622,6 +622,9 @@
   :mode ("\\.ts\\'" . typescript-mode)
   :hook ((typescript-mode . my-setup-typescript)))
 
+(leaf hcl-mode
+  :mode ("\\.workflow\\'"))
+
 ;; Go
 ;;(use-package go-mode :defer t)
 

@@ -133,6 +133,7 @@
 (use-package hamburger-menu :ensure t)
 (use-package haml-mode :ensure t)
 (use-package haskell-mode :ensure t)
+(use-package hcl-mode :ensure t)
 (use-package helm :ensure t)
 (use-package helm-ag :ensure t)
 (use-package helm-descbinds :ensure t)
