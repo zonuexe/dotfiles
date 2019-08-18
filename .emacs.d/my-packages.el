@@ -212,7 +212,7 @@
 (use-package posframe :ensure t)
 (use-package flycheck-posframe :ensure t)
 (use-package flycheck-phpstan :ensure t)
-(leaf phpunit :el-get (phpunit :url "https://github.comn/lamirault/phpunit.el" :branch "develop"))
+(leaf phpunit :ensure t)
 (use-package presentation :ensure t)
 (use-package pixiv-novel-mode :ensure t)
 (use-package pomodoro :ensure t)
