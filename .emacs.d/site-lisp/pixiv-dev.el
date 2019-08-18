@@ -123,7 +123,7 @@
   (interactive)
   (let* (markdown (url (pixiv-dev-make-file-url (pixiv-dev--working-dir))))
     (when url
-      (setq markdown (format "[`%s`](%s)" (php-util-copyit-fqsen) url))
+      (setq markdown (format "[`%s`](%s)" (php-copyit-fqsen) url))
       (kill-new markdown)
       (message (format "Copy `%s'!" markdown)))))
 
