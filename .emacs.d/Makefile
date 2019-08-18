@@ -6,7 +6,7 @@ ELCS = $(ELS:.el=.elc)
 all: site-autoload elpa elc
 
 %.elc: %.el
-	$(EMACS) -Q -batch -L . -f batch-byte-compile $<
+	$(EMACS) -Q -batch -L . -f package-initialize -f batch-byte-compile $<
 
 elc: $(ELCS)
 
