@@ -1,12 +1,12 @@
-;;; php-eldoc.el --- eldoc backend for php
+;;; php-eldoc.el --- Eldoc backend for php  -*- lexical-binding: t -*-
 
 ;;; Version: 0.1
 ;;; Author: sabof
 ;;; URL: https://github.com/sabof/php-eldoc
+;;; Package-Requires: ((emacs "25.1"))
 
 ;;; Commentary:
-;; You should find probe.php in the same directory as this file.
-;;
+
 ;; The project is hosted at https://github.com/sabof/php-eldoc
 ;; The latest version, and all the relevant information can be found there.
 
@@ -1944,49 +1944,10 @@
               "( " arguments " )")
       )))
 
-(defun php-eldoc-probe-callback (orignial-buffer)
-  ""
-  (goto-char (point-min))
-  (search-forward "\n\n")
-  (delete-region (point-min) (point))
-  (eval-buffer)
-  (kill-buffer)
-  (set-buffer orignial-buffer)
-  (setq-local
-   php-eldoc-functions-hash
-   (let ((hash (make-hash-table :size 2500 :test 'equal)))
-     (cl-dolist (func php-remote-functions)
-       (puthash (car func) (rest func) hash))
-     hash)))
-
-(defun php-eldoc-probe-load (url)
-  ""
-  (url-retrieve
-   url `(lambda (&rest ignore)
-          (php-eldoc-probe-callback
-           ,(current-buffer)))))
-
-(defun php-eldoc-ac-candidates ()
-  ""
-  (let (result)
-    (maphash (lambda (key value)
-               (push key result))
-             php-eldoc-functions-hash)
-    result))
-
-(eval-after-load 'auto-complete
-  '(ac-define-source php-eldoc
-     '((candidates . php-eldoc-ac-candidates)
-       (cache)
-       (symbol . "f"))))
-
 ;;;###autoload
 (defun php-eldoc-enable ()
   ""
   (interactive)
-  (when (and (boundp 'auto-complete-mode)
-             auto-complete-mode)
-    (pushnew 'ac-source-php-eldoc ac-sources))
   (setq-local eldoc-documentation-function 'php-eldoc-function)
   (eldoc-mode 1))
 
