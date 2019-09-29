@@ -244,66 +244,66 @@
     (when (boundp it) (set it 'meta)))))
 
 ;; key-chord
-(use-package key-chord :defer t
+(leaf key-chord
   :custom
-  (key-chord-two-keys-delay 0.02)
+  (key-chord-two-keys-delay . 0.02)
+  :chord (("df" . find-function)
+          ("fh" . describe-function)
+          ("fv" . find-variable)
+          ("jb" . jetbrains-open-buffer-file)
+          ("@p" . package-install)
+          ("kl" . align-regexp)
+          ("rt" . toggle-load-theme)
+          ("wr" . writeroom-mode)
+          ("m," . reload-major-mode)
+          ("mc" . my/buffer-minchoize))
   :init
-  (key-chord-mode 1)
-  :config
-  (key-chord-define-global "df" 'find-function)
-  (key-chord-define-global "fh" 'describe-function)
-  (key-chord-define-global "fv" 'find-variable)
-  (key-chord-define-global "jb" 'jetbrains-open-buffer-file)
-  (key-chord-define-global "@p" 'package-install)
-  (key-chord-define-global "kl" 'align-regexp)
-  (key-chord-define-global "rt" 'toggle-load-theme)
-  (key-chord-define-global "wr" 'writeroom-mode)
-  (key-chord-define-global "m," 'reload-major-mode)
-  (key-chord-define-global "mc" 'my/buffer-minchoize))
+  (key-chord-mode 1))
 
 ;; Helm
-(use-package helm :defer t
+(leaf helm
   :diminish helm-mode
   :custom
   (helm-ff-lynx-style-map t)
-  :bind (("C-x C-f" . helm-find-files)
-         ("M-x" . helm-smex)
-         ("M-X" . helm-smex-major-mode-commands)
-         ("C-:" . helm-ag-project-root))
+  :bind (("C-x C-f" . helm-find-files))
   :init
   (require 'helm-config)
   (helm-mode t))
 
-(use-package helm-ag :defer t
+(leaf helm-smex
+  :bind (("M-x" . helm-smex)
+         ("M-X" . helm-smex-major-mode-commands)))
+
+(leaf helm-ag
+  :bind (("C-:" . helm-ag-project-root))
   :custom
-  (helm-ag-base-command "rg --vimgrep --no-heading")
-  (helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
+  (helm-ag-base-command . "rg --vimgrep --no-heading")
+  (helm-ff-file-compressed-list . '("epub" "gz" "bz2" "zip" "7z")))
 
 ;; ispell
-(use-package ispell
+(leaf ispell
   :custom
-  (ispell-program-name "hunspell")
-  (ispell-really-hunspell t))
+  (ispell-program-name . "hunspell")
+  (ispell-really-hunspell . t))
 
-(use-package eldoc :defer t
+(leaf eldoc
   :diminish eldoc-mode
   :custom
-  (eldoc-minor-mode-string ""))
+  (eldoc-minor-mode-string . ""))
 
 ;; Auto-Complete
-(use-package auto-complete :defer t
+(leaf auto-complete
   :diminish auto-complete-mode
   :custom
-  (ac-ignore-case nil)
+  (ac-ignore-case . nil)
   :config
+  (require 'auto-complete-config)
   (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
-  ;; (require 'auto-complete-config)
   (ac-config-default)
-  ;;(ac-ispell-setup)
   (global-auto-complete-mode t))
 
 ;; Magit
-(use-package magit :defer t
+(leaf magit
   :bind (("C-x m" . magit-status)
          ("C-c l" . magit-blame-addition))
   :init
@@ -311,22 +311,22 @@
   (setq vc-handled-backends '())
   (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook)))
 
-(use-package magit-find-file :defer t
+(leaf magit-find-file
   :bind (("M-t" . magit-find-file-completing-read)))
 
-(use-package gitignore-mode :defer t
+(leaf gitignore-mode
   :mode ("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))
 
 ;; EditorConfig
-(use-package editorconfig :defer t
+(leaf editorconfig
   :diminish editorconfig-mode
   :custom
-  (editorconfig-get-properties-function 'editorconfig-core-get-properties-hash)
+  (editorconfig-get-properties-function . 'editorconfig-core-get-properties-hash)
   :init
-  (editorconfig-mode t))
+  (editorconfig-mode 1))
 
 ;; Conf-Mode
-(use-package conf-mode
+(leaf conf-mode
   :init
   (require 'generic-x)
   (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
@@ -336,44 +336,41 @@
 ;; SSH
 ;;(use-package ssh-config-mode)
 
-;; Projectile
-(use-package projectile :defer t
+(leaf projectile
   :hook ((projectile-mode . projectile-rails-on))
   :custom
-  (projectile-enable-caching nil)
-  (projectile-completion-system 'helm))
+  (projectile-enable-caching . nil)
+  (projectile-completion-system . 'helm))
 
-(use-package helm-projectile :defer t
+(leaf helm-projectile
   :config
   (helm-projectile-on))
 
-;; Flycheck
-(use-package flycheck :defer t
+(leaf flycheck
   :diminish flycheck-mode
   :hook ((flycheck-mode . flycheck-cask-setup))
   :init
   (global-flycheck-mode t)
   (flycheck-package-setup))
 
-;; elec-pair
-(use-package elec-pair :defer t
+(leaf elec-pair
   :init
   (electric-pair-mode 1))
 
 ;; which-func
-(use-package which-func :defer t
+(leaf which-func
   :init
   (which-function-mode 1))
 
 ;; smartchr
-(use-package smartchr :defer t
+(leaf smartchr
   :commands smartchr)
 
 ;; YASnippets
-(use-package yasnippet
+(leaf yasnippet
   :diminish yas-minor-mode
   :custom
-  (yas-alias-to-yas/prefix-p nil)
+  (yas-alias-to-yas/prefix-p . nil)
   :init
   (yas-global-mode t))
 
@@ -387,14 +384,14 @@
   (helm-mode 1)
   (bind-key "M-x" #'helm-smex))
 
-(use-package presentation-mode :defer t
+(leaf presentation-mode
   :hook ((presentation-on  . my-presentation-on)
          (presentation-off . my-presentation-off)))
 
 ;;; Languages:
-(use-package sql :defer t
+(leaf sql
   :custom
-  (sql-product 'mysql))
+  (sql-product . 'mysql))
 
 ;; Web
 (defun my-web-mode-setup ()
@@ -410,20 +407,23 @@
                       (get-text-property (point) 'block-side))))
     t))
 
-(use-package web-mode :defer t
+(leaf web-mode
   :hook ((web-mode . my-web-mode-setup))
   :mode
   ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'"
    "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")
   :custom
-  (web-mode-enable-auto-pairing nil)
-  (web-mode-enable-auto-indentation nil)
+  (web-mode-enable-auto-pairing . nil)
+  (web-mode-enable-auto-indentation . nil)
   :config
   (require 'smartparens)
   (flycheck-add-mode 'typescript-tslint 'web-mode)
   (add-to-list 'web-mode-ac-sources-alist
                '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
   (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
+
+(leaf css-mode
+  :hook ((css-mode-hook . emmet-mode)))
 
 ;; PHP
 (defun my/turn-on-php-eldoc ()
@@ -433,7 +433,12 @@
 
 (defun my-php-mode-setup ()
   "My PHP-mode hook."
-  ;;(require 'company-phpactor)
+  (auto-complete-mode -1)
+  (require 'company-phpactor)
+  (company-mode 1)
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1)
+  (setq-local company-backends '(company-phpactor company-files company-etags company-dabbrev-code))
   (my/turn-on-php-eldoc)
   (subword-mode 1)
   (setq show-trailing-whitespace t)
@@ -454,13 +459,13 @@
 
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
 
-(use-package php-mode
+(leaf php-mode
   :hook ((php-mode . my-php-mode-setup))
   :custom
-  (php-default-major-mode 'php-mode)
-  (php-manual-url 'ja)
-  (php-mode-coding-style 'psr2)
-  (php-mode-template-compatibility nil)
+  (php-default-major-mode . 'php-mode)
+  (php-manual-url . 'ja)
+  (php-mode-coding-style . 'psr2)
+  (php-mode-template-compatibility . nil)
   :config
   ;;(require 'php-extras)
   ;;(php-extras-eldoc-documentation-function)
@@ -476,44 +481,42 @@
   (bind-key "C-c C--" 'php-current-class php-mode-map)
   (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
 
-(use-package psysh
+(leaf psysh
   :custom
-  (psysh-doc-display-function #'popwin:display-buffer))
+  (psysh-doc-display-function . #'popwin:display-buffer))
 
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
-(use-package psysh :defer t
+(leaf psysh
   :hook ((psysh-mode . my/turn-on-php-eldoc)))
 
-(use-package pixiv-dev :defer t
+(leaf pixiv-dev
   :custom
-  (pixiv-dev-user-name "tadsan")
+  (pixiv-dev-user-name . "tadsan")
   :init
   (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
   (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
   (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t))
 
-(use-package phan :defer t
+(leaf phan
   :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode))
   :config
-  (when (fboundp 'phan-flycheck-setup)
-    (phan-flycheck-setup)))
+  (phan-flycheck-setup))
 
 ;; Ruby
 (defun my-enh-ruby-mode-setup ()
   "Setup function for `enh-ruby-mode'."
-  (setq-local ac-ignore-case t))
+  (setq-local ac-ignore-case t)
+  (subword-mode t))
 
-(use-package enh-ruby-mode :defer t
+(leaf enh-ruby-mode
   :mode (("\\.rb\\'" . enh-ruby-mode))
   :hook ((enh-ruby-mode . my-enh-ruby-mode-setup))
   :interpreter "pry"
+  :custom
+  (ruby-deep-indent-paren-style . nil)
   :config
-  (subword-mode t)
-  (yard-mode t)
   (add-to-list 'ac-modes 'enh-ruby-mode)
-  (custom-set-variables
-   '(ruby-deep-indent-paren-style nil))
   (setq-default enh-ruby-not-insert-magic-comment t))
 
 ;;; begin enh-ruby-mode patch
@@ -528,14 +531,14 @@
 ;;; enh-ruby-mode patch ends here
 
 ;; inf-ruby
-(use-package inf-ruby :defer t
+(leaf inf-ruby
   :hook ((inf-ruby-mode . ansi-color-for-comint-mode-on))
   :custom
-  (inf-ruby-default-implementation "pry")
-  (inf-ruby-eval-binding "Pry.toplevel_binding"))
+  (inf-ruby-default-implementation . "pry")
+  (inf-ruby-eval-binding . "Pry.toplevel_binding"))
 
 ;; Python
-(use-package python :defer t
+(leaf python
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python" . python-mode))
 
@@ -547,6 +550,7 @@
   "Setup function for Emacs Lisp."
   (rainbow-mode t)
   (auto-complete-mode 1)
+  (flycheck-elsa-setup)
   (setq ac-sources (append ac-sources my/emacs-lisp-ac-sources))
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru")
@@ -554,7 +558,7 @@
   (turn-on-eldoc-mode)
   (elisp-slime-nav-mode +1))
 
-(use-package nameless :defer t
+(use-package nameless
   :diminish nameless-mode
   :config
   (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable")))
@@ -569,10 +573,10 @@
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
 
-(use-package lsp-mode :defer t
+(leaf lsp-mode
   :hook ((lsp-after-open . lsp-enable-imenu)))
 
-(use-package paredit :defer t
+(use-package paredit
   :diminish paredit-mode
   :bind (:map paredit-mode-map
          ("C-<right>" . right-word)
@@ -586,11 +590,11 @@
   (paredit-mode t)
   (ac-geiser-setup))
 
-(use-package scheme :defer t
+(leaf scheme
   :hook ((geiser-mode-hook . my/scheme-mode-hook)
          (scheme-mode-hook . my/scheme-mode-hook))
   :custom
-  (geiser-active-implementations '(guile racket)))
+  (geiser-active-implementations . '(guile racket)))
 
 ;; Common Lisp
 ;; (use-package sly :defer t
@@ -600,19 +604,19 @@
 ;;    '(inferior-lisp-program "sbcl")))
 
 ;; Haskell
-(use-package haskell-mode :defer t
+(leaf haskell-mode
   :hook ((haskell-mode . turn-on-eldoc-mode)
          (haskell-mode . turn-on-haskell-indent)))
 
 ;; JavaScript
-(use-package js2-mode :defer t
+(leaf js2-mode
   :mode ("\\.js\\'"))
 
-(use-package rjsx-mode :defer t
+(leaf rjsx-mode
   :mode ("\\.jsx\\'"))
 
 ;; CoffeeScript
-(use-package coffee :defer t
+(leaf coffee
   :config
   (setq-default coffee-tab-width 2))
 
@@ -625,7 +629,7 @@
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1))
 
-(use-package typescript :defer t
+(leaf typescript
   :mode ("\\.ts\\'" . typescript-mode)
   :hook ((typescript-mode . my-setup-typescript)))
 
@@ -647,12 +651,12 @@
   (unless (eq major-mode 'html-mode)
     (setq line-spacing 5)))
 
-(use-package text-mode :defer t
+(leaf text-mode
   :mode ("/LICENSE\\'")
   :hook ((text-mode . my-text-mode-setup)))
 
 ;; YAML
-(use-package yaml-mode :defer t
+(leaf yaml-mode
   :mode ("/\\.gemrc\\'"))
 
 ;; Markdown Mode
@@ -667,14 +671,12 @@
 ;;(use-package 'realtime-preview :defer t)
 
 ;; Emmet-mode
-(use-package emmet-mode :defer t
-  :hook (web-mode-hook css-mode))
 
 ;; pixiv Novel
 ;;(use-package pixiv-novel-mode :defer t)
 
 ;; Magic Filetype
-(use-package magic-filetype :defer t
+(leaf magic-filetype
   :init
   (magic-filetype-set-auto-mode 'ruby)
   (magic-filetype-enable-vim-filetype))
@@ -698,7 +700,7 @@
   (recentf-mode t))
 
 ;; Undo Tree
-(use-package undo-tree :ensure t
+(leaf undo-tree :ensure t
   :diminish undo-tree-mode
   :init
   (global-undo-tree-mode)
@@ -706,25 +708,25 @@
   (bind-key "C-?" #'undo-tree-redo))
 
 ;; expand-region.el
-(use-package expand-region :defer t
+(leaf expand-region
   :bind (("C-@" . er/expand-region)
          ("C-`" . er/contract-region)))
 
 ;; Annotate.el
-(use-package annotate :defer t
+(leaf annotate
   :bind (("M-@"   . annotate-annotate)
          ("C-M-@" . annotate-clear-annotations)))
 
 ;;; Tools:
 
 ;; Open junk file
-(use-package open-junk-file
+(leaf open-junk-file
   :bind (("C-c j" . open-junk-file))
   :custom
-  (open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
+  (open-junk-file-format . "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
 
 ;; restclient.el
-(use-package restclient :defer t
+(leaf restclient
   :mode ("\\.http\\'" . restclient-mode))
 
 ;; w3m
@@ -746,7 +748,7 @@
 ;;(require 'ox-ioslide-helper)
 
 ;; navi2ch
-(use-package navi2ch :defer t
+(leaf navi2ch
   :config
   (require 'navi2ch-mona)
   (custom-set-variables
@@ -760,7 +762,7 @@
   (navi2ch-mona-setup))
 
 ;; EMMS http://www.emacswiki.org/emacs/EMMS
-(use-package emms :defer t
+(leaf emms
   :config
   (require 'emms)
   (use-package emms-player-mpv)
@@ -769,7 +771,9 @@
   (emms-player-mpv-jp-radios-add-all))
 
 ;; ElScreen
-(use-package elscreen
+(leaf elscreen
+  :bind* (("C-<tab>" . elscreen-next)
+          ("<C-iso-lefttab>" . elscreen-previous))
   :init
   (custom-set-variables
    '(elscreen-prefix-key (kbd "C-z"))
@@ -777,8 +781,6 @@
    '(elscreen-tab-display-kill-screen nil)
    '(elscreen-tab-display-control nil))
   ;;(bind-key "C-t p" 'helm-elscreen)
-  (bind-key* "C-<tab>" 'elscreen-next)
-  (bind-key* "<C-iso-lefttab>" 'elscreen-previous)
   (elscreen-start)
   ;; El-Screeのウィンドウを一個つくる
   (elscreen-create))
@@ -794,24 +796,24 @@
 ;;(use-package color-moccur)
 ;;(use-package moccur-edit)
 
-(use-package rg :defer t
+(leaf rg
   :bind (("C-:" . rg)
          ("M-C-:" . rg-literal))
   :hook ((rg-mode . wgrep-rg-setup)))
 
 ;; Swoop
-(use-package helm-swoop
+(leaf helm-swoop
   :bind (("C-;" . helm-swoop)
          ("M-C-;" . helm-multi-swoop)))
 
 ;; direx
-(use-package direx :defer t
+(leaf direx
   :bind (("M-C-\\" . direx-project:jump-to-project-root-other-window)
          ("M-C-¥"  . direx-project:jump-to-project-root-other-window)))
 
 ;; dired-k
-(use-package dired-k :defer t
-  :bind ((:map dired-mode-map
+(leaf dired-k
+  :bind ((:dired-mode-map
           ("K" . dired-k)))
   :hook ((dired-initial-position-hook . dired-k)))
 
@@ -819,19 +821,19 @@
 ;; (use-package wdired :defer t)
 
 ;; Visual
-(use-package visual-regexp :defer t
+(leaf visual-regexp
   :bind (("M-%" . vr/query-replace)))
 
 ;; image-mode
-(use-package image-mode :defer t
-  :bind (:map image-mode-map
+(leaf image-mode
+  :bind (:image-mode-map
          ("<wheel-up>"    . image-previous-line)
          ("<wheel-down>"  . image-next-line)
          ("<wheel-right>" . image-forward-hscroll)
          ("<wheel-left>"  . image-backward-hscroll)))
 
 ;; Yet another folding
-(use-package yafolding :defer t
+(leaf yafolding
   :hook ((prog-mode . yafolding-mode)))
 
 ;; NeoTree
@@ -841,28 +843,28 @@
   (message "Copy %s"
            (kill-new (neo-buffer--get-filename-current-line))))
 
-(use-package neotree :defer t
-  :bind (:map neotree-mode-map
+(leaf neotree
+  :bind (:neotree-mode-map
          ("M-w" . my/neotree-kill-filename-at-point)))
 
 ;; vi-tilde-fringe
-(use-package vi-tilde-fringe :defer t
+(leaf vi-tilde-fringe
   :diminish vi-tilde-fringe-mode
   :hook ((prog-mode . vi-tilde-fringe-mode)))
 
-(use-package idle-highlight-mode :defer t
+(leaf idle-highlight-mode
   :hook (prog-mode)
   :custom
-  (idle-highlight-idle-time 0.7))
+  (idle-highlight-idle-time . 0.7))
 
 ;; goto-addr
-(use-package goto-addr
+(leaf goto-addr
   :hook ((prog-mode . goto-address-prog-mode)
          (text-mode . goto-address-mode)))
 
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
-(use-package multiple-cursors
+(leaf multiple-cursors
   :init
   (require 'smartrep)
   (declare-function smartrep-define-key "smartrep")
@@ -918,13 +920,13 @@
          ("C-^"     . crux-top-join-lines)
          ("C-DEL"   . crux-kill-line-backwards)))
 
-(use-package vlf :defer t
+(leaf vlf
   :custom
-  (vlf-application 'dont-ask)
+  (vlf-application . 'dont-ask)
   :init
   (require 'vlf-setup))
 
-(use-package ov
+(leaf ov
   :init
   (autoload 'ov "ov.el" "Make an overlay from BEG to END.
 
@@ -937,7 +939,7 @@ If PROPERTIES are specified, set them for the created overlay."))
 ;;(use-package font-utils)
 
 ;; TRAMP
-(use-package tramp :defer t
+(leaf tramp
   :config
   (vagrant-tramp-add-method)
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
@@ -970,7 +972,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     Info-mode
     term-mode))
 
-(use-package diminish :defer t
+(leaf diminish
   :init
   (safe-diminish "face-remap" 'buffer-face-mode)
   (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
@@ -1133,9 +1135,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (init-open-recentf)
 
 ;; Right Click
-(use-package right-click-context :defer t
+(leaf right-click-context
   :custom
-  (right-click-context-mode-lighter "")
+  (right-click-context-mode-lighter . "")
   :init
   (right-click-context-mode 1))
 
@@ -1149,30 +1151,31 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
 
 ;; bm
-(use-package bm :defer t
+(leaf bm
   :bind (("<right-fringe> <wheel-down>" . bm-next-mouse)
          ("<right-fringe> <wheel-up>"   . bm-previous-mouse)
          ("<right-fringe> <mouse-1>"    . bm-toggle-mouse)))
 
-(use-package highlight-indent-guides-method :defer t
+(leaf highlight-indent-guides-method
   :diminish highlight-indent-guides-mode
   ;; :hook ((prog-mode . highlight-indent-guides-mode))
   :custom
-  (highlight-indent-guides-method 'character)
-  (highlight-indent-guides-character ?\|)
-  (highlight-indent-guides-delay 0.5))
+  (highlight-indent-guides-method . 'character)
+  (highlight-indent-guides-character . ?\|)
+  (highlight-indent-guides-delay . 0.5))
 
 ;; hamburger-menu
 ;; https://melpa.org/#/hamburger-menu
-(use-package hamburger-menu :defer t
+(leaf hamburger-menu
   :custom
-  (hamburger-menu-symbol "ﾐ田")
+  (hamburger-menu-symbol . "ﾐ田")
   :init
   (global-hamburger-menu-mode 1))
 
 ;; pomodoro
-(custom-set-variables
- '(pomodoro-sound-player "mpv"))
+(leaf pomodoro
+  :custom
+  (pomodoro-sound-player . "mpv"))
 
 ;; term+
 ;; (require 'term+)
@@ -1184,10 +1187,10 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;   :init
 ;;   (atomic-chrome-start-server))
 
-(use-package google-translate :defer t
+(leaf google-translate
   :custom
-  (google-translate-default-source-language "en")
-  (google-translate-default-target-language "ja"))
+  (google-translate-default-source-language . "en")
+  (google-translate-default-target-language . "ja"))
 
 (defun my/reset-default-directory-by-buffer-file-name ()
   "Set default-directory by `buffer-file-name'."
@@ -1219,7 +1222,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (dash-enable-font-lock))
 
 ;; keyfreq
-(use-package keyfreq :defer t
+(leaf keyfreq
   :init
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
@@ -1232,7 +1235,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;   (global-dmacro-mode 1))
 
 ;; Auto deployment
-(use-package copy-file-on-save :defer t
+(leaf copy-file-on-save
   :init
   (global-copy-file-on-save-mode 1))
 
