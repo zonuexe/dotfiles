@@ -72,6 +72,8 @@
 (let ((default-directory (locate-user-emacs-file "./site-lisp")))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
+(let ((default-directory (locate-user-emacs-file "./el-get")))
+  (normal-top-level-add-subdirs-to-load-path))
 (load (locate-user-emacs-file "./site-lisp/site-lisp-autoloads.el") t)
 
 ;;; Font:
@@ -150,17 +152,24 @@
 (benchmark-init/activate)
 
 (eval-when-compile
+  (require 'leaf)
   (require 'use-package))
+
 (require 'diminish)
 (require 'bind-key)
+(require 'key-chord)
+
+(leaf leaf-keywords
+  :config
+  (leaf-keywords-init))
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 
-(use-package nyan-mode :defer t
+(leaf nyan-mode
   :custom
-  (nyan-bar-length 16)
+  (nyan-bar-length . 16)
   :init
-  (nyan-mode t))
+  (nyan-mode 1))
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)
@@ -172,23 +181,23 @@
 (custom-set-variables '(uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Show paren
-(use-package paren
+(leaf paren
   :init
   (show-paren-mode t))
 
 ;; Column mode
-(use-package simple
+(leaf simple
   :init
   (column-number-mode t))
 
 ;; volatile-highlights.el
-(use-package volatile-highlights
+(leaf volatile-highlights
   :diminish volatile-highlights-mode
   :init
   (volatile-highlights-mode t))
 
 ;; Rainbow mode
-(use-package rainbow-mode :defer t
+(leaf rainbow-mode
   :diminish rainbow-mode)
 
 ;; Key config ;(use-package bind-key)
