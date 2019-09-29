@@ -1227,18 +1227,19 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (keyfreq-autosave-mode 1))
 
 ;; dmacro
-(use-package dmacro :defer t
-  :custom
-  (dmacro-default-key (kbd "C-."))
-  :init
-  (global-dmacro-mode 1))
+;; (use-package dmacro :defer t
+;;   :custom
+;;   (dmacro-default-key (kbd "C-."))
+;;   :init
+;;   (global-dmacro-mode 1))
 
 ;; Auto deployment
 (use-package copy-file-on-save :defer t
   :init
   (global-copy-file-on-save-mode 1))
 
-(setq find-function-C-source-directory (f-expand "~/local/src/emacs/src"))
+(setq find-function-C-source-directory
+      (eval-when-compile (f-expand "~/local/src/emacs/src")))
 
 (benchmark-init/deactivate)
 
