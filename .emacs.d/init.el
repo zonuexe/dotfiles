@@ -651,6 +651,9 @@
   (unless (eq major-mode 'html-mode)
     (setq line-spacing 5)))
 
+(leaf diff-mode
+  :mode ("/infection.log"))
+
 (leaf text-mode
   :mode ("/LICENSE\\'")
   :hook ((text-mode . my-text-mode-setup)))
