@@ -35,6 +35,7 @@
 
 (leaf exec-path-from-shell :ensure t)
 (leaf el-get :ensure t)
+(require 'el-get)
 
 (leaf leaf-keywords :ensure t
   :config (leaf-keywords-init))
@@ -112,6 +113,7 @@
 (use-package faceup :ensure t)
 (use-package flycheck :ensure t)
 (use-package flycheck-cask :ensure t)
+(leaf flycheck-elsa :ensure t)
 (use-package flycheck-package :ensure t)
 (use-package flycheck-rust :ensure t)
 (use-package font-lock-profiler :ensure t)
@@ -174,6 +176,7 @@
 (use-package markdown-mode :ensure t)
 (use-package markdown-preview-eww :ensure t)
 (use-package maruo-macro-mode :ensure t)
+(leaf move-text :ensure t)
 (use-package minesweeper :ensure t)
 (leaf mode-test :el-get (mode-test :url "https://github.com/emacs-php/mode-test.git" :files ("mode-test.el")))
 (use-package multiple-cursors :ensure t)
@@ -204,7 +207,7 @@
 (use-package pdf-tools :ensure t)
 (use-package peep-dired :ensure t)
 (use-package phan :ensure t)
-(use-package php-mode :ensure t)
+(leaf php-mode :ensure t)
 (use-package phpt-mode :ensure t)
 (use-package phpactor :ensure t)
 (use-package posframe :ensure t)
@@ -273,7 +276,6 @@
 (use-package web-mode :ensure t)
 (use-package which-key :ensure t)
 (use-package writeroom-mode :ensure t)
-(leaf xterm-keybinder :el-get (xterm-keybinder :url "https://github.com/yuutayamada/xterm-keybinder-el.git"))
 (use-package yafolding :ensure t)
 (use-package yaml-mode :ensure t)
 (use-package yard-mode :ensure t)
