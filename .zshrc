@@ -181,7 +181,7 @@ export PHAN_BIN=$HOME/.composer/vendor/bin/phan
 #PERL_MM_OPT="INSTALL_BASE=/Users/megurine/perl5"; export PERL_MM_OPT;
 
 phptags(){
-    ctags -e --php-types=c+i+d+f $(git ls-files '*.php')
+    ctags -e --php-types=c+i+d+f $(git ls-files '*.php' | grep -v __snapshots__)
 }
 
 vld () {
