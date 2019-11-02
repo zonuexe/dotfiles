@@ -143,12 +143,8 @@
 (when (file-directory-p "~/repo/emacs/emacs-phps-mode")
   (load "~/repo/emacs/emacs-phps-mode/phps-mode-autoloads.el"))
 
-(when (file-directory-p "~/repo/emacs/sunrise-commander")
-  (load "~/repo/emacs/sunrise-commander/sunrise-autoloads.el"))
-
 ;; load private config
 (require 'my/private "my-private.el" t)
-
 
 ;; benchmark-init
 ;; https://github.com/dholm/benchmark-init-el
@@ -276,11 +272,6 @@
   :init
   (require 'helm-config)
   (helm-mode t))
-
-(use-package helm-ag :defer t
-  :custom
-  (helm-ag-base-command "rg --vimgrep --no-heading")
-  (helm-ff-file-compressed-list '("epub" "gz" "bz2" "zip" "7z")))
 
 ;; ispell
 (use-package ispell
@@ -614,11 +605,6 @@
 (use-package rjsx-mode :defer t
   :mode ("\\.jsx\\'"))
 
-;; CoffeeScript
-(use-package coffee :defer t
-  :config
-  (setq-default coffee-tab-width 2))
-
 ;; TypeScript
 (defun my-setup-typescript ()
   "Setup function for TypeScript."
@@ -634,15 +620,6 @@
 
 (leaf hcl-mode
   :mode ("\\.workflow\\'"))
-
-;; Go
-;;(use-package go-mode :defer t)
-
-;; FSharp
-;;(use-package fsharp-mode :defer t)
-
-;; JSON
-;;(use-package json-mode :defer t)
 
 ;; text-mode
 (defun my-text-mode-setup ()
