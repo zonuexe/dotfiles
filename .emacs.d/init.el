@@ -448,13 +448,14 @@
 
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
 
-(use-package php-mode
-  :hook ((php-mode . my-php-mode-setup))
+(leaf php-mode
+  :hook ((php-mode-hook . my-php-mode-setup))
   :custom
-  (php-default-major-mode 'php-mode)
-  (php-manual-url 'ja)
-  (php-mode-coding-style 'psr2)
-  (php-mode-template-compatibility nil)
+  (php-default-major-mode . 'php-mode)
+  (php-manual-url . 'ja)
+  (php-mode-coding-style . 'psr2)
+  (php-mode-template-compatibility . nil)
+  (php-project-auto-detect-etags-file . t)
   :config
   ;;(require 'php-extras)
   ;;(php-extras-eldoc-documentation-function)
