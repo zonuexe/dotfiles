@@ -1129,12 +1129,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Eshell
 (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
 
-;; bm
-(use-package bm :defer t
-  :bind (("<right-fringe> <wheel-down>" . bm-next-mouse)
-         ("<right-fringe> <wheel-up>"   . bm-previous-mouse)
-         ("<right-fringe> <mouse-1>"    . bm-toggle-mouse)))
-
 (use-package highlight-indent-guides-method :defer t
   :diminish highlight-indent-guides-mode
   ;; :hook ((prog-mode . highlight-indent-guides-mode))
