@@ -16,6 +16,7 @@ path=(
     /usr/local/opt/imagemagick@6/bin(N-/)
     /usr/local/opt/bison/bin(N-/)
     /usr/local/opt/curl/bin(N-/)
+    /usr/local/opt/libiconv/bin(N-/)
     /usr/local/sbin(N-/)
     /usr/local/bin(N-/)
     /usr/bin(N-/)

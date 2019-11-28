@@ -140,9 +140,6 @@
 (when (file-directory-p "~/repo/emacs/phpactor.el")
   (load "~/repo/emacs/phpactor.el/phpactor-autoloads.el"))
 
-(when (file-directory-p "~/repo/emacs/emacs-phps-mode")
-  (load "~/repo/emacs/emacs-phps-mode/phps-mode-autoloads.el"))
-
 ;; load private config
 (require 'my/private "my-private.el" t)
 
@@ -243,9 +240,9 @@
     (when (boundp it) (set it 'meta)))))
 
 ;; key-chord
-(use-package key-chord :defer t
+(leaf key-chord
   :custom
-  (key-chord-two-keys-delay 0.02)
+  (key-chord-two-keys-delay . 0.02)
   :init
   (key-chord-mode 1)
   :config
@@ -305,7 +302,7 @@
   (setq vc-handled-backends '())
   (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook)))
 
-(use-package magit-find-file :defer t
+(leaf magit-find-file
   :bind (("M-t" . magit-find-file-completing-read)))
 
 (use-package gitignore-mode :defer t
