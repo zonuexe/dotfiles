@@ -499,7 +499,6 @@
 (use-package enh-ruby-mode :defer t
   :mode (("\\.rb\\'" . enh-ruby-mode))
   :hook ((enh-ruby-mode . my-enh-ruby-mode-setup))
-  :interpreter "pry"
   :config
   (subword-mode t)
   (yard-mode t)
@@ -521,10 +520,7 @@
 
 ;; inf-ruby
 (use-package inf-ruby :defer t
-  :hook ((inf-ruby-mode . ansi-color-for-comint-mode-on))
-  :custom
-  (inf-ruby-default-implementation "pry")
-  (inf-ruby-eval-binding "Pry.toplevel_binding"))
+  :hook ((inf-ruby-mode . ansi-color-for-comint-mode-on)))
 
 ;; Python
 (use-package python :defer t
@@ -841,6 +837,8 @@
   :hook ((prog-mode . goto-address-prog-mode)
          (text-mode . goto-address-mode)))
 
+(leaf smart-jump :ensure t)
+
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
 (use-package multiple-cursors
@@ -920,7 +918,6 @@ If PROPERTIES are specified, set them for the created overlay."))
 ;; TRAMP
 (use-package tramp :defer t
   :config
-  (vagrant-tramp-add-method)
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 ;;; Games:
@@ -1136,18 +1133,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-character ?\|)
   (highlight-indent-guides-delay 0.5))
-
-;; hamburger-menu
-;; https://melpa.org/#/hamburger-menu
-(use-package hamburger-menu :defer t
-  :custom
-  (hamburger-menu-symbol "ﾐ田")
-  :init
-  (global-hamburger-menu-mode 1))
-
-;; pomodoro
-(custom-set-variables
- '(pomodoro-sound-player "mpv"))
 
 ;; term+
 ;; (require 'term+)
