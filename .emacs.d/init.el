@@ -674,13 +674,11 @@
   :init
   (recentf-mode t))
 
-;; Undo Tree
-(use-package undo-tree :ensure t
-  :diminish undo-tree-mode
+;; Undo
+(use-package undo-fu :ensure t
   :init
-  (global-undo-tree-mode)
-  (bind-key "C-_" #'undo-tree-undo)
-  (bind-key "C-?" #'undo-tree-redo))
+  (bind-key "C-_" #'undo-fu-only-undo)
+  (bind-key "C-?" #'undo-fu-only-redo))
 
 ;; expand-region.el
 (use-package expand-region :defer t
