@@ -258,10 +258,10 @@
   (key-chord-define-global "mc" 'my/buffer-minchoize))
 
 ;; Helm
-(use-package helm :defer t
+(leaf helm
   :diminish helm-mode
   :custom
-  (helm-ff-lynx-style-map t)
+  (helm-ff-lynx-style-map . t)
   :bind (("C-x C-f" . helm-find-files)
          ("M-x" . helm-smex)
          ("M-X" . helm-smex-major-mode-commands)
@@ -270,16 +270,10 @@
   (require 'helm-config)
   (helm-mode t))
 
-;; ispell
-(use-package ispell
-  :custom
-  (ispell-program-name "hunspell")
-  (ispell-really-hunspell t))
-
-(use-package eldoc :defer t
+(leaf eldoc
   :diminish eldoc-mode
   :custom
-  (eldoc-minor-mode-string ""))
+  (eldoc-minor-mode-string . ""))
 
 ;; Auto-Complete
 (use-package auto-complete :defer t
@@ -347,24 +341,24 @@
   (flycheck-package-setup))
 
 ;; elec-pair
-(use-package elec-pair :defer t
+(leaf elec-pair
   :init
   (electric-pair-mode 1))
 
 ;; which-func
-(use-package which-func :defer t
+(leaf which-func
   :init
   (which-function-mode 1))
 
 ;; smartchr
-(use-package smartchr :defer t
+(leaf smartchr
   :commands smartchr)
 
 ;; YASnippets
-(use-package yasnippet
+(leaf yasnippet
   :diminish yas-minor-mode
   :custom
-  (yas-alias-to-yas/prefix-p nil)
+  (yas-alias-to-yas/prefix-p . nil)
   :init
   (yas-global-mode t))
 
@@ -378,14 +372,14 @@
   (helm-mode 1)
   (bind-key "M-x" #'helm-smex))
 
-(use-package presentation-mode :defer t
+(leaf presentation-mode
   :hook ((presentation-on  . my-presentation-on)
          (presentation-off . my-presentation-off)))
 
 ;;; Languages:
-(use-package sql :defer t
+(leaf sql
   :custom
-  (sql-product 'mysql))
+  (sql-product . 'mysql))
 
 ;; Web
 (defun my-web-mode-setup ()
@@ -468,28 +462,27 @@
   (bind-key "C-c C--" 'php-current-class php-mode-map)
   (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
 
-(use-package psysh
+(leaf psysh
   :custom
-  (psysh-doc-display-function #'popwin:display-buffer))
+  (psysh-doc-display-function . #'popwin:display-buffer))
 
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 
-(use-package psysh :defer t
+(leaf psysh
   :hook ((psysh-mode . my/turn-on-php-eldoc)))
 
-(use-package pixiv-dev :defer t
+(leaf pixiv-dev
   :custom
-  (pixiv-dev-user-name "tadsan")
+  (pixiv-dev-user-name . "tadsan")
   :init
   (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
   (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
   (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t))
 
-(use-package phan :defer t
+(leaf phan
   :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode))
   :config
-  (when (fboundp 'phan-flycheck-setup)
-    (phan-flycheck-setup)))
+  (phan-flycheck-setup))
 
 ;; Ruby
 (defun my-enh-ruby-mode-setup ()
@@ -523,7 +516,7 @@
   :hook ((inf-ruby-mode . ansi-color-for-comint-mode-on)))
 
 ;; Python
-(use-package python :defer t
+(leaf python
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python" . python-mode))
 
@@ -574,11 +567,11 @@
   (paredit-mode t)
   (ac-geiser-setup))
 
-(use-package scheme :defer t
+(leaf scheme
   :hook ((geiser-mode-hook . my/scheme-mode-hook)
          (scheme-mode-hook . my/scheme-mode-hook))
   :custom
-  (geiser-active-implementations '(guile racket)))
+  (geiser-active-implementations . '(guile racket)))
 
 ;; Common Lisp
 ;; (use-package sly :defer t
@@ -588,15 +581,15 @@
 ;;    '(inferior-lisp-program "sbcl")))
 
 ;; Haskell
-(use-package haskell-mode :defer t
+(leaf haskell-mode
   :hook ((haskell-mode . turn-on-eldoc-mode)
          (haskell-mode . turn-on-haskell-indent)))
 
 ;; JavaScript
-(use-package js2-mode :defer t
+(leaf js2-mode
   :mode ("\\.js\\'"))
 
-(use-package rjsx-mode :defer t
+(leaf rjsx-mode
   :mode ("\\.jsx\\'"))
 
 ;; TypeScript
@@ -608,12 +601,9 @@
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1))
 
-(use-package typescript :defer t
+(leaf typescript
   :mode ("\\.ts\\'" . typescript-mode)
   :hook ((typescript-mode . my-setup-typescript)))
-
-(leaf hcl-mode
-  :mode ("\\.workflow\\'"))
 
 ;; text-mode
 (defun my-text-mode-setup ()
@@ -629,7 +619,7 @@
   :hook ((text-mode . my-text-mode-setup)))
 
 ;; YAML
-(use-package yaml-mode :defer t
+(leaf yaml-mode
   :mode ("/\\.gemrc\\'"))
 
 ;; Markdown Mode
@@ -640,15 +630,6 @@
   (add-hook 'markdown-mode-hook 'orgtbl-mode)
   (unbind-key "`" gfm-mode-map)
   (visual-line-mode nil))
-
-;;(use-package 'realtime-preview :defer t)
-
-;; Emmet-mode
-(use-package emmet-mode :defer t
-  :hook (web-mode-hook css-mode))
-
-;; pixiv Novel
-;;(use-package pixiv-novel-mode :defer t)
 
 ;; Magic Filetype
 (use-package magic-filetype :defer t
@@ -675,10 +656,11 @@
   (recentf-mode t))
 
 ;; Undo
-(use-package undo-fu :ensure t
+(leaf undo-fu
   :init
-  (bind-key "C-_" #'undo-fu-only-undo)
-  (bind-key "C-?" #'undo-fu-only-redo))
+  (leaf-keys
+   (("C-_" . undo-fu-only-undo)
+    ("C-?" . undo-fu-only-redo))))
 
 ;; expand-region.el
 (use-package expand-region :defer t
@@ -880,28 +862,30 @@
   (smooth-scroll-mode t))
 
 ;; crux
-(use-package crux
-  :bind (("C-c o"   . crux-open-with)
-         ("C-S-o"   . crux-smart-open-line-above)
-         ("C-c n"   . crux-cleanup-buffer-or-region)
-         ("C-c u"   . crux-view-url)
-         ("C-x 4 t" . crux-transpose-windows)
-         ("C-c d"   . crux-duplicate-current-line-or-region)
-         ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
-         ("C-c r"   . crux-rename-file-and-buffer)
-         ("C-c M-t" . crux-visit-term-buffer)
-         ("C-c k"   . crux-kill-other-buffers)
-         ("C-M-z"   . crux-indent-defun)
-         ("C-^"     . crux-top-join-lines)
-         ("C-DEL"   . crux-kill-line-backwards)))
+(leaf crux
+  :init
+  (leaf-keys
+   (("C-c o"   . crux-open-with)
+    ("C-S-o"   . crux-smart-open-line-above)
+    ("C-c n"   . crux-cleanup-buffer-or-region)
+    ("C-c u"   . crux-view-url)
+    ("C-x 4 t" . crux-transpose-windows)
+    ("C-c d"   . crux-duplicate-current-line-or-region)
+    ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
+    ("C-c r"   . crux-rename-file-and-buffer)
+    ("C-c M-t" . crux-visit-term-buffer)
+    ("C-c k"   . crux-kill-other-buffers)
+    ("C-M-z"   . crux-indent-defun)
+    ("C-^"     . crux-top-join-lines)
+    ("C-DEL"   . crux-kill-line-backwards))))
 
-(use-package vlf :defer t
+(leaf vlf
   :custom
-  (vlf-application 'dont-ask)
+  (vlf-application . 'dont-ask)
   :init
   (require 'vlf-setup))
 
-(use-package ov
+(leaf ov
   :init
   (autoload 'ov "ov.el" "Make an overlay from BEG to END.
 
@@ -914,12 +898,9 @@ If PROPERTIES are specified, set them for the created overlay."))
 ;;(use-package font-utils)
 
 ;; TRAMP
-(use-package tramp :defer t
+(leaf tramp
   :config
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
-
-;;; Games:
-;;(use-package gnugo :defer t)
 
 ;;; Communication:
 
@@ -946,7 +927,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     Info-mode
     term-mode))
 
-(use-package diminish :defer t
+(leaf diminish
   :init
   (safe-diminish "face-remap" 'buffer-face-mode)
   (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
@@ -1059,19 +1040,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
     (delete-region (region-beginning) (region-end))
     (insert result)))
 
-(defun my/display-htmlize-current-buffer ()
-  "Display HTMLized buffer from current buffer."
-  (interactive)
-  (display-buffer (htmlize-buffer)))
-
-(defun my/kill-htmlize-current-buffer ()
-  "Kill HTMLized content from current buffer."
-  (interactive)
-  (let ((buf (htmlize-buffer)))
-    (kill-new (with-current-buffer buf
-                (buffer-substring-no-properties (point-min) (point-max))))
-    (kill-buffer buf)))
-
 (defun my/mincho-face ()
   "Return Mincho anonymous face."
   `(:family ,(--first (member it (font-family-list)) '("YuMincho" "Hiragino Mincho ProN" "IPAexMincho"))))
@@ -1100,7 +1068,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ")))
 
 ;; Pandoc-EWW
-(use-package pandoc
+(leaf pandoc
   :init
   (pandoc-turn-on-advice-eww))
 
@@ -1109,14 +1077,14 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (init-open-recentf)
 
 ;; Right Click
-(use-package right-click-context :defer t
+(leaf right-click-context
   :custom
-  (right-click-context-mode-lighter "")
+  (right-click-context-mode-lighter . "")
   :init
   (right-click-context-mode 1))
 
 ;; Beacon — Never lose your cursor again
-(use-package beacon
+(leaf beacon
   :diminish beacon-mode
   :init
   (beacon-mode 1))
@@ -1177,7 +1145,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (dash-enable-font-lock))
 
 ;; keyfreq
-(use-package keyfreq :defer t
+(leaf keyfreq
   :init
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
@@ -1190,7 +1158,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;   (global-dmacro-mode 1))
 
 ;; Auto deployment
-(use-package copy-file-on-save :defer t
+(leaf copy-file-on-save
   :init
   (global-copy-file-on-save-mode 1))
 
