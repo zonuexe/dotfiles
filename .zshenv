@@ -54,11 +54,6 @@ then
     eval "$(rbenv init -)"
 fi
 
-if which phpenv > /dev/null
-then
-    eval "$(phpenv init -)"
-fi
-
 if [ -d /usr/local/opt/openssl ]
 then
     export CPPFLAGS="-I/usr/local/opt/openssl/include"
@@ -70,6 +65,5 @@ typeset -U path cdpath fpath manpath ld_library_path
 
 export LD_LIBRARY_PATH=$HOME/local/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig/
-#include=(${HOME}/include(N-/) $include)
 
 MY_ZSHENV=MY_ZSHENV

@@ -657,10 +657,8 @@
 
 ;; Undo
 (leaf undo-fu
-  :init
-  (leaf-keys
-   (("C-_" . undo-fu-only-undo)
-    ("C-?" . undo-fu-only-redo))))
+  :bind (("C-_" . undo-fu-only-undo)
+         ("C-?" . undo-fu-only-redo)))
 
 ;; expand-region.el
 (use-package expand-region :defer t
