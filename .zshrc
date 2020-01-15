@@ -29,8 +29,6 @@ setopt hist_ignore_space
 setopt share_history
 setopt extended_history
 
-autoload -U compinit && compinit
-
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
 
 case "${OSTYPE}" in
@@ -127,14 +125,14 @@ xterm|xterm-color|kterm|kterm-color)
     ;;
 esac
 
-if [ -f /Applications/MacVim.app/Contents/MacOS/Vim ]
+if [[ -f /Applications/MacVim.app/Contents/MacOS/Vim ]]
 then
   alias vim=/Applications/MacVim.app/Contents/MacOS/Vim
 fi
 
 alias Emacs=$(which emacs)
 
-if [ -f /Applications/Emacs.app/Contents/MacOS/Emacs ]
+if [[ -f /Applications/Emacs.app/Contents/MacOS/Emacs ]]
 then
     alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
 fi
@@ -185,3 +183,19 @@ phptags(){
 vld () {
     php -dvld.active=1 -dvld.execute=0 "$@" 2>&1
 }
+
+if (which zprof > /dev/null) ;then
+  zprof | less
+fi
+
+### Added by Zplugin's installer
+source "$HOME/.zplugin/bin/zplugin.zsh"
+autoload -Uz _zplugin
+(( ${+_comps} )) && _comps[zplugin]=_zplugin
+### End of Zplugin installer's chunk
+
+plugins=(
+    zsh-completions
+)
+
+autoload -U compinit && compinit
