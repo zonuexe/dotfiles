@@ -73,6 +73,7 @@
         rectangle-mark-mode
         switch-to-buffer
         toggle-load-theme
+        undo-fu-only-undo
         wgrep-change-to-wgrep-mode
         wgrep-finish-edit
         ))
