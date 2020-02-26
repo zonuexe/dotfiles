@@ -94,7 +94,6 @@
 (use-package go-mode :ensure t)
 (use-package google-translate :ensure t)
 (use-package haskell-mode :ensure t)
-(use-package hcl-mode :ensure t)
 (use-package helm :ensure t)
 (use-package helm-projectile :ensure t)
 (use-package helm-smex :ensure t)
