@@ -123,7 +123,7 @@
 ;; PATH
 (custom-set-variables
  '(exec-path-from-shell-check-startup-files nil)
- '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH" "PERL5LIB")))
+ '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH")))
 
 (unless (eq window-system 'nt)
   (exec-path-from-shell-initialize))
@@ -897,8 +897,9 @@ If PROPERTIES are specified, set them for the created overlay."))
 
 ;; TRAMP
 (leaf tramp
-  :config
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+  :init
+  (with-eval-after-load 'tramp
+    (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
 
 ;;; Communication:
 
