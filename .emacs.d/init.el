@@ -398,7 +398,7 @@
 (use-package web-mode :defer t
   :hook ((web-mode . my-web-mode-setup))
   :mode
-  ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'"
+  ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'"
    "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")
   :custom
   (web-mode-enable-auto-pairing nil)
@@ -480,9 +480,7 @@
   (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t))
 
 (leaf phan
-  :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode))
-  :config
-  (phan-flycheck-setup))
+  :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode)))
 
 ;; Ruby
 (defun my-enh-ruby-mode-setup ()
@@ -588,9 +586,6 @@
 ;; JavaScript
 (leaf js2-mode
   :mode ("\\.js\\'"))
-
-(leaf rjsx-mode
-  :mode ("\\.jsx\\'"))
 
 ;; TypeScript
 (defun my-setup-typescript ()
