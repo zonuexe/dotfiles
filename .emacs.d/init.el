@@ -196,7 +196,7 @@
 (leaf rainbow-mode
   :diminish rainbow-mode)
 
-;; Key config ;(use-package bind-key)
+;; Key config
 (progn
   (bind-key  "M-ESC ESC"   'keyboard-quit)
   (bind-key  "C-S-n"       'make-frame)
@@ -314,9 +314,6 @@
   (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
   (add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
   (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t))
-
-;; SSH
-;;(use-package ssh-config-mode)
 
 ;; Projectile
 (leaf projectile
@@ -569,13 +566,6 @@
   :custom
   (geiser-active-implementations . '(guile racket)))
 
-;; Common Lisp
-;; (use-package sly :defer t
-;;   :init
-;;   (require 'sly-autoloads)
-;;   (custom-set-variables
-;;    '(inferior-lisp-program "sbcl")))
-
 ;; Haskell
 (leaf haskell-mode
   :hook ((haskell-mode . turn-on-eldoc-mode)
@@ -676,9 +666,6 @@
 (leaf restclient
   :mode ("\\.http\\'" . restclient-mode))
 
-;; w3m
-;;(use-package w3m :defer t)
-
 (leaf org-mode
   :init
   (custom-set-variables
@@ -709,17 +696,6 @@
   ;; El-Screeのウィンドウを一個つくる
   (elscreen-create))
 
-;; Calfw
-;; (use-package calfw)
-;; (use-package calfw-git)
-;; (use-package calfw-syobocal
-;;   :init
-;;   (require 'syobo))
-
-;; moccur
-;;(use-package color-moccur)
-;;(use-package moccur-edit)
-
 (leaf rg
   :bind (("C-:" . rg)
          ("M-C-:" . rg-literal))
@@ -740,9 +716,6 @@
   :bind ((:dired-mode-map
           ("K" . dired-k)))
   :hook ((dired-initial-position-hook . dired-k)))
-
-;; Wdired
-;; (use-package wdired :defer t)
 
 ;; Visual
 (leaf visual-regexp
@@ -847,12 +820,6 @@
   (autoload 'ov "ov.el" "Make an overlay from BEG to END.
 
 If PROPERTIES are specified, set them for the created overlay."))
-
-;; UCS Utility
-;;(use-package ucs-utils :defer t)
-
-;; Font Utility
-;;(use-package font-utils)
 
 ;; TRAMP
 (leaf tramp
@@ -1057,16 +1024,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (highlight-indent-guides-character . ?\|)
   (highlight-indent-guides-delay . 0.5))
 
-;; term+
-;; (require 'term+)
-;; (require 'xterm-256color)
-
-;; Atomic Chrome for Emacs
-;; https://github.com/alpha22jp/atomic-chrome
-;; (use-package atomic-chrome :defer 3
-;;   :init
-;;   (atomic-chrome-start-server))
-
 (leaf google-translate
   :custom
   (google-translate-default-source-language . "en")
@@ -1106,13 +1063,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   :init
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
-
-;; dmacro
-;; (use-package dmacro :defer t
-;;   :custom
-;;   (dmacro-default-key (kbd "C-."))
-;;   :init
-;;   (global-dmacro-mode 1))
 
 ;; Auto deployment
 (leaf copy-file-on-save
