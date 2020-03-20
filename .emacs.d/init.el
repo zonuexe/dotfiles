@@ -616,13 +616,14 @@
   :mode ("/\\.gemrc\\'"))
 
 ;; Markdown Mode
-(use-package markdown-mode
+(leaf markdown-mode
   ;;:mode ("\\.md\\'" . commonmark-gfm-mode)
   :config
-  (require 'org-table)
-  (add-hook 'markdown-mode-hook 'orgtbl-mode)
-  (unbind-key "`" gfm-mode-map)
-  (visual-line-mode nil))
+  (with-eval-after-load 'markdown-mode
+    (require 'org-table)
+    (add-hook 'markdown-mode-hook 'orgtbl-mode)
+    (unbind-key "`" gfm-mode-map)
+    (visual-line-mode nil)))
 
 ;; Magic Filetype
 (leaf magic-filetype
