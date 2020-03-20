@@ -533,7 +533,8 @@
 (leaf nameless
   :diminish nameless-mode
   :config
-  (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable")))
+  (with-eval-after-load 'nameless
+    (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable"))))
 
 (defvar my/emacs-lisp-modes
   '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
@@ -684,10 +685,10 @@
   (bind-key "C-c c" 'org-capture)
   (autoload 'ioslide:helper "ox-ioslide-helper.el" "Key menu for ioslide" t)
   :config
-  (org-ac/config-default)
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t))))
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)))))
 
 ;; Org-IO Slide
 ;;(require 'ox-ioslide-helper)
