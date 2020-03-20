@@ -805,10 +805,9 @@
   :custom
   (idle-highlight-idle-time 0.7))
 
-;; goto-addr
-(use-package goto-addr
-  :hook ((prog-mode . goto-address-prog-mode)
-         (text-mode . goto-address-mode)))
+(prog1 'goto-addr
+  (add-hook 'prog-mode #'goto-address-prog-mode)
+  (add-hook 'text-mode #'goto-address-mode))
 
 (leaf smart-jump :ensure t)
 
