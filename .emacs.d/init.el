@@ -813,21 +813,21 @@
       ("O"   . 'mc/reverse-regions))))
 
 ;; which-key
-(use-package which-key
+(leaf which-key
   :diminish which-key-mode
   :custom
-  (which-key-idle-delay 1.5)
+  (which-key-idle-delay . 1.5)
   :init
   (which-key-setup-side-window-right-bottom)
   (which-key-mode t))
 
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
-(use-package smooth-scroll
+(leaf smooth-scroll
   :diminish smooth-scroll-mode
+  :custom
+  (smooth-scroll/vscroll-step-size . 7)
   :init
   (require 'smooth-scroll)
-  (custom-set-variables
-   '(smooth-scroll/vscroll-step-size 7))
   (smooth-scroll-mode t))
 
 ;; crux
@@ -1062,13 +1062,12 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Eshell
 (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
 
-(use-package highlight-indent-guides-method :defer t
+(leaf highlight-indent-guides-method
   :diminish highlight-indent-guides-mode
-  ;; :hook ((prog-mode . highlight-indent-guides-mode))
   :custom
-  (highlight-indent-guides-method 'character)
-  (highlight-indent-guides-character ?\|)
-  (highlight-indent-guides-delay 0.5))
+  (highlight-indent-guides-method . 'character)
+  (highlight-indent-guides-character . ?\|)
+  (highlight-indent-guides-delay . 0.5))
 
 ;; term+
 ;; (require 'term+)
@@ -1080,10 +1079,10 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;   :init
 ;;   (atomic-chrome-start-server))
 
-(use-package google-translate :defer t
+(leaf google-translate
   :custom
-  (google-translate-default-source-language "en")
-  (google-translate-default-target-language "ja"))
+  (google-translate-default-source-language . "en")
+  (google-translate-default-target-language . "ja"))
 
 (defun my/reset-default-directory-by-buffer-file-name ()
   "Set default-directory by `buffer-file-name'."

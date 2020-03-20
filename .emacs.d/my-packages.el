@@ -47,7 +47,6 @@
 (use-package all-the-icons-dired :ensure t)
 (use-package annotate :ensure t)
 (use-package apache-mode :ensure t)
-(use-package atomic-chrome :ensure t)
 (use-package auto-minor-mode :ensure t)
 (use-package beacon :ensure t)
 (use-package benchmark-init :ensure t)
