@@ -510,7 +510,7 @@
 ;;; enh-ruby-mode patch ends here
 
 ;; inf-ruby
-(use-package inf-ruby :defer t
+(leaf inf-ruby
   :hook ((inf-ruby-mode . ansi-color-for-comint-mode-on)))
 
 ;; Python
@@ -618,7 +618,7 @@
   :mode ("/\\.gemrc\\'"))
 
 ;; Markdown Mode
-(use-package markdown-mode :defer t
+(use-package markdown-mode
   ;;:mode ("\\.md\\'" . commonmark-gfm-mode)
   :config
   (require 'org-table)
@@ -627,7 +627,7 @@
   (visual-line-mode nil))
 
 ;; Magic Filetype
-(use-package magic-filetype :defer t
+(leaf magic-filetype
   :init
   (magic-filetype-set-auto-mode 'ruby)
   (magic-filetype-enable-vim-filetype))
@@ -638,15 +638,15 @@
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;; Recentf
-(use-package recentf-ext
+(leaf recentf-ext
   :bind (("C-c っ" . helm-recentf)
          ("C-c t"  . helm-recentf))
   :custom
-  (recentf-max-saved-items 2000)
-  (recentf-auto-cleanup 'never)
-  (recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.cache/"
+  (recentf-max-saved-items . 2000)
+  (recentf-auto-cleanup . 'never)
+  (recentf-exclude . '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.cache/"
                      "/\\.emacs\\.d/\\.cask/" "/\\newsrc\\(\\.eld\\)?\\'" "/elpa/.*-autoloads\\.el\\'"))
-  (recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
+  (recentf-auto-save-timer . (run-with-idle-timer 30 t 'recentf-save-list))
   :init
   (recentf-mode t))
 
@@ -661,20 +661,20 @@
          ("C-`" . er/contract-region)))
 
 ;; Annotate.el
-(use-package annotate :defer t
+(leaf annotate
   :bind (("M-@"   . annotate-annotate)
          ("C-M-@" . annotate-clear-annotations)))
 
 ;;; Tools:
 
 ;; Open junk file
-(use-package open-junk-file
+(leaf open-junk-file
   :bind (("C-c j" . open-junk-file))
   :custom
-  (open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
+  (open-junk-file-format . "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
 
 ;; restclient.el
-(use-package restclient :defer t
+(leaf restclient
   :mode ("\\.http\\'" . restclient-mode))
 
 ;; w3m
