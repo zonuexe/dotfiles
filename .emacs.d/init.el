@@ -223,8 +223,6 @@
   (bind-key  "C-M-S-y"     'my/kill-buffer-file-name)
   (bind-key  "M-<f5>"      'compile)
   (bind-key  "<f5>"        'quickrun)
-  (bind-key  "<f9>"        'zone)
-  (bind-key  "<f12>"       'neotree-toggle)
   (bind-key* "C-c <left>"  'windmove-left)
   (bind-key* "C-c <down>"  'windmove-down)
   (bind-key* "C-c <up>"    'windmove-up)
@@ -760,17 +758,6 @@
 ;; Yet another folding
 (leaf yafolding
   :hook ((prog-mode . yafolding-mode)))
-
-;; NeoTree
-(defun my/neotree-kill-filename-at-point ()
-  "Kill full path of note at point."
-  (interactive)
-  (message "Copy %s"
-           (kill-new (neo-buffer--get-filename-current-line))))
-
-(use-package neotree :defer t
-  :bind (:map neotree-mode-map
-         ("M-w" . my/neotree-kill-filename-at-point)))
 
 ;; vi-tilde-fringe
 (use-package vi-tilde-fringe :defer t

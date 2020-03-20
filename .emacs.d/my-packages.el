@@ -128,7 +128,6 @@
 (use-package multiple-cursors :ensure t)
 (use-package nameless :ensure t)
 (use-package neon-mode :ensure t)
-(use-package neotree :ensure t)
 (use-package nginx-mode :ensure t)
 (use-package nim-mode :ensure t)
 (use-package nyan-mode :ensure t)
