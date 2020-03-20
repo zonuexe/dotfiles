@@ -656,7 +656,7 @@
          ("C-?" . undo-fu-only-redo)))
 
 ;; expand-region.el
-(use-package expand-region :defer t
+(leaf expand-region
   :bind (("C-@" . er/expand-region)
          ("C-`" . er/contract-region)))
 
@@ -721,24 +721,24 @@
 ;;(use-package color-moccur)
 ;;(use-package moccur-edit)
 
-(use-package rg :defer t
+(leaf rg
   :bind (("C-:" . rg)
          ("M-C-:" . rg-literal))
   :hook ((rg-mode . wgrep-rg-setup)))
 
 ;; Swoop
-(use-package helm-swoop
+(leaf helm-swoop
   :bind (("C-;" . helm-swoop)
          ("M-C-;" . helm-multi-swoop)))
 
 ;; direx
-(use-package direx :defer t
+(leaf direx
   :bind (("M-C-\\" . direx-project:jump-to-project-root-other-window)
          ("M-C-¥"  . direx-project:jump-to-project-root-other-window)))
 
 ;; dired-k
-(use-package dired-k :defer t
-  :bind ((:map dired-mode-map
+(leaf dired-k
+  :bind ((:dired-mode-map
           ("K" . dired-k)))
   :hook ((dired-initial-position-hook . dired-k)))
 
@@ -746,19 +746,19 @@
 ;; (use-package wdired :defer t)
 
 ;; Visual
-(use-package visual-regexp :defer t
+(leaf visual-regexp
   :bind (("M-%" . vr/query-replace)))
 
 ;; image-mode
-(use-package image-mode :defer t
-  :bind (:map image-mode-map
+(leaf image-mode
+  :bind (:image-mode-map
          ("<wheel-up>"    . image-previous-line)
          ("<wheel-down>"  . image-next-line)
          ("<wheel-right>" . image-forward-hscroll)
          ("<wheel-left>"  . image-backward-hscroll)))
 
 ;; Yet another folding
-(use-package yafolding :defer t
+(leaf yafolding
   :hook ((prog-mode . yafolding-mode)))
 
 ;; NeoTree
