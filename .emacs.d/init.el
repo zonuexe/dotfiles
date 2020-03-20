@@ -274,19 +274,18 @@
   (eldoc-minor-mode-string . ""))
 
 ;; Auto-Complete
-(use-package auto-complete :defer t
+(leaf auto-complete
   :diminish auto-complete-mode
   :custom
-  (ac-ignore-case nil)
+  (ac-ignore-case . nil)
   :config
-  (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
-  ;; (require 'auto-complete-config)
   (ac-config-default)
+  (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
   ;;(ac-ispell-setup)
   (global-auto-complete-mode t))
 
 ;; Magit
-(use-package magit :defer t
+(leaf magit
   :bind (("C-x m" . magit-status)
          ("C-c l" . magit-blame-addition))
   :init
@@ -297,19 +296,19 @@
 (leaf magit-find-file
   :bind (("M-t" . magit-find-file-completing-read)))
 
-(use-package gitignore-mode :defer t
+(leaf gitignore-mode
   :mode ("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))
 
 ;; EditorConfig
-(use-package editorconfig :defer t
+(leaf editorconfig
   :diminish editorconfig-mode
   :custom
-  (editorconfig-get-properties-function 'editorconfig-core-get-properties-hash)
+  (editorconfig-get-properties-function . 'editorconfig-core-get-properties-hash)
   :init
   (editorconfig-mode t))
 
 ;; Conf-Mode
-(use-package conf-mode
+(leaf conf-mode
   :init
   (require 'generic-x)
   (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
@@ -320,18 +319,18 @@
 ;;(use-package ssh-config-mode)
 
 ;; Projectile
-(use-package projectile :defer t
+(leaf projectile
   :hook ((projectile-mode . projectile-rails-on))
   :custom
-  (projectile-enable-caching nil)
-  (projectile-completion-system 'helm))
+  (projectile-enable-caching . nil)
+  (projectile-completion-system . 'helm))
 
-(use-package helm-projectile :defer t
+(leaf helm-projectile
   :config
   (helm-projectile-on))
 
 ;; Flycheck
-(use-package flycheck :defer t
+(leaf flycheck
   :diminish flycheck-mode
   :hook ((flycheck-mode . flycheck-cask-setup))
   :init
@@ -760,14 +759,14 @@
   :hook ((prog-mode . yafolding-mode)))
 
 ;; vi-tilde-fringe
-(use-package vi-tilde-fringe :defer t
+(leaf vi-tilde-fringe
   :diminish vi-tilde-fringe-mode
   :hook ((prog-mode . vi-tilde-fringe-mode)))
 
-(use-package idle-highlight-mode :defer t
-  :hook (prog-mode)
+(leaf idle-highlight-mode
+  :hook ((prog-mode . idle-highlight-mode))
   :custom
-  (idle-highlight-idle-time 0.7))
+  (idle-highlight-idle-time . 0.7))
 
 (prog1 'goto-addr
   (add-hook 'prog-mode #'goto-address-prog-mode)
