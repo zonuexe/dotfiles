@@ -695,29 +695,6 @@
 ;; Org-IO Slide
 ;;(require 'ox-ioslide-helper)
 
-;; navi2ch
-(use-package navi2ch :defer t
-  :config
-  (require 'navi2ch-mona)
-  (custom-set-variables
-   '(navi2ch-article-use-jit t)
-   '(navi2ch-article-exist-message-range nil)
-   '(navi2ch-article-new-message-range nil)
-   '(navi2ch-mona-enable t)
-   '(navi2ch-mona-use-ipa-mona t)
-   '(navi2ch-mona-face-variable 'navi2ch-mona16-face)
-   '(navi2ch-mona-ipa-mona-font-family-name "mona-izmg16"))
-  (navi2ch-mona-setup))
-
-;; EMMS http://www.emacswiki.org/emacs/EMMS
-(use-package emms :defer t
-  :config
-  (require 'emms)
-  (use-package emms-player-mpv)
-  (add-to-list 'emms-player-list 'emms-player-mpv)
-  (use-package emms-player-mpv-jp-radios)
-  (emms-player-mpv-jp-radios-add-all))
-
 ;; ElScreen
 (use-package elscreen
   :init

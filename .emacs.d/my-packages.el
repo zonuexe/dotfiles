@@ -43,7 +43,6 @@
   (exec-path-from-shell-initialize))
 
 (use-package 2048-game :ensure t)
-(use-package aa-edit-mode :ensure t)
 (use-package ac-html :ensure t)
 (use-package all-the-icons-dired :ensure t)
 (use-package annotate :ensure t)
