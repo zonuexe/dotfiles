@@ -392,14 +392,14 @@
                       (get-text-property (point) 'block-side))))
     t))
 
-(use-package web-mode :defer t
+(leaf web-mode
   :hook ((web-mode . my-web-mode-setup))
   :mode
   ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'"
    "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")
   :custom
-  (web-mode-enable-auto-pairing nil)
-  (web-mode-enable-auto-indentation nil)
+  (web-mode-enable-auto-pairing . nil)
+  (web-mode-enable-auto-indentation . nil)
   :config
   (require 'smartparens)
   (flycheck-add-mode 'typescript-tslint 'web-mode)
@@ -484,7 +484,7 @@
   "Setup function for `enh-ruby-mode'."
   (setq-local ac-ignore-case t))
 
-(use-package enh-ruby-mode :defer t
+(leaf enh-ruby-mode
   :mode (("\\.rb\\'" . enh-ruby-mode))
   :hook ((enh-ruby-mode . my-enh-ruby-mode-setup))
   :config
@@ -530,7 +530,7 @@
   (turn-on-eldoc-mode)
   (elisp-slime-nav-mode +1))
 
-(use-package nameless :defer t
+(leaf nameless
   :diminish nameless-mode
   :config
   (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable")))
@@ -545,12 +545,12 @@
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
 
-(use-package lsp-mode :defer t
+(leaf lsp-mode
   :hook ((lsp-after-open . lsp-enable-imenu)))
 
-(use-package paredit :defer t
+(leaf paredit
   :diminish paredit-mode
-  :bind (:map paredit-mode-map
+  :bind (:paredit-mode-map
          ("C-<right>" . right-word)
          ("C-<left>"  . left-word))
   :init
@@ -677,7 +677,7 @@
 ;; w3m
 ;;(use-package w3m :defer t)
 
-(use-package org-mode :defer t
+(leaf org-mode
   :init
   (custom-set-variables
    '(org-default-notes-file (concat org-directory "/capture.org")))
@@ -693,7 +693,7 @@
 ;;(require 'ox-ioslide-helper)
 
 ;; ElScreen
-(use-package elscreen
+(leaf elscreen
   :init
   (custom-set-variables
    '(elscreen-prefix-key (kbd "C-z"))
@@ -776,7 +776,7 @@
 
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
-(use-package multiple-cursors
+(leaf multiple-cursors
   :init
   (require 'smartrep)
   (declare-function smartrep-define-key "smartrep")
