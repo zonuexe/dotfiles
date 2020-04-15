@@ -60,6 +60,7 @@
 (use-package cov :ensure t)
 (use-package crux :ensure t)
 (use-package csv-mode :ensure t)
+(leaf ctrlf :ensure t)
 (use-package dash :ensure t)
 (use-package dash-at-point :ensure t)
 (use-package datetime-format :ensure t)

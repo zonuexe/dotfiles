@@ -696,6 +696,11 @@
   ;; El-Screeのウィンドウを一個つくる
   (elscreen-create))
 
+(leaf ctrlf
+  :diminish ctrlf-mode
+  :init
+  (ctrlf-mode +1))
+
 (leaf rg
   :bind (("C-:" . rg)
          ("M-C-:" . rg-literal))

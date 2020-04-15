@@ -72,6 +72,7 @@
         quickrun
         rectangle-mark-mode
         switch-to-buffer
+        toggle-frame-fullscreen
         toggle-load-theme
         undo-fu-only-undo
         wgrep-change-to-wgrep-mode
