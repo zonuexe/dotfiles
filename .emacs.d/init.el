@@ -134,9 +134,6 @@
 (when (file-directory-p "~/repo/emacs/php-mode")
   (load "~/repo/emacs/php-mode/php-mode-autoloads.el"))
 
-(when (file-directory-p "~/repo/emacs/auto-complete")
-  (load "~/repo/emacs/auto-complete/auto-complete-autoloads.el"))
-
 (when (file-directory-p "~/repo/emacs/phpactor.el")
   (load "~/repo/emacs/phpactor.el/phpactor-autoloads.el"))
 
