@@ -137,9 +137,6 @@
 (when (file-directory-p "~/repo/emacs/phpactor.el")
   (load "~/repo/emacs/phpactor.el/phpactor-autoloads.el"))
 
-;; load private config
-(require 'my/private "my-private.el" t)
-
 ;; benchmark-init
 ;; https://github.com/dholm/benchmark-init-el
 (benchmark-init/activate)
