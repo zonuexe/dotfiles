@@ -14,12 +14,6 @@
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
-(package-refresh-contents)
-
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(require 'use-package)
 
 (unless (package-installed-p 'leaf)
   (unless (assoc 'leaf package-archive-contents)
@@ -31,6 +25,7 @@
      (package-install 'leaf))))
 
 (require 'leaf)
+(defalias 'use-package #'leaf)
 
 (leaf exec-path-from-shell :ensure t)
 (leaf el-get :ensure t)
