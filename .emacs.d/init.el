@@ -142,8 +142,7 @@
 (benchmark-init/activate)
 
 (eval-when-compile
-  (require 'leaf)
-  (require 'use-package))
+  (require 'leaf))
 
 (require 'diminish)
 (require 'bind-key)
