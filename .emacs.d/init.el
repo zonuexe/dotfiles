@@ -620,18 +620,20 @@
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;; Recentf
-(leaf recentf-ext
-  :bind (("C-c っ" . helm-recentf)
-         ("C-c t"  . helm-recentf))
+(leaf recentf
   :custom
   (recentf-max-saved-items . 2000)
   (recentf-auto-cleanup . 'never)
-  (recentf-exclude . '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.cache/"
-                     "/\\.emacs\\.d/\\.cask/" "/\\newsrc\\(\\.eld\\)?\\'" "/elpa/.*-autoloads\\.el\\'"))
-  (recentf-auto-save-timer . (run-with-idle-timer 30 t 'recentf-save-list))
+  (recentf-exclude . '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.cache/"
+                       "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"
+                       "/elpa/.*-autoloads\\.el\\'"  "/\\newsrc\\(\\.eld\\)?\\'"))
   :init
-  (recentf-mode t))
+  (recentf-mode t)
+  (run-with-idle-timer 30 t #'recentf-save-list))
 
+(leaf helm-for-files
+  :bind (("C-c っ" . helm-recentf)
+         ("C-c t"  . helm-recentf)))
 ;; Undo
 (leaf undo-fu
   :bind (("C-_" . undo-fu-only-undo)

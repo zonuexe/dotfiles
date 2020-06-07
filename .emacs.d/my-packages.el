@@ -152,7 +152,6 @@
 (use-package psysh :ensure t)
 (use-package quickrun :ensure t)
 (use-package rainbow-mode :ensure t)
-(use-package recentf-ext :ensure t)
 (use-package region-convert :ensure t)
 (use-package request-deferred :ensure t)
 (use-package restclient :ensure t)
