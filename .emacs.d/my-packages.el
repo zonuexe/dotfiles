@@ -25,7 +25,8 @@
      (package-install 'leaf))))
 
 (require 'leaf)
-(defalias 'use-package #'leaf)
+(eval-and-compile
+  (defalias 'use-package #'leaf))
 
 (leaf exec-path-from-shell :ensure t)
 (leaf el-get :ensure t)
