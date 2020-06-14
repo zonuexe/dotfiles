@@ -34,6 +34,9 @@
 ;; Nobiscum Sexp.  - S-expression is with us.
 ;;
 ;;; Code:
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6)
+
 (if window-system
     (tool-bar-mode -1)
   (menu-bar-mode -1))
@@ -1073,6 +1076,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
       (eval-when-compile (f-expand "~/local/src/emacs/src")))
 
 (benchmark-init/deactivate)
+(gcmh-mode 1)
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)
 

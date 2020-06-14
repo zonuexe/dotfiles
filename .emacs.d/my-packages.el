@@ -85,6 +85,7 @@
 (use-package format-sql :ensure t)
 (use-package geben :ensure t)
 (use-package geiser :ensure t)
+(leaf gcmh :ensure t)
 (use-package gitignore-mode :ensure t)
 (use-package go-mode :ensure t)
 (use-package google-translate :ensure t)
