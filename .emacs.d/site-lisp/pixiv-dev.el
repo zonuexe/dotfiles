@@ -159,11 +159,5 @@
              (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint")))
     (flycheck-select-checker 'pixiv-dev-lint)))
 
-;;;###autoload
-(defun pixivision ()
-  "Visit pixivision on W3M."
-  (interactive)
-  (w3m-browse-url "https://www.pixivision.net"))
-
 (provide 'pixiv-dev)
 ;;; pixiv-dev.el ends here
