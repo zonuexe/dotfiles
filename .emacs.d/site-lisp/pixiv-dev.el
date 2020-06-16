@@ -34,7 +34,6 @@
 ;;; Code:
 (require 'psysh nil t)
 (require 'flycheck)
-(require 'flycheck-phpstan)
 
 (defgroup pixiv-dev '()
   "Develop pixiv.net and other services."
@@ -90,9 +89,7 @@
    (warning line-start "file:" (file-name) "\tline:" line "\tcol:" (+ (or "-" num))
             "\tlevel:" (+ alnum) "\tdesc:" (message) line-end))
   :modes (php-mode web-mode text-mode nxml-mode js2-mode)
-  :next-checkers ((t . phpstan)))
-;; (flycheck-select-checker 'pixiv-dev-lint)
-;; flycheck-pixiv-dev-lint-executable
+  :next-checkers ((t . php)))
 
 ;; Utillity
 
