@@ -29,8 +29,6 @@
   (defalias 'use-package #'leaf))
 
 (leaf exec-path-from-shell :ensure t)
-(leaf el-get :ensure t)
-(require 'el-get)
 
 (leaf leaf-keywords :ensure t
   :config (leaf-keywords-init))
@@ -91,7 +89,6 @@
 (use-package google-translate :ensure t)
 (use-package haskell-mode :ensure t)
 (use-package helm :ensure t)
-(use-package helm-projectile :ensure t)
 (use-package helm-smex :ensure t)
 (use-package helm-swoop :ensure t)
 (use-package hierarchy :ensure t)
@@ -116,6 +113,7 @@
 (use-package lispxmp :ensure t)
 (use-package logview :ensure t)
 (use-package lua-mode :ensure t)
+(leaf lsp-ui :ensure t)
 (use-package macrostep :ensure t)
 (use-package magic-filetype :ensure t)
 (use-package magit :ensure t)

@@ -75,8 +75,7 @@
 (let ((default-directory (locate-user-emacs-file "./site-lisp")))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
-(let ((default-directory (locate-user-emacs-file "./el-get")))
-  (normal-top-level-add-subdirs-to-load-path))
+
 (load (locate-user-emacs-file "./site-lisp/site-lisp-autoloads.el") t)
 
 ;;; Font:
@@ -115,9 +114,6 @@
 
 (when (version< emacs-version "27")
   (package-initialize))
-
-(add-to-list 'load-path (locate-user-emacs-file "el-get"))
-(load (locate-user-emacs-file "el-get/.loaddefs"))
 
 (require 'dash)
 
@@ -317,10 +313,6 @@
   :custom
   (projectile-enable-caching . nil)
   (projectile-completion-system . 'helm))
-
-(leaf helm-projectile
-  :config
-  (helm-projectile-on))
 
 ;; Flycheck
 (leaf flycheck
@@ -540,7 +532,9 @@
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
 
 (leaf lsp-mode
-  :hook ((lsp-after-open . lsp-enable-imenu)))
+  :hook ((lsp-after-open . lsp-enable-imenu))
+  :custom
+  (lsp-ui-doc-use-childframe . nil))
 
 (leaf paredit
   :diminish paredit-mode
