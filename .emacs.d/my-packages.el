@@ -16,9 +16,9 @@
 (package-initialize)
 
 (unless (package-installed-p 'leaf)
-  (unless (assoc 'leaf package-archive-contents)
+  (unless (assq 'leaf package-archive-contents)
     (package-refresh-contents))
-  (condition-case err
+  (condition-case _err
       (package-install 'leaf)
     (error
      (package-refresh-contents)       ; renew local melpa cache if fail
@@ -77,7 +77,6 @@
 (use-package flycheck-cask :ensure t)
 (leaf flycheck-elsa :ensure t)
 (use-package flycheck-package :ensure t)
-(use-package flycheck-rust :ensure t)
 (use-package font-lock-profiler :ensure t)
 (use-package font-lock-studio :ensure t)
 (use-package format-sql :ensure t)
@@ -143,6 +142,7 @@
 (use-package phpt-mode :ensure t)
 (use-package phpactor :ensure t)
 (use-package posframe :ensure t)
+(leaf projectile :ensure t)
 (use-package flycheck-posframe :ensure t)
 (use-package flycheck-phpstan :ensure t)
 (leaf phpunit :ensure t)
@@ -158,11 +158,9 @@
 (use-package right-click-context :ensure t)
 (use-package rg :ensure t)
 (use-package robots-txt-mode :ensure t)
-(use-package rust-mode :ensure t)
 (use-package s :ensure t)
 (use-package scss-mode :ensure t)
 (use-package shx :ensure t)
-(use-package sl :ensure t)
 (use-package sly :ensure t)
 (use-package smart-jump :ensure t)
 (leaf smartchr :el-get (smartchr :url "https://github.com/imakado/emacs-smartchr.git"))
@@ -173,12 +171,10 @@
 (use-package smooth-scroll :ensure t)
 (use-package sql-indent :ensure t)
 (use-package ssh-config-mode :ensure t)
-(use-package swoop :ensure t)
 (use-package threes :ensure t)
 (use-package tide :ensure t)
 (use-package toml :ensure t)
 (use-package toml-mode :ensure t)
-(use-package treemacs :ensure t)
 (use-package ucs-utils :ensure t)
 (use-package undo-fu :ensure t)
 (use-package untitled-new-buffer :ensure t)
