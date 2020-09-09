@@ -22,3 +22,5 @@
 	default = tracking
 [github]
 	user = zonuexe
+[pull]
+	rebase = true
