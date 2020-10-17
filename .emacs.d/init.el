@@ -6,7 +6,6 @@
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
 ;; Modified: 2018-09-03
-;; Version: 10.10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
 ;; Namespace: my/
@@ -34,8 +33,6 @@
 ;; Nobiscum Sexp.  - S-expression is with us.
 ;;
 ;;; Code:
-(setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.6)
 
 (if window-system
     (tool-bar-mode -1)
@@ -60,14 +57,8 @@
 (load-theme (car my/load-themes) t)
 
 ;;; Variables:
-
-(set-language-environment 'Japanese)
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8)
 (setq make-backup-files nil)
 (setq delete-auto-save-files t)
-(setq use-dialog-box nil)
 
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
@@ -104,16 +95,6 @@
 
 ;; Set and load custom-vars.el
 (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
-;; (when (file-exists-p custom-file)
-;;   (load custom-file))
-
-;;; Packages:
-(require 'package)
-;;(add-to-list 'package-archives '("melpa" . "https://www.mirrorservice.org/sites/melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(when (version< emacs-version "27")
-  (package-initialize))
 
 (require 'dash)
 
@@ -131,10 +112,7 @@
 ;;   (setenv "GIT_SSH" "C:\\Program Files\\PuTTY\\plink.exe"))
 
 (when (file-directory-p "~/repo/emacs/php-mode")
-  (load "~/repo/emacs/php-mode/php-mode-autoloads.el"))
-
-(when (file-directory-p "~/repo/emacs/phpactor.el")
-  (load "~/repo/emacs/phpactor.el/phpactor-autoloads.el"))
+  (load "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"))
 
 ;; benchmark-init
 ;; https://github.com/dholm/benchmark-init-el
@@ -169,14 +147,10 @@
 (custom-set-variables '(uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Show paren
-(leaf paren
-  :init
-  (show-paren-mode t))
+(show-paren-mode t)
 
 ;; Column mode
-(leaf simple
-  :init
-  (column-number-mode t))
+(column-number-mode t)
 
 ;; volatile-highlights.el
 (leaf volatile-highlights
@@ -342,7 +316,7 @@
   :custom
   (yas-alias-to-yas/prefix-p . nil)
   :init
-  (yas-global-mode t))
+  (add-hook 'init-open-recentf-after-hook #'yas-global-mode))
 
 (defun my-presentation-on ()
   (helm-mode -1)
@@ -407,13 +381,13 @@
 
   (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face))
 
-  (require 'flycheck-phpstan)
   (flycheck-mode t)
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
   (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
 
   (when (and buffer-file-name (string-match-p "/pixiv/" buffer-file-name))
     (require 'pixiv-dev nil t)
+    (add-to-list 'flycheck-disabled-checkers 'psalm)
     (pixiv-dev-mode t))
 
   (when (eq 0 (buffer-size))
@@ -429,20 +403,22 @@
   (php-mode-coding-style . 'psr2)
   (php-mode-template-compatibility . nil)
   (php-project-auto-detect-etags-file . t)
+  (phpstan-memory-limit . "2G")
   :config
-  ;;(require 'php-extras)
-  ;;(php-extras-eldoc-documentation-function)
-  ;;(require 'ac-php)
-  ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
+  (with-eval-after-load 'php-mode
+    ;;(require 'ac-php)
+    ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
+    (require 'flycheck-phpstan)
+    (flycheck-add-next-checker 'php 'phpstan)
+    (when (require 'flycheck-psalm nil t)
+      (flycheck-add-next-checker 'php 'psalm))
 
-  (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
-  (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
-  ;; (bind-key "C-}" 'cedit-barf php-mode-map)
-  ;; (bind-key "C-)" 'cedit-slurp php-mode-map)
-  (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
-  (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
-  (bind-key "C-c C--" 'php-current-class php-mode-map)
-  (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
+    (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
+    (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
+    (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
+    (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
+    (bind-key "C-c C--" 'php-current-class php-mode-map)
+    (bind-key "C-c C-=" 'php-current-namespace php-mode-map)))
 
 (leaf psysh
   :custom
@@ -1043,14 +1019,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
                      (setq buffer-file-coding-system 'binary)
                      (buffer-substring-no-properties (point-min) (point-max)))))
       (f-write-bytes content to-file))))
-
-(defun my/term-mode-hook ()
-  ""
-  (yas-minor-mode -1))
-(add-hook 'term-mode-hook 'my/term-mode-hook)
-
-;; info
-(add-to-list 'Info-default-directory-list (locate-user-emacs-file "./info/emacs-manual-24.5-ja"))
 
 (with-eval-after-load 'dash
   (dash-enable-font-lock))
