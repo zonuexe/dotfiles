@@ -24,6 +24,7 @@
         mark-whole-buffer
         markdown-electric-backquote
         markdown-exdent-or-delete
+        markdown-outdent-or-delete
         mouse-set-region
         my/seq-end
         my/seq-home
