@@ -11,6 +11,8 @@ path=(
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
     ~/bin(N-/)
+    /opt/homebrew/bin(N-/)
+    /usr/local/opt/php@7.4/bin(N-/)
     /usr/local/bin/python3(N-/)
     /usr/local/opt/ruby/bin(N-/)
     /usr/local/opt/go/libexec/bin(N-/)
