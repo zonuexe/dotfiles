@@ -28,6 +28,7 @@
 (eval-and-compile
   (defalias 'use-package #'leaf))
 
+(leaf el-get :ensure t)
 (leaf exec-path-from-shell :ensure t)
 
 (leaf leaf-keywords :ensure t
@@ -127,6 +128,7 @@
 (use-package nim-mode :ensure t)
 (use-package nyan-mode :ensure t)
 (use-package open-junk-file :ensure t)
+(leaf org-roam :ensure t)
 (use-package org-table-sticky-header :ensure t)
 (use-package osx-lib :ensure t)
 (use-package ov :ensure t)
@@ -161,7 +163,7 @@
 (use-package s :ensure t)
 (use-package scss-mode :ensure t)
 (use-package shx :ensure t)
-(use-package sly :ensure t)
+;;(leaf sly :ensure t)
 (use-package smart-jump :ensure t)
 (leaf smartchr :el-get (smartchr :url "https://github.com/imakado/emacs-smartchr.git"))
 (use-package smart-newline :ensure t)

@@ -78,12 +78,7 @@
 (defvar my/font-family "Migu 2M")
 (defvar my/font-size
   (let ((size-by-hostname
-         '(("MegurineUbu1410"  . 12.5)
-           ("MegurineUbu1510"  . 12.5)
-           ("MegurineUbu1604"  . 12.5)
-           ("megbook" . 12.5)
-           ("tadsan-tpx"       . 12.5)
-           ("tadsan-ret.local" . 16.5))))
+         '(("tadsan-ret.local" . 16.5))))
     (or (cdr (assoc (system-name) size-by-hostname))
         15.5)))
 
@@ -377,9 +372,10 @@
   ;;(require 'company-phpactor)
   (my/turn-on-php-eldoc)
   (subword-mode 1)
+  (php-ui-mode 1)
   (setq show-trailing-whitespace t)
 
-  (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face))
+  (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face php-string))
 
   (flycheck-mode t)
   (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
@@ -405,20 +401,18 @@
   (php-project-auto-detect-etags-file . t)
   (phpstan-memory-limit . "2G")
   :config
-  (with-eval-after-load 'php-mode
-    ;;(require 'ac-php)
-    ;;(setq ac-php-use-cscope-flag  t ) ;;enable cscope
-    (require 'flycheck-phpstan)
-    (flycheck-add-next-checker 'php 'phpstan)
-    (when (require 'flycheck-psalm nil t)
-      (flycheck-add-next-checker 'php 'psalm))
+  (require 'flycheck-phpstan)
+  (flycheck-add-next-checker 'php 'phpstan)
+  (when (require 'flycheck-psalm nil t)
+    (flycheck-add-next-checker 'php 'psalm))
+  (phpactor-smart-jump-register)
 
-    (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
-    (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
-    (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
-    (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
-    (bind-key "C-c C--" 'php-current-class php-mode-map)
-    (bind-key "C-c C-=" 'php-current-namespace php-mode-map)))
+  (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
+  (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
+  (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
+  (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
+  (bind-key "C-c C--" 'php-current-class php-mode-map)
+  (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
 
 (leaf psysh
   :custom
@@ -649,6 +643,18 @@
 ;; Org-IO Slide
 ;;(require 'ox-ioslide-helper)
 
+(leaf org-roam
+  :hook (after-init-hook . org-roam-mode)
+  :custom
+  (org-roam-directory . "~/Dropbox/org/")
+  :bind ((:org-roam-mode-map
+          ("C-c n l" . org-roam)
+          ("C-c n f" . org-roam-find-file)
+          ("C-c n g" . org-roam-graph))
+         (:org-mode-map
+          ("C-c n i" . org-roam-insert)
+          ("C-c n I" . org-roam-insert-immediate))))
+
 ;; ElScreen
 (leaf elscreen
   :init
@@ -840,9 +846,9 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
   "Reload current major mode."
   (interactive)
   (let ((current-mode major-mode))
-    (fundamental-mode)
-    (funcall current-mode)
-    current-mode))
+    (prog1 current-mode
+      (fundamental-mode)
+      (funcall current-mode))))
 
 (defun toggle-load-theme ()
   "Toggle `load-theme'."
