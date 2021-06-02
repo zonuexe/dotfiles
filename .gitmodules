@@ -1,0 +1,3 @@
+[submodule "smartchr"]
+	path = .emacs.d/borg/smartchr
+	url = git@github.com:imakado/emacs-smartchr.git

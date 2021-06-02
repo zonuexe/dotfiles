@@ -13,7 +13,18 @@
 (add-to-list 'recentf-exclude "/elpa/.*-autoloads\\.el\\'")
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+(custom-set-variables
+ '(package-selected-packages '(php-mode)))
+
 (package-initialize)
+
+(unless (package-installed-p 'borg)
+  (package-install 'borg))
+
+(require 'borg-elpa)
+(when (fboundp 'borg-elpa-initialize)
+  (borg-elpa-initialize))
 
 (unless (package-installed-p 'leaf)
   (unless (assq 'leaf package-archive-contents)

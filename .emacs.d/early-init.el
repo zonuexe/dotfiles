@@ -18,14 +18,9 @@
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
 
-;;; Packages:
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(let ((default-directory (locate-user-emacs-file "./el-get")))
-  (normal-top-level-add-subdirs-to-load-path))
-
-(when (eval-when-compile (version< emacs-version "27"))
-  (package-initialize))
+(with-eval-after-load 'package
+  (when (eval-when-compile (version< emacs-version "28.0.50"))
+    (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
 
 ;;; early-init.el ends here

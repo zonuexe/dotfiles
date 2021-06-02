@@ -69,6 +69,10 @@
 
 (load (locate-user-emacs-file "./site-lisp/site-lisp-autoloads.el") t)
 
+;;; Packages:
+(require 'borg-elpa)
+(borg-elpa-initialize)
+
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
 ;;;     |わかよたれそ　　つねならむ|
