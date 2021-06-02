@@ -1,3 +1,6 @@
+[submodule "key-chord"]
+	path = .emacs.d/borg/key-chord
+	url = git@github.com:zk-phi/key-chord.git
 [submodule "smartchr"]
 	path = .emacs.d/borg/smartchr
 	url = git@github.com:imakado/emacs-smartchr.git

@@ -15,7 +15,9 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (custom-set-variables
- '(package-selected-packages '(php-mode)))
+ '(package-selected-packages
+   '(key-chord
+     php-mode)))
 
 (package-initialize)
 
@@ -118,7 +120,6 @@
 (use-package jetbrains :ensure t)
 (use-package js2-mode :ensure t)
 (use-package json-mode :ensure t)
-(use-package key-chord :ensure t)
 (use-package keyfreq :ensure t)
 (use-package lispxmp :ensure t)
 (use-package logview :ensure t)
