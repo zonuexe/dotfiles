@@ -194,13 +194,13 @@
   (bind-key* "C-c <right>" 'windmove-right))
 (cond
  ((eq window-system 'ns)
-  (--each '(ns-command-modifier ns-alternate-modifier)
-    (when (boundp it) (set it 'meta)))
-  (bind-key "M-¥" (lambda () (interactive) (insert "¥")))
-  (bind-key "¥"   (lambda () (interactive) (insert "\\"))))
+  (when (boundp 'ns-command-modifier) (setq ns-command-modifier 'meta))
+  (when (boundp 'ns-alternate-modifier) (setq ns-alternate-modifier 'meta)
+  (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
+  (global-set-key (kbd "¥") (lambda () (interactive) (insert "\\")))))
  ((eq window-system 'x)
-  (--each '(x-meta-keysym x-super-keysym)
-    (when (boundp it) (set it 'meta)))))
+  (when (boundp 'x-meta-keysym) (setq x-meta-keysym 'meta))
+  (when (boundp 'x-meta-keysym) (setq x-meta-keysym 'meta))))
 
 ;; key-chord
 (leaf key-chord
