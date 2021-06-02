@@ -1,6 +1,0 @@
-[submodule ".spacemacs/.emacs.d"]
-	path = .spacemacs/.emacs.d
-	url = git@github.com:syl20bnr/spacemacs.git
-[submodule "ttcopy"]
-	path = ttcopy
-	url = https://github.com/greymd/ttcopy.git
