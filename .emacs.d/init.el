@@ -124,9 +124,7 @@
 (require 'bind-key)
 (require 'key-chord)
 
-(leaf leaf-keywords
-  :config
-  (leaf-keywords-init))
+(leaf-keywords-init)
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 
@@ -169,20 +167,18 @@
   (bind-key  "M-N"         'untitled-new-buffer)
   (bind-key  "C-M-S-d"     'projectile-dired)
   (bind-key  "C-c :"       'right-click-context-menu)
-  (bind-key  "C-c ;"       'imenu)
   (bind-key  "C-c R"       'revert-buffer)
   (bind-key  "C-c S-i"     'my/display-file-info)
   (bind-key  "C-x j"       'dired-jump)
   (bind-key  "C-x C-S-e"   'pp-eval-last-sexp)
+  (global-set-key (kbd "C-x C-f") #'find-file-at-point)
   (bind-key  "C-x お"      'other-window)
   (bind-key  "C-S-v"       'scroll-down-command)
   (bind-key  "M-o"         'swoop)
   (bind-key  "C-M-o"       'swoop-multi)
   (bind-key  "M-："        'eval-expression)
-  (bind-key  "M-i"         'helm-imenu prog-mode-map)
   (bind-key  "M-ESC ："    'eval-expression)
   (bind-key  "<S-tab>"     'my/outdent-dwim)
-  (bind-key  "C-M-y"       'helm-show-kill-ring)
   (bind-key  "M-<left>"    'bs-cycle-previous)
   (bind-key  "M-<right>"   'bs-cycle-next)
   (bind-key  "C-M-S-y"     'my/kill-buffer-file-name)
@@ -220,18 +216,45 @@
   (key-chord-define-global "m," 'reload-major-mode)
   (key-chord-define-global "mc" 'my/buffer-minchoize))
 
-;; Helm
-(leaf helm
-  :diminish helm-mode
-  :custom
-  (helm-ff-lynx-style-map . t)
-  :bind (("C-x C-f" . helm-find-files)
-         ("M-x" . helm-smex)
-         ("M-X" . helm-smex-major-mode-commands)
-         ("C-:" . helm-ag-project-root))
+(savehist-mode +1)
+
+(leaf vertico :ensure t
+  :bind (:vertico-map (("C-l" . my-filename-upto-parent)))
   :init
-  (require 'helm-config)
-  (helm-mode t))
+  (vertico-mode +1))
+
+(leaf marginalia :ensure t
+  :init
+  (marginalia-mode +1))
+
+(leaf embark :ensure t
+  :bind (("C-c C-c" . embark-act)
+         ("C-c C-o" . embark-export)
+         ("C-c ?" . embark-bindings)))
+
+(leaf consult :ensure t
+  :bind (("C-M-y" . consult-yank-from-kill-ring)
+         ("C-c ;" . consult-imenu)
+         ("C-c t" . consult-recent-file)
+         ("M-X"  . consult-mode-command)
+         ("M-g *" . consult-outline)
+         ("M-i" . consult-imenu))
+  :init
+  (global-set-key [remap switch-to-buffer] 'consult-buffer)
+  (global-set-key [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
+  (global-set-key [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
+  (global-set-key [remap goto-line] 'consult-goto-line))
+
+(leaf embark-consult :ensure t
+  :after (embark consult)
+  :hook
+  (embark-collect-mode-hook . consult-preview-at-point-mode))
+
+(leaf orderless
+  :custom
+  (completion-styles . '(orderless))
+  (completion-category-defaults . nil)
+  (completion-category-overrides . '((file (styles . (partial-completion))))))
 
 (leaf eldoc
   :diminish eldoc-mode
@@ -284,8 +307,7 @@
 (leaf projectile
   :hook ((projectile-mode . projectile-rails-on))
   :custom
-  (projectile-enable-caching . nil)
-  (projectile-completion-system . 'helm))
+  (projectile-enable-caching . nil))
 
 ;; Flycheck
 (leaf flycheck
@@ -318,14 +340,10 @@
   (add-hook 'init-open-recentf-after-hook #'yas-global-mode))
 
 (defun my-presentation-on ()
-  (helm-mode -1)
-  (ido-ubiquitous-mode 1)
-  (bind-key "M-x" #'smex))
+  t)
 
 (defun my-presentation-off ()
-  (ido-ubiquitous-mode -1)
-  (helm-mode 1)
-  (bind-key "M-x" #'helm-smex))
+  t)
 
 (leaf presentation-mode
   :hook ((presentation-on  . my-presentation-on)
@@ -573,6 +591,7 @@
 (leaf markdown-mode
   ;;:mode ("\\.md\\'" . commonmark-gfm-mode)
   :config
+  (eval-when-compile (defvar gfm-mode-map))
   (with-eval-after-load 'markdown-mode
     (require 'org-table)
     (add-hook 'markdown-mode-hook 'orgtbl-mode)
@@ -596,15 +615,12 @@
   (recentf-max-saved-items . 2000)
   (recentf-auto-cleanup . 'never)
   (recentf-exclude . '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.cache/"
-                       "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"
+                       "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\(\\.cask/\\|bookmarks\\)"
                        "/elpa/.*-autoloads\\.el\\'"  "/\\newsrc\\(\\.eld\\)?\\'"))
   :init
   (recentf-mode t)
   (run-with-idle-timer 30 t #'recentf-save-list))
 
-(leaf helm-for-files
-  :bind (("C-c っ" . helm-recentf)
-         ("C-c t"  . helm-recentf)))
 ;; Undo
 (leaf undo-fu
   :bind (("C-_" . undo-fu-only-undo)
@@ -667,7 +683,6 @@
    '(elscreen-display-tab nil)
    '(elscreen-tab-display-kill-screen nil)
    '(elscreen-tab-display-control nil))
-  ;;(bind-key "C-t p" 'helm-elscreen)
   (bind-key* "C-<tab>" 'elscreen-next)
   (bind-key* "<C-iso-lefttab>" 'elscreen-previous)
   (elscreen-start)
@@ -1029,9 +1044,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
                      (setq buffer-file-coding-system 'binary)
                      (buffer-substring-no-properties (point-min) (point-max)))))
       (f-write-bytes content to-file))))
-
-(with-eval-after-load 'dash
-  (dash-enable-font-lock))
 
 ;; keyfreq
 (leaf keyfreq
