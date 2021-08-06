@@ -49,6 +49,7 @@
 (when window-system
   (exec-path-from-shell-initialize))
 
+(leaf modus-themes :ensure t)
 (use-package 2048-game :ensure t)
 (use-package ac-html :ensure t)
 (use-package all-the-icons-dired :ensure t)

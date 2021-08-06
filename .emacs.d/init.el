@@ -54,8 +54,21 @@
  '(completions-common-part ((t (:background "black" :foreground "WhiteSmoke" :slant normal :weight normal :height 1.0 :width normal))))
  '(font-lock-doc-face ((t (:slant normal)))))
 
-(defvar my/load-themes '(manoj-dark tango))
-(load-theme (car my/load-themes) t)
+(leaf modus-themes
+  :custom
+  (modus-themes-completions . 'moderate)
+  (modus-themes-fringes . 'subtle)
+  (modus-themes-italic-constructs . t)
+  (modus-themes-bold-constructs . nil)
+  (modus-themes-hl-line . '(intense underline))
+  (modus-themes-region . '(bg-only no-extend))
+  (modus-themes-scale-headings . t)
+  (modus-themes-prompts . '(background bold gray intense italic))
+  (modus-themes-syntax . '(faint alt-syntax green-strings))
+  :init
+  (modus-themes-load-themes)
+  :config
+  (modus-themes-load-vivendi))
 
 ;;; Variables:
 (setq make-backup-files nil)
@@ -212,7 +225,7 @@
   (key-chord-define-global "jb" 'jetbrains-open-buffer-file)
   (key-chord-define-global "@p" 'package-install)
   (key-chord-define-global "kl" 'align-regexp)
-  (key-chord-define-global "rt" 'toggle-load-theme)
+  (key-chord-define-global "rt" 'modus-themes-toggle)
   (key-chord-define-global "wr" 'writeroom-mode)
   (key-chord-define-global "m," 'reload-major-mode)
   (key-chord-define-global "mc" 'my/buffer-minchoize))
