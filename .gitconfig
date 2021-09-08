@@ -24,3 +24,5 @@
 	user = zonuexe
 [pull]
 	rebase = true
+[init]
+	defaultBranch = master

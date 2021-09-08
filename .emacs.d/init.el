@@ -264,9 +264,9 @@
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
-(leaf orderless
+(leaf orderless :ensure t
   :custom
-  (completion-styles . '(orderless))
+  (completion-styles . '(substring orderless))
   (completion-category-defaults . nil)
   (completion-category-overrides . '((file (styles . (partial-completion))))))
 
@@ -319,14 +319,13 @@
 
 ;; Projectile
 (leaf projectile
-  :hook ((projectile-mode . projectile-rails-on))
   :custom
   (projectile-enable-caching . nil))
 
 ;; Flycheck
 (leaf flycheck
   :diminish flycheck-mode
-  :hook ((flycheck-mode . flycheck-cask-setup))
+  :hook ((flycheck-mode-hook . flycheck-cask-setup))
   :init
   (global-flycheck-mode t)
   (flycheck-package-setup))
@@ -743,21 +742,16 @@
 
 ;; Yet another folding
 (leaf yafolding
-  :hook ((prog-mode . yafolding-mode)))
+  :hook ((prog-mode-hook . yafolding-mode)))
 
 ;; vi-tilde-fringe
 (leaf vi-tilde-fringe
   :diminish vi-tilde-fringe-mode
-  :hook ((prog-mode . vi-tilde-fringe-mode)))
-
-(leaf idle-highlight-mode
-  :hook ((prog-mode . idle-highlight-mode))
-  :custom
-  (idle-highlight-idle-time . 0.7))
+  :hook ((prog-mode-hook . vi-tilde-fringe-mode)))
 
 (prog1 'goto-addr
-  (add-hook 'prog-mode #'goto-address-prog-mode)
-  (add-hook 'text-mode #'goto-address-mode))
+  (add-hook 'prog-mode-hook #'goto-address-prog-mode)
+  (add-hook 'text-mode-hook #'goto-address-mode))
 
 (leaf smart-jump :ensure t)
 
@@ -802,6 +796,12 @@
   :init
   (require 'smooth-scroll)
   (smooth-scroll-mode t))
+
+(leaf topsy :ensure t
+  :hook '(prog-mode-hook))
+
+(leaf puni :ensure t
+  :hook '(php-mode-hook web-mode-hook))
 
 ;; crux
 (leaf crux

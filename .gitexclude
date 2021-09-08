@@ -19,3 +19,4 @@ phan-master.log
 filter.log
 filter-master.log
 test.php
+*-autoloads.el

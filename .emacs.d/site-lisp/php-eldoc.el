@@ -1936,13 +1936,12 @@
                           (propertize arg 'face '(:weight bold))
                         arg)
                       ", "))
-        (incf counter)))
+        (cl-incf counter)))
     (when (>= (length arguments) 2)
       (setq arguments (substring arguments 0 (- (length arguments) 2))))
     (when hash-result
       (concat (propertize (first func) 'face 'font-lock-function-name-face)
-              "( " arguments " )")
-      )))
+              "( " arguments " )"))))
 
 ;;;###autoload
 (defun php-eldoc-enable ()

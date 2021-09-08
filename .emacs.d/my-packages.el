@@ -110,7 +110,6 @@
 (use-package ht :ensure t)
 (use-package http :ensure t)
 (use-package hydra :ensure t)
-(use-package idle-highlight-mode :ensure t)
 (use-package inf-ruby :ensure t)
 (use-package init-open-recentf :ensure t)
 (use-package ivs-edit :ensure t)

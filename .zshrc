@@ -199,7 +199,7 @@ vld () {
 }
 
 if (which zprof > /dev/null) ;then
-  zprof | less
+    zprof | less
 fi
 
 ### Added by Zinit's installer
@@ -213,3 +213,7 @@ plugins=(
 )
 
 autoload -U compinit && compinit
+
+if (which pyenv > /dev/null) ;then
+    eval "$(pyenv init -)"
+fi
