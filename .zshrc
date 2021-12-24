@@ -137,18 +137,9 @@ then
     alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
 fi
 
-if [[ "${(L)$( uname -s )}" == darwin ]] && (( $+commands[arch] )); then
-	alias brew="arch -arch x86_64 /usr/local/bin/brew"
-	alias x64='exec arch -arch x86_64 "$SHELL"'
-	alias a64='exec arch -arch arm64e "$SHELL"'
-	switch-arch() {
-		if  [[ "$(uname -m)" == arm64 ]]; then
-			arch=x86_64
-		elif [[ "$(uname -m)" == x86_64 ]]; then
-			arch=arm64e
-		fi
-		exec arch -arch $arch "$SHELL"
-	}
+if [[ -f /opt/homebrew/bin/brew ]]
+then
+    eval $(/opt/homebrew/bin/brew shellenv)
 fi
 
 alias あ=ag
@@ -201,16 +192,6 @@ vld () {
 if (which zprof > /dev/null) ;then
     zprof | less
 fi
-
-### Added by Zinit's installer
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-### End of Zinit's installer chunk
-
-plugins=(
-    zsh-completions
-)
 
 autoload -U compinit && compinit
 
