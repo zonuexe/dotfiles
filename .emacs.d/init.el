@@ -127,10 +127,6 @@
 (when (file-directory-p "~/repo/emacs/php-mode")
   (load "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"))
 
-;; benchmark-init
-;; https://github.com/dholm/benchmark-init-el
-(benchmark-init/activate)
-
 (eval-when-compile
   (require 'leaf))
 
@@ -1073,7 +1069,6 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (setq find-function-C-source-directory
       (eval-when-compile (f-expand "~/local/src/emacs/src")))
 
-(benchmark-init/deactivate)
 (gcmh-mode 1)
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)

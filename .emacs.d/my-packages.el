@@ -57,7 +57,6 @@
 (use-package apache-mode :ensure t)
 (use-package auto-minor-mode :ensure t)
 (use-package beacon :ensure t)
-(use-package benchmark-init :ensure t)
 (use-package bind-key :ensure t)
 (use-package composer :ensure t)
 (use-package copy-file-on-save :ensure t)
