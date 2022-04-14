@@ -49,6 +49,7 @@
 (when window-system
   (exec-path-from-shell-initialize))
 
+(leaf cape :ensure t)
 (leaf modus-themes :ensure t)
 (use-package 2048-game :ensure t)
 (use-package ac-html :ensure t)
@@ -160,6 +161,7 @@
 (use-package popwin :ensure t)
 (use-package projectile :ensure t)
 (use-package psysh :ensure t)
+(leaf pulsar :ensure t)
 (use-package quickrun :ensure t)
 (use-package rainbow-mode :ensure t)
 (use-package region-convert :ensure t)
