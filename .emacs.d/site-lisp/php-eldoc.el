@@ -1898,7 +1898,7 @@
                      (argument-number
                       (let ((counter 0))
                         (while (search-backward "," boundary t)
-                          (incf counter))
+                          (cl-incf counter))
                         counter))
                      (function-name
                       (progn (goto-char boundary)
