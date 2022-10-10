@@ -20,3 +20,4 @@ filter.log
 filter-master.log
 test.php
 *-autoloads.el
+.rgignore

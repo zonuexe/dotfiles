@@ -10,6 +10,7 @@ path=(
     ~/.composer/vendor/bin(N-/)
     ~/local/bin(N-/)
     ~/.cask/bin(N-/)
+    ~/.bun/bin(N-/)
     ~/bin(N-/)
     /opt/homebrew/bin(N-/)
     /opt/homebrew/opt/ruby/bin(N-/)
@@ -51,7 +52,7 @@ fi
 
 if which lv > /dev/null
 then
-    export PAGER='lv -c'
+    export PAGER='less -R'
 fi
 
 if which rbenv > /dev/null

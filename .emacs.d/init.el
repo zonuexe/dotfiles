@@ -5,7 +5,7 @@
 ;; Package-Requires: ((emacs "26.1"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
-;; Modified: 2018-09-03
+;; Modified: 2022-10-10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
 ;; Namespace: my/
@@ -34,8 +34,7 @@
 ;;
 ;;; Code:
 
-(if window-system
-    (tool-bar-mode -1)
+(unless window-system
   (menu-bar-mode -1))
 
 ;;; Color-theme:
@@ -56,7 +55,9 @@
 
 (leaf modus-themes
   :custom
-  (modus-themes-completions . 'moderate)
+  (modus-themes-completions '((matches . (extrabold))
+                              (vertico . (semibold accented))
+                              (popup . (accented intense))))
   (modus-themes-fringes . 'subtle)
   (modus-themes-italic-constructs . t)
   (modus-themes-bold-constructs . nil)
@@ -117,6 +118,8 @@
 (custom-set-variables
  '(exec-path-from-shell-check-startup-files nil)
  '(exec-path-from-shell-variables '("PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH")))
+
+(setenv "CLOUDSDK_PYTHON_SITEPACKAGES" "1")
 
 (unless (eq window-system 'nt)
   (exec-path-from-shell-initialize))
@@ -184,7 +187,7 @@
   (global-set-key (kbd "C-x C-f") #'find-file-at-point)
   (bind-key  "C-x お"      'other-window)
   (bind-key  "C-S-v"       'scroll-down-command)
-  (bind-key  "M-o"         'swoop)
+  (bind-key  "M-o"         'ace-window)
   (bind-key  "C-M-o"       'swoop-multi)
   (bind-key  "M-："        'eval-expression)
   (bind-key  "M-ESC ："    'eval-expression)
@@ -194,10 +197,10 @@
   (bind-key  "C-M-S-y"     'my/kill-buffer-file-name)
   (bind-key  "M-<f5>"      'compile)
   (bind-key  "<f5>"        'quickrun)
-  (bind-key* "C-c <left>"  'windmove-left)
-  (bind-key* "C-c <down>"  'windmove-down)
-  (bind-key* "C-c <up>"    'windmove-up)
-  (bind-key* "C-c <right>" 'windmove-right))
+  (bind-key "C-c <left>"  'windmove-left)
+  (bind-key "C-c <down>"  'windmove-down)
+  (bind-key "C-c <up>"    'windmove-up)
+  (bind-key "C-c <right>" 'windmove-right))
 (cond
  ((eq window-system 'ns)
   (when (boundp 'ns-command-modifier) (setq ns-command-modifier 'meta))
@@ -248,6 +251,7 @@
          ("C-c t" . consult-recent-file)
          ("M-X"  . consult-mode-command)
          ("M-g *" . consult-outline)
+         ("M-t" . consult-ls-git)
          ("M-i" . consult-imenu))
   :init
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
@@ -262,7 +266,7 @@
 
 (leaf orderless :ensure t
   :custom
-  (completion-styles . '(substring orderless))
+  (completion-styles . '(orderless basic))
   (completion-category-defaults . nil)
   (completion-category-overrides . '((file (styles . (partial-completion))))))
 
@@ -271,16 +275,64 @@
   :custom
   (eldoc-minor-mode-string . ""))
 
-;; Auto-Complete
-(leaf auto-complete
-  :diminish auto-complete-mode
+(leaf corfu :ensure t
   :custom
-  (ac-ignore-case . nil)
-  :config
-  (ac-config-default)
-  (add-to-list 'ac-dictionary-directories (locate-user-emacs-file "./ac-dict"))
-  ;;(ac-ispell-setup)
-  (global-auto-complete-mode t))
+  (corfu-cycle . t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto . t)                 ;; Enable auto completion
+  (corfu-separator . ?\s)          ;; Orderless field separator
+  (corfu-quit-at-boundary . nil)   ;; Never quit at completion boundary
+  (corfu-quit-no-match . nil)      ;; Never quit, even if there is no match
+  (corfu-preview-current . t)      ;; Disable current candidate preview
+  (corfu-preselect-first . nil)    ;; Disable candidate preselection
+  (corfu-on-exact-match . t)       ;; Configure handling of exact matches
+  (corfu-echo-documentation . t)   ;; Disable documentation in the echo area
+  (corfu-scroll-margin . 5)        ;; Use scroll margin
+
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
+  ;; Recommended: Enable Corfu globally.
+  ;; This is recommended since Dabbrev can be used globally (M-/).
+  ;; See also `corfu-excluded-modes'.
+  :init
+  (global-corfu-mode))
+
+(leaf tempel :ensure t
+  ;; Require trigger prefix before template name when completing.
+  ;; :custom
+  ;; (tempel-trigger-prefix "<")
+
+  :bind
+  ("M-+" . tempel-complete) ;; Alternative tempel-expand
+  ("M-*" . tempel-insert)
+  (:tempel-map
+   ("<tab>" . tempel-next)
+   ("S-<tab>" . tempel-previous))
+
+  :init
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-complete
+                      completion-at-point-functions)))
+
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf))
+
+(leaf cape :ensure t
+  :init
+  (add-to-list 'completion-at-point-functions (cape-company-to-capf #'company-tabnine))
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 ;; Magit
 (leaf magit
@@ -290,9 +342,6 @@
   (setq-default magit-auto-revert-mode nil)
   (setq vc-handled-backends '())
   (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook)))
-
-(leaf magit-find-file
-  :bind (("M-t" . magit-find-file-completing-read)))
 
 (leaf gitignore-mode
   :mode ("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))
@@ -339,14 +388,6 @@
 ;; smartchr
 (leaf smartchr
   :commands smartchr)
-
-;; YASnippets
-(leaf yasnippet
-  :diminish yas-minor-mode
-  :custom
-  (yas-alias-to-yas/prefix-p . nil)
-  :init
-  (add-hook 'init-open-recentf-after-hook #'yas-global-mode))
 
 (defun my-presentation-on ()
   t)
@@ -403,7 +444,8 @@
   ;;(require 'company-phpactor)
   (my/turn-on-php-eldoc)
   (subword-mode 1)
-  (php-ui-mode 1)
+  (when (fboundp 'php-ide-mode)
+    (add-hook 'hack-local-variables-hook 'php-ide-turn-on nil t))
   (setq show-trailing-whitespace t)
 
   (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face php-string))
@@ -416,6 +458,11 @@
     (require 'pixiv-dev nil t)
     (add-to-list 'flycheck-disabled-checkers 'psalm)
     (pixiv-dev-mode t))
+
+  (setq-local completion-at-point-functions
+              (append (list #'php-complete-complete-function)
+                      (list (cape-company-to-capf #'company-phpactor))
+                      completion-at-point-functions))
 
   (when (eq 0 (buffer-size))
     (insert "<?php\n\n")))
@@ -438,12 +485,20 @@
     (flycheck-add-next-checker 'php 'psalm))
   (phpactor-smart-jump-register)
 
-  (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
-  (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
+  (bind-key "[" (smartchr "[`!!']" "array(`!!')" "[[`!!']]") php-mode-map)
+  (bind-key "]" (smartchr "array " "]" "]]") php-mode-map)
+  (bind-key "&" (smartchr "&" "&& ") php-mode-map)
+  (bind-key "|" (smartchr "|" "|| " ) php-mode-map)
+  (bind-key "^" (smartchr "^" "fn() => " "function () {`!!'}") php-mode-map)
+  (bind-key "@" (smartchr "@" "$this->") php-mode-map)
   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
   (bind-key "C-c C--" 'php-current-class php-mode-map)
   (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
+
+(with-eval-after-load "company"
+  (require 'company-tabnine)
+  (add-to-list 'company-backends #'company-tabnine))
 
 (leaf psysh
   :custom
@@ -465,6 +520,10 @@
 (leaf phan
   :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode)))
 
+;; (leaf dumb-jump :ensure t
+;;   :init
+;;   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
 ;; Ruby
 (defun my-enh-ruby-mode-setup ()
   "Setup function for `enh-ruby-mode'."
@@ -476,7 +535,6 @@
   :config
   (subword-mode t)
   (yard-mode t)
-  (add-to-list 'ac-modes 'enh-ruby-mode)
   (custom-set-variables
    '(ruby-deep-indent-paren-style nil))
   (setq-default enh-ruby-not-insert-magic-comment t))
@@ -502,14 +560,12 @@
   :interpreter ("python" . python-mode))
 
 ;; Lisp
-(defvar my/emacs-lisp-ac-sources
-  '(ac-source-features ac-source-functions ac-source-variables ac-source-symbols))
+;; (defvar my/emacs-lisp-ac-sources
+;;   '(ac-source-features ac-source-functions ac-source-variables ac-source-symbols))
 
 (defun my-emacs-lisp-mode-setup ()
   "Setup function for Emacs Lisp."
   (rainbow-mode t)
-  (auto-complete-mode 1)
-  (setq ac-sources (append ac-sources my/emacs-lisp-ac-sources))
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru")
   (nameless-mode t)
@@ -535,6 +591,7 @@
 (leaf lsp-mode
   :hook ((lsp-after-open . lsp-enable-imenu))
   :custom
+  (lsp-completion-provider . :none)
   (lsp-ui-doc-use-childframe . nil))
 
 (leaf paredit
@@ -548,8 +605,7 @@
 ;; Scheme
 (defun my-scheme-mode-setup ()
   "λ..."
-  (paredit-mode t)
-  (ac-geiser-setup))
+  (paredit-mode t))
 
 (leaf scheme
   :hook ((geiser-mode-hook . my/scheme-mode-hook)
@@ -692,8 +748,8 @@
    '(elscreen-display-tab nil)
    '(elscreen-tab-display-kill-screen nil)
    '(elscreen-tab-display-control nil))
-  (bind-key* "C-<tab>" 'elscreen-next)
-  (bind-key* "<C-iso-lefttab>" 'elscreen-previous)
+  (bind-key "C-<tab>" 'elscreen-next)
+  (bind-key "<C-iso-lefttab>" 'elscreen-previous)
   (elscreen-start)
   ;; El-Screeのウィンドウを一個つくる
   (elscreen-create))
@@ -829,6 +885,17 @@
 
 If PROPERTIES are specified, set them for the created overlay."))
 
+(leaf writeroom
+  :custom
+  (writeroom-fringes-outside-margins . t)
+  (writeroom-maximize-window . nil)
+  (writeroom-global-effects . '()))
+
+(leaf nov
+  :init
+  (add-hook 'nov-post-html-render-hook #'writeroom-mode)
+  (add-hook 'nov-post-html-render-hook #'my/disable-trailing-mode-hook))
+
 ;; TRAMP
 (leaf tramp
   :init
@@ -867,6 +934,7 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
   (safe-diminish "flyspell" 'flyspell-mode)
   (safe-diminish "simple" 'auto-fill-function)
   (safe-diminish "subword" 'subword-mode)
+  (safe-diminish "gcmh" 'gcmh-mode)
   (--each my/disable-trailing-modes
     (add-hook (intern (concat (symbol-name it) "-hook"))
               'my/disable-trailing-mode-hook)))
@@ -878,14 +946,6 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     (prog1 current-mode
       (fundamental-mode)
       (funcall current-mode))))
-
-(defun toggle-load-theme ()
-  "Toggle `load-theme'."
-  (interactive)
-  (let ((current-theme (car custom-enabled-themes)))
-    (load-theme
-     (car (or (cdr (member current-theme my/load-themes))
-              my/load-themes)))))
 
 (defun find-file-as-sudo (filename)
   "Find `FILENAME' as root."
@@ -986,8 +1046,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (defun my/insert-tetosan ()
   "Kimiwa jitsuni bakadana."
   (with-current-buffer "*scratch*"
-    (goto-char (1- (point-max)))
-    (insert "
+    (unless buffer-read-only
+      (goto-char (1- (point-max)))
+      (insert "
 ;; 　　　　　 　r /
 ;; 　 ＿＿ , --ヽ!-- .､＿
 ;; 　! 　｀/::::;::::ヽ l
@@ -998,7 +1059,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;  　ソ´ ／}｀ｽ /￣￣￣￣/
 ;; 　　　.(_:;つ/  0401 /　ｶﾀｶﾀ
 ;;  ￣￣￣￣￣＼/＿＿＿＿/
-")))
+"))))
 
 ;; Pandoc-EWW
 (leaf pandoc
@@ -1006,6 +1067,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (pandoc-turn-on-advice-eww))
 
 ;; init-open-recentf
+(when (eval-when-compile (file-directory-p "~/repo/emacs/init-open-recentf.el/"))
+  (load "~/repo/emacs/init-open-recentf.el/init-open-recentf.el"))
 (add-hook 'init-open-recentf-before-hook #'my/insert-tetosan)
 (init-open-recentf)
 

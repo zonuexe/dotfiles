@@ -52,6 +52,11 @@
         paredit-semicolon
         paredit-splice-sexp-killing-backward
         php-current-class
+        puni-backward-delete-char
+        puni-backward-kill-word
+        puni-forward-delete-char
+        puni-kill-active-region
+        puni-kill-line
         sp-remove-active-pair-overlay
         subword-left
         subword-right
