@@ -27,6 +27,7 @@
 /haskell-fun/
 /history
 /ido.last
+/intelephense/*
 /image-dired/
 /keyfrek.html
 /logview-cache.extmap
@@ -45,6 +46,7 @@
 /site-lisp/*.elc
 /smex-*
 /srecode-map.el
+/straight/*
 /tramp
 /transient/
 /tutorial
