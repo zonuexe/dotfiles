@@ -137,7 +137,6 @@
 (use-package nim-mode :ensure t)
 (use-package nyan-mode :ensure t)
 (use-package open-junk-file :ensure t)
-(leaf org-roam :ensure t)
 (use-package org-table-sticky-header :ensure t)
 (use-package osx-lib :ensure t)
 (use-package ov :ensure t)

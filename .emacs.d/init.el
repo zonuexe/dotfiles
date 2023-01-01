@@ -728,18 +728,6 @@
 ;; Org-IO Slide
 ;;(require 'ox-ioslide-helper)
 
-(leaf org-roam
-  :hook (after-init-hook . org-roam-mode)
-  :custom
-  (org-roam-directory . "~/Dropbox/org/")
-  :bind ((:org-roam-mode-map
-          ("C-c n l" . org-roam)
-          ("C-c n f" . org-roam-find-file)
-          ("C-c n g" . org-roam-graph))
-         (:org-mode-map
-          ("C-c n i" . org-roam-insert)
-          ("C-c n I" . org-roam-insert-immediate))))
-
 ;; ElScreen
 (leaf elscreen
   :init
