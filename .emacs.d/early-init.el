@@ -20,6 +20,8 @@
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
 
+;; (setq package-enable-at-startup nil)
+
 (with-eval-after-load 'package
   (when (eval-when-compile (version< emacs-version "28.0.50"))
     (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t))
@@ -28,5 +30,10 @@
 (custom-set-variables
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((comp))))
+
+(eval-when-compile
+  (unless (> emacs-major-version 28)
+    (put 'diff-add-log-use-relative-names 'safe-local-variable #'booleanp)
+    (put 'vc-git-annotate-switches 'safe-local-variable (lambda (switches) (equal switches "-w")))))
 
 ;;; early-init.el ends here

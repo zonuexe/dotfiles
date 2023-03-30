@@ -58,25 +58,19 @@
   (modus-themes-completions '((matches . (extrabold))
                               (vertico . (semibold accented))
                               (popup . (accented intense))))
-  (modus-themes-fringes . 'subtle)
   (modus-themes-italic-constructs . t)
-  (modus-themes-bold-constructs . nil)
-  (modus-themes-hl-line . '(intense underline))
-  (modus-themes-region . '(bg-only no-extend))
-  (modus-themes-scale-headings . t)
+  (modus-themes-bold-constructs . t)
   (modus-themes-prompts . '(background bold gray intense italic))
-  (modus-themes-syntax . '(faint alt-syntax green-strings))
   :init
-  (modus-themes-load-themes)
+  (require 'modus-themes)
   :config
-  (modus-themes-load-vivendi))
+  (custom-set-variables
+   '(modus-themes-common-palette-overrides modus-themes-preset-overrides-intense))
+  (load-theme 'modus-vivendi :noconfirm))
 
 ;;; Variables:
 (setq make-backup-files nil)
 (setq delete-auto-save-files t)
-
-(when load-file-name
-  (setq user-emacs-directory (file-name-directory load-file-name)))
 
 (let ((default-directory (locate-user-emacs-file "./site-lisp")))
   (add-to-list 'load-path default-directory)
@@ -129,6 +123,10 @@
 
 (when (file-directory-p "~/repo/emacs/php-mode")
   (load "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"))
+
+(when (file-directory-p "~/repo/emacs/lsp-bridge")
+  (add-to-list 'load-path (expand-file-name "~/repo/emacs/lsp-bridge")))
+(put 'lsp-bridge-php-lsp-server 'safe-local-variable #'stringp)
 
 (eval-when-compile
   (require 'leaf))
@@ -579,7 +577,7 @@
     (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable"))))
 
 (defvar my/emacs-lisp-modes
-  '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
+  '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook lisp-data-mode-hook))
 (--each my/emacs-lisp-modes
   (add-hook it #'my-emacs-lisp-mode-setup))
 
@@ -1120,9 +1118,12 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (setq find-function-C-source-directory
       (eval-when-compile (f-expand "~/local/src/emacs/src")))
 
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+
 (gcmh-mode 1)
 
 ;; (message "Emacs finished loading (%d GCs)." gcs-done)
 
 (provide 'init)
 ;;; init.el ends here
+(put 'narrow-to-region 'disabled nil)

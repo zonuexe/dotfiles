@@ -1,6 +1,7 @@
 # -*- sh-shell: zsh; -*-
 
 path=(
+    ~/local/bin(N-/)
     ~/.rbenv/bin(N-/)
     ~/.phpenv/bin(N-/)
     ~/.rbenv/shims(N-/)
@@ -8,7 +9,6 @@ path=(
     ~/.symfony/bin
     ~/.config/composer/vendor/bin(N-/)
     ~/.composer/vendor/bin(N-/)
-    ~/local/bin(N-/)
     ~/.cask/bin(N-/)
     ~/.bun/bin(N-/)
     ~/bin(N-/)
@@ -44,6 +44,7 @@ export NVM_DIR=~/.nvm
 export GOPATH=$HOME/repo/go
 export XML_CATALOG_FILES=/usr/local/etc/xml/catalog
 export TEST_SERVER=${TEST_SERVER:-1}
+export CLOUDSDK_PYTHON_SITEPACKAGES=1
 
 if which vim > /dev/null > /dev/null
 then
