@@ -45,5 +45,14 @@
                                  (save-excursion (end-of-line) (point))
                                  #'delete)))))
 
+;;;###autoload
+(defun my-consult-line (&optional initial start)
+  "Wrapper function of `consult-line'."
+  (interactive (list
+                (when (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end)))
+                (not (not current-prefix-arg))))
+  (consult-line initial start))
+
 (provide 'my)
 ;;; my.el ends here

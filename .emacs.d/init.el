@@ -228,11 +228,17 @@
   (key-chord-define-global "mc" 'my/buffer-minchoize))
 
 (savehist-mode +1)
+(with-eval-after-load 'prescient
+  (prescient-persist-mode +1))
 
 (leaf vertico :ensure t
   :bind (:vertico-map (("C-l" . my-filename-upto-parent)))
   :init
   (vertico-mode +1))
+
+(leaf vertico-prescient :ensure t
+  :init
+  (vertico-prescient-mode +1))
 
 (leaf marginalia :ensure t
   :init
@@ -247,6 +253,7 @@
   :bind (("C-M-y" . consult-yank-from-kill-ring)
          ("C-c ;" . consult-imenu)
          ("C-c t" . consult-recent-file)
+         ("C-;" . my-consult-line)
          ("M-X"  . consult-mode-command)
          ("M-g *" . consult-outline)
          ("M-t" . consult-ls-git)
@@ -296,6 +303,10 @@
   ;; See also `corfu-excluded-modes'.
   :init
   (global-corfu-mode))
+
+(leaf corfu-prescient :ensure t
+  :init
+  (corfu-prescient-mode +1))
 
 (leaf tempel :ensure t
   ;; Require trigger prefix before template name when completing.
@@ -749,11 +760,6 @@
   :bind (("C-:" . rg)
          ("M-C-:" . rg-literal))
   :hook ((rg-mode . wgrep-rg-setup)))
-
-;; Swoop
-(leaf helm-swoop
-  :bind (("C-;" . helm-swoop)
-         ("M-C-;" . helm-multi-swoop)))
 
 ;; direx
 (leaf direx
