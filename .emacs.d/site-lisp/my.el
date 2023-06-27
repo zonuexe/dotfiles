@@ -54,5 +54,27 @@
                 (not (not current-prefix-arg))))
   (consult-line initial start))
 
+(declare-function php-in-string-or-comment-p "ext:php" ())
+(declare-function php-in-string-p "ext:php" ())
+(declare-function c-backward-token-2 "cc-engine" (&optional count balanced limit))
+(declare-function smartchr-make-struct "ext:smartchr" (_key1 cleanup-fn _key2 insert-fn))
+
+;;;###autoload
+(defun my-php-smartchr-dot (no-string within-string-or-comment next-to-string)
+  "Make a smartchr to press `.` key in PHP with NO-STRING, WITHIN-STRING-OR-COMMENT and NEXT-TO-STRING."
+  (let ((select-template
+         (lambda ()
+           (save-excursion
+             (cond
+              ((php-in-string-or-comment-p) within-string-or-comment)
+              ((and (c-backward-token-2 1 nil)
+                    (goto-char (1+ (point)))
+                    (php-in-string-p))
+               next-to-string)
+              (no-string))))))
+    (smartchr-make-struct
+     :cleanup-fn (lambda () (delete-char (- (length (funcall select-template)))))
+     :insert-fn (lambda () (insert (funcall select-template))))))
+
 (provide 'my)
 ;;; my.el ends here

@@ -77,6 +77,7 @@
   (normal-top-level-add-subdirs-to-load-path))
 
 (load (locate-user-emacs-file "./site-lisp/site-lisp-autoloads.el") t)
+(require 'my)
 
 ;;; Packages:
 (require 'borg-elpa)
@@ -498,6 +499,11 @@
   (bind-key "]" (smartchr "array " "]" "]]") php-mode-map)
   (bind-key "&" (smartchr "&" "&& ") php-mode-map)
   (bind-key "|" (smartchr "|" "|| " ) php-mode-map)
+  (bind-key "." (smartchr
+                 (my-php-smartchr-dot "->" "." ". ")
+                 (my-php-smartchr-dot ". " ".." "..")
+                 "...")
+            php-mode-map)
   (bind-key "^" (smartchr "^" "fn() => " "function () {`!!'}") php-mode-map)
   (bind-key "@" (smartchr "@" "$this->") php-mode-map)
   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
