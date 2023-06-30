@@ -43,6 +43,7 @@
         orgtbl-self-insert-command
         paredit-close-round
         paredit-close-square
+        paredit-delete-char
         paredit-doublequote
         paredit-forward-delete
         paredit-forward-slurp-sexp
@@ -57,6 +58,7 @@
         puni-forward-delete-char
         puni-kill-active-region
         puni-kill-line
+        puni-kill-region
         sp-remove-active-pair-overlay
         subword-left
         subword-right
@@ -69,6 +71,7 @@
 (setq mc/cmds-to-run-once
       '(
         align-regexp
+        ctrlf-forward-default
         elscreen-next
         helm-find-files
         helm-smex

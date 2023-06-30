@@ -50,7 +50,9 @@
   "Wrapper function of `consult-line'."
   (interactive (list
                 (when (use-region-p)
-                  (buffer-substring-no-properties (region-beginning) (region-end)))
+                  (prog1
+                      (buffer-substring-no-properties (region-beginning) (region-end))
+                    (deactivate-mark)))
                 (not (not current-prefix-arg))))
   (consult-line initial start))
 

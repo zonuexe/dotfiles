@@ -182,6 +182,15 @@ export PHAN_BIN=$HOME/.composer/vendor/bin/phan
 
 [[ -e "$HOME/local/dotfiles/ttcopy/ttcp_activate.sh" ]] && . "$HOME/local/dotfiles/ttcopy/ttcp_activate.sh"
 
+phpstan() {
+    if [[ -f 'vendor/bin/phpstan' ]] ; then
+        'vendor/bin/phpstan' --memory-limit=2G "$@"
+    elif [[ -f "$(composer config bin-dir)/phpstan" ]] ; then
+        "$(composer config bin-dir)/phpstan" --memory-limit=2G "$@"
+    else
+        command phpstan --memory-limit=2G "$@"
+    fi
+}
 
 phptags(){
     ctags -e --php-types=c+i+d+f $(git ls-files '*.php' | grep -v __snapshots__)
@@ -199,6 +208,12 @@ autoload -U compinit && compinit
 
 if (which pyenv > /dev/null) ;then
     eval "$(pyenv init -)"
+fi
+
+if (which zoxide > /dev/null)
+then
+    eval "$(zoxide init zsh)"
+    alias cd=z
 fi
 
 # bun completions

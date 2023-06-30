@@ -37,7 +37,7 @@
 (defvar php-eldoc-functions-hash
   (let ((hash (make-hash-table :size 2500 :test 'equal)))
     (mapc (lambda (func)
-            (puthash (car func) (rest func) hash))
+            (puthash (car func) (cl-rest func) hash))
           '(("zend_version")
             ("func_num_args")
             ("func_get_arg" "$arg_num")

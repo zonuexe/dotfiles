@@ -8,7 +8,6 @@
 ;; Modified: 2022-10-10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
-;; Namespace: my/
 ;; URL: https://github.com/zonuexe/dotfiles/blob/master/.emacs.d/init.el
 
 ;; This file is NOT part of GNU Emacs.
@@ -134,7 +133,7 @@
 
 (require 'diminish)
 (require 'bind-key)
-(require 'key-chord)
+(require 'key-chord nil t)
 
 (leaf-keywords-init)
 
@@ -469,8 +468,11 @@
     (add-to-list 'flycheck-disabled-checkers 'psalm)
     (pixiv-dev-mode t))
 
+  (when (fboundp 'php-format-auto-mode)
+    (php-format-auto-mode +1))
+
   (setq-local completion-at-point-functions
-              (append (list #'php-complete-complete-function)
+              (append (list #'php-complete-complete-function #'tempel-complete)
                       (list (cape-company-to-capf #'company-phpactor))
                       completion-at-point-functions))
 
@@ -486,7 +488,9 @@
   (php-manual-url . 'ja)
   (php-mode-coding-style . 'psr2)
   (php-mode-template-compatibility . nil)
+  (php-imenu-generic-expression . 'php-imenu-generic-expression-simple)
   (php-project-auto-detect-etags-file . t)
+  (php-ide-mode)
   (phpstan-memory-limit . "2G")
   :config
   (require 'flycheck-phpstan)
@@ -511,7 +515,25 @@
   (bind-key "C-c C--" 'php-current-class php-mode-map)
   (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
 
-(with-eval-after-load "company"
+(with-eval-after-load 'php-ide
+  (defun init-php-ide-mode (feature activate)
+    "Customize php-ide."
+    (pcase feature
+      (`lsp-bridge
+       (if activate
+           (progn (yas-minor-mode +1)
+                  (corfu-mode -1))
+         (yas-minor-mode -1)
+         (corfu-mode +1)))))
+  (add-hook 'php-ide-mode-functions #'init-php-ide-mode))
+
+(with-eval-after-load 'lsp-bridge
+  (custom-set-variables
+   '(lsp-bridge-completion-popup-predicates
+     (cl-nset-difference lsp-bridge-completion-popup-predicates
+                         '(lsp-bridge-not-in-string lsp-bridge-not-in-comment)))))
+
+(with-eval-after-load 'company
   (require 'company-tabnine)
   (add-to-list 'company-backends #'company-tabnine))
 
@@ -520,6 +542,7 @@
   (psysh-doc-display-function . #'popwin:display-buffer))
 
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
+(add-to-list 'auto-mode-alist '("\\.php\\.faces\\'" . lisp-data-mode))
 
 (leaf psysh
   :hook ((psysh-mode . my/turn-on-php-eldoc)))
@@ -585,7 +608,9 @@
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru")
   (nameless-mode t)
   (turn-on-eldoc-mode)
-  (elisp-slime-nav-mode +1))
+  (elisp-slime-nav-mode +1)
+  (when (eq major-mode 'inferior-emacs-lisp-mode)
+    (bind-key "<RET>" #'ielm-return ielm-map)))
 
 (leaf nameless
   :diminish nameless-mode
@@ -598,6 +623,7 @@
 (--each my/emacs-lisp-modes
   (add-hook it #'my-emacs-lisp-mode-setup))
 
+(require 'org-table)
 (add-hook 'lisp-interaction-mode-hook #'turn-on-orgtbl)
 
 ;; `Cask' is NOT emacs-lisp-mode
@@ -970,10 +996,10 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
          (offset (- (* mode-offset x-times))))
     (if mark-active
         (indent-rigidly
-         (save-excursion (goto-char (region-beginning)) (point-at-bol))
-         (save-excursion (goto-char (region-end)) (point-at-eol))
+         (save-excursion (goto-char (region-beginning)) (line-beginning-position))
+         (save-excursion (goto-char (region-end)) (line-end-position))
          offset)
-      (indent-rigidly (point-at-bol) (point-at-eol) offset))))
+      (indent-rigidly (line-beginning-position) (line-end-position) offset))))
 ;; my/outdent-dwim ends here
 
 (defun my/kill-buffer-file-name (n)
@@ -1128,7 +1154,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (global-copy-file-on-save-mode 1))
 
 (setq find-function-C-source-directory
-      (eval-when-compile (f-expand "~/local/src/emacs/src")))
+      (eval-when-compile (expand-file-name "~/local/src/emacs/src")))
 
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 

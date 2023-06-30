@@ -22,7 +22,10 @@
 (package-initialize)
 
 (unless (package-installed-p 'borg)
-  (package-install 'borg))
+ (package-install 'borg))
+
+(unless (package-installed-p 'emacsql-sqlite-module)
+ (package-install 'emacsql-sqlite-module))
 
 (require 'borg-elpa)
 (when (fboundp 'borg-elpa-initialize)
@@ -182,6 +185,7 @@
 (use-package tide :ensure t)
 (use-package toml :ensure t)
 (use-package toml-mode :ensure t)
+(leaf typescript-mode :ensure t)
 (use-package ucs-utils :ensure t)
 (use-package undo-fu :ensure t)
 (use-package untitled-new-buffer :ensure t)

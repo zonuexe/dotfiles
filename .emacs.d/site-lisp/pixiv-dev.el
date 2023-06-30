@@ -153,7 +153,8 @@
 ;;;###autoload
 (define-minor-mode pixiv-dev-mode
   "Minor mode for editing pixiv PHP project."
-  nil pixiv-dev-mode-lighter pixiv-dev-mode-map
+  :lighter pixiv-dev-mode-lighter
+  :keymap pixiv-dev-mode-map
   (setq psysh-comint-buffer-process pixiv-dev-psysh-buffer-process)
   (when (and (memq major-mode '(php-mode web-mode text-mode nxml-mode js2-mode))
              (or flycheck-pixiv-dev-lint-executable (executable-find "pixiv-lint")))
