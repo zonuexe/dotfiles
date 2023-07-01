@@ -88,7 +88,7 @@
 ;;;     |うゐのおくやま　けふこえて|
 ;;;     |あさきゆめみし　ゑひもせす|
 
-(defvar my/font-family "Migu 2M")
+(defvar my/font-family "UDEV Gothic JPDOC")
 (defvar my/font-size
   (let ((size-by-hostname
          '(("tadsan-ret.local" . 16.5))))
