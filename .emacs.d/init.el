@@ -805,6 +805,9 @@
           ("K" . dired-k)))
   :hook ((dired-initial-position-hook . dired-k)))
 
+(with-eval-after-load 'dired
+  (add-hook 'dired-mode-hook #'dired-preview-mode))
+
 ;; Visual
 (leaf visual-regexp
   :bind (("M-%" . vr/query-replace)))
