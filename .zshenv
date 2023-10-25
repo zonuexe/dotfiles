@@ -13,6 +13,7 @@ path=(
     ~/.cask/bin(N-/)
     ~/.deno/bin(N-/)
     ~/.bun/bin(N-/)
+    ~/.phpkg(N-/)
     ~/bin(N-/)
     /opt/homebrew/bin(N-/)
     /opt/homebrew/opt/ruby/bin(N-/)
