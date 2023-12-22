@@ -78,5 +78,40 @@
      :cleanup-fn (lambda () (delete-char (- (length (funcall select-template)))))
      :insert-fn (lambda () (insert (funcall select-template))))))
 
+(defun my-browse-url-wsl-host-browser (url &rest _args)
+  "Browse URL with WSL host web browser."
+  (prog1 (message "Open %s" url)
+    (shell-command-to-string
+     (mapconcat #'shell-quote-argument
+                (list "cmd.exe" "/c" "start" url)
+                " "))))
+
+(require 'dired)
+
+(eval-when-compile
+  (defvar my-system-is-wsl2))
+
+(defun my-wsl-convert-path (path)
+  "Browse URL with WSL host web browser."
+  (interactive "P")
+  (let* ((win-path (replace-regexp-in-string
+                    (regexp-opt (list "/"))
+                    "\\\\"
+                    path)))
+    (format "\\\\wsl.localhost\\%s%s" my-system-is-wsl2 win-path)))
+
+(defun my-wsl-open-with (_arg)
+  "Browse URL with WSL host web browser."
+  (interactive "P")
+  (when my-system-is-wsl2
+    (let* ((current-file-name
+            (if (derived-mode-p 'dired-mode)
+                (dired-get-file-for-visit)
+              buffer-file-name)))
+      (shell-command-to-string
+       (mapconcat #'shell-quote-argument
+                  (list "cmd.exe" "/c" "start" current-file-name)
+                  " ")))))
+
 (provide 'my)
 ;;; my.el ends here

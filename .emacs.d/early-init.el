@@ -20,6 +20,10 @@
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
 
+(defconst my-system-is-wsl2
+  (eval-when-compile
+    (getenv "WSL_DISTRO_NAME")))
+
 ;; (setq package-enable-at-startup nil)
 
 (with-eval-after-load 'package

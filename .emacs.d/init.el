@@ -2,10 +2,10 @@
 
 ;; Filename: init.el
 ;; Description: zonuexe's .emacs
-;; Package-Requires: ((emacs "26.1"))
+;; Package-Requires: ((emacs "29.1"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
-;; Modified: 2022-10-10
+;; Modified: 2023-10-10
 ;; Keywords: internal, local
 ;; Human-Keywords: Emacs Initialization
 ;; URL: https://github.com/zonuexe/dotfiles/blob/master/.emacs.d/init.el
@@ -91,7 +91,8 @@
 (defvar my/font-family "UDEV Gothic JPDOC")
 (defvar my/font-size
   (let ((size-by-hostname
-         '(("tadsan-ret.local" . 16.5))))
+         '(("tadsan-ret.local" . 16.5)
+           ("tadsan-fmvzero" . 14.5))))
     (or (cdr (assoc (system-name) size-by-hostname))
         15.5)))
 
@@ -1155,6 +1156,9 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 (setq find-function-C-source-directory
       (eval-when-compile (expand-file-name "~/local/src/emacs/src")))
+
+(when (eval-when-compile my-system-is-wsl2)
+  (setopt browse-url-browser-function #'my-browse-url-wsl-host-browser))
 
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 
