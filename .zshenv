@@ -11,6 +11,7 @@ path=(
     ~/.config/composer/vendor/bin(N-/)
     ~/.composer/vendor/bin(N-/)
     ~/.cask/bin(N-/)
+    ~/.deno/bin(N-/)
     ~/.bun/bin(N-/)
     ~/bin(N-/)
     /opt/homebrew/bin(N-/)
@@ -45,6 +46,7 @@ export NVM_DIR=~/.nvm
 export GOPATH=$HOME/repo/go
 export XML_CATALOG_FILES=/usr/local/etc/xml/catalog
 export TEST_SERVER=${TEST_SERVER:-1}
+export DENO_INSTALL="${HOME}/.deno"
 export CLOUDSDK_PYTHON_SITEPACKAGES=1
 
 if which vim > /dev/null > /dev/null
