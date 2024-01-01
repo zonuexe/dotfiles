@@ -7,3 +7,6 @@
 [submodule "smartchr"]
 	path = .emacs.d/borg/smartchr
 	url = git@github.com:imakado/emacs-smartchr.git
+[submodule "wiz"]
+	path = .emacs.d/borg/wiz
+	url = git@github.com:zonuexe/emacs-wiz.git
