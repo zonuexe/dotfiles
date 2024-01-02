@@ -139,11 +139,13 @@
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 
-(leaf nyan-mode
-  :custom
-  (nyan-bar-length . 16)
+(wiz nyan-mode
+  :config
+  (lambda ()
+    (setopt nyan-bar-length 16))
   :init
-  (nyan-mode 1))
+  (lambda ()
+    (nyan-mode 1)))
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)
@@ -152,7 +154,7 @@
 (setq-default show-trailing-whitespace t)
 
 ;; Uniquify
-(custom-set-variables '(uniquify-buffer-name-style 'post-forward-angle-brackets))
+(setopt uniquify-buffer-name-style 'post-forward-angle-brackets)
 
 ;; Show paren
 (show-paren-mode t)
@@ -161,14 +163,19 @@
 (column-number-mode t)
 
 ;; volatile-highlights.el
-(leaf volatile-highlights
-  :diminish volatile-highlights-mode
+(wiz volatile-highlights
+  :config
+  (lambda ()
+    (diminish 'volatile-highlights-mode))
   :init
-  (volatile-highlights-mode t))
+  (lambda ()
+    (volatile-highlights-mode 1)))
 
 ;; Rainbow mode
-(leaf rainbow-mode
-  :diminish rainbow-mode)
+(wiz rainbow-mode
+  :config
+  (lambda ()
+    (diminish 'rainbow-mode)))
 
 ;; Key config
 (progn
@@ -275,10 +282,11 @@
   (completion-category-defaults . nil)
   (completion-category-overrides . '((file (styles . (partial-completion))))))
 
-(leaf eldoc
-  :diminish eldoc-mode
-  :custom
-  (eldoc-minor-mode-string . ""))
+(wiz eldoc
+  :config
+  (lambda ()
+    (diminish 'eldoc-mode)
+    (setopt eldoc-minor-mode-string "")))
 
 (leaf corfu :ensure t
   :custom
@@ -356,12 +364,14 @@
   :mode ("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))
 
 ;; EditorConfig
-(leaf editorconfig
-  :diminish editorconfig-mode
-  :custom
-  (editorconfig-get-properties-function . 'editorconfig-core-get-properties-hash)
+(wiz editorconfig
+  :config
+  (lambda ()
+    (diminish 'editorconfig-mode)
+    (setopt editorconfig-get-properties-function 'editorconfig-core-get-properties-hash))
   :init
-  (editorconfig-mode t))
+  (lambda ()
+    (editorconfig-mode t)))
 
 ;; Conf-Mode
 (leaf conf-mode
@@ -377,12 +387,27 @@
   (projectile-enable-caching . nil))
 
 ;; Flycheck
-(leaf flycheck
-  :diminish flycheck-mode
-  :hook ((flycheck-mode-hook . flycheck-cask-setup))
+(wiz flycheck-posframe
+  :config
+  (lambda ()
+    (setopt flycheck-posframe-border-width 7)
+    (setopt flycheck-posframe-warning-prefix "\u26a0 ")
+    (setopt flycheck-posframe-position 'window-center)))
+
+(wiz flycheck
+  :config
+  (lambda ()
+    (diminish 'flycheck-mode)
+    (add-hook 'flycheck-mode-hook 'flycheck-cask-setup)
+    (add-hook 'flycheck-mode-hook 'flycheck-eask-setup)
+    (add-hook 'flycheck-mode-hook 'flycheck-posframe-mode))
   :init
-  (global-flycheck-mode t)
-  (flycheck-package-setup))
+  (lambda ()
+    (require 'flycheck-posframe)
+    (global-flycheck-mode t)
+    (flycheck-package-setup)
+    (with-current-buffer (get-buffer-create flycheck-posframe-buffer)
+      (goto-address-mode +1))))
 
 ;; elec-pair
 (leaf elec-pair
@@ -612,10 +637,10 @@
   (when (eq major-mode 'inferior-emacs-lisp-mode)
     (bind-key "<RET>" #'ielm-return ielm-map)))
 
-(leaf nameless
-  :diminish nameless-mode
+(wiz nameless
   :config
-  (with-eval-after-load 'nameless
+  (lambda ()
+    (diminish 'nameless-mode)
     (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable"))))
 
 (defvar my/emacs-lisp-modes
@@ -635,13 +660,16 @@
   (lsp-completion-provider . :none)
   (lsp-ui-doc-use-childframe . nil))
 
-(leaf paredit
-  :diminish paredit-mode
-  :bind (:paredit-mode-map
-         ("C-<right>" . right-word)
-         ("C-<left>"  . left-word))
+(wiz paredit
+  :config
+  (lambda ()
+    (diminish 'paredit-mode)
+    (bind-keys :map paredit-mode-map
+	       ("C-<right>" . right-word)
+	       ("C-<left>"  . left-word)))
   :init
-  (--each my/emacs-lisp-modes (add-hook it 'enable-paredit-mode)))
+  (lambda ()
+    (mapc (lambda (it) (add-hook it 'enable-paredit-mode)) my/emacs-lisp-modes)))
 
 ;; Scheme
 (defun my-scheme-mode-setup ()
@@ -728,9 +756,11 @@
   (run-with-idle-timer 30 t #'recentf-save-list))
 
 ;; Undo
-(leaf undo-fu
-  :bind (("C-_" . undo-fu-only-undo)
-         ("C-?" . undo-fu-only-redo)))
+(wiz undo-fu
+  :init
+  (lambda ()
+    (bind-keys ("C-_" . undo-fu-only-undo)
+               ("C-?" . undo-fu-only-redo))))
 
 ;; expand-region.el
 (leaf expand-region
@@ -783,10 +813,13 @@
   ;; El-Screeのウィンドウを一個つくる
   (elscreen-create))
 
-(leaf ctrlf
-  :diminish ctrlf-mode
+(wiz ctrlf
+  :config
+  (lambda ()
+    (diminish 'ctrlf-mode))
   :init
-  (ctrlf-mode +1))
+  (lambda ()
+    (ctrlf-mode +1)))
 
 (leaf rg
   :bind (("C-:" . rg)
@@ -824,9 +857,13 @@
   :hook ((prog-mode-hook . yafolding-mode)))
 
 ;; vi-tilde-fringe
-(leaf vi-tilde-fringe
-  :diminish vi-tilde-fringe-mode
-  :hook ((prog-mode-hook . vi-tilde-fringe-mode)))
+(wiz vi-tilde-fringe
+  :config
+  (lambda ()
+    (diminish 'vi-tilde-fringe-mode))
+  :init
+  (lambda ()
+    (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode)))
 
 (prog1 'goto-addr
   (add-hook 'prog-mode-hook #'goto-address-prog-mode)
@@ -859,22 +896,26 @@
       ("O"   . 'mc/reverse-regions))))
 
 ;; which-key
-(leaf which-key
-  :diminish which-key-mode
-  :custom
-  (which-key-idle-delay . 1.5)
+(wiz which-key
+  :config
+  (lambda ()
+    (diminish 'which-key-mode)
+    (setopt which-key-idle-delay 1.5))
   :init
-  (which-key-setup-side-window-right-bottom)
-  (which-key-mode t))
+  (lambda ()
+    (which-key-setup-side-window-right-bottom)
+    (which-key-mode t)))
 
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
-(leaf smooth-scroll
-  :diminish smooth-scroll-mode
-  :custom
-  (smooth-scroll/vscroll-step-size . 7)
+(wiz smooth-scroll
+  :config
+  (lambda ()
+    (diminish 'smooth-scroll-mode)
+    (setopt smooth-scroll/vscroll-step-size 7))
   :init
-  (require 'smooth-scroll)
-  (smooth-scroll-mode t))
+  (lambda ()
+    (require 'smooth-scroll)
+    (smooth-scroll-mode t)))
 
 (leaf topsy :ensure t
   :hook '(prog-mode-hook))
@@ -954,17 +995,20 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     Info-mode
     term-mode))
 
-(leaf diminish
+(wiz diminish
   :init
-  (safe-diminish "face-remap" 'buffer-face-mode)
-  (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
-  (safe-diminish "flyspell" 'flyspell-mode)
-  (safe-diminish "simple" 'auto-fill-function)
-  (safe-diminish "subword" 'subword-mode)
-  (safe-diminish "gcmh" 'gcmh-mode)
-  (--each my/disable-trailing-modes
-    (add-hook (intern (concat (symbol-name it) "-hook"))
-              'my/disable-trailing-mode-hook)))
+  (lambda ()
+    (safe-diminish "face-remap" 'buffer-face-mode)
+    (safe-diminish "elisp-slime-nav" 'elisp-slime-nav-mode)
+    (safe-diminish "flyspell" 'flyspell-mode)
+    (safe-diminish "simple" 'auto-fill-function)
+    (safe-diminish "subword" 'subword-mode)
+    (safe-diminish "gcmh" 'gcmh-mode)
+    (mapc (lambda (it)
+            (add-hook (intern (concat (symbol-name it) "-hook"))
+                      'my/disable-trailing-mode-hook))
+          my/disable-trailing-modes)))
+
 ;;; My Functions:
 (defun reload-major-mode ()
   "Reload current major mode."
@@ -1107,25 +1151,30 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   (right-click-context-mode 1))
 
 ;; Beacon — Never lose your cursor again
-(leaf beacon
-  :diminish beacon-mode
+(wiz beacon
+  :config
+  (lambda ()
+    (diminish 'beacon-mode))
   :init
-  (beacon-mode 1))
+  (lambda ()
+    (beacon-mode 1)))
 
 ;; Eshell
 (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
 
-(leaf highlight-indent-guides-method
-  :diminish highlight-indent-guides-mode
-  :custom
-  (highlight-indent-guides-method . 'character)
-  (highlight-indent-guides-character . ?\|)
-  (highlight-indent-guides-delay . 0.5))
+(wiz highlight-indent-guides
+  :config
+  (lambda ()
+    (diminish 'highlight-indent-guides-mode)
+    (setopt highlight-indent-guides-method 'character)
+    (setopt highlight-indent-guides-character ?\|)
+    (setopt highlight-indent-guides-delay 0.5)))
 
-(leaf google-translate
-  :custom
-  (google-translate-default-source-language . "en")
-  (google-translate-default-target-language . "ja"))
+(wiz google-translate
+  :config
+  (lambda ()
+    (setopt google-translate-default-source-language "en")
+    (setopt google-translate-default-target-language "ja")))
 
 (defun my/reset-default-directory-by-buffer-file-name ()
   "Set default-directory by `buffer-file-name'."
@@ -1144,6 +1193,11 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
                      (setq buffer-file-coding-system 'binary)
                      (buffer-substring-no-properties (point-min) (point-max)))))
       (f-write-bytes content to-file))))
+
+(wiz eat
+  :config
+  (lambda ()
+    (add-hook 'eat-mode-hook #'my/disable-trailing-mode-hook)))
 
 ;; keyfreq
 (leaf keyfreq
