@@ -51,20 +51,17 @@
  '(completions-common-part ((t (:background "black" :foreground "WhiteSmoke" :slant normal :weight normal :height 1.0 :width normal))))
  '(font-lock-doc-face ((t (:slant normal)))))
 
-(leaf modus-themes
-  :custom
-  (modus-themes-completions '((matches . (extrabold))
-                              (vertico . (semibold accented))
-                              (popup . (accented intense))))
-  (modus-themes-italic-constructs . t)
-  (modus-themes-bold-constructs . t)
-  (modus-themes-prompts . '(background bold gray intense italic))
+(wiz modus-themes
   :init
-  (require 'modus-themes)
-  :config
-  (custom-set-variables
-   '(modus-themes-common-palette-overrides modus-themes-preset-overrides-intense))
-  (load-theme 'modus-vivendi :noconfirm))
+  (lambda ()
+    (require 'modus-themes)
+    (setopt modus-themes-completions '((matches . (extrabold))
+                                       (selection . (semibold italic))))
+    (setopt modus-themes-italic-constructs t)
+    (setopt modus-themes-bold-constructs t)
+    (setopt modus-themes-prompts '(bold italic))
+    (setopt modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
+    (load-theme 'modus-vivendi :noconfirm)))
 
 ;;; Variables:
 (setq make-backup-files nil)
@@ -83,6 +80,7 @@
 
 (eval-and-compile
   (require 'wiz)
+  (require 'wiz-key)
   (require 'wiz-env))
 
 ;;; Font:
@@ -120,9 +118,6 @@
 
 ;; (when (eq window-system 'w32)
 ;;   (setenv "GIT_SSH" "C:\\Program Files\\PuTTY\\plink.exe"))
-
-(when (file-directory-p "~/repo/emacs/php-mode")
-  (load "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"))
 
 (when (file-directory-p "~/repo/emacs/lsp-bridge")
   (add-to-list 'load-path (expand-file-name "~/repo/emacs/lsp-bridge")))
@@ -178,109 +173,122 @@
     (diminish 'rainbow-mode)))
 
 ;; Key config
-(progn
-  (bind-key  "M-ESC ESC"   'keyboard-quit)
-  (bind-key  "C-S-n"       'make-frame)
-  (bind-key  "C-S-w"       'delete-frame)
-  (bind-key  "M-N"         'untitled-new-buffer)
-  (bind-key  "C-M-S-d"     'projectile-dired)
-  (bind-key  "C-c :"       'right-click-context-menu)
-  (bind-key  "C-c R"       'revert-buffer)
-  (bind-key  "C-c S-i"     'my/display-file-info)
-  (bind-key  "C-x j"       'dired-jump)
-  (bind-key  "C-x C-S-e"   'pp-eval-last-sexp)
-  (global-set-key (kbd "C-x C-f") #'find-file-at-point)
-  (bind-key  "C-x お"      'other-window)
-  (bind-key  "C-S-v"       'scroll-down-command)
-  (bind-key  "M-o"         'ace-window)
-  (bind-key  "C-M-o"       'swoop-multi)
-  (bind-key  "M-："        'eval-expression)
-  (bind-key  "M-ESC ："    'eval-expression)
-  (bind-key  "<S-tab>"     'my/outdent-dwim)
-  (bind-key  "M-<left>"    'bs-cycle-previous)
-  (bind-key  "M-<right>"   'bs-cycle-next)
-  (bind-key  "C-M-S-y"     'my/kill-buffer-file-name)
-  (bind-key  "M-<f5>"      'compile)
-  (bind-key  "<f5>"        'quickrun)
-  (bind-key "C-c <left>"  'windmove-left)
-  (bind-key "C-c <down>"  'windmove-down)
-  (bind-key "C-c <up>"    'windmove-up)
-  (bind-key "C-c <right>" 'windmove-right))
+(wiz-keys (("M-ESC ESC"   . keyboard-quit)
+           ("C-S-n"       . make-frame)
+           ("C-S-w"       . delete-frame)
+           ("M-N"         . untitled-new-buffer)
+           ("C-M-S-d"     . projectile-dired)
+           ("C-c :"       . right-click-context-menu)
+           ("C-c R"       . revert-buffer)
+           ("C-c S-i"     . my/display-file-info)
+           ("C-x j"       . dired-jump)
+           ("C-x C-S-e"   . pp-eval-last-sexp)
+           ("C-x C-f"     . find-file-at-point)
+           ("C-x お"      . other-window)
+           ("C-S-v"       . scroll-down-command)
+           ("M-o"         . ace-window)
+           ("C-M-o"       . swoop-multi)
+           ("M-："        . eval-expression)
+           ("M-ESC ："    . eval-expression)
+           ("<S-tab>"     . my/outdent-dwim)
+           ("M-<left>"    . bs-cycle-previous)
+           ("M-<right>"   . bs-cycle-next)
+           ("C-M-S-y"     . my/kill-buffer-file-name)
+           ("M-<f5>"      . compile)
+           ("<f5>"        . quickrun)
+           ("C-c <left>"  . windmove-left)
+           ("C-c <down>"  . windmove-down)
+           ("C-c <up>"    . windmove-up)
+           ("C-c <right>" . windmove-right)))
+
 (cond
  ((eq window-system 'ns)
   (when (boundp 'ns-command-modifier) (setq ns-command-modifier 'meta))
   (when (boundp 'ns-alternate-modifier) (setq ns-alternate-modifier 'meta)
-  (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
-  (global-set-key (kbd "¥") (lambda () (interactive) (insert "\\")))))
+        (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
+        (global-set-key (kbd "¥") (lambda () (interactive) (insert "\\")))))
  ((eq window-system 'x)
-  (when (boundp 'x-meta-keysym) (setq x-meta-keysym 'meta))
   (when (boundp 'x-meta-keysym) (setq x-meta-keysym 'meta))))
 
 ;; key-chord
-(leaf key-chord
-  :custom
-  (key-chord-two-keys-delay . 0.02)
+(wiz key-chord
   :init
-  (key-chord-mode 1)
+  (lambda ()
+    (key-chord-mode 1))
   :config
-  (key-chord-define-global "df" 'find-function)
-  (key-chord-define-global "fh" 'describe-function)
-  (key-chord-define-global "fv" 'find-variable)
-  (key-chord-define-global "jb" 'jetbrains-open-buffer-file)
-  (key-chord-define-global "@p" 'package-install)
-  (key-chord-define-global "kl" 'align-regexp)
-  (key-chord-define-global "rt" 'modus-themes-toggle)
-  (key-chord-define-global "wr" 'writeroom-mode)
-  (key-chord-define-global "m," 'reload-major-mode)
-  (key-chord-define-global "mc" 'my/buffer-minchoize))
+  (lambda ()
+    (setopt key-chord-two-keys-delay 0.02)
+    (key-chord-define-global "df" 'find-function)
+    (key-chord-define-global "fh" 'describe-function)
+    (key-chord-define-global "fv" 'find-variable)
+    (key-chord-define-global "jb" 'jetbrains-open-buffer-file)
+    (key-chord-define-global "@p" 'package-install)
+    (key-chord-define-global "kl" 'align-regexp)
+    (key-chord-define-global "rt" 'modus-themes-toggle)
+    (key-chord-define-global "wr" 'writeroom-mode)
+    (key-chord-define-global "m," 'reload-major-mode)
+    (key-chord-define-global "mc" 'my/buffer-minchoize)))
 
 (savehist-mode +1)
 (with-eval-after-load 'prescient
   (prescient-persist-mode +1))
 
-(leaf vertico :ensure t
-  :bind (:vertico-map (("C-l" . my-filename-upto-parent)))
+(wiz vertico
+  :config
+  (lambda ()
+    (wiz-keys (("C-l" . my-filename-upto-parent))
+              :map vertico-map))
   :init
-  (vertico-mode +1))
+  (lambda ()
+    (vertico-mode +1)))
 
-(leaf vertico-prescient :ensure t
+(wiz vertico-prescient
   :init
-  (vertico-prescient-mode +1))
+  (lambda ()
+    (vertico-prescient-mode +1)))
 
-(leaf marginalia :ensure t
+(wiz marginalia
   :init
-  (marginalia-mode +1))
+  (lambda ()
+    (marginalia-mode +1)))
 
-(leaf embark :ensure t
-  :bind (("C-c C-c" . embark-act)
-         ("C-c C-o" . embark-export)
-         ("C-c ?" . embark-bindings)))
-
-(leaf consult :ensure t
-  :bind (("C-M-y" . consult-yank-from-kill-ring)
-         ("C-c ;" . consult-imenu)
-         ("C-c t" . consult-recent-file)
-         ("C-;" . my-consult-line)
-         ("M-X"  . consult-mode-command)
-         ("M-g *" . consult-outline)
-         ("M-t" . consult-ls-git)
-         ("M-i" . consult-imenu))
+(wiz embark
   :init
-  (global-set-key [remap switch-to-buffer] 'consult-buffer)
-  (global-set-key [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
-  (global-set-key [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
-  (global-set-key [remap goto-line] 'consult-goto-line))
+  (lambda ()
+    (wiz-keys
+     (("C-c C-c" . embark-act)
+      ("C-c C-o" . embark-export)
+      ("C-c ?" . embark-bindings)))))
 
-(leaf embark-consult :ensure t
-  :after (embark consult)
-  :hook
-  (embark-collect-mode-hook . consult-preview-at-point-mode))
+(wiz consult
+  :init
+  (lambda ()
+    (wiz-keys
+     (("C-M-y" . consult-yank-from-kill-ring)
+      ("C-c ;" . consult-imenu)
+      ("C-c t" . consult-recent-file)
+      ("C-;" . my-consult-line)
+      ("M-X"  . consult-mode-command)
+      ("M-g *" . consult-outline)
+      ("M-t" . consult-ls-git)
+      ("M-i" . consult-imenu)
+      ([remap switch-to-buffer] . consult-buffer)
+      ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+      ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
+      ([remap goto-line] . consult-goto-line)))))
 
-(leaf orderless :ensure t
-  :custom
-  (completion-styles . '(orderless basic))
-  (completion-category-defaults . nil)
-  (completion-category-overrides . '((file (styles . (partial-completion))))))
+(wiz embark-consult
+  :init
+  (lambda ()
+    (with-eval-after-load 'embark
+      (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode))))
+
+(wiz orderless
+  :config
+  (lambda ()
+    (setopt completion-styles '(orderless basic))
+    (setopt completion-category-defaults nil)
+    (setopt completion-category-overrides '((file (styles . (partial-completion)))))))
 
 (wiz eldoc
   :config
@@ -288,18 +296,19 @@
     (diminish 'eldoc-mode)
     (setopt eldoc-minor-mode-string "")))
 
-(leaf corfu :ensure t
-  :custom
-  (corfu-cycle . t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto . t)                 ;; Enable auto completion
-  (corfu-separator . ?\s)          ;; Orderless field separator
-  (corfu-quit-at-boundary . nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match . nil)      ;; Never quit, even if there is no match
-  (corfu-preview-current . t)      ;; Disable current candidate preview
-  (corfu-preselect-first . nil)    ;; Disable candidate preselection
-  (corfu-on-exact-match . t)       ;; Configure handling of exact matches
-  (corfu-echo-documentation . t)   ;; Disable documentation in the echo area
-  (corfu-scroll-margin . 5)        ;; Use scroll margin
+(wiz corfu
+  :config
+  (lambda ()
+    (setopt corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+    (setopt corfu-auto t)                 ;; Enable auto completion
+    (setopt corfu-separator ?\s)          ;; Orderless field separator
+    (setopt corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+    (setopt corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+    (setopt corfu-preview-current t)      ;; Disable current candidate preview
+    (setopt corfu-preselect-first nil)    ;; Disable candidate preselection
+    (setopt corfu-on-exact-match 'insert) ;; Configure handling of exact matches
+    (setopt corfu-echo-documentation t)   ;; Disable documentation in the echo area
+    (setopt corfu-scroll-margin 5))       ;; Use scroll margin
 
   ;; Enable Corfu only for certain modes.
   ;; :hook ((prog-mode . corfu-mode)
@@ -310,26 +319,30 @@
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-excluded-modes'.
   :init
-  (global-corfu-mode))
+  (lambda ()
+    (global-corfu-mode)))
 
-(leaf corfu-prescient :ensure t
-  :init
-  (corfu-prescient-mode +1))
+;; (leaf corfu-prescient :ensure t
+;;   :init
+;;   (corfu-prescient-mode +1))
 
-(leaf tempel :ensure t
+(wiz tempel
   ;; Require trigger prefix before template name when completing.
   ;; :custom
   ;; (tempel-trigger-prefix "<")
 
-  :bind
-  ("M-+" . tempel-complete) ;; Alternative tempel-expand
-  ("M-*" . tempel-insert)
-  (:tempel-map
-   ("<tab>" . tempel-next)
-   ("S-<tab>" . tempel-previous))
-
   :init
   ;; Setup completion at point
+  (lambda ()
+    (wiz-keys (("M-+" . tempel-complete) ;; Alternative tempel-expand
+               ("M-*" . tempel-insert))))
+  :config
+  (lambda ()
+    (wiz-keys (("<tab>" . tempel-next)
+               ("S-<tab>" . tempel-previous))
+              :map tempel-map))
+  :hook-names (prog-mode-hook text-mode-hook)
+  :setup-hook
   (defun tempel-setup-capf ()
     ;; Add the Tempel Capf to `completion-at-point-functions'.
     ;; `tempel-expand' only triggers on exact matches. Alternatively use
@@ -340,28 +353,29 @@
     ;; that it will be tried first.
     (setq-local completion-at-point-functions
                 (cons #'tempel-complete
-                      completion-at-point-functions)))
+                      completion-at-point-functions))))
 
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf))
-
-(leaf cape :ensure t
+(wiz cape
   :init
-  (add-to-list 'completion-at-point-functions (cape-company-to-capf #'company-tabnine))
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword))
+  (lambda ()
+    (add-to-list 'completion-at-point-functions (cape-company-to-capf #'company-tabnine))
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-keyword)))
 
 ;; Magit
-(leaf magit
-  :bind (("C-x m" . magit-status)
-         ("C-c l" . magit-blame-addition))
+(wiz magit
   :init
-  (setq-default magit-auto-revert-mode nil)
-  (setq vc-handled-backends '())
-  (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook)))
+  (lambda ()
+    (wiz-keys (("C-x m" . magit-status)
+               ("C-c l" . magit-blame-addition)))
+    (setq-default magit-auto-revert-mode nil)
+    (setq vc-handled-backends '(Git))
+    (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook))))
 
-(leaf gitignore-mode
-  :mode ("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))
+(wiz gitignore-mode
+  :init
+  (lambda ()
+    (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))))
 
 ;; EditorConfig
 (wiz editorconfig
@@ -374,17 +388,19 @@
     (editorconfig-mode t)))
 
 ;; Conf-Mode
-(leaf conf-mode
+(wiz conf-mode
   :init
-  (require 'generic-x)
-  (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
-  (add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
-  (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t))
+  (lambda ()
+    (require 'generic-x)
+    (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
+    (add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
+    (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t)))
 
 ;; Projectile
-(leaf projectile
-  :custom
-  (projectile-enable-caching . nil))
+(wiz projectile
+  :config
+  (lambda ()
+    (setopt projectile-enable-caching nil)))
 
 ;; Flycheck
 (wiz flycheck-posframe
@@ -410,18 +426,24 @@
       (goto-address-mode +1))))
 
 ;; elec-pair
-(leaf elec-pair
+(wiz elec-pair
   :init
-  (electric-pair-mode 1))
+  (lambda ()
+    (electric-pair-mode 1)))
 
 ;; which-func
-(leaf which-func
+(wiz which-func
   :init
-  (which-function-mode 1))
+  (lambda ()
+    (which-function-mode 1)))
 
 ;; smartchr
-(leaf smartchr
-  :commands smartchr)
+(wiz smartchr
+  :init
+  (lambda ()
+    (autoload 'smartchr "smartchr"
+      "Make an interactive command to support input several LIST-OF-STRING candidates."
+      t)))
 
 (defun my-presentation-on ()
   t)
@@ -429,21 +451,20 @@
 (defun my-presentation-off ()
   t)
 
-(leaf presentation-mode
-  :hook ((presentation-on  . my-presentation-on)
-         (presentation-off . my-presentation-off)))
+(wiz presentation
+  :config
+  (lambda ()
+    (add-hook 'presentation-on  #'my-presentation-on)
+    (add-hook 'presentation-off #'my-presentation-off)))
 
 ;;; Languages:
-(leaf sql
-  :custom
-  (sql-product . 'mysql))
+(wiz sql
+  :config
+  (lambda ()
+    (setopt sql-product 'mysql)))
 
 ;; Web
-(defun my-web-mode-setup ()
-  "Set variables for web-mode."
-  (emmet-mode +1)
-  (when (and buffer-file-name (string= "tsx" (file-name-extension buffer-file-name)))
-    (my-setup-typescript)))
+
 
 (defun sp-web-mode-is-code-context (_id action _context)
   "This snippet is derived from http://web-mode.org/ ."
@@ -452,20 +473,27 @@
                       (get-text-property (point) 'block-side))))
     t))
 
-(leaf web-mode
-  :hook ((web-mode . my-web-mode-setup))
-  :mode
-  ("\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'"
-   "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")
-  :custom
-  (web-mode-enable-auto-pairing . nil)
-  (web-mode-enable-auto-indentation . nil)
+(wiz web-mode
+  :init
+  (lambda ()
+    (mapc (lambda (it) (add-to-list 'auto-mode-alist (cons it #'web-mode)))
+          (list "\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'"
+                "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")))
   :config
-  (require 'smartparens)
-  (flycheck-add-mode 'typescript-tslint 'web-mode)
-  (add-to-list 'web-mode-ac-sources-alist
-               '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
-  (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
+  (lambda ()
+    (setopt web-mode-enable-auto-pairing nil)
+    (setopt web-mode-enable-auto-indentation nil)
+    (require 'smartparens)
+    (flycheck-add-mode 'typescript-tslint 'web-mode)
+    (add-to-list 'web-mode-ac-sources-alist
+                 '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
+    (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
+  :setup-hook
+  (defun init-web-mode-setup ()
+    "Set variables for web-mode."
+    (emmet-mode +1)
+    (when (and buffer-file-name (string= "tsx" (file-name-extension buffer-file-name)))
+      (my-setup-typescript))))
 
 ;; PHP
 (defun my/turn-on-php-eldoc ()
@@ -473,74 +501,86 @@
   (when (require 'php-eldoc nil t)
     (php-eldoc-enable)))
 
-(defun my-php-mode-setup ()
-  "My PHP-mode hook."
-  ;;(require 'company-phpactor)
-  (my/turn-on-php-eldoc)
-  (subword-mode 1)
-  (when (fboundp 'php-ide-mode)
-    (add-hook 'hack-local-variables-hook 'php-ide-turn-on nil t))
-  (setq show-trailing-whitespace t)
-
-  (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face php-string))
-
-  (flycheck-mode t)
-  (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
-  (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
-
-  (when (and buffer-file-name (string-match-p "/pixiv/" buffer-file-name))
-    (require 'pixiv-dev nil t)
-    (add-to-list 'flycheck-disabled-checkers 'psalm)
-    (pixiv-dev-mode t))
-
-  (when (fboundp 'php-format-auto-mode)
-    (php-format-auto-mode +1))
-
-  (setq-local completion-at-point-functions
-              (append (list #'php-complete-complete-function #'tempel-complete)
-                      (list (cape-company-to-capf #'company-phpactor))
-                      completion-at-point-functions))
-
-  (when (eq 0 (buffer-size))
-    (insert "<?php\n\n")))
-
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
 
-(leaf php-mode
-  :hook ((php-mode-hook . my-php-mode-setup))
-  :custom
-  (php-default-major-mode . 'php-mode)
-  (php-manual-url . 'ja)
-  (php-mode-coding-style . 'psr2)
-  (php-mode-template-compatibility . nil)
-  (php-imenu-generic-expression . 'php-imenu-generic-expression-simple)
-  (php-project-auto-detect-etags-file . t)
-  (php-ide-mode)
-  (phpstan-memory-limit . "2G")
+(wiz php-mode
+  :load-if-exists "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"
+  :hook-names (php-mode-hook)
   :config
-  (require 'flycheck-phpstan)
-  (flycheck-add-next-checker 'php 'phpstan)
-  (when (require 'flycheck-psalm nil t)
-    (flycheck-add-next-checker 'php 'psalm))
-  (phpactor-smart-jump-register)
+  (lambda ()
+    (setopt php-default-major-mode 'php-mode)
+    (setopt php-manual-url 'ja)
+    (setopt php-mode-coding-style 'psr2)
+    (setopt php-mode-template-compatibility nil)
+    (setopt php-imenu-generic-expression 'php-imenu-generic-expression-simple)
+    (setopt php-project-auto-detect-etags-file t)
+    (setopt php-ide-mode nil)
+    (setopt phpstan-memory-limit "2G")
 
-  (bind-key "[" (smartchr "[`!!']" "array(`!!')" "[[`!!']]") php-mode-map)
-  (bind-key "]" (smartchr "array " "]" "]]") php-mode-map)
-  (bind-key "&" (smartchr "&" "&& ") php-mode-map)
-  (bind-key "|" (smartchr "|" "|| " ) php-mode-map)
-  (bind-key "." (smartchr
-                 (my-php-smartchr-dot "->" "." ". ")
-                 (my-php-smartchr-dot ". " ".." "..")
-                 "...")
-            php-mode-map)
-  (bind-key "^" (smartchr "^" "fn() => " "function () {`!!'}") php-mode-map)
-  (bind-key "@" (smartchr "@" "$this->") php-mode-map)
-  (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
-  (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
-  (bind-key "C-c C--" 'php-current-class php-mode-map)
-  (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
+    (require 'flycheck-phpstan)
+    (flycheck-add-next-checker 'php 'phpstan)
+    (when (require 'flycheck-psalm nil t)
+      (flycheck-add-next-checker 'php 'psalm))
+    (phpactor-smart-jump-register)
 
-(with-eval-after-load 'php-ide
+    (wiz-keys (("[" . (smartchr "[`!!']" "array(`!!')" "[[`!!']]"))
+               ("]" . (smartchr "array " "]" "]]"))
+               ("&" . (smartchr "&" "&& "))
+               ("\\" . (smartchr "\\" "\\PHPStan\\dumpType(`!!');" "\\\\"))
+               ("¥" . (smartchr "\\" "\\PHPStan\\dumpType(`!!');" "\\\\"))
+               ("|" . (smartchr "|" "|| " ))
+               ("." . (smartchr
+                       (my-php-smartchr-dot "->" "." ". ")
+                       (my-php-smartchr-dot ". " ".." "..")
+                       "..."))
+               ("^" . (smartchr "^" "fn() => " "function () {`!!'}"))
+               ("@" . (smartchr "@" "$this->"))
+               ("~" . (smartchr "~" "phpstan-"))
+               ("C-c C-c" . 'psysh-eval-region)
+               ("<f6>" . phpunit-current-project)
+               ("C-c C--" . php-current-class)
+               ("C-c C-=" . 'php-current-namespace))
+              :map php-mode-map))
+  :setup-hook
+  (defun init-php-mode-setup ()
+    "My PHP-mode hook."
+    ;;(require 'company-phpactor)
+    (my/turn-on-php-eldoc)
+    (subword-mode 1)
+    (add-hook 'hack-local-variables-hook 'php-ide-turn-on nil t)
+    (setq show-trailing-whitespace t)
+
+    (setq-local ac-disable-faces '(font-lock-comment-face font-lock-string-face php-string))
+
+    (flycheck-mode t)
+    (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
+    (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
+
+    (when (and buffer-file-name (string-match-p "/pixiv/" buffer-file-name))
+      (require 'pixiv-dev nil t)
+      (add-to-list 'flycheck-disabled-checkers 'psalm)
+      (pixiv-dev-mode t))
+
+    (php-format-auto-mode +1)
+
+    (setq-local completion-at-point-functions
+                (append (list #'php-complete-complete-function #'tempel-complete)
+                        (list (cape-company-to-capf #'company-phpactor))
+                        completion-at-point-functions))
+
+    (when (eq 0 (buffer-size))
+      (insert "<?php\n\n"))))
+
+(wiz lsp-bridge
+  :config
+  (lambda ()
+    (setopt lsp-bridge-completion-popup-predicates
+            (cl-nset-difference lsp-bridge-completion-popup-predicates
+                                '(lsp-bridge-not-in-string lsp-bridge-not-in-comment)))))
+
+(wiz php-ide
+  :hook-names (php-ide-mode-functions)
+  :setup-hook
   (defun init-php-ide-mode (feature activate)
     "Customize php-ide."
     (pcase feature
@@ -549,39 +589,38 @@
            (progn (yas-minor-mode +1)
                   (corfu-mode -1))
          (yas-minor-mode -1)
-         (corfu-mode +1)))))
-  (add-hook 'php-ide-mode-functions #'init-php-ide-mode))
+         (corfu-mode +1))))))
 
-(with-eval-after-load 'lsp-bridge
-  (custom-set-variables
-   '(lsp-bridge-completion-popup-predicates
-     (cl-nset-difference lsp-bridge-completion-popup-predicates
-                         '(lsp-bridge-not-in-string lsp-bridge-not-in-comment)))))
+(wiz company
+  :config
+  (lambda ()
+    (require 'company-tabnine)
+    (add-to-list 'company-backends #'company-tabnine)))
 
-(with-eval-after-load 'company
-  (require 'company-tabnine)
-  (add-to-list 'company-backends #'company-tabnine))
-
-(leaf psysh
-  :custom
-  (psysh-doc-display-function . #'popwin:display-buffer))
+(wiz psysh
+  :config
+  (lambda ()
+    (add-hook 'psysh-mode #'my/turn-on-php-eldoc)
+    (setopt psysh-doc-display-function #'popwin:display-buffer)))
 
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 (add-to-list 'auto-mode-alist '("\\.php\\.faces\\'" . lisp-data-mode))
 
-(leaf psysh
-  :hook ((psysh-mode . my/turn-on-php-eldoc)))
-
-(leaf pixiv-dev
-  :custom
-  (pixiv-dev-user-name . "tadsan")
+(wiz pixiv-dev
+  :config
+  (lambda ()
+    (setopt pixiv-dev-user-name "tadsan"))
   :init
-  (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
-  (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
-  (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t))
+  (lambda ()
+    (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
+    (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
+    (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t)))
 
-(leaf phan
-  :mode (("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode)))
+(wiz phan
+  :init
+  (lambda ()
+    (add-to-list 'auto-mode-alist
+                 '("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode))))
 
 ;; (leaf dumb-jump :ensure t
 ;;   :init
@@ -635,7 +674,8 @@
   (turn-on-eldoc-mode)
   (elisp-slime-nav-mode +1)
   (when (eq major-mode 'inferior-emacs-lisp-mode)
-    (bind-key "<RET>" #'ielm-return ielm-map)))
+    (wiz-keys (("<RET>" . #'ielm-return))
+              :map ielm-map)))
 
 (wiz nameless
   :config
@@ -654,38 +694,42 @@
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
 
-(leaf lsp-mode
-  :hook ((lsp-after-open . lsp-enable-imenu))
-  :custom
-  (lsp-completion-provider . :none)
-  (lsp-ui-doc-use-childframe . nil))
+(wiz lsp-mode
+  :config
+  (lambda ()
+    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+    (setopt lsp-completion-provider :none)
+    (setopt lsp-ui-doc-use-childframe nil)))
 
 (wiz paredit
   :config
   (lambda ()
     (diminish 'paredit-mode)
-    (bind-keys :map paredit-mode-map
-	       ("C-<right>" . right-word)
-	       ("C-<left>"  . left-word)))
+    (wiz-keys (("C-<right>" . right-word)
+	       ("C-<left>"  . left-word))
+              :map paredit-mode-map))
   :init
   (lambda ()
     (mapc (lambda (it) (add-hook it 'enable-paredit-mode)) my/emacs-lisp-modes)))
 
 ;; Scheme
-(defun my-scheme-mode-setup ()
-  "λ..."
-  (paredit-mode t))
 
-(leaf scheme
-  :hook ((geiser-mode-hook . my/scheme-mode-hook)
-         (scheme-mode-hook . my/scheme-mode-hook))
-  :custom
-  (geiser-active-implementations . '(guile racket)))
+(wiz scheme
+  :hook-names (geiser-mode-hook scheme-mode-hook)
+  :config
+  (lambda ()
+    (setopt geiser-active-implementations '(guile racket)))
+  :setup-hook
+  (defun init-scheme-mode-setup ()
+    "λ..."
+    (paredit-mode t)))
 
 ;; Haskell
-(leaf haskell-mode
-  :hook ((haskell-mode . turn-on-eldoc-mode)
-         (haskell-mode . turn-on-haskell-indent)))
+(wiz haskell-mode
+  :config
+  (lambda ()
+    (add-hook 'haskell-mode-hook #'turn-on-eldoc-mode)
+    (add-hook 'haskell-mode-hook #'turn-on-haskell-indent)))
 
 ;; JavaScript
 (leaf js2-mode
@@ -700,43 +744,59 @@
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1))
 
-(leaf typescript
-  :mode ("\\.ts\\'" . typescript-mode)
-  :hook ((typescript-mode . my-setup-typescript)))
+(wiz typescript-mode
+  :init
+  (lambda ()
+    (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode)))
+  :config
+  (lambda ()
+    (add-hook 'typescript-mode-hook #'my-setup-typescript)))
 
 ;; text-mode
-(defun my-text-mode-setup ()
-  "Setup function for `text-mode'."
-  (unless (eq major-mode 'html-mode)
-    (setq line-spacing 5)))
+(wiz diff-mode
+  :init
+  (lambda ()
+    (add-to-list 'auto-mode-alist '("/infection.log" . diff-mode))))
 
-(leaf diff-mode
-  :mode ("/infection.log"))
-
-(leaf text-mode
-  :mode ("/LICENSE\\'")
-  :hook ((text-mode . my-text-mode-setup)))
+(wiz text-mode
+  :init
+  (lambda ()
+    (add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode)))
+  :setup-hook
+  (defun init-text-mode-setup ()
+    "Setup function for `text-mode'."
+    (unless (eq major-mode 'html-mode)
+      (setq line-spacing 3))))
 
 ;; YAML
-(leaf yaml-mode
-  :mode ("/\\.gemrc\\'"))
+(wiz yaml-mode
+  :init
+  (lambda ()
+    (add-to-list 'auto-mode-alist '("/\\.gemrc\\'" . yaml-mode))))
 
 ;; Markdown Mode
-(leaf markdown-mode
-  ;;:mode ("\\.md\\'" . commonmark-gfm-mode)
+(wiz markdown-mode
+  :init
+  (lambda ()
+    (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)))
   :config
-  (eval-when-compile (defvar gfm-mode-map))
-  (with-eval-after-load 'markdown-mode
-    (require 'org-table)
-    (add-hook 'markdown-mode-hook 'orgtbl-mode)
-    (unbind-key "`" gfm-mode-map)
+  (lambda ()
+    (setopt markdown-command '("pandoc" "--from=markdown" "--to=html5"))
+    (setopt markdown-fontify-code-blocks-natively t)
+    (setopt markdown-header-scaling t)
+    (setopt markdown-indent-on-enter 'indent-and-new-item)
+
+    (define-key markdown-mode-map (kbd "<S-tab>") #'markdown-shifttab))
+  :setup-hook
+  (defun init-markdown-mode-setup ()
     (visual-line-mode nil)))
 
 ;; Magic Filetype
-(leaf magic-filetype
+(wiz magic-filetype
   :init
-  (magic-filetype-set-auto-mode 'ruby)
-  (magic-filetype-enable-vim-filetype))
+  (lambda ()
+    (magic-filetype-set-auto-mode 'ruby)
+    (magic-filetype-enable-vim-filetype)))
 
 ;;; Others:
 
@@ -744,54 +804,66 @@
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;; Recentf
-(leaf recentf
-  :custom
-  (recentf-max-saved-items . 2000)
-  (recentf-auto-cleanup . 'never)
-  (recentf-exclude . '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.cache/"
-                       "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\(\\.cask/\\|bookmarks\\)"
-                       "/elpa/.*-autoloads\\.el\\'"  "/\\newsrc\\(\\.eld\\)?\\'"))
+(wiz recentf
+  :config
+  (lambda ()
+    (setopt recentf-max-saved-items 2000)
+    (setopt recentf-auto-cleanup 'never)
+    (setopt recentf-exclude
+            '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.cache/"
+              "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\(\\.cask/\\|bookmarks\\)"
+              "/elpa/.*-autoloads\\.el\\'"  "/\\newsrc\\(\\.eld\\)?\\'")))
   :init
-  (recentf-mode t)
-  (run-with-idle-timer 30 t #'recentf-save-list))
+  (lambda ()
+    (recentf-mode t)
+    (run-with-idle-timer 30 t #'recentf-save-list)))
 
 ;; Undo
 (wiz undo-fu
   :init
   (lambda ()
-    (bind-keys ("C-_" . undo-fu-only-undo)
-               ("C-?" . undo-fu-only-redo))))
+    (wiz-keys (("C-_" . undo-fu-only-undo)
+               ("C-?" . undo-fu-only-redo)))))
 
 ;; expand-region.el
-(leaf expand-region
-  :bind (("C-@" . er/expand-region)
-         ("C-`" . er/contract-region)))
+(wiz expand-region
+  :config
+  (lambda ()
+    (wiz-keys (("C-@" . er/expand-region)
+               ("C-`" . er/contract-region)))))
 
 ;; Annotate.el
-(leaf annotate
-  :bind (("M-@"   . annotate-annotate)
-         ("C-M-@" . annotate-clear-annotations)))
+(wiz annotate
+  :config
+  (lambda ()
+    (wiz-keys (("M-@"   . annotate-annotate)
+               ("C-M-@" . annotate-clear-annotations)))))
 
 ;;; Tools:
 
 ;; Open junk file
-(leaf open-junk-file
-  :bind (("C-c j" . open-junk-file))
-  :custom
-  (open-junk-file-format . "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
+(wiz open-junk-file
+  :init
+  (lambda ()
+    (wiz-keys (("C-c j" . open-junk-file))))
+  :config
+  (lambda ()
+    (setopt open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-")))
 
 ;; restclient.el
-(leaf restclient
-  :mode ("\\.http\\'" . restclient-mode))
-
-(leaf org-mode
+(wiz restclient
   :init
-  (custom-set-variables
-   '(org-default-notes-file (concat org-directory "/capture.org")))
-  (bind-key "C-c c" 'org-capture)
-  (autoload 'ioslide:helper "ox-ioslide-helper.el" "Key menu for ioslide" t)
+  (lambda ()
+    (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))))
+
+(wiz org
+  :init
+  (lambda ()
+    (wiz-keys (("C-c c" . 'org-capture)))
+    (autoload 'ioslide:helper "ox-ioslide-helper.el" "Key menu for ioslide" t))
   :config
-  (with-eval-after-load 'org
+  (lambda ()
+    (setopt org-default-notes-file (concat org-directory "/capture.org"))
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((python . t)))))
@@ -800,18 +872,20 @@
 ;;(require 'ox-ioslide-helper)
 
 ;; ElScreen
-(leaf elscreen
+(wiz elscreen
+  :config
+  (lambda ()
+    (setopt elscreen-prefix-key (kbd "C-z"))
+    (setopt elscreen-display-tab nil)
+    (setopt elscreen-tab-display-kill-screen nil)
+    (setopt elscreen-tab-display-control nil))
   :init
-  (custom-set-variables
-   '(elscreen-prefix-key (kbd "C-z"))
-   '(elscreen-display-tab nil)
-   '(elscreen-tab-display-kill-screen nil)
-   '(elscreen-tab-display-control nil))
-  (bind-key "C-<tab>" 'elscreen-next)
-  (bind-key "<C-iso-lefttab>" 'elscreen-previous)
-  (elscreen-start)
-  ;; El-Screeのウィンドウを一個つくる
-  (elscreen-create))
+  (lambda ()
+    (wiz-keys (("C-<tab>" . elscreen-next)
+               ("<C-iso-lefttab>" . elscreen-previous)))
+    (elscreen-start)
+    ;; El-Screeのウィンドウを一個つくる
+    (elscreen-create)))
 
 (wiz ctrlf
   :config
@@ -821,40 +895,58 @@
   (lambda ()
     (ctrlf-mode +1)))
 
-(leaf rg
-  :bind (("C-:" . rg)
-         ("M-C-:" . rg-literal))
-  :hook ((rg-mode . wgrep-rg-setup)))
+(wiz rg
+  :init
+  (lambda ()
+    (wiz-keys (("C-:" . rg)
+               ("M-C-:" . rg-literal))))
+  :config
+  (lambda ()
+    (add-hook 'rg-mode-hook #'wgrep-rg-setup)))
 
 ;; direx
-(leaf direx
-  :bind (("M-C-\\" . direx-project:jump-to-project-root-other-window)
-         ("M-C-¥"  . direx-project:jump-to-project-root-other-window)))
+(wiz direx
+  :init
+  (lambda ()
+    (wiz-keys (("M-C-\\" . direx-project:jump-to-project-root-other-window)
+               ("M-C-¥"  . direx-project:jump-to-project-root-other-window)))))
 
 ;; dired-k
-(leaf dired-k
-  :bind ((:dired-mode-map
-          ("K" . dired-k)))
-  :hook ((dired-initial-position-hook . dired-k)))
+(wiz dired-k
+  :config
+  (lambda ()
+    (wiz-keys (("K" . dired-k))
+              :map dired-mode-map))
+  :init
+  (lambda ()
+    (add-hook 'dired-initial-position-hook #'dired-k)))
 
-(with-eval-after-load 'dired
-  (add-hook 'dired-mode-hook #'dired-preview-mode))
+(wiz dired
+  :config
+  (lambda ()
+    (add-hook 'dired-mode-hook #'dired-preview-mode)))
 
 ;; Visual
-(leaf visual-regexp
-  :bind (("M-%" . vr/query-replace)))
+(wiz visual-regexp
+  :init
+  (lambda ()
+    (wiz-keys (("M-%" . vr/query-replace)))))
 
 ;; image-mode
-(leaf image-mode
-  :bind (:image-mode-map
-         ("<wheel-up>"    . image-previous-line)
-         ("<wheel-down>"  . image-next-line)
-         ("<wheel-right>" . image-forward-hscroll)
-         ("<wheel-left>"  . image-backward-hscroll)))
+(wiz image-mode
+  :config
+  (lambda ()
+    (wiz-keys (("<wheel-up>"    . image-previous-line)
+               ("<wheel-down>"  . image-next-line)
+               ("<wheel-right>" . image-forward-hscroll)
+               ("<wheel-left>"  . image-backward-hscroll))
+              :map image-mode-map)))
 
 ;; Yet another folding
-(leaf yafolding
-  :hook ((prog-mode-hook . yafolding-mode)))
+(wiz yafolding
+  :init
+  (lambda ()
+    (add-hook 'prog-mode-hook 'yafolding-mode)))
 
 ;; vi-tilde-fringe
 (wiz vi-tilde-fringe
@@ -869,31 +961,32 @@
   (add-hook 'prog-mode-hook #'goto-address-prog-mode)
   (add-hook 'text-mode-hook #'goto-address-mode))
 
-(leaf smart-jump :ensure t)
+;; (leaf smart-jump :ensure t)
 
 ;; multiple-cursors
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
-(leaf multiple-cursors
+(wiz multiple-cursors
   :init
-  (require 'smartrep)
-  (declare-function smartrep-define-key "smartrep")
-  (bind-key "C-M-c" 'mc/edit-lines)
-  (bind-key "C-M-r" 'mc/mark-all-in-region)
-  (global-unset-key (kbd "C-t"))
-  (smartrep-define-key global-map "C-t"
-    '(("C-t" . 'mc/mark-next-like-this)
-      ("n"   . 'mc/mark-next-like-this)
-      ("p"   . 'mc/mark-previous-like-this)
-      ("m"   . 'mc/mark-more-like-this-extended)
-      ("u"   . 'mc/unmark-next-like-this)
-      ("U"   . 'mc/unmark-previous-like-this)
-      ("s"   . 'mc/skip-to-next-like-this)
-      ("S"   . 'mc/skip-to-previous-like-this)
-      ("*"   . 'mc/mark-all-like-this)
-      ("d"   . 'mc/mark-all-like-this-dwim)
-      ("i"   . 'mc/insert-numbers)
-      ("o"   . 'mc/sort-regions)
-      ("O"   . 'mc/reverse-regions))))
+  (lambda ()
+    (require 'smartrep)
+    (declare-function smartrep-define-key "smartrep")
+    (wiz-keys (("C-M-c" . mc/edit-lines)
+               ("C-M-r" . mc/mark-all-in-region)))
+    (global-unset-key (kbd "C-t"))
+    (smartrep-define-key global-map "C-t"
+      '(("C-t" . 'mc/mark-next-like-this)
+        ("n"   . 'mc/mark-next-like-this)
+        ("p"   . 'mc/mark-previous-like-this)
+        ("m"   . 'mc/mark-more-like-this-extended)
+        ("u"   . 'mc/unmark-next-like-this)
+        ("U"   . 'mc/unmark-previous-like-this)
+        ("s"   . 'mc/skip-to-next-like-this)
+        ("S"   . 'mc/skip-to-previous-like-this)
+        ("*"   . 'mc/mark-all-like-this)
+        ("d"   . 'mc/mark-all-like-this-dwim)
+        ("i"   . 'mc/insert-numbers)
+        ("o"   . 'mc/sort-regions)
+        ("O"   . 'mc/reverse-regions)))))
 
 ;; which-key
 (wiz which-key
@@ -917,57 +1010,83 @@
     (require 'smooth-scroll)
     (smooth-scroll-mode t)))
 
-(leaf topsy :ensure t
-  :hook '(prog-mode-hook))
+(wiz topsy
+  :init
+  (lambda ()
+    (add-hook 'prog-mode-hook #'topsy-mode)))
 
-(leaf puni :ensure t
-  :hook '(php-mode-hook web-mode-hook))
+(wiz puni
+  :init
+  (lambda ()
+    (wiz-keys (("C-)"         . puni-slurp-forward)
+               ;; ("C-<right>" . puni-slurp-forward)
+               ("C-}"         . puni-barf-forward)
+               ;; ("C-<left>" . puni-barf-forward)
+               ("C-("         . puni-slurp-backward)
+               ("C-M-<left>"  . puni-slurp-backward)
+               ("C-{"         . puni-barf-backward)
+               ("C-M-<right>" . puni-barf-backward)
+               ("M-<up>"      . puni-splice-killing-backward)
+               ("M-<down>"    . puni-splice-killing-forward)
+               ("ESC <up>"    . puni-splice-killing-backward)
+               ("ESC <down>"  . puni-splice-killing-forward))
+              :map puni-mode-map)
+    (with-eval-after-load 'php-mode
+      (add-hook 'php-mode-hook 'puni-mode))
+    (with-eval-after-load 'web-mode
+      (add-hook 'web-mode-hook 'puni-mode))))
 
 ;; crux
-(leaf crux
+(wiz crux
   :init
-  (leaf-keys
-   (("C-c o"   . crux-open-with)
-    ("C-S-o"   . crux-smart-open-line-above)
-    ("C-c n"   . crux-cleanup-buffer-or-region)
-    ("C-c u"   . crux-view-url)
-    ("C-x 4 t" . crux-transpose-windows)
-    ("C-c d"   . crux-duplicate-current-line-or-region)
-    ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
-    ("C-c r"   . crux-rename-file-and-buffer)
-    ("C-c M-t" . crux-visit-term-buffer)
-    ("C-c k"   . crux-kill-other-buffers)
-    ("C-M-z"   . crux-indent-defun)
-    ("C-^"     . crux-top-join-lines)
-    ("C-DEL"   . crux-kill-line-backwards))))
+  (lambda ()
+    (wiz-keys
+     (("C-c o"   . crux-open-with)
+      ("C-S-o"   . crux-smart-open-line-above)
+      ("C-c n"   . crux-cleanup-buffer-or-region)
+      ("C-c u"   . crux-view-url)
+      ("C-x 4 t" . crux-transpose-windows)
+      ("C-c d"   . crux-duplicate-current-line-or-region)
+      ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
+      ("C-c r"   . crux-rename-file-and-buffer)
+      ("C-c M-t" . crux-visit-term-buffer)
+      ("C-c k"   . crux-kill-other-buffers)
+      ("C-M-z"   . crux-indent-defun)
+      ("C-^"     . crux-top-join-lines)
+      ("C-DEL"   . crux-kill-line-backwards)))))
 
-(leaf vlf
-  :custom
-  (vlf-application . 'dont-ask)
+(wiz vlf
+  :config
+  (lambda ()
+    (setopt vlf-application 'dont-ask))
   :init
-  (require 'vlf-setup))
+  (lambda ()
+    (require 'vlf-setup)))
 
-(leaf ov
+(wiz ov
   :init
-  (autoload 'ov "ov.el" "Make an overlay from BEG to END.
+  (lambda ()
+    (autoload 'ov "ov.el" "Make an overlay from BEG to END.
 
-If PROPERTIES are specified, set them for the created overlay."))
+If PROPERTIES are specified, set them for the created overlay.")))
 
-(leaf writeroom
-  :custom
-  (writeroom-fringes-outside-margins . t)
-  (writeroom-maximize-window . nil)
-  (writeroom-global-effects . '()))
+(wiz writeroom-mode
+  :config
+  (lambda ()
+    (setopt writeroom-fringes-outside-margins t)
+    (setopt writeroom-maximize-window nil)
+    (setopt writeroom-global-effects '())))
 
-(leaf nov
+(wiz nov
   :init
-  (add-hook 'nov-post-html-render-hook #'writeroom-mode)
-  (add-hook 'nov-post-html-render-hook #'my/disable-trailing-mode-hook))
+  (lambda ()
+    (add-hook 'nov-post-html-render-hook #'writeroom-mode)
+    (add-hook 'nov-post-html-render-hook #'my/disable-trailing-mode-hook)))
 
 ;; TRAMP
-(leaf tramp
-  :init
-  (with-eval-after-load 'tramp
+(wiz tramp
+  :config
+  (lambda ()
     (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
 
 ;;; Communication:
@@ -1133,9 +1252,10 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 "))))
 
 ;; Pandoc-EWW
-(leaf pandoc
+(wiz pandoc
   :init
-  (pandoc-turn-on-advice-eww))
+  (lambda ()
+    (pandoc-turn-on-advice-eww)))
 
 ;; init-open-recentf
 (when (eval-when-compile (file-directory-p "~/repo/emacs/init-open-recentf.el/"))
@@ -1144,11 +1264,13 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (init-open-recentf)
 
 ;; Right Click
-(leaf right-click-context
-  :custom
-  (right-click-context-mode-lighter . "")
+(wiz right-click-context
+  :config
+  (lambda ()
+    (setopt right-click-context-mode-lighter ""))
   :init
-  (right-click-context-mode 1))
+  (lambda ()
+    (right-click-context-mode 1)))
 
 ;; Beacon — Never lose your cursor again
 (wiz beacon
@@ -1200,15 +1322,17 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
     (add-hook 'eat-mode-hook #'my/disable-trailing-mode-hook)))
 
 ;; keyfreq
-(leaf keyfreq
+(wiz keyfreq
   :init
-  (keyfreq-mode 1)
-  (keyfreq-autosave-mode 1))
+  (lambda ()
+    (keyfreq-mode 1)
+    (keyfreq-autosave-mode 1)))
 
 ;; Auto deployment
-(leaf copy-file-on-save
+(wiz copy-file-on-save
   :init
-  (global-copy-file-on-save-mode 1))
+  (lambda ()
+    (global-copy-file-on-save-mode 1)))
 
 (setq find-function-C-source-directory
       (eval-when-compile (expand-file-name "~/local/src/emacs/src")))
@@ -1225,3 +1349,4 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (provide 'init)
 ;;; init.el ends here
 (put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
