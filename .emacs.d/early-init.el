@@ -24,20 +24,16 @@
   (eval-when-compile
     (getenv "WSL_DISTRO_NAME")))
 
-;; (setq package-enable-at-startup nil)
-
 (with-eval-after-load 'package
-  (when (eval-when-compile (version< emacs-version "28.0.50"))
-    (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t))
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
 
 (custom-set-variables
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((comp))))
 
-(eval-when-compile
-  (unless (> emacs-major-version 28)
-    (put 'diff-add-log-use-relative-names 'safe-local-variable #'booleanp)
-    (put 'vc-git-annotate-switches 'safe-local-variable (lambda (switches) (equal switches "-w")))))
+(unless (eval-when-compile (>= emacs-major-version 30))
+  (put 'etags-regen-regexp-alist 'safe-local-variable #'listp)
+  (put 'etags-regen-ignores 'safe-local-variable #'listp)
+  emacs-major-version)
 
 ;;; early-init.el ends here
