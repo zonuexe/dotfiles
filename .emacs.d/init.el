@@ -51,17 +51,15 @@
  '(completions-common-part ((t (:background "black" :foreground "WhiteSmoke" :slant normal :weight normal :height 1.0 :width normal))))
  '(font-lock-doc-face ((t (:slant normal)))))
 
-(wiz modus-themes
-  :init
-  (lambda ()
-    (require 'modus-themes)
-    (setopt modus-themes-completions '((matches . (extrabold))
-                                       (selection . (semibold italic))))
-    (setopt modus-themes-italic-constructs t)
-    (setopt modus-themes-bold-constructs t)
-    (setopt modus-themes-prompts '(bold italic))
-    (setopt modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
-    (load-theme 'modus-vivendi :noconfirm)))
+(prog1 'modus-themes
+  (require 'modus-themes)
+  (setopt modus-themes-completions '((matches . (extrabold))
+                                     (selection . (semibold italic))))
+  (setopt modus-themes-italic-constructs t)
+  (setopt modus-themes-bold-constructs t)
+  (setopt modus-themes-prompts '(bold italic))
+  (setopt modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
+  (load-theme 'modus-vivendi :noconfirm))
 
 ;;; Variables:
 (setq make-backup-files nil)
@@ -82,6 +80,12 @@
   (require 'wiz)
   (require 'wiz-key)
   (require 'wiz-env))
+
+(wiz wiz-pkgs
+  :init
+  (lambda ()
+    (defvar wiz-pkgs--registerd-packages nil)
+    (setopt wiz-pkgs-enable-log t)))
 
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
@@ -123,14 +127,8 @@
   (add-to-list 'load-path (expand-file-name "~/repo/emacs/lsp-bridge")))
 (put 'lsp-bridge-php-lsp-server 'safe-local-variable #'stringp)
 
-(eval-when-compile
-  (require 'leaf))
-
 (require 'diminish)
-(require 'bind-key)
 (require 'key-chord nil t)
-
-(leaf-keywords-init)
 
 (defalias 'major-mode-of 'magic-filetype-major-mode-of)
 
@@ -297,6 +295,7 @@
     (setopt eldoc-minor-mode-string "")))
 
 (wiz corfu
+  :package (gnu corfu)
   :config
   (lambda ()
     (setopt corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -626,45 +625,6 @@
 ;;   :init
 ;;   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
-;; Ruby
-(defun my-enh-ruby-mode-setup ()
-  "Setup function for `enh-ruby-mode'."
-  (setq-local ac-ignore-case t))
-
-(leaf enh-ruby-mode
-  :mode (("\\.rb\\'" . enh-ruby-mode))
-  :hook ((enh-ruby-mode . my-enh-ruby-mode-setup))
-  :config
-  (subword-mode t)
-  (yard-mode t)
-  (custom-set-variables
-   '(ruby-deep-indent-paren-style nil))
-  (setq-default enh-ruby-not-insert-magic-comment t))
-
-;;; begin enh-ruby-mode patch
-;;; http://qiita.com/vzvu3k6k/items/acec84d829a3dbe1427a
-(defadvice enh-ruby-mode-set-encoding (around stop-enh-ruby-mode-set-encoding)
-  "If enh-ruby-not-insert-magic-comment is true, stops enh-ruby-mode-set-encoding."
-  (if (and (boundp 'enh-ruby-not-insert-magic-comment)
-           (not enh-ruby-not-insert-magic-comment))
-      ad-do-it))
-(ad-activate 'enh-ruby-mode-set-encoding)
-(setq-default enh-ruby-not-insert-magic-comment t)
-;;; enh-ruby-mode patch ends here
-
-;; inf-ruby
-(leaf inf-ruby
-  :hook ((inf-ruby-mode . ansi-color-for-comint-mode-on)))
-
-;; Python
-(leaf python
-  :mode ("\\.py\\'" . python-mode)
-  :interpreter ("python" . python-mode))
-
-;; Lisp
-;; (defvar my/emacs-lisp-ac-sources
-;;   '(ac-source-features ac-source-functions ac-source-variables ac-source-symbols))
-
 (defun my-emacs-lisp-mode-setup ()
   "Setup function for Emacs Lisp."
   (rainbow-mode t)
@@ -715,7 +675,7 @@
 ;; Scheme
 
 (wiz scheme
-  :hook-names (geiser-mode-hook scheme-mode-hook)
+  :hook-names (scheme-mode-hook)
   :config
   (lambda ()
     (setopt geiser-active-implementations '(guile racket)))
@@ -730,10 +690,6 @@
   (lambda ()
     (add-hook 'haskell-mode-hook #'turn-on-eldoc-mode)
     (add-hook 'haskell-mode-hook #'turn-on-haskell-indent)))
-
-;; JavaScript
-(leaf js2-mode
-  :mode ("\\.js\\'"))
 
 ;; TypeScript
 (defun my-setup-typescript ()
@@ -1122,11 +1078,12 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
     (safe-diminish "flyspell" 'flyspell-mode)
     (safe-diminish "simple" 'auto-fill-function)
     (safe-diminish "subword" 'subword-mode)
-    (safe-diminish "gcmh" 'gcmh-mode)
-    (mapc (lambda (it)
-            (add-hook (intern (concat (symbol-name it) "-hook"))
-                      'my/disable-trailing-mode-hook))
-          my/disable-trailing-modes)))
+    (safe-diminish "gcmh" 'gcmh-mode)))
+
+(wiz-map my/disable-trailing-modes
+  (lambda (it)
+    `(add-hook (quote ,(intern (concat (symbol-name it) "-hook")))
+               #'my/disable-trailing-mode-hook)))
 
 ;;; My Functions:
 (defun reload-major-mode ()
