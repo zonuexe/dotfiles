@@ -20,4 +20,5 @@ filter.log
 filter-master.log
 test.php
 *-autoloads.el
+.dir-locals-2.el
 .rgignore

@@ -214,6 +214,8 @@ then
     alias cd=z
 fi
 
+[ -n "$EAT_SHELL_INTEGRATION_DIR" ] && . $EAT_SHELL_INTEGRATION_DIR/zsh
+
 # bun completions
 [ -s "/Users/megurine/.bun/_bun" ] && source "/Users/megurine/.bun/_bun"
 

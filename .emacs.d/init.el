@@ -83,9 +83,8 @@
 
 (wiz wiz-pkgs
   :init
-  (lambda ()
-    (defvar wiz-pkgs--registerd-packages nil)
-    (setopt wiz-pkgs-enable-log t)))
+  (defvar wiz-pkgs--registerd-packages nil)
+  (setopt wiz-pkgs-enable-log t))
 
 ;;; Font:
 ;;;     |いろはにほへと　ちりぬるを|
@@ -134,11 +133,9 @@
 
 (wiz nyan-mode
   :config
-  (lambda ()
-    (setopt nyan-bar-length 16))
+  (setopt nyan-bar-length 16)
   :init
-  (lambda ()
-    (nyan-mode 1)))
+  (nyan-mode 1))
 
 ;;; Coding:
 (setq-default indent-tabs-mode nil)
@@ -158,17 +155,14 @@
 ;; volatile-highlights.el
 (wiz volatile-highlights
   :config
-  (lambda ()
-    (diminish 'volatile-highlights-mode))
+  (diminish 'volatile-highlights-mode)
   :init
-  (lambda ()
-    (volatile-highlights-mode 1)))
+  (volatile-highlights-mode 1))
 
 ;; Rainbow mode
 (wiz rainbow-mode
   :config
-  (lambda ()
-    (diminish 'rainbow-mode)))
+  (diminish 'rainbow-mode))
 
 ;; Key config
 (wiz-keys (("M-ESC ESC"   . keyboard-quit)
@@ -211,21 +205,19 @@
 ;; key-chord
 (wiz key-chord
   :init
-  (lambda ()
-    (key-chord-mode 1))
+  (key-chord-mode 1)
   :config
-  (lambda ()
-    (setopt key-chord-two-keys-delay 0.02)
-    (key-chord-define-global "df" 'find-function)
-    (key-chord-define-global "fh" 'describe-function)
-    (key-chord-define-global "fv" 'find-variable)
-    (key-chord-define-global "jb" 'jetbrains-open-buffer-file)
-    (key-chord-define-global "@p" 'package-install)
-    (key-chord-define-global "kl" 'align-regexp)
-    (key-chord-define-global "rt" 'modus-themes-toggle)
-    (key-chord-define-global "wr" 'writeroom-mode)
-    (key-chord-define-global "m," 'reload-major-mode)
-    (key-chord-define-global "mc" 'my/buffer-minchoize)))
+  (setopt key-chord-two-keys-delay 0.02)
+  (key-chord-define-global "df" 'find-function)
+  (key-chord-define-global "fh" 'describe-function)
+  (key-chord-define-global "fv" 'find-variable)
+  (key-chord-define-global "jb" 'jetbrains-open-buffer-file)
+  (key-chord-define-global "@p" 'package-install)
+  (key-chord-define-global "kl" 'align-regexp)
+  (key-chord-define-global "rt" 'modus-themes-toggle)
+  (key-chord-define-global "wr" 'writeroom-mode)
+  (key-chord-define-global "m," 'reload-major-mode)
+  (key-chord-define-global "mc" 'my/buffer-minchoize))
 
 (savehist-mode +1)
 (with-eval-after-load 'prescient
@@ -233,81 +225,71 @@
 
 (wiz vertico
   :config
-  (lambda ()
-    (wiz-keys (("C-l" . my-filename-upto-parent))
-              :map vertico-map))
+  (wiz-keys (("C-l" . my-filename-upto-parent))
+            :map vertico-map)
   :init
-  (lambda ()
-    (vertico-mode +1)))
+  (vertico-mode +1))
 
 (wiz vertico-prescient
   :init
-  (lambda ()
-    (vertico-prescient-mode +1)))
+  (vertico-prescient-mode +1))
 
 (wiz marginalia
   :init
-  (lambda ()
-    (marginalia-mode +1)))
+  (marginalia-mode +1))
 
 (wiz embark
   :init
-  (lambda ()
-    (wiz-keys
-     (("C-c C-c" . embark-act)
-      ("C-c C-o" . embark-export)
-      ("C-c ?" . embark-bindings)))))
+  (wiz-keys
+   (("C-c C-c" . embark-act)
+    ("C-c C-o" . embark-export)
+    ("C-c ?" . embark-bindings))))
 
 (wiz consult
   :init
-  (lambda ()
-    (wiz-keys
-     (("C-M-y" . consult-yank-from-kill-ring)
-      ("C-c ;" . consult-imenu)
-      ("C-c t" . consult-recent-file)
-      ("C-;" . my-consult-line)
-      ("M-X"  . consult-mode-command)
-      ("M-g *" . consult-outline)
-      ("M-t" . consult-ls-git)
-      ("M-i" . consult-imenu)
-      ([remap switch-to-buffer] . consult-buffer)
-      ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
-      ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
-      ([remap goto-line] . consult-goto-line)))))
+  (wiz-keys
+   (("C-M-y" . consult-yank-from-kill-ring)
+    ("C-c ;" . consult-imenu)
+    ("C-c t" . consult-recent-file)
+    ("C-;" . my-consult-line)
+    ("M-X"  . consult-mode-command)
+    ("M-g *" . consult-outline)
+    ("M-t" . consult-ls-git)
+    ("M-i" . consult-imenu)
+    ([remap switch-to-buffer] . consult-buffer)
+    ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+    ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
+    ([remap goto-line] . consult-goto-line))))
 
 (wiz embark-consult
   :init
-  (lambda ()
-    (with-eval-after-load 'embark
-      (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode))))
+  (with-eval-after-load 'embark
+    (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode)))
 
 (wiz orderless
   :config
-  (lambda ()
-    (setopt completion-styles '(orderless basic))
-    (setopt completion-category-defaults nil)
-    (setopt completion-category-overrides '((file (styles . (partial-completion)))))))
+  (setopt completion-styles '(orderless basic))
+  (setopt completion-category-defaults nil)
+  (setopt completion-category-overrides '((file (styles . (partial-completion))))))
 
 (wiz eldoc
   :config
-  (lambda ()
-    (diminish 'eldoc-mode)
-    (setopt eldoc-minor-mode-string "")))
+  (diminish 'eldoc-mode)
+  (setopt eldoc-minor-mode-string ""))
 
 (wiz corfu
   :package (gnu corfu)
   :config
-  (lambda ()
-    (setopt corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-    (setopt corfu-auto t)                 ;; Enable auto completion
-    (setopt corfu-separator ?\s)          ;; Orderless field separator
-    (setopt corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-    (setopt corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-    (setopt corfu-preview-current t)      ;; Disable current candidate preview
-    (setopt corfu-preselect-first nil)    ;; Disable candidate preselection
-    (setopt corfu-on-exact-match 'insert) ;; Configure handling of exact matches
-    (setopt corfu-echo-documentation t)   ;; Disable documentation in the echo area
-    (setopt corfu-scroll-margin 5))       ;; Use scroll margin
+  (setopt corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (setopt corfu-auto t)                 ;; Enable auto completion
+  (setopt corfu-separator ?\s)          ;; Orderless field separator
+  (setopt corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  (setopt corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (setopt corfu-preview-current t)      ;; Disable current candidate preview
+  (setopt corfu-preselect-first nil)    ;; Disable candidate preselection
+  (setopt corfu-on-exact-match 'insert) ;; Configure handling of exact matches
+  (setopt corfu-echo-documentation t)   ;; Disable documentation in the echo area
+  (setopt corfu-scroll-margin 5)       ;; Use scroll margin
 
   ;; Enable Corfu only for certain modes.
   ;; :hook ((prog-mode . corfu-mode)
@@ -318,8 +300,7 @@
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-excluded-modes'.
   :init
-  (lambda ()
-    (global-corfu-mode)))
+  (global-corfu-mode))
 
 ;; (leaf corfu-prescient :ensure t
 ;;   :init
@@ -332,14 +313,12 @@
 
   :init
   ;; Setup completion at point
-  (lambda ()
-    (wiz-keys (("M-+" . tempel-complete) ;; Alternative tempel-expand
-               ("M-*" . tempel-insert))))
+  (wiz-keys (("M-+" . tempel-complete) ;; Alternative tempel-expand
+             ("M-*" . tempel-insert)))
   :config
-  (lambda ()
-    (wiz-keys (("<tab>" . tempel-next)
-               ("S-<tab>" . tempel-previous))
-              :map tempel-map))
+  (wiz-keys (("<tab>" . tempel-next)
+             ("S-<tab>" . tempel-previous))
+            :map tempel-map)
   :hook-names (prog-mode-hook text-mode-hook)
   :setup-hook
   (defun tempel-setup-capf ()
@@ -356,50 +335,43 @@
 
 (wiz cape
   :init
-  (lambda ()
-    (add-to-list 'completion-at-point-functions (cape-company-to-capf #'company-tabnine))
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-    (add-to-list 'completion-at-point-functions #'cape-keyword)))
+  (add-to-list 'completion-at-point-functions (cape-company-to-capf #'company-tabnine))
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 ;; Magit
 (wiz magit
   :init
-  (lambda ()
-    (wiz-keys (("C-x m" . magit-status)
-               ("C-c l" . magit-blame-addition)))
-    (setq-default magit-auto-revert-mode nil)
-    (setq vc-handled-backends '(Git))
-    (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook))))
+  (wiz-keys (("C-x m" . magit-status)
+             ("C-c l" . magit-blame-addition)))
+  (setq-default magit-auto-revert-mode nil)
+  (setq vc-handled-backends '(Git))
+  (eval-after-load "vc" '(remove-hook 'find-file-hook 'vc-find-file-hook)))
 
 (wiz gitignore-mode
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'"))))
+  (add-to-list 'auto-mode-alist '("/\\.gitexclude\\'" "/\\.\\(?:ag\\|docker\\)?ignore\\'")))
 
 ;; EditorConfig
 (wiz editorconfig
   :config
-  (lambda ()
-    (diminish 'editorconfig-mode)
-    (setopt editorconfig-get-properties-function 'editorconfig-core-get-properties-hash))
+  (diminish 'editorconfig-mode)
+  (setopt editorconfig-get-properties-function 'editorconfig-core-get-properties-hash)
   :init
-  (lambda ()
-    (editorconfig-mode t)))
+  (editorconfig-mode t))
 
 ;; Conf-Mode
 (wiz conf-mode
   :init
-  (lambda ()
-    (require 'generic-x)
-    (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
-    (add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
-    (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t)))
+  (require 'generic-x)
+  (add-to-list 'auto-mode-alist '("/\\.env\\(?:\\.sample\\)?\\'" . conf-mode))
+  (add-to-list 'auto-mode-alist '("/\\.*conf\\(?:ig\\)?\\'" . conf-mode) t)
+  (add-to-list 'auto-mode-alist '("/\\.*rc\\'" . conf-mode) t))
 
 ;; Projectile
 (wiz projectile
   :config
-  (lambda ()
-    (setopt projectile-enable-caching nil)))
+  (setopt projectile-enable-caching nil))
 
 ;; Flycheck
 (wiz flycheck-posframe
@@ -427,22 +399,19 @@
 ;; elec-pair
 (wiz elec-pair
   :init
-  (lambda ()
-    (electric-pair-mode 1)))
+  (electric-pair-mode 1))
 
 ;; which-func
 (wiz which-func
   :init
-  (lambda ()
-    (which-function-mode 1)))
+  (which-function-mode 1))
 
 ;; smartchr
 (wiz smartchr
   :init
-  (lambda ()
-    (autoload 'smartchr "smartchr"
-      "Make an interactive command to support input several LIST-OF-STRING candidates."
-      t)))
+  (autoload 'smartchr "smartchr"
+    "Make an interactive command to support input several LIST-OF-STRING candidates."
+    t))
 
 (defun my-presentation-on ()
   t)
@@ -452,9 +421,8 @@
 
 (wiz presentation
   :config
-  (lambda ()
-    (add-hook 'presentation-on  #'my-presentation-on)
-    (add-hook 'presentation-off #'my-presentation-off)))
+  (add-hook 'presentation-on  #'my-presentation-on)
+  (add-hook 'presentation-off #'my-presentation-off))
 
 ;;; Languages:
 (wiz sql
@@ -501,6 +469,13 @@
     (php-eldoc-enable)))
 
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
+
+(wiz php
+  :hook-names (php-base-mode-hook)
+  :setup-hook
+  (defun init-php-base-mode-setup ()
+    (make-local-variable 'treesit-font-lock-level)
+    (setopt treesit-font-lock-level 4)))
 
 (wiz php-mode
   :load-if-exists "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"
@@ -647,9 +622,6 @@
   '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook lisp-data-mode-hook))
 (--each my/emacs-lisp-modes
   (add-hook it #'my-emacs-lisp-mode-setup))
-
-(require 'org-table)
-(add-hook 'lisp-interaction-mode-hook #'turn-on-orgtbl)
 
 ;; `Cask' is NOT emacs-lisp-mode
 (add-to-list 'auto-mode-alist '("/Cask\\'" . lisp-mode))
@@ -1211,8 +1183,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Pandoc-EWW
 (wiz pandoc
   :init
-  (lambda ()
-    (pandoc-turn-on-advice-eww)))
+  (pandoc-turn-on-advice-eww))
 
 ;; init-open-recentf
 (when (eval-when-compile (file-directory-p "~/repo/emacs/init-open-recentf.el/"))
@@ -1223,37 +1194,30 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; Right Click
 (wiz right-click-context
   :config
-  (lambda ()
-    (setopt right-click-context-mode-lighter ""))
+  (setopt right-click-context-mode-lighter "")
   :init
-  (lambda ()
-    (right-click-context-mode 1)))
+  (right-click-context-mode 1))
 
-;; Beacon — Never lose your cursor again
-(wiz beacon
+(wiz pulsar
   :config
-  (lambda ()
-    (diminish 'beacon-mode))
+  (diminish 'pulsar-mode)
   :init
-  (lambda ()
-    (beacon-mode 1)))
+  (pulsar-global-mode 1))
 
 ;; Eshell
 (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode)
 
 (wiz highlight-indent-guides
   :config
-  (lambda ()
-    (diminish 'highlight-indent-guides-mode)
-    (setopt highlight-indent-guides-method 'character)
-    (setopt highlight-indent-guides-character ?\|)
-    (setopt highlight-indent-guides-delay 0.5)))
+  (diminish 'highlight-indent-guides-mode)
+  (setopt highlight-indent-guides-method 'character)
+  (setopt highlight-indent-guides-character ?\|)
+  (setopt highlight-indent-guides-delay 0.5))
 
-(wiz google-translate
+(wiz google-translate-default-ui
   :config
-  (lambda ()
-    (setopt google-translate-default-source-language "en")
-    (setopt google-translate-default-target-language "ja")))
+  (setopt google-translate-default-source-language "en")
+  (setopt google-translate-default-target-language "ja"))
 
 (defun my/reset-default-directory-by-buffer-file-name ()
   "Set default-directory by `buffer-file-name'."
@@ -1275,21 +1239,18 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 (wiz eat
   :config
-  (lambda ()
-    (add-hook 'eat-mode-hook #'my/disable-trailing-mode-hook)))
+  (add-hook 'eat-mode-hook #'my/disable-trailing-mode-hook))
 
 ;; keyfreq
 (wiz keyfreq
   :init
-  (lambda ()
-    (keyfreq-mode 1)
-    (keyfreq-autosave-mode 1)))
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
 
 ;; Auto deployment
 (wiz copy-file-on-save
   :init
-  (lambda ()
-    (global-copy-file-on-save-mode 1)))
+  (global-copy-file-on-save-mode 1))
 
 (setq find-function-C-source-directory
       (eval-when-compile (expand-file-name "~/local/src/emacs/src")))
