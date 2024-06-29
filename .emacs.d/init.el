@@ -159,10 +159,9 @@
   :init
   (volatile-highlights-mode 1))
 
-;; Rainbow mode
-(wiz rainbow-mode
-  :config
-  (diminish 'rainbow-mode))
+(wiz colorful-mode
+  :init
+  (global-colorful-mode))
 
 ;; Key config
 (wiz-keys (("M-ESC ESC"   . keyboard-quit)
@@ -173,6 +172,7 @@
            ("C-c :"       . right-click-context-menu)
            ("C-c R"       . revert-buffer)
            ("C-c S-i"     . my/display-file-info)
+           ("C-S-d"       . duplicate-dwim)
            ("C-x j"       . dired-jump)
            ("C-x C-S-e"   . pp-eval-last-sexp)
            ("C-x C-f"     . find-file-at-point)
@@ -302,9 +302,9 @@
   :init
   (global-corfu-mode))
 
-;; (leaf corfu-prescient :ensure t
-;;   :init
-;;   (corfu-prescient-mode +1))
+(wiz corfu-prescient
+  :init
+  (corfu-prescient-mode +1))
 
 (wiz tempel
   ;; Require trigger prefix before template name when completing.
@@ -376,25 +376,22 @@
 ;; Flycheck
 (wiz flycheck-posframe
   :config
-  (lambda ()
-    (setopt flycheck-posframe-border-width 7)
-    (setopt flycheck-posframe-warning-prefix "\u26a0 ")
-    (setopt flycheck-posframe-position 'window-center)))
+  (setopt flycheck-posframe-border-width 7)
+  (setopt flycheck-posframe-warning-prefix "\u26a0 ")
+  (setopt flycheck-posframe-position 'window-center))
 
 (wiz flycheck
   :config
-  (lambda ()
-    (diminish 'flycheck-mode)
-    (add-hook 'flycheck-mode-hook 'flycheck-cask-setup)
-    (add-hook 'flycheck-mode-hook 'flycheck-eask-setup)
-    (add-hook 'flycheck-mode-hook 'flycheck-posframe-mode))
+  (diminish 'flycheck-mode)
+  (add-hook 'flycheck-mode-hook 'flycheck-cask-setup)
+  (add-hook 'flycheck-mode-hook 'flycheck-eask-setup)
+  (add-hook 'flycheck-mode-hook 'flycheck-posframe-mode)
   :init
-  (lambda ()
-    (require 'flycheck-posframe)
-    (global-flycheck-mode t)
-    (flycheck-package-setup)
-    (with-current-buffer (get-buffer-create flycheck-posframe-buffer)
-      (goto-address-mode +1))))
+  (require 'flycheck-posframe)
+  (global-flycheck-mode t)
+  (flycheck-package-setup)
+  (with-current-buffer (get-buffer-create flycheck-posframe-buffer)
+    (goto-address-mode +1)))
 
 ;; elec-pair
 (wiz elec-pair
@@ -413,25 +410,27 @@
     "Make an interactive command to support input several LIST-OF-STRING candidates."
     t))
 
-(defun my-presentation-on ()
-  t)
+(defun init-presentation-on ()
+  "."
+  (prog1 t
+    (modus-themes-toggle)))
 
-(defun my-presentation-off ()
-  t)
+(defun init-presentation-off ()
+  "."
+  (prog1 t
+    (modus-themes-toggle)))
 
 (wiz presentation
   :config
-  (add-hook 'presentation-on  #'my-presentation-on)
-  (add-hook 'presentation-off #'my-presentation-off))
+  (add-hook 'presentation-on  #'init-presentation-on)
+  (add-hook 'presentation-off #'init-presentation-off))
 
 ;;; Languages:
 (wiz sql
   :config
-  (lambda ()
-    (setopt sql-product 'mysql)))
+  (setopt sql-product 'mysql))
 
 ;; Web
-
 
 (defun sp-web-mode-is-code-context (_id action _context)
   "This snippet is derived from http://web-mode.org/ ."
@@ -442,19 +441,18 @@
 
 (wiz web-mode
   :init
-  (lambda ()
-    (mapc (lambda (it) (add-to-list 'auto-mode-alist (cons it #'web-mode)))
-          (list "\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'"
-                "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")))
+  (wiz-map (list "\\.html?\\'" "\\.tpl\\'" "\\.tpl\\.xhtml\\'" "\\.ejs\\'" "\\.hbs\\'" "\\.jsx\\'"
+                 "\\(\\.html\\)?\\.erb\\'" "\\.tsx\\'" "\\.vue\\'")
+    (lambda (it) `(add-to-list 'auto-mode-alist (cons ,it #'web-mode))))
   :config
-  (lambda ()
-    (setopt web-mode-enable-auto-pairing nil)
-    (setopt web-mode-enable-auto-indentation nil)
-    (require 'smartparens)
-    (flycheck-add-mode 'typescript-tslint 'web-mode)
-    (add-to-list 'web-mode-ac-sources-alist
-                 '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
-    (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
+  (setopt web-mode-enable-auto-pairing nil)
+  (setopt web-mode-enable-auto-indentation nil)
+  ;; (require 'smartparens)
+  (flycheck-add-mode 'typescript-tslint 'web-mode)
+  (add-to-list 'web-mode-ac-sources-alist
+               '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
+  ;; (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))
+
   :setup-hook
   (defun init-web-mode-setup ()
     "Set variables for web-mode."
@@ -481,40 +479,39 @@
   :load-if-exists "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"
   :hook-names (php-mode-hook)
   :config
-  (lambda ()
-    (setopt php-default-major-mode 'php-mode)
-    (setopt php-manual-url 'ja)
-    (setopt php-mode-coding-style 'psr2)
-    (setopt php-mode-template-compatibility nil)
-    (setopt php-imenu-generic-expression 'php-imenu-generic-expression-simple)
-    (setopt php-project-auto-detect-etags-file t)
-    (setopt php-ide-mode nil)
-    (setopt phpstan-memory-limit "2G")
+  (setopt php-default-major-mode 'php-mode)
+  (setopt php-manual-url 'ja)
+  (setopt php-mode-coding-style 'psr2)
+  (setopt php-mode-template-compatibility nil)
+  (setopt php-imenu-generic-expression 'php-imenu-generic-expression-simple)
+  (setopt php-project-auto-detect-etags-file t)
+  (setopt php-ide-mode nil)
+  (setopt phpstan-memory-limit "2G")
 
-    (require 'flycheck-phpstan)
-    (flycheck-add-next-checker 'php 'phpstan)
-    (when (require 'flycheck-psalm nil t)
-      (flycheck-add-next-checker 'php 'psalm))
-    (phpactor-smart-jump-register)
+  (require 'flycheck-phpstan)
+  (flycheck-add-next-checker 'php 'phpstan)
+  (when (require 'flycheck-psalm nil t)
+    (flycheck-add-next-checker 'php 'psalm))
+  (phpactor-smart-jump-register)
 
-    (wiz-keys (("[" . (smartchr "[`!!']" "array(`!!')" "[[`!!']]"))
-               ("]" . (smartchr "array " "]" "]]"))
-               ("&" . (smartchr "&" "&& "))
-               ("\\" . (smartchr "\\" "\\PHPStan\\dumpType(`!!');" "\\\\"))
-               ("¥" . (smartchr "\\" "\\PHPStan\\dumpType(`!!');" "\\\\"))
-               ("|" . (smartchr "|" "|| " ))
-               ("." . (smartchr
-                       (my-php-smartchr-dot "->" "." ". ")
-                       (my-php-smartchr-dot ". " ".." "..")
-                       "..."))
-               ("^" . (smartchr "^" "fn() => " "function () {`!!'}"))
-               ("@" . (smartchr "@" "$this->"))
-               ("~" . (smartchr "~" "phpstan-"))
-               ("C-c C-c" . 'psysh-eval-region)
-               ("<f6>" . phpunit-current-project)
-               ("C-c C--" . php-current-class)
-               ("C-c C-=" . 'php-current-namespace))
-              :map php-mode-map))
+  (wiz-keys (("[" . (smartchr "[`!!']" "array(`!!')" "[[`!!']]"))
+             ("]" . (smartchr "array " "]" "]]"))
+             ("&" . (smartchr "&" "&& "))
+             ("\\" . (smartchr "\\" "\\PHPStan\\dumpType(`!!');" "\\\\"))
+             ("¥" . (smartchr "\\" "\\PHPStan\\dumpType(`!!');" "\\\\"))
+             ("|" . (smartchr "|" "|| "))
+             ("." . (smartchr
+                     (my-php-smartchr-dot "->" "." ". ")
+                     (my-php-smartchr-dot ". " ".." "..")
+                     "..."))
+             ("^" . (smartchr "^" "fn() => " "function () {`!!'}"))
+             ("@" . (smartchr "@" "$this->"))
+             ("~" . (smartchr "~" "phpstan-"))
+             ("C-c C-c" . 'psysh-eval-region)
+             ("<f6>" . phpunit-current-project)
+             ("C-c C--" . php-current-class)
+             ("C-c C-=" . 'php-current-namespace))
+            :map php-mode-map)
   :setup-hook
   (defun init-php-mode-setup ()
     "My PHP-mode hook."
@@ -602,12 +599,12 @@
 
 (defun my-emacs-lisp-mode-setup ()
   "Setup function for Emacs Lisp."
-  (rainbow-mode t)
   (set-face-foreground 'font-lock-regexp-grouping-backslash "indian red")
   (set-face-foreground 'font-lock-regexp-grouping-construct "peru")
   (nameless-mode t)
   (turn-on-eldoc-mode)
   (elisp-slime-nav-mode +1)
+  (electric-pair-local-mode -1)
   (when (eq major-mode 'inferior-emacs-lisp-mode)
     (wiz-keys (("<RET>" . #'ielm-return))
               :map ielm-map)))
@@ -618,8 +615,10 @@
     (diminish 'nameless-mode)
     (add-to-list 'nameless-global-aliases '("pv" . "projectile-variable"))))
 
-(defvar my/emacs-lisp-modes
-  '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook lisp-data-mode-hook))
+(eval-and-compile
+  (defvar my/emacs-lisp-modes
+    '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook lisp-data-mode-hook)))
+
 (--each my/emacs-lisp-modes
   (add-hook it #'my-emacs-lisp-mode-setup))
 
@@ -628,29 +627,27 @@
 
 (wiz lsp-mode
   :config
-  (lambda ()
-    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
-    (setopt lsp-completion-provider :none)
-    (setopt lsp-ui-doc-use-childframe nil)))
+  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+  (setopt lsp-completion-provider :none)
+  (setopt lsp-ui-doc-use-childframe nil))
 
 (wiz paredit
   :config
-  (lambda ()
-    (diminish 'paredit-mode)
-    (wiz-keys (("C-<right>" . right-word)
-	       ("C-<left>"  . left-word))
-              :map paredit-mode-map))
+  (diminish 'paredit-mode)
+  (wiz-keys (("C-<right>" . right-word)
+             ("C-<left>"  . left-word))
+            :map paredit-mode-map)
   :init
-  (lambda ()
-    (mapc (lambda (it) (add-hook it 'enable-paredit-mode)) my/emacs-lisp-modes)))
+  (wiz-map my/emacs-lisp-modes
+    (lambda (it)
+      `(add-hook (quote ,it) #'paredit-mode))))
 
 ;; Scheme
 
 (wiz scheme
   :hook-names (scheme-mode-hook)
   :config
-  (lambda ()
-    (setopt geiser-active-implementations '(guile racket)))
+  (setopt geiser-active-implementations '(guile racket))
   :setup-hook
   (defun init-scheme-mode-setup ()
     "λ..."
@@ -659,9 +656,8 @@
 ;; Haskell
 (wiz haskell-mode
   :config
-  (lambda ()
-    (add-hook 'haskell-mode-hook #'turn-on-eldoc-mode)
-    (add-hook 'haskell-mode-hook #'turn-on-haskell-indent)))
+  (add-hook 'haskell-mode-hook #'turn-on-eldoc-mode)
+  (add-hook 'haskell-mode-hook #'turn-on-haskell-indent))
 
 ;; TypeScript
 (defun my-setup-typescript ()
@@ -674,22 +670,18 @@
 
 (wiz typescript-mode
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode)))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
   :config
-  (lambda ()
-    (add-hook 'typescript-mode-hook #'my-setup-typescript)))
+  (add-hook 'typescript-mode-hook #'my-setup-typescript))
 
 ;; text-mode
 (wiz diff-mode
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist '("/infection.log" . diff-mode))))
+  (add-to-list 'auto-mode-alist '("/infection.log" . diff-mode)))
 
 (wiz text-mode
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode)))
+  (add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode))
   :setup-hook
   (defun init-text-mode-setup ()
     "Setup function for `text-mode'."
@@ -699,22 +691,18 @@
 ;; YAML
 (wiz yaml-mode
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist '("/\\.gemrc\\'" . yaml-mode))))
+  (add-to-list 'auto-mode-alist '("/\\.gemrc\\'" . yaml-mode)))
 
 ;; Markdown Mode
 (wiz markdown-mode
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode))
   :config
-  (lambda ()
-    (setopt markdown-command '("pandoc" "--from=markdown" "--to=html5"))
-    (setopt markdown-fontify-code-blocks-natively t)
-    (setopt markdown-header-scaling t)
-    (setopt markdown-indent-on-enter 'indent-and-new-item)
-
-    (define-key markdown-mode-map (kbd "<S-tab>") #'markdown-shifttab))
+  (setopt markdown-command '("pandoc" "--from=markdown" "--to=html5"))
+  (setopt markdown-fontify-code-blocks-natively t)
+  (setopt markdown-header-scaling t)
+  (setopt markdown-indent-on-enter 'indent-and-new-item)
+  (define-key markdown-mode-map (kbd "<S-tab>") #'markdown-shifttab)
   :setup-hook
   (defun init-markdown-mode-setup ()
     (visual-line-mode nil)))
@@ -722,9 +710,8 @@
 ;; Magic Filetype
 (wiz magic-filetype
   :init
-  (lambda ()
-    (magic-filetype-set-auto-mode 'ruby)
-    (magic-filetype-enable-vim-filetype)))
+  (magic-filetype-set-auto-mode 'ruby)
+  (magic-filetype-enable-vim-filetype))
 
 ;;; Others:
 
@@ -734,67 +721,57 @@
 ;; Recentf
 (wiz recentf
   :config
-  (lambda ()
-    (setopt recentf-max-saved-items 2000)
-    (setopt recentf-auto-cleanup 'never)
-    (setopt recentf-exclude
-            '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.cache/"
-              "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\(\\.cask/\\|bookmarks\\)"
-              "/elpa/.*-autoloads\\.el\\'"  "/\\newsrc\\(\\.eld\\)?\\'")))
+  (setopt recentf-max-saved-items 2000)
+  (setopt recentf-auto-cleanup 'never)
+  (setopt recentf-exclude
+          '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.cache/"
+            "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\(\\.cask/\\|bookmarks\\)"
+            "/elpa/.*-autoloads\\.el\\'"  "/\\newsrc\\(\\.eld\\)?\\'"))
   :init
-  (lambda ()
-    (recentf-mode t)
-    (run-with-idle-timer 30 t #'recentf-save-list)))
+  (recentf-mode t)
+  (run-with-idle-timer 30 t #'recentf-save-list))
 
 ;; Undo
 (wiz undo-fu
   :init
-  (lambda ()
-    (wiz-keys (("C-_" . undo-fu-only-undo)
-               ("C-?" . undo-fu-only-redo)))))
+  (wiz-keys (("C-_" . undo-fu-only-undo)
+             ("C-?" . undo-fu-only-redo))))
 
 ;; expand-region.el
 (wiz expand-region
   :config
-  (lambda ()
-    (wiz-keys (("C-@" . er/expand-region)
-               ("C-`" . er/contract-region)))))
+  (wiz-keys (("C-@" . er/expand-region)
+             ("C-`" . er/contract-region))))
 
 ;; Annotate.el
 (wiz annotate
   :config
-  (lambda ()
-    (wiz-keys (("M-@"   . annotate-annotate)
-               ("C-M-@" . annotate-clear-annotations)))))
+  (wiz-keys (("M-@"   . annotate-annotate)
+             ("C-M-@" . annotate-clear-annotations))))
 
 ;;; Tools:
 
 ;; Open junk file
 (wiz open-junk-file
   :init
-  (lambda ()
-    (wiz-keys (("C-c j" . open-junk-file))))
+  (wiz-keys (("C-c j" . open-junk-file)))
   :config
-  (lambda ()
-    (setopt open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-")))
+  (setopt open-junk-file-format "~/junk/%Y/%m/%Y-%m-%d-%H%M%S-"))
 
 ;; restclient.el
 (wiz restclient
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))))
+  (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode)))
 
 (wiz org
   :init
-  (lambda ()
-    (wiz-keys (("C-c c" . 'org-capture)))
-    (autoload 'ioslide:helper "ox-ioslide-helper.el" "Key menu for ioslide" t))
+  (wiz-keys (("C-c c" . 'org-capture)))
+  (autoload 'ioslide:helper "ox-ioslide-helper.el" "Key menu for ioslide" t)
   :config
-  (lambda ()
-    (setopt org-default-notes-file (concat org-directory "/capture.org"))
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((python . t)))))
+  (setopt org-default-notes-file (concat org-directory "/capture.org"))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t))))
 
 ;; Org-IO Slide
 ;;(require 'ox-ioslide-helper)
@@ -802,88 +779,73 @@
 ;; ElScreen
 (wiz elscreen
   :config
-  (lambda ()
-    (setopt elscreen-prefix-key (kbd "C-z"))
-    (setopt elscreen-display-tab nil)
-    (setopt elscreen-tab-display-kill-screen nil)
-    (setopt elscreen-tab-display-control nil))
+  (setopt elscreen-prefix-key (kbd "C-z"))
+  (setopt elscreen-display-tab nil)
+  (setopt elscreen-tab-display-kill-screen nil)
+  (setopt elscreen-tab-display-control nil)
   :init
-  (lambda ()
-    (wiz-keys (("C-<tab>" . elscreen-next)
-               ("<C-iso-lefttab>" . elscreen-previous)))
-    (elscreen-start)
-    ;; El-Screeのウィンドウを一個つくる
-    (elscreen-create)))
+  (wiz-keys (("C-<tab>" . elscreen-next)
+             ("<C-iso-lefttab>" . elscreen-previous)))
+  (elscreen-start)
+  ;; El-Screeのウィンドウを一個つくる
+  (elscreen-create))
 
 (wiz ctrlf
   :config
-  (lambda ()
-    (diminish 'ctrlf-mode))
+  (diminish 'ctrlf-mode)
   :init
-  (lambda ()
-    (ctrlf-mode +1)))
+  (ctrlf-mode +1))
 
 (wiz rg
   :init
-  (lambda ()
-    (wiz-keys (("C-:" . rg)
-               ("M-C-:" . rg-literal))))
+  (wiz-keys (("C-:" . rg)
+             ("M-C-:" . rg-literal)))
   :config
-  (lambda ()
-    (add-hook 'rg-mode-hook #'wgrep-rg-setup)))
+  (add-hook 'rg-mode-hook #'wgrep-rg-setup))
 
 ;; direx
 (wiz direx
   :init
-  (lambda ()
-    (wiz-keys (("M-C-\\" . direx-project:jump-to-project-root-other-window)
-               ("M-C-¥"  . direx-project:jump-to-project-root-other-window)))))
+  (wiz-keys (("M-C-\\" . direx-project:jump-to-project-root-other-window)
+             ("M-C-¥"  . direx-project:jump-to-project-root-other-window))))
 
 ;; dired-k
 (wiz dired-k
   :config
-  (lambda ()
-    (wiz-keys (("K" . dired-k))
-              :map dired-mode-map))
+  (wiz-keys (("K" . dired-k))
+            :map dired-mode-map)
   :init
-  (lambda ()
-    (add-hook 'dired-initial-position-hook #'dired-k)))
+  (add-hook 'dired-initial-position-hook #'dired-k))
 
 (wiz dired
   :config
-  (lambda ()
-    (add-hook 'dired-mode-hook #'dired-preview-mode)))
+  (add-hook 'dired-mode-hook #'dired-preview-mode))
 
 ;; Visual
 (wiz visual-regexp
   :init
-  (lambda ()
-    (wiz-keys (("M-%" . vr/query-replace)))))
+  (wiz-keys (("M-%" . vr/query-replace))))
 
 ;; image-mode
 (wiz image-mode
   :config
-  (lambda ()
-    (wiz-keys (("<wheel-up>"    . image-previous-line)
-               ("<wheel-down>"  . image-next-line)
-               ("<wheel-right>" . image-forward-hscroll)
-               ("<wheel-left>"  . image-backward-hscroll))
-              :map image-mode-map)))
+  (wiz-keys (("<wheel-up>"    . image-previous-line)
+             ("<wheel-down>"  . image-next-line)
+             ("<wheel-right>" . image-forward-hscroll)
+             ("<wheel-left>"  . image-backward-hscroll))
+            :map image-mode-map))
 
 ;; Yet another folding
 (wiz yafolding
   :init
-  (lambda ()
-    (add-hook 'prog-mode-hook 'yafolding-mode)))
+  (add-hook 'prog-mode-hook 'yafolding-mode))
 
 ;; vi-tilde-fringe
 (wiz vi-tilde-fringe
   :config
-  (lambda ()
-    (diminish 'vi-tilde-fringe-mode))
+  (diminish 'vi-tilde-fringe-mode)
   :init
-  (lambda ()
-    (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode)))
+  (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode))
 
 (prog1 'goto-addr
   (add-hook 'prog-mode-hook #'goto-address-prog-mode)
@@ -895,127 +857,114 @@
 ;; http://qiita.com/ongaeshi/items/3521b814aa4bf162181d
 (wiz multiple-cursors
   :init
-  (lambda ()
-    (require 'smartrep)
-    (declare-function smartrep-define-key "smartrep")
-    (wiz-keys (("C-M-c" . mc/edit-lines)
-               ("C-M-r" . mc/mark-all-in-region)))
-    (global-unset-key (kbd "C-t"))
-    (smartrep-define-key global-map "C-t"
-      '(("C-t" . 'mc/mark-next-like-this)
-        ("n"   . 'mc/mark-next-like-this)
-        ("p"   . 'mc/mark-previous-like-this)
-        ("m"   . 'mc/mark-more-like-this-extended)
-        ("u"   . 'mc/unmark-next-like-this)
-        ("U"   . 'mc/unmark-previous-like-this)
-        ("s"   . 'mc/skip-to-next-like-this)
-        ("S"   . 'mc/skip-to-previous-like-this)
-        ("*"   . 'mc/mark-all-like-this)
-        ("d"   . 'mc/mark-all-like-this-dwim)
-        ("i"   . 'mc/insert-numbers)
-        ("o"   . 'mc/sort-regions)
-        ("O"   . 'mc/reverse-regions)))))
+  (require 'smartrep)
+  (declare-function smartrep-define-key "smartrep")
+  (wiz-keys (("C-M-c" . mc/edit-lines)
+             ("C-M-r" . mc/mark-all-in-region)))
+  (global-unset-key (kbd "C-t"))
+  (smartrep-define-key global-map "C-t"
+    '(("C-t" . 'mc/mark-next-like-this)
+      ("n"   . 'mc/mark-next-like-this)
+      ("p"   . 'mc/mark-previous-like-this)
+      ("m"   . 'mc/mark-more-like-this-extended)
+      ("u"   . 'mc/unmark-next-like-this)
+      ("U"   . 'mc/unmark-previous-like-this)
+      ("s"   . 'mc/skip-to-next-like-this)
+      ("S"   . 'mc/skip-to-previous-like-this)
+      ("*"   . 'mc/mark-all-like-this)
+      ("d"   . 'mc/mark-all-like-this-dwim)
+      ("i"   . 'mc/insert-numbers)
+      ("o"   . 'mc/sort-regions)
+      ("O"   . 'mc/reverse-regions))))
 
 ;; which-key
 (wiz which-key
   :config
-  (lambda ()
-    (diminish 'which-key-mode)
-    (setopt which-key-idle-delay 1.5))
+  (diminish 'which-key-mode)
+  (setopt which-key-idle-delay 1.5)
   :init
-  (lambda ()
-    (which-key-setup-side-window-right-bottom)
-    (which-key-mode t)))
+  (require 'which-key)
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode t))
 
 ;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
 (wiz smooth-scroll
   :config
-  (lambda ()
-    (diminish 'smooth-scroll-mode)
-    (setopt smooth-scroll/vscroll-step-size 7))
+  (diminish 'smooth-scroll-mode)
+  (setopt smooth-scroll/vscroll-step-size 7)
   :init
-  (lambda ()
-    (require 'smooth-scroll)
-    (smooth-scroll-mode t)))
+  (require 'smooth-scroll)
+  (smooth-scroll-mode t))
 
 (wiz topsy
   :init
-  (lambda ()
-    (add-hook 'prog-mode-hook #'topsy-mode)))
+  (add-hook 'prog-mode-hook #'topsy-mode))
 
 (wiz puni
   :init
-  (lambda ()
-    (wiz-keys (("C-)"         . puni-slurp-forward)
-               ;; ("C-<right>" . puni-slurp-forward)
-               ("C-}"         . puni-barf-forward)
-               ;; ("C-<left>" . puni-barf-forward)
-               ("C-("         . puni-slurp-backward)
-               ("C-M-<left>"  . puni-slurp-backward)
-               ("C-{"         . puni-barf-backward)
-               ("C-M-<right>" . puni-barf-backward)
-               ("M-<up>"      . puni-splice-killing-backward)
-               ("M-<down>"    . puni-splice-killing-forward)
-               ("ESC <up>"    . puni-splice-killing-backward)
-               ("ESC <down>"  . puni-splice-killing-forward))
-              :map puni-mode-map)
-    (with-eval-after-load 'php-mode
-      (add-hook 'php-mode-hook 'puni-mode))
-    (with-eval-after-load 'web-mode
-      (add-hook 'web-mode-hook 'puni-mode))))
+  (with-eval-after-load 'php-mode
+    (add-hook 'php-mode-hook 'puni-mode))
+  (with-eval-after-load 'web-mode
+    (add-hook 'web-mode-hook 'puni-mode))
+  :config
+  (wiz-keys (("C-)"         . puni-slurp-forward)
+             ;; ("C-<right>" . puni-slurp-forward)
+             ("C-}"         . puni-barf-forward)
+             ;; ("C-<left>" . puni-barf-forward)
+             ("C-("         . puni-slurp-backward)
+             ("C-M-<left>"  . puni-slurp-backward)
+             ("C-{"         . puni-barf-backward)
+             ("C-M-<right>" . puni-barf-backward)
+             ("M-<up>"      . puni-splice-killing-backward)
+             ("M-<down>"    . puni-splice-killing-forward)
+             ("ESC <up>"    . puni-splice-killing-backward)
+             ("ESC <down>"  . puni-splice-killing-forward))
+            :map puni-mode-map))
 
 ;; crux
 (wiz crux
   :init
-  (lambda ()
-    (wiz-keys
-     (("C-c o"   . crux-open-with)
-      ("C-S-o"   . crux-smart-open-line-above)
-      ("C-c n"   . crux-cleanup-buffer-or-region)
-      ("C-c u"   . crux-view-url)
-      ("C-x 4 t" . crux-transpose-windows)
-      ("C-c d"   . crux-duplicate-current-line-or-region)
-      ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
-      ("C-c r"   . crux-rename-file-and-buffer)
-      ("C-c M-t" . crux-visit-term-buffer)
-      ("C-c k"   . crux-kill-other-buffers)
-      ("C-M-z"   . crux-indent-defun)
-      ("C-^"     . crux-top-join-lines)
-      ("C-DEL"   . crux-kill-line-backwards)))))
+  (wiz-keys (("C-c o"   . crux-open-with)
+             ("C-S-o"   . crux-smart-open-line-above)
+             ("C-c n"   . crux-cleanup-buffer-or-region)
+             ("C-c u"   . crux-view-url)
+             ("C-x 4 t" . crux-transpose-windows)
+             ("C-c d"   . crux-duplicate-current-line-or-region)
+             ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
+             ("C-c r"   . crux-rename-file-and-buffer)
+             ("C-c M-t" . crux-visit-term-buffer)
+             ("C-c k"   . crux-kill-other-buffers)
+             ("C-M-z"   . crux-indent-defun)
+             ("C-^"     . crux-top-join-lines)
+             ("C-DEL"   . crux-kill-line-backwards))))
 
 (wiz vlf
   :config
-  (lambda ()
-    (setopt vlf-application 'dont-ask))
+  (setopt vlf-application 'dont-ask)
   :init
-  (lambda ()
-    (require 'vlf-setup)))
+  (require 'vlf-setup))
 
 (wiz ov
   :init
-  (lambda ()
-    (autoload 'ov "ov.el" "Make an overlay from BEG to END.
+  (autoload 'ov "ov.el" "Make an overlay from BEG to END.
 
-If PROPERTIES are specified, set them for the created overlay.")))
+If PROPERTIES are specified, set them for the created overlay."))
 
 (wiz writeroom-mode
   :config
-  (lambda ()
-    (setopt writeroom-fringes-outside-margins t)
-    (setopt writeroom-maximize-window nil)
-    (setopt writeroom-global-effects '())))
+  (setopt writeroom-fringes-outside-margins t)
+  (setopt writeroom-maximize-window nil)
+  (setopt writeroom-global-effects '()))
 
 (wiz nov
   :init
-  (lambda ()
-    (add-hook 'nov-post-html-render-hook #'writeroom-mode)
-    (add-hook 'nov-post-html-render-hook #'my/disable-trailing-mode-hook)))
+  (add-hook 'nov-post-html-render-hook #'writeroom-mode)
+  (add-hook 'nov-post-html-render-hook #'my/disable-trailing-mode-hook))
 
 ;; TRAMP
 (wiz tramp
   :config
-  (lambda ()
-    (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 ;;; Communication:
 
@@ -1030,17 +979,18 @@ https://github.com/larstvei/dot-emacs/blob/master/init.org"
   `(with-eval-after-load ,file
      (diminish ,mode ,new-name)))
 
-(defvar my/disable-trailing-modes
-  '(buffer-face-mode
-    Buffer-menu-mode
-    calendar-mode
-    cfw:calendar-mode
-    comint-mode
-    eshell-mode
-    package-menu-mode
-    eww-mode
-    Info-mode
-    term-mode))
+(eval-and-compile
+  (defvar my/disable-trailing-modes
+    '(buffer-face-mode
+      Buffer-menu-mode
+      calendar-mode
+      cfw:calendar-mode
+      comint-mode
+      eshell-mode
+      package-menu-mode
+      eww-mode
+      Info-mode
+      term-mode)))
 
 (wiz diminish
   :init
