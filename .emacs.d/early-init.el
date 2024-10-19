@@ -5,6 +5,8 @@
 ;; 三三三 ヾ(〃＞＜)ﾉﾞ☆
 
 ;;; Code:
+(eval-when-compile
+  (require 'nadvice))
 
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6)
@@ -35,5 +37,10 @@
   (put 'etags-regen-regexp-alist 'safe-local-variable #'listp)
   (put 'etags-regen-ignores 'safe-local-variable #'listp)
   emacs-major-version)
+
+(advice-add #'treesit-available-p :override (lambda () nil))
+
+(when (eval-when-compile (eq system-type 'darwin))
+  (setq read-process-output-max 65536))
 
 ;;; early-init.el ends here
