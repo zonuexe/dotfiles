@@ -18,16 +18,9 @@
 
 (package-initialize)
 
-(unless (package-installed-p 'borg)
- (package-install 'borg))
+(unless (require 'wiz nil t)
+  (package-install 'wiz))
 
-(unless (package-installed-p 'emacsql-sqlite-module)
- (package-install 'emacsql-sqlite-module))
-
-(require 'borg-elpa)
-(borg-elpa-initialize)
-
-(require 'wiz)
 (require 'wiz-key)
 (require 'wiz-env)
 (require 'wiz-pkgs)
@@ -183,6 +176,8 @@
 (wiz-pkg ucs-utils)
 (wiz-pkg undo-fu)
 (wiz-pkg untitled-new-buffer)
+(wiz-pkg vertico)
+(wiz-pkg vertico-prescient)
 (wiz-pkg vi-tilde-fringe)
 (wiz-pkg vimrc-mode)
 (wiz-pkg visual-regexp)
@@ -203,5 +198,36 @@
 (wiz-pkg nov)
 (wiz-pkg prescient)
 (wiz-pkg corfu-prescient)
+(wiz-pkg fontaine)
+(wiz-pkg marginalia)
+(wiz-pkg topsy)
+(wiz-pkg puni)
+(wiz-pkg orderless)
+(wiz-pkg dired-sidebar)
+(wiz-pkg all-the-icons-dired)
+
+(package-vc-install
+ '(smartchr :url "git@github.com:zonuexe/emacs-smartchr.git"
+            :main-file "smartchr.el"))
+
+(package-vc-install
+ '(key-chord :url "git@github.com:zonuexe/key-chord.git"
+             :main-file "key-chord.el"))
+
+(package-vc-install
+ '(punch-line :url "git@github.com:konrad1977/punch-line.git"
+              :main-file "punch-line.el"))
+
+(package-vc-install
+ '(pict :url "git@github.com:zonuexe/pict.el.git"
+        :main-file "pict.el"))
+
+(package-vc-install
+ '(infinite-scroll :url "git@github.com:zonuexe/infinite-scroll.el.git"
+                   :main-file "infinate-scroll.el"))
+
+(package-vc-install
+ '(ultra-scroll :vc-backend Git
+                :url "https://github.com/jdtsmith/ultra-scroll"))
 
 ;;; my-packages.el ends here

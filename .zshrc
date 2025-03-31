@@ -198,6 +198,10 @@ vld () {
     php -dvld.active=1 -dvld.execute=0 "$@" 2>&1
 }
 
+cdiff() {
+    diff -u --color=always "$@" | less -R
+}
+
 if (which zprof > /dev/null) ;then
     zprof | less
 fi

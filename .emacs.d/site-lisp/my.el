@@ -23,6 +23,7 @@
 ;; ヾ(〃＞＜)ﾉﾞ☆
 
 ;;; Code:
+(require 'hi-lock)
 
 ;;;###autoload
 (defun my-vterm-setup ()
@@ -56,14 +57,20 @@
                 (not (not current-prefix-arg))))
   (consult-line initial start))
 
+(eval-when-compile
+  (require 'composer)
+  (require 'php))
 (declare-function php-in-string-or-comment-p "ext:php" ())
 (declare-function php-in-string-p "ext:php" ())
 (declare-function c-backward-token-2 "cc-engine" (&optional count balanced limit))
 (declare-function smartchr-make-struct "ext:smartchr" (_key1 cleanup-fn _key2 insert-fn))
+(declare-function composer--find-composer-root "ext:composer" (directory))
+(declare-function hi-lock-face-phrase-buffer "hi-lock" (regexp &optional face))
 
 ;;;###autoload
 (defun my-php-smartchr-dot (no-string within-string-or-comment next-to-string)
-  "Make a smartchr to press `.` key in PHP with NO-STRING, WITHIN-STRING-OR-COMMENT and NEXT-TO-STRING."
+  "Make a smartchr to press `.` key in PHP with NO-STRING.
+WITHIN-STRING-OR-COMMENT, NEXT-TO-STRING."
   (let ((select-template
          (lambda ()
            (save-excursion
@@ -71,12 +78,30 @@
               ((php-in-string-or-comment-p) within-string-or-comment)
               ((and (c-backward-token-2 1 nil)
                     (goto-char (1+ (point)))
-                    (php-in-string-p))
+                    (or (php-in-string-p)
+                        (let* ((at-point-string (thing-at-point 'symbol t)))
+                          (member at-point-string php-magical-constants))))
                next-to-string)
               (no-string))))))
     (smartchr-make-struct
      :cleanup-fn (lambda () (delete-char (- (length (funcall select-template)))))
      :insert-fn (lambda () (insert (funcall select-template))))))
+
+(defun my-php-parse-this-buffer ()
+  ""
+  (interactive)
+  (let* ((default-directory (or (composer--find-composer-root default-directory)
+                                (getenv "HOME")))
+         (dirs (list #'composer-get-bin-dir
+                     (lambda () (let ((composer-global-command t))
+                                  (composer-get-bin-dir)))))
+         (path (cl-loop for dir in dirs
+                        for path = (expand-file-name "php-parse" (funcall dir))
+                        if (file-exists-p path)
+                        return path)))
+    (compile (mapconcat #'shell-quote-argument
+                        (mapcar #'file-relative-name (list path (buffer-file-name)))
+                        " "))))
 
 (defun my-browse-url-wsl-host-browser (url &rest _args)
   "Browse URL with WSL host web browser."
@@ -88,8 +113,9 @@
 
 (require 'dired)
 
-(eval-when-compile
-  (defvar my-system-is-wsl2))
+(defconst my-system-is-wsl2
+  (eval-when-compile
+    (getenv "WSL_DISTRO_NAME")))
 
 (defun my-wsl-convert-path (path)
   "Browse URL with WSL host web browser."

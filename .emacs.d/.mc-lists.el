@@ -97,6 +97,7 @@
         toggle-frame-fullscreen
         toggle-load-theme
         undo-fu-only-undo
+        undo-only
         wgrep-change-to-wgrep-mode
         wgrep-finish-edit
         ))

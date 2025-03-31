@@ -64,22 +64,27 @@
 ;;; Variables:
 (setq make-backup-files nil)
 (setq delete-auto-save-files t)
+(defconst init-saved-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
 
 (let ((default-directory (locate-user-emacs-file "./site-lisp")))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
 
 (load (locate-user-emacs-file "./site-lisp/site-lisp-autoloads.el") t)
-(require 'my)
+(require 'my "~/.emacs.d/site-lisp/my")
 
 ;;; Packages:
-(require 'borg-elpa)
-(borg-elpa-initialize)
+;; (require 'borg-elpa)
+;; (borg-elpa-initialize)
 
 (eval-and-compile
   (require 'wiz)
   (require 'wiz-key)
   (require 'wiz-env))
+
+(eval-when-compile
+  (require 'pixiv-dev nil t))
 
 (wiz wiz-pkgs
   :init
@@ -92,7 +97,7 @@
 ;;;     |うゐのおくやま　けふこえて|
 ;;;     |あさきゆめみし　ゑひもせす|
 
-(defvar my/font-family "UDEV Gothic JPDOC")
+(defvar my/font-family "UDEV Gothic HSJPDOC")
 (defvar my/font-size
   (let ((size-by-hostname
          '(("tadsan-ret.local" . 16.5)
@@ -101,6 +106,7 @@
         15.5)))
 
 (when window-system
+  (set-face-attribute 'mode-line nil :font (eval-when-compile (format "UDEV Gothic 35NFLG-%s" 14)))
   ;; http://d.hatena.ne.jp/kitokitoki/20110502/p2
   (let ((fontset (format "%s-%.1f" my/font-family my/font-size)))
     (add-to-list 'default-frame-alist `(font . ,fontset)))
@@ -110,6 +116,7 @@
 (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
 
 (require 'dash)
+(require 'f)
 
 ;;; Environment:
 
@@ -117,7 +124,7 @@
 
 ;; PATH
 (unless (eval-when-compile (eq window-system 'nt))
-  (wiz-envs "PATH" "TEST_SERVER" "SSH_AUTH_SOCK" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH"))
+  (wiz-env* "PATH" "TEST_SERVER" "SSH_AGENT_PID" "MANPATH" "GOROOT" "GOPATH"))
 
 ;; (when (eq window-system 'w32)
 ;;   (setenv "GIT_SSH" "C:\\Program Files\\PuTTY\\plink.exe"))
@@ -188,6 +195,8 @@
            ("C-M-S-y"     . my/kill-buffer-file-name)
            ("M-<f5>"      . compile)
            ("<f5>"        . quickrun)
+           ("C-_" . undo-only)
+           ("C-?" . undo-redo)
            ("C-c <left>"  . windmove-left)
            ("C-c <down>"  . windmove-down)
            ("C-c <up>"    . windmove-up)
@@ -195,6 +204,7 @@
 
 (cond
  ((eq window-system 'ns)
+  (setq mac-option-modifier 'hyper)
   (when (boundp 'ns-command-modifier) (setq ns-command-modifier 'meta))
   (when (boundp 'ns-alternate-modifier) (setq ns-alternate-modifier 'meta)
         (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
@@ -228,7 +238,10 @@
   (wiz-keys (("C-l" . my-filename-upto-parent))
             :map vertico-map)
   :init
-  (vertico-mode +1))
+  (require 'vertico-multiform)
+  (add-to-list 'vertico-multiform-categories '(embark-keybinding grid))
+  (vertico-mode +1)
+  (vertico-multiform-mode))
 
 (wiz vertico-prescient
   :init
@@ -243,6 +256,7 @@
   (wiz-keys
    (("C-c C-c" . embark-act)
     ("C-c C-o" . embark-export)
+    ("C-." . embark-dwim)
     ("C-c ?" . embark-bindings))))
 
 (wiz consult
@@ -282,6 +296,7 @@
   :config
   (setopt corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (setopt corfu-auto t)                 ;; Enable auto completion
+  (setopt corfu-auto-prefix 1)
   (setopt corfu-separator ?\s)          ;; Orderless field separator
   (setopt corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
   (setopt corfu-quit-no-match nil)      ;; Never quit, even if there is no match
@@ -290,6 +305,11 @@
   (setopt corfu-on-exact-match 'insert) ;; Configure handling of exact matches
   (setopt corfu-echo-documentation t)   ;; Disable documentation in the echo area
   (setopt corfu-scroll-margin 5)       ;; Use scroll margin
+
+  (require 'orderless)
+  (orderless-define-completion-style orderless-literal-only
+    (orderless-style-dispatchers nil)
+    (orderless-matching-styles '(orderless-literal)))
 
   ;; Enable Corfu only for certain modes.
   ;; :hook ((prog-mode . corfu-mode)
@@ -300,7 +320,13 @@
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-excluded-modes'.
   :init
-  (global-corfu-mode))
+  (global-corfu-mode)
+  :setup-hook
+  (defun init-corfu-hook ()
+    "Setup function for Corfu."
+    (setq-local completion-styles '(orderless-literal-only basic)
+                completion-category-overrides nil
+                completion-category-defaults nil)))
 
 (wiz corfu-prescient
   :init
@@ -357,6 +383,13 @@
   :config
   (diminish 'editorconfig-mode)
   (setopt editorconfig-get-properties-function 'editorconfig-core-get-properties-hash)
+  (require 'editorconfig)
+  (static-if (version<= emacs-version "30.0.92")
+    (define-advice hack-dir-local-variables (:after () editorconfig-fix-tab-width)
+      (let* ((vars (cdr (editorconfig--get-dir-local-variables)))
+             (offset (alist-get 'c-basic-offset vars)))
+        (when offset
+          (setq tab-width offset)))))
   :init
   (editorconfig-mode t))
 
@@ -391,6 +424,7 @@
   (global-flycheck-mode t)
   (flycheck-package-setup)
   (with-current-buffer (get-buffer-create flycheck-posframe-buffer)
+    ;;(page-break-lines-mode +1)
     (goto-address-mode +1)))
 
 ;; elec-pair
@@ -413,17 +447,19 @@
 (defun init-presentation-on ()
   "."
   (prog1 t
-    (modus-themes-toggle)))
+    ;(modus-themes-toggle)
+    ))
 
 (defun init-presentation-off ()
   "."
   (prog1 t
-    (modus-themes-toggle)))
+    ;(modus-themes-toggle)
+    ))
 
 (wiz presentation
   :config
-  (add-hook 'presentation-on  #'init-presentation-on)
-  (add-hook 'presentation-off #'init-presentation-off))
+  (add-hook 'presentation-on-hook  #'init-presentation-on)
+  (add-hook 'presentation-off-hook #'init-presentation-off))
 
 ;;; Languages:
 (wiz sql
@@ -469,6 +505,7 @@
 (add-to-list 'auto-minor-mode-alist '("/pixiv/" . pixiv-dev-mode))
 
 (wiz php
+  :load-if-exists "~/repo/emacs/php-mode/lisp/php-mode-autoloads.el"
   :hook-names (php-base-mode-hook)
   :setup-hook
   (defun init-php-base-mode-setup ()
@@ -507,7 +544,7 @@
              ("^" . (smartchr "^" "fn() => " "function () {`!!'}"))
              ("@" . (smartchr "@" "$this->"))
              ("~" . (smartchr "~" "phpstan-"))
-             ("C-c C-c" . 'psysh-eval-region)
+             ("C-^" . 'phpstan-insert-dumptype)
              ("<f6>" . phpunit-current-project)
              ("C-c C--" . php-current-class)
              ("C-c C-=" . 'php-current-namespace))
@@ -528,7 +565,6 @@
     (add-to-list 'flycheck-disabled-checkers 'php-phpcs)
 
     (when (and buffer-file-name (string-match-p "/pixiv/" buffer-file-name))
-      (require 'pixiv-dev nil t)
       (add-to-list 'flycheck-disabled-checkers 'psalm)
       (pixiv-dev-mode t))
 
@@ -544,10 +580,10 @@
 
 (wiz lsp-bridge
   :config
-  (lambda ()
-    (setopt lsp-bridge-completion-popup-predicates
-            (cl-nset-difference lsp-bridge-completion-popup-predicates
-                                '(lsp-bridge-not-in-string lsp-bridge-not-in-comment)))))
+  (setopt lsp-bridge-python-command "pipx")
+  (setopt lsp-bridge-completion-popup-predicates
+          (cl-set-difference lsp-bridge-completion-popup-predicates
+                             '(lsp-bridge-not-in-string lsp-bridge-not-in-comment))))
 
 (wiz php-ide
   :hook-names (php-ide-mode-functions)
@@ -564,38 +600,40 @@
 
 (wiz company
   :config
-  (lambda ()
-    (require 'company-tabnine)
-    (add-to-list 'company-backends #'company-tabnine)))
+  (require 'company-tabnine)
+  (add-to-list 'company-backends #'company-tabnine))
 
 (wiz psysh
   :config
-  (lambda ()
-    (add-hook 'psysh-mode #'my/turn-on-php-eldoc)
-    (setopt psysh-doc-display-function #'popwin:display-buffer)))
+  (add-hook 'psysh-mode #'my/turn-on-php-eldoc)
+  (setopt psysh-doc-display-function #'popwin:display-buffer))
 
 (add-to-list 'auto-mode-alist `("/composer.lock\\'" . ,(major-mode-of 'json)))
 (add-to-list 'auto-mode-alist '("\\.php\\.faces\\'" . lisp-data-mode))
 
 (wiz pixiv-dev
   :config
-  (lambda ()
-    (setopt pixiv-dev-user-name "tadsan"))
+  (setopt pixiv-dev-user-name "tadsan")
   :init
-  (lambda ()
-    (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
-    (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
-    (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t)))
+  (autoload 'pixiv-dev-shell "pixiv-dev" nil t)
+  (autoload 'pixiv-dev-find-file "pixiv-dev" nil t)
+  (autoload 'pixiv-dev-copy-file-url "pixiv-dev" nil t))
 
 (wiz phan
   :init
-  (lambda ()
-    (add-to-list 'auto-mode-alist
-                 '("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode))))
+  (add-to-list 'auto-mode-alist
+               '("/\\(phan\\|filter\\)\\(?:-.+\\)?\\.log\\'" . phan-log-mode)))
 
-;; (leaf dumb-jump :ensure t
-;;   :init
-;;   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+(wiz dumber-jump
+  :init
+  (add-hook 'xref-backend-functions #'dumber-jump-xref-activate))
+
+(eval-when-compile
+  (declare-function ielm-return "ielm")
+  (defvar ielm-map))
+
+(defvar-keymap init-ielm-override-map
+  "<RET>" #'ielm-return)
 
 (defun my-emacs-lisp-mode-setup ()
   "Setup function for Emacs Lisp."
@@ -606,8 +644,7 @@
   (elisp-slime-nav-mode +1)
   (electric-pair-local-mode -1)
   (when (eq major-mode 'inferior-emacs-lisp-mode)
-    (wiz-keys (("<RET>" . #'ielm-return))
-              :map ielm-map)))
+    (push (cons 'paredit-mode init-ielm-override-map) minor-mode-overriding-map-alist)))
 
 (wiz nameless
   :config
@@ -697,6 +734,9 @@
 (wiz markdown-mode
   :init
   (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode))
+  (eval-when-compile
+    (defvar markdown-mode-map)
+    (declare-function markdown-shifttab "ext:markdown" '()))
   :config
   (setopt markdown-command '("pandoc" "--from=markdown" "--to=html5"))
   (setopt markdown-fontify-code-blocks-natively t)
@@ -705,6 +745,7 @@
   (define-key markdown-mode-map (kbd "<S-tab>") #'markdown-shifttab)
   :setup-hook
   (defun init-markdown-mode-setup ()
+    (toggle-word-wrap -1)
     (visual-line-mode nil)))
 
 ;; Magic Filetype
@@ -730,12 +771,6 @@
   :init
   (recentf-mode t)
   (run-with-idle-timer 30 t #'recentf-save-list))
-
-;; Undo
-(wiz undo-fu
-  :init
-  (wiz-keys (("C-_" . undo-fu-only-undo)
-             ("C-?" . undo-fu-only-redo))))
 
 ;; expand-region.el
 (wiz expand-region
@@ -768,7 +803,10 @@
   (wiz-keys (("C-c c" . 'org-capture)))
   (autoload 'ioslide:helper "ox-ioslide-helper.el" "Key menu for ioslide" t)
   :config
+  (require 'org)
+  (require 'org-tempo)
   (setopt org-default-notes-file (concat org-directory "/capture.org"))
+  (setopt org-modules (cons 'org-tempo org-modules))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t))))
@@ -796,29 +834,30 @@
   :init
   (ctrlf-mode +1))
 
+(wiz avy
+  :init
+  (wiz-keys (("M-j" . avy-goto-char-timer))))
+
 (wiz rg
   :init
-  (wiz-keys (("C-:" . rg)
-             ("M-C-:" . rg-literal)))
+  (wiz-keys (("M-C-:" . rg-literal)))
   :config
   (add-hook 'rg-mode-hook #'wgrep-rg-setup))
 
-;; direx
-(wiz direx
+(wiz dired-sidebar
   :init
-  (wiz-keys (("M-C-\\" . direx-project:jump-to-project-root-other-window)
-             ("M-C-¥"  . direx-project:jump-to-project-root-other-window))))
+  (wiz-keys (("M-C-\\" . dired-sidebar-toggle-sidebar)
+             ("M-C-¥"  . dired-sidebar-toggle-sidebar))))
 
 ;; dired-k
 (wiz dired-k
   :config
   (wiz-keys (("K" . dired-k))
-            :map dired-mode-map)
-  :init
-  (add-hook 'dired-initial-position-hook #'dired-k))
+            :map dired-mode-map))
 
 (wiz dired
   :config
+  (add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
   (add-hook 'dired-mode-hook #'dired-preview-mode))
 
 ;; Visual
@@ -839,6 +878,14 @@
 (wiz yafolding
   :init
   (add-hook 'prog-mode-hook 'yafolding-mode))
+
+(wiz outline-indent
+  :init
+  (wiz-map '(neon-mode-hook yaml-mode-hook python-mode-hook)
+    (lambda (it)
+      `(add-hook (quote ,it) #'outline-indent-minor-mode)))
+  :config
+  (setopt outline-indent-ellipsis " ▼ "))
 
 ;; vi-tilde-fringe
 (wiz vi-tilde-fringe
@@ -887,14 +934,10 @@
   (which-key-setup-side-window-right-bottom)
   (which-key-mode t))
 
-;; smooth-scroll https://github.com/k-talo/smooth-scroll.el
-(wiz smooth-scroll
-  :config
-  (diminish 'smooth-scroll-mode)
-  (setopt smooth-scroll/vscroll-step-size 7)
-  :init
-  (require 'smooth-scroll)
-  (smooth-scroll-mode t))
+;; (wiz ultra-scroll
+;;   :init
+;;   (setq scroll-conservatively 101)
+;;   (ultra-scroll-mode +1))
 
 (wiz topsy
   :init
@@ -971,6 +1014,8 @@ If PROPERTIES are specified, set them for the created overlay."))
 ;;; Variables:
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
 
 ;;; Functions:
 (defmacro safe-diminish (file mode &optional new-name)
@@ -1179,7 +1224,7 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   "Write file `TO-FILE' from opened buffer `FROM-BUF'."
   (interactive (list (read-file-name "Write to: ")
                      (read-buffer "From buffer: ")))
-  (when (or (not (f-exists? to-file))
+  (when (or (not (file-exists-p to-file))
             (yes-or-no-p "Overwrite? "))
     (let ((content (with-current-buffer from-buf
                      (set-buffer-multibyte nil)
@@ -1202,11 +1247,27 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
   :init
   (global-copy-file-on-save-mode 1))
 
+;; (require 'punch-line)
+;; (wiz punch-line
+;;   :init
+;;   (punch-line-mode 1)
+;;   :config
+;;   (setopt punch-line-separator "  ")
+;;   (setopt punch-show-project-info t)                ;; Show project info
+;;   (setopt punch-show-git-info t)                    ;; Show git info
+;;   (setopt punch-show-battery-info t)                ;; Show battery status
+;;   (setopt punch-show-weather-info t)                ;; Weather info
+;;   (setopt punch-weather-latitude "35.6636")         ;; Weather latitude
+;;   (setopt punch-weather-longitude "139.6677")        ;; Weather longitude
+;;   (setopt punch-line-music-info '(:service apple)))
+
 (setq find-function-C-source-directory
       (eval-when-compile (expand-file-name "~/local/src/emacs/src")))
 
 (when (eval-when-compile my-system-is-wsl2)
   (setopt browse-url-browser-function #'my-browse-url-wsl-host-browser))
+
+(setq file-name-handler-alist init-saved-file-name-handler-alist)
 
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 
@@ -1216,5 +1277,3 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 
 (provide 'init)
 ;;; init.el ends here
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)

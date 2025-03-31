@@ -34,6 +34,8 @@
 ;;; Code:
 (require 'psysh nil t)
 (require 'flycheck)
+(eval-when-compile
+  (declare-function php-copyit-fqsen "ext:php" ()))
 
 (defgroup pixiv-dev '()
   "Develop pixiv.net and other services."
@@ -94,31 +96,31 @@
 ;; Utillity
 
 ;;;###autoload
-(defun pixiv-dev-copy-file-url ()
-  "Copy pixiv repository file URL."
-  (interactive)
-  (let ((url (pixiv-dev-make-file-url (pixiv-dev--working-dir))))
+(defun pixiv-dev-copy-file-url (&optional prefix)
+  "Copy pixiv repository file URL.  When PREFIX is non-NIL, return blame URL."
+  (interactive "p")
+  (let ((url (pixiv-dev-make-file-url (pixiv-dev--working-dir) (if (eq prefix 1) "blob" "blame"))))
     (when url
       (kill-new url)
       (message (format "Copy `%s'!" url)))))
 
 ;;;###autoload
-(defun pixiv-dev-make-file-url (working-dir)
-  "Make pixiv repository file URL by `WORKING-DIR'."
+(defun pixiv-dev-make-file-url (working-dir type)
+  "Make pixiv repository file URL by WORKING-DIR.  TYPE expect `blob' or `blame'."
   (when (or (null buffer-file-name)
             (not (string-prefix-p working-dir buffer-file-name)))
     (error "File is not in pixiv repository!"))
   (let ((current-line (count-lines 1 (point))))
     (concat pixiv-dev-repository-web
-            (format "/%s/master" (if (eq major-mode 'dired-mode) "tree" "blob"))
+            (format "/%s/master" (if (eq major-mode 'dired-mode) "tree" type))
             (replace-regexp-in-string working-dir "" buffer-file-name)
             (if (eq 1 current-line) "" (concat "#L" (number-to-string current-line))))))
 
 ;;;###autoload
-(defun pixiv-dev-copy-file-url-as-markdown ()
-  "Copy pixiv repository file URL."
-  (interactive)
-  (let* (markdown (url (pixiv-dev-make-file-url (pixiv-dev--working-dir))))
+(defun pixiv-dev-copy-file-url-as-markdown (&optional prefix)
+  "Copy pixiv repository file URL.  When PREFIX is non-NIL, return blame URL."
+  (interactive "p")
+  (let* (markdown (url (pixiv-dev-make-file-url (pixiv-dev--working-dir) (if (eq prefix 1) "blob" "blame"))))
     (when url
       (setq markdown (format "[`%s`](%s)" (php-copyit-fqsen) url))
       (kill-new markdown)

@@ -12,7 +12,7 @@
 	b = branch
 	pr = pull --rebase
 	psuh = push
-	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
+	delete-merged-branches = !git branch --merged | grep -v '[*+]' | xargs -I % git branch -d %
 [core]
 	excludesfile = ~/.gitexclude
 	filemode = false
