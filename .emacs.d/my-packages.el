@@ -19,7 +19,8 @@
 (package-initialize)
 
 (unless (require 'wiz nil t)
-  (package-install 'wiz))
+  (package-install 'wiz)
+  (require 'wiz))
 
 (require 'wiz-key)
 (require 'wiz-env)
@@ -67,7 +68,6 @@
 (wiz-pkg editorconfig)
 (wiz-pkg elisp-slime-nav)
 (wiz-pkg elscreen)
-(wiz-pkg emacsql-mysql)
 (wiz-pkg emmet-mode)
 ;; (wiz-pkg enh-ruby-mode)
 (wiz-pkg eshell-fringe-status)
