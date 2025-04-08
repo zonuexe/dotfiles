@@ -575,7 +575,7 @@
                         (list (cape-company-to-capf #'company-phpactor))
                         completion-at-point-functions))
 
-    (when (eq 0 (buffer-size))
+    (when (zerop (buffer-size))
       (insert "<?php\n\n"))))
 
 (wiz lsp-bridge

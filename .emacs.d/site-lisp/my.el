@@ -139,5 +139,70 @@ WITHIN-STRING-OR-COMMENT, NEXT-TO-STRING."
                   (list "cmd.exe" "/c" "start" current-file-name)
                   " ")))))
 
+(defun my-uchizei (total tax)
+  "総額(TOTAL)と税率(TAX)から内税を計算する."
+  (interactive (list (read-number "総額: ")
+                     (let* ((tax-rates '(("10%" . 10) ("8% (軽減税率)" . 8)))
+                            (value (completing-read "消費税率: " tax-rates)))
+                       (cdr (assoc value tax-rates)))))
+  (let ((result (/ (* total tax) (+ 100 tax))))
+    (kill-new (number-to-string result))
+    (message "消費税額: %f" result)))
+
+(defun my-highlight-phrase  (regexp &optional face)
+  "Set face of each match of phrase REGEXP to FACE."
+  (interactive
+   (list
+    (hi-lock-regexp-okay
+     (read-regexp "Phrase to highlight"
+                  (rx-to-string
+                   (list : (if (region-active-p)
+                               (buffer-substring-no-properties (region-beginning) (region-end))
+                             (thing-at-point 'symbol)))
+                   t)
+                  'regexp-history-last))
+    (hi-lock-read-face-name)))
+  (highlight-phrase regexp face))
+
+(defun my-tetris-before ()
+  "Advice function for `tetris' command."
+  (browse-url "https://www.youtube.com/watch?v=Soy4jGPHr3g"))
+
+(advice-add 'tetris :before #'my-tetris-before)
+
+;;;###autoload
+(defmacro compact (&rest variables)
+  "Compact VARIABLES into plist."
+  (cons 'list
+        (cons (quote 'compact)
+              (cl-loop for var in variables
+                       nconc (list (intern (format ":%s" var)) var)))))
+
+;;;###autoload
+(defun my-invoice-search (regnums)
+  "国税庁適格請求書発行事業者公表サイトでリージョン内の登録番号 REGNUMS を検索する."
+  (interactive (list (cl-remove-if-not
+                      (lambda (line) (string-prefix-p "T" line))
+                      (split-string (string-trim (buffer-substring-no-properties (region-beginning) (region-end))) "\n"))))
+  (browse-url (concat "https://www.invoice-kohyo.nta.go.jp/regno-search?"
+                      (string-join (cl-mapcar (lambda (regnum n) (format "regNo%d=%s" n (string-trim-left regnum "T")))
+                                              regnums (number-sequence 1 (length regnums)))
+                                   "&"))))
+
+(defun my-combinations-with-repetition (set n)
+  "集合 SET から N 要素の重複配列を構築する."
+  (if (zerop n)
+      '(())
+    (mapcan (lambda (x)
+              (mapcar (lambda (xs) (cons x xs))
+                      (my-combinations-with-repetition set (1- n))))
+            set)))
+
+(defun my-chunk-list (n lst)
+  "リスト LST を最大 N 要素ごとのチャンクに分割する."
+  (when lst
+    (cons (cl-subseq lst 0 (min n (length lst)))
+          (my-chunk-list n (nthcdr n lst)))))
+
 (provide 'my)
 ;;; my.el ends here
