@@ -14,11 +14,13 @@
         c-electric-slash
         c-electric-star
         coffee-dedent-line-backspace
+        consult-yank-pop
         delete-indentation
         electric-newline-and-maybe-indent
         electric-pair-delete-pair
         end-of-buffer
         end-of-visual-line
+        find-file-at-point
         goto-address-at-point
         goto-line
         indent-for-tab-command
@@ -87,6 +89,7 @@
         elscreen-next
         helm-find-files
         helm-smex
+        kill-visual-line
         magit-find-file-completing-read
         magit-status
         mouse-buffer-menu

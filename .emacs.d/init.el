@@ -2,7 +2,7 @@
 
 ;; Filename: init.el
 ;; Description: zonuexe's .emacs
-;; Package-Requires: ((emacs "29.1"))
+;; Package-Requires: ((emacs "30.1"))
 ;; Author: USAMI Kenta <tadsan@zonu.me>
 ;; Created: 2014-11-01
 ;; Modified: 2023-10-10
@@ -164,6 +164,7 @@
   :config
   (diminish 'volatile-highlights-mode)
   :init
+  (require 'volatile-highlights)
   (volatile-highlights-mode 1))
 
 (wiz colorful-mode
@@ -202,15 +203,15 @@
            ("C-c <up>"    . windmove-up)
            ("C-c <right>" . windmove-right)))
 
-(cond
- ((eq window-system 'ns)
-  (setq mac-option-modifier 'hyper)
-  (when (boundp 'ns-command-modifier) (setq ns-command-modifier 'meta))
-  (when (boundp 'ns-alternate-modifier) (setq ns-alternate-modifier 'meta)
-        (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
-        (global-set-key (kbd "¥") (lambda () (interactive) (insert "\\")))))
- ((eq window-system 'x)
-  (when (boundp 'x-meta-keysym) (setq x-meta-keysym 'meta))))
+(static-if (eq window-system 'ns)
+    (progn
+      (setq mac-option-modifier 'hyper)
+      (static-if (boundp 'ns-command-modifier) (setq ns-command-modifier 'meta))
+      (static-if (boundp 'ns-alternate-modifier) (setq ns-alternate-modifier 'meta))
+      (global-set-key (kbd "M-¥") (lambda () (interactive) (insert "¥")))
+      (global-set-key (kbd "¥") (lambda () (interactive) (insert "\\"))))
+  (static-if (eq window-system 'x)
+      (when (boundp 'x-meta-keysym) (setq x-meta-keysym 'meta))))
 
 ;; key-chord
 (wiz key-chord
@@ -263,6 +264,7 @@
   :init
   (wiz-keys
    (("C-M-y" . consult-yank-from-kill-ring)
+    ("M-y" . consult-yank-pop)
     ("C-c ;" . consult-imenu)
     ("C-c t" . consult-recent-file)
     ("C-;" . my-consult-line)
@@ -283,8 +285,7 @@
 (wiz orderless
   :config
   (setopt completion-styles '(orderless basic))
-  (setopt completion-category-defaults nil)
-  (setopt completion-category-overrides '((file (styles . (partial-completion))))))
+  (setopt completion-category-overrides '((file (styles basic partial-completion)))))
 
 (wiz eldoc
   :config
@@ -311,11 +312,6 @@
     (orderless-style-dispatchers nil)
     (orderless-matching-styles '(orderless-literal)))
 
-  ;; Enable Corfu only for certain modes.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
-
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-excluded-modes'.
@@ -324,7 +320,7 @@
   :setup-hook
   (defun init-corfu-hook ()
     "Setup function for Corfu."
-    (setq-local completion-styles '(orderless-literal-only basic)
+    (setq-local ;; completion-styles '(orderless-literal-only basic)
                 completion-category-overrides nil
                 completion-category-defaults nil)))
 
@@ -546,6 +542,7 @@
              ("~" . (smartchr "~" "phpstan-"))
              ("C-^" . 'phpstan-insert-dumptype)
              ("<f6>" . phpunit-current-project)
+             ("S-C-t" . phpactor-index:query)
              ("C-c C--" . php-current-class)
              ("C-c C-=" . 'php-current-namespace))
             :map php-mode-map)
@@ -743,10 +740,15 @@
   (setopt markdown-header-scaling t)
   (setopt markdown-indent-on-enter 'indent-and-new-item)
   (define-key markdown-mode-map (kbd "<S-tab>") #'markdown-shifttab)
+  (advice-add 'markdown-mode :after #'deck-slides-auto-activate-mode)
   :setup-hook
   (defun init-markdown-mode-setup ()
     (toggle-word-wrap -1)
     (visual-line-mode nil)))
+
+(wiz deck-slides
+  :config
+  (advice-add 'deck-slides-apply-watch :before #'deck-slides-open-browser))
 
 ;; Magic Filetype
 (wiz magic-filetype
@@ -844,21 +846,25 @@
   :config
   (add-hook 'rg-mode-hook #'wgrep-rg-setup))
 
-(wiz dired-sidebar
+(with-eval-after-load 'file
+  (setopt insert-directory-program
+          (static-if (and (memq system-type '(berkeley-unix darwin))
+                          (executable-find "gls"))
+              (purecopy "gls")
+            (purecopy "ls"))))
+
+(wiz dirvish
   :init
-  (wiz-keys (("M-C-\\" . dired-sidebar-toggle-sidebar)
-             ("M-C-¥"  . dired-sidebar-toggle-sidebar))))
+  (dirvish-override-dired-mode +1)
+  (dirvish-peek-mode +1)
+  (wiz-keys (("M-C-\\" . dirvish-side)
+             ("M-C-¥"  . dirvish-side))))
 
 ;; dired-k
 (wiz dired-k
   :config
   (wiz-keys (("K" . dired-k))
             :map dired-mode-map))
-
-(wiz dired
-  :config
-  (add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
-  (add-hook 'dired-mode-hook #'dired-preview-mode))
 
 ;; Visual
 (wiz visual-regexp
@@ -1235,6 +1241,10 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 (wiz eat
   :config
   (add-hook 'eat-mode-hook #'my/disable-trailing-mode-hook))
+
+(wiz tldr
+  :config
+  (add-hook 'tldr-mode-hook #'goto-address-mode))
 
 ;; keyfreq
 (wiz keyfreq

@@ -204,5 +204,11 @@ WITHIN-STRING-OR-COMMENT, NEXT-TO-STRING."
     (cons (cl-subseq lst 0 (min n (length lst)))
           (my-chunk-list n (nthcdr n lst)))))
 
+(defun my-open-monokakido-dictionary (query)
+  "Search QUERY."
+  (interactive "MInput query: ")
+  (let* ((cmd (concat "mkdictionaries:///?text")))
+    (message "%s" (string-trim (shell-command-to-string (format "open '%s=%s'" cmd query))))))
+
 (provide 'my)
 ;;; my.el ends here

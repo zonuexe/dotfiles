@@ -174,7 +174,6 @@
 (wiz-pkg toml-mode)
 (wiz-pkg typescript-mode)
 (wiz-pkg ucs-utils)
-(wiz-pkg undo-fu)
 (wiz-pkg untitled-new-buffer)
 (wiz-pkg vertico)
 (wiz-pkg vertico-prescient)
@@ -205,6 +204,11 @@
 (wiz-pkg orderless)
 (wiz-pkg dired-sidebar)
 (wiz-pkg all-the-icons-dired)
+(wiz-pkg outline-indent)
+(wiz-pkg tempel)
+(wiz-pkg dumber-jump)
+(wiz-pkg tldr)
+(wiz-pkg yaml)
 
 (package-vc-install
  '(smartchr :url "git@github.com:zonuexe/emacs-smartchr.git"
@@ -229,5 +233,17 @@
 (package-vc-install
  '(ultra-scroll :vc-backend Git
                 :url "https://github.com/jdtsmith/ultra-scroll"))
+
+(package-vc-install
+ '(voicepeak :url "git@github.com:zonuexe/voicepeak.el.git"
+             :main-file "voicepeak.el"))
+
+(package-vc-install
+ '(semel :url "git@github.com:eshelyaron/semel.git"
+         :main-file "semel.el"))
+
+(package-vc-install
+ '(lsp-proxy :url "git@github.com:jadestrong/lsp-proxy.git"
+             :main-file "lsp-proxy.el"))
 
 ;;; my-packages.el ends here
