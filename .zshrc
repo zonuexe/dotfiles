@@ -226,3 +226,4 @@ fi
 # Bun
 export BUN_INSTALL="/Users/megurine/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"
