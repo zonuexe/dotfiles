@@ -1,10 +1,10 @@
-.PHONY: all setup submodules symlink
+.PHONY: all setup submodules symlink config-symlink
 
 SHELL = /bin/sh
 
 all: setup
 
-setup: submodules symlink
+setup: submodules symlink config-symlink
 
 DOTFILES = \
 	.agignore \
@@ -28,4 +28,13 @@ symlink:
 	@set -eu; \
 	for file in $(DOTFILES); do \
 		ln -sfv "$$(pwd)/$$file" "$$HOME"; \
+	done
+
+config-symlink:
+	@set -eu; \
+	mkdir -p "$$HOME/.config"; \
+	for dir in "$$(pwd)/.config"/*; do \
+		[ -d "$$dir" ] || continue; \
+		name=$${dir##*/}; \
+		ln -sfnv "$$dir" "$$HOME/.config/$$name"; \
 	done
