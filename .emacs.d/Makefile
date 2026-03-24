@@ -5,6 +5,9 @@ ELCS = $(ELS:.el=.elc)
 
 all: site-autoload elpa elc
 
+submodules:
+	git submodule update --init --recursive
+
 %.elc: %.el
 	$(EMACS) -Q -batch -L . -f package-initialize -f batch-byte-compile $<
 
@@ -22,4 +25,4 @@ site-autoload: $(ELS)
 clean:
 	@rm $(ELCS) site-lisp/site-lisp-autoloads.el
 
-.PHONY: all clean elc elpa
+.PHONY: all clean elc elpa submodules

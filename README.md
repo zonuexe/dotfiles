@@ -6,8 +6,11 @@ dotfiles
 ## Setup
 
 ```
-git submodule update --init
+make
+vim
 ```
+
+The first `vim` launch installs missing plugins via `dein.vim`.
 
 Environment
 -----------

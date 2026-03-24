@@ -3,16 +3,26 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
-" Required:
-set runtimepath+=~/.local/share/dein/repos/github.com/Shougo/dein.vim
+let s:vimrc_path = resolve(expand('<sfile>:p'))
+let s:dotfiles_dir = fnamemodify(s:vimrc_path, ':h')
+let s:dein_repo_dir = s:dotfiles_dir . '/.vim/dein.vim'
+let s:dein_cache_dir = expand('~/.vim/dein')
 
-if dein#load_state(expand('~/.vim/dein'))
+if isdirectory(s:dein_repo_dir)
+  execute 'set runtimepath^=' . fnameescape(s:dein_repo_dir)
+else
+  echohl WarningMsg
+  echom 'dein.vim submodule is missing. Run: git submodule update --init --recursive'
+  echohl None
+endif
+
+if isdirectory(s:dein_repo_dir) && dein#load_state(s:dein_cache_dir)
    " Required:
-   call dein#begin(expand('~/.vim/dein'))
+   call dein#begin(s:dein_cache_dir)
 
    " Let dein manage dein
    " Required:
-   call dein#add('Shougo/dein.vim')
+   call dein#add(s:dein_repo_dir)
 
    " Add or remove your plugins here:
    call dein#add('Shougo/neosnippet.vim')
@@ -37,6 +47,10 @@ if dein#load_state(expand('~/.vim/dein'))
    " Required:
    call dein#end()
    call dein#save_state()
+endif
+
+if isdirectory(s:dein_repo_dir) && dein#check_install()
+  call dein#install()
 endif
 
 " Required:
@@ -82,12 +96,3 @@ endif
 let g:sql_type_default='mysql'
 
 syntax on
-
-" Put these lines at the very end of your vimrc file.
-
-" Load all plugins now.
-" Plugins need to be added to runtimepath before helptags can be generated.
-packloadall
-" Load all of the helptags now, after plugins have been loaded.
-" All messages and errors will be ignored.
-silent! helptags ALL

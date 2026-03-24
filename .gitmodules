@@ -4,3 +4,6 @@
 [submodule "smartchr"]
 	path = .emacs.d/borg/smartchr
 	url = git@github.com:imakado/emacs-smartchr.git
+[submodule ".vim/dein.vim"]
+	path = .vim/dein.vim
+	url = https://github.com/Shougo/dein.vim.git
