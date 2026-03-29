@@ -10,6 +10,7 @@ DOTFILES = \
 	.agignore \
 	.bashrc \
 	.bash_profile \
+	.emacs.d \
 	.gemrc \
 	.gitconfig \
 	.gitexclude \
@@ -27,7 +28,7 @@ submodules:
 symlink:
 	@set -eu; \
 	for file in $(DOTFILES); do \
-		ln -sfv "$$(pwd)/$$file" "$$HOME"; \
+		ln -sfnv "$$(pwd)/$$file" "$$HOME/$$file"; \
 	done
 
 config-symlink:
