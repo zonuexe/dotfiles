@@ -61,6 +61,7 @@
 (wiz-pkg dired-preview)
 (wiz-pkg direx)
 (wiz-pkg dist-file-mode)
+(wiz-pkg dirvish)
 (wiz-pkg dockerfile-mode)
 (wiz-pkg drag-stuff)
 (wiz-pkg eask-mode)
@@ -225,6 +226,9 @@
 (package-vc-install
  '(pict :url "git@github.com:zonuexe/pict.el.git"
         :main-file "pict.el"))
+
+(package-vc-install '(deck-slides :url "git@github.com:zonuexe/deck-slides.el.git"
+                                  :main-file "deck-slides.el"))
 
 (package-vc-install
  '(infinite-scroll :url "git@github.com:zonuexe/infinite-scroll.el.git"
