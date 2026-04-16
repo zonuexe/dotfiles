@@ -9,6 +9,6 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
-PATH=$HOME/local/bin:$HOME/.composer/vendor/bin:$HOME/.linuxbrew/bin:$PATH
+PATH="$HOME/local/bin:$HOME/.composer/vendor/bin:$HOME/.linuxbrew/bin:$HOME/.nodenv/bin:$PATH"
 
 [ -e "${HOME}/.iterm2_shell_integration.bash" ] && . "${HOME}/.iterm2_shell_integration.bash"

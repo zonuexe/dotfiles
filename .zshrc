@@ -223,7 +223,6 @@ fi
 # bun completions
 [ -s "/Users/megurine/.bun/_bun" ] && source "/Users/megurine/.bun/_bun"
 
-# Bun
-export BUN_INSTALL="/Users/megurine/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"
+# Added by `nodenv init` on Thu Apr  9 12:23:56 PM JST 2026
+eval "$(nodenv init - --no-rehash zsh)"
+eval "$(nodenv init - zsh)"
