@@ -1,0 +1,16 @@
+id: negative-claude-subagent
+name: "Anti-trigger: Claude subagent"
+description: Claude's own Agent tool territory — should not need acp-agent-runner.
+tags:
+  - negative-trigger
+inputs:
+  prompt: "Claude の subagent でこのリファクタを並列に進めて。外部エージェントは使わない。"
+expected:
+  should_trigger: false
+graders:
+  - type: text
+    name: not-acp-runner
+    config:
+      not_contains:
+        - "acp_run.py"
+        - "opencode acp"

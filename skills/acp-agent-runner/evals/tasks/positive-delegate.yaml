@@ -1,0 +1,16 @@
+id: positive-delegate
+name: "Trigger: delegate work"
+description: Ordinary work handoff to an external model.
+tags:
+  - positive-trigger
+  - inplace
+inputs:
+  prompt: "OpenCode の GLM-5.2 にこのブランチの失敗テストを直させて結果を見せて。"
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: mentions-external
+    config:
+      regex_match:
+        - "(?i)opencode|glm|acp|inplace|cwd"

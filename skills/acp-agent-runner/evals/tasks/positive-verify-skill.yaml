@@ -1,0 +1,16 @@
+id: positive-verify-skill
+name: "Trigger: verify skill with external model"
+description: Skill completion verification should use isolated mode language.
+tags:
+  - positive-trigger
+  - isolated
+inputs:
+  prompt: "keep-a-changelog スキルを OpenCode Go の glm-5.2 で完遂できるか、worktree で検証して。"
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: isolation-or-skill
+    config:
+      regex_match:
+        - "(?i)worktree|isolat|skill|verify|完遂"

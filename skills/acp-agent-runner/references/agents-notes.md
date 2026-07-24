@@ -1,0 +1,42 @@
+# ACP agent notes & special cases
+
+- **AgentPool** — ACP server takes a config file arg; JSON-RPC over stdio. Flags --show-messages, --log-level.
+- **Augment Code** — JSON-RPC over stdio; --acp flag.
+- **AutoDev** — Bidirectional ACP (agent+client). Pkg name from README; command from issue #535.
+- **Blackbox AI** — ACP experimental (--experimental-acp).
+- **Bub** — Core Bub has NO acp subcommand; ACP via separate bub-acp-server plugin (-> 'bub acp serve').
+- **bub-acp-server** — Plugin adding ACP to Bub. Also standalone 'bub-acp-server'. Zed args ['acp','serve'].
+- **Claude Agent (Anthropic Agent SDK)** — Library, NOT an ACP server. For ACP use the claude-agent-acp adapter (next).
+- **claude-agent-acp (Zed adapter)** — Running the binary IS the ACP agent over stdio; no subcommand. Wraps Claude Agent SDK.
+- **Cline** — --acp flag (CLI >2.0.0) -> ACP over stdio. Zed args ['--acp'].
+- **Code Assistant** — 'code-assistant acp' over stdio; optional --model.
+- **Codex CLI (OpenAI)** — NO native 'codex acp'. Use codex-acp adapter (next). 'codex mcp-server' is MCP not ACP.
+- **codex-acp (Zed adapter)** — Binary IS the ACP agent over stdio; no subcommand.
+- **Cursor** — Binary is 'agent'. ACP over stdio (ndjson JSON-RPC).
+- **Docker cagent** — Takes an agent YAML arg. Docker Desktop form: 'docker agent serve acp <file|ref>'.
+- **Factory Droid** — ACP = 'exec' subcommand with --output-format acp.
+- **fast-agent** — Dedicated 'fast-agent-acp' binary. Also 'fast-agent serve --transport acp'. Flags -x, --no-permissions, --model.
+- **Gemini CLI** — `gemini --acp` over stdio. Old '--experimental-acp' deprecated.
+- **GitHub Copilot CLI** — stdio default; explicit 'copilot --acp --stdio'. Public preview.
+- **Goose** — `goose acp` over stdio. Auto-loads MCP from client.
+- **Grok CLI (xAI)** — ACP is the `agent stdio` subcommand (NOT `grok --acp`); `grok agent headless`/`serve` are WebSocket, not ACP. Model on the `agent` parent: `grok agent -m <id> --always-approve stdio` (`-m` before `stdio`). Auto-approve = `--always-approve`. Auth grok.com / `XAI_API_KEY`. No programmatic model verification (`grok export` is Markdown-only) → `model_verified` is null on the --cmd path; trust the `-m` flag + `grok models`. Separate session db from OpenCode (can overlap OpenCode runs). VERIFIED end-to-end in this project. Full reference: [grok.md](grok.md).
+- **Hermes Agent** — Also 'hermes-acp'. Logs to stderr. Optional --setup-browser.
+- **Kimi CLI** — `kimi acp` (JSON-RPC stdio). Deprecated '--acp' also exists.
+- **Kiro CLI** — JSON-RPC 2.0 over stdio. Optional --agent <name>. Use full path to kiro-cli in editor config.
+- **Minion Code** — ACP for Zed etc. Flags: --dir, --model, --verbose, --dangerously-skip-permissions.
+- **Mistral Vibe** — Separate binary 'vibe-acp' (NOT 'vibe acp'); JSON-RPC over stdio; empty args in Zed.
+- **OpenClaw** — ACP over stdio, forwards to Gateway over WebSocket.
+- **OpenCode** — ACP subprocess over stdio; Zed args ["acp"]. VERIFIED end-to-end in this project.
+- **OpenHands** — ACP server; flags --llm-approve, --always-approve, --resume <id>.
+- **Pi (coding-agent)** — Pi itself is NOT ACP (has own 'pi --mode rpc'). Use pi-acp adapter.
+- **pi-acp adapter** — Bare 'pi-acp' IS the ACP server (no subcommand); spawns 'pi --mode rpc'.
+- **Poolside (pool)** — 'pool acp'; flags forwardable e.g. --reasoning high.
+- **Qoder CLI** — 'qoder acp' (older qodercli/--acp is stale).
+- **Qwen Code** — 'qwen --acp' stable (PR #1355); '--experimental-acp' deprecated. 'qwen serve' = ACP over HTTP/SSE (not stdio).
+- **siGit Code** — No subcommand/flag — point client command at the 'sigit' binary; auto-detects ACP over stdio.
+- **Stakpak** — `stakpak acp` over stdio. Zed args ['acp'].
+- **VT Code** — `vtcode acp` over stdio. Zed env VT_ACP_ENABLED=1, VT_ACP_ZED_ENABLED=1.
+- **crow-cli** — Native ACP agent; acp subcommand per Zed registry, not explicit in README.
+- **fount** — No 'acp' subcommand; stdio<->WebSocket bridge via Deno script.
+- **Junie (JetBrains)** — Parameters page lists --acp; README omits it -> likely.
+- **stdio Bus** — NOT a coding agent — a JSON-RPC/NDJSON router & process supervisor. No agent ACP launch. EXCLUDE.

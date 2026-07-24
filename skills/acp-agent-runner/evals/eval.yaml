@@ -1,0 +1,28 @@
+name: acp-agent-runner-eval
+description: Mode routing and ACP runner intent for acp-agent-runner
+skill: acp-agent-runner
+version: "1.0"
+
+config:
+  trials_per_task: 1
+  timeout_seconds: 120
+  parallel: false
+  executor: mock
+  model: gpt-4.1
+
+metrics:
+  - name: task_completion
+    weight: 0.7
+    threshold: 0.8
+  - name: efficiency
+    weight: 0.3
+    threshold: 0.7
+
+graders:
+  - type: behavior
+    name: token-budget
+    config:
+      max_tokens: 4000
+
+tasks:
+  - "tasks/*.yaml"
