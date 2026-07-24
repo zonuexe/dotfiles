@@ -1,0 +1,53 @@
+{
+  "skill_name": "keep-a-changelog",
+  "evals": [
+    {
+      "id": 1,
+      "name": "seal-commit-style",
+      "prompt": "Seal the [Unreleased] section of CHANGELOG.md into version 1.4.0 for release today (2026-07-25). Rewrite commit-style entries into Keep a Changelog release notes, drop internal-only noise, fix bare issue links, update footer compare links. Do not bump any other version files — only CHANGELOG.md.\n\nMerged PRs since 2026-06-01 (for linking):\n#41 Fix path normalization for cache keys\n#42 Widget result cache and cache: true config\n#43 CLI --json for widget list\n(no PR for pure internal docs refactor)",
+      "expected_output": "CHANGELOG.md with empty [Unreleased], new ## [1.4.0] - 2026-07-25 section with release-style one-line bullets, full markdown PR links, no hard-wrapped prose, footer compare links for Unreleased and 1.4.0",
+      "files": ["evals/fixtures/seal-commit-style/CHANGELOG.md"],
+      "assertions": [
+        "Output CHANGELOG has ## [1.4.0] - 2026-07-25 (or equivalent ISO date) below [Unreleased]",
+        "[Unreleased] section has no leftover release bullets (empty or only deferred items)",
+        "No bare #N references; PR links use full markdown form where a PR exists",
+        "Internal-only WidgetCache refactor is absent from the sealed section",
+        "Every bullet and summary paragraph is one physical line (no mid-sentence hard wrap)",
+        "Footer has [Unreleased] compare from v1.4.0...HEAD and [1.4.0] compare from previous tag",
+        "Top-level bullets are user-facing release style, not commit-message prose like 'Fix normalize_path'"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "empty-unreleased-from-prs",
+      "prompt": "CHANGELOG.md has an empty [Unreleased]. Write release 2.1.0 dated 2026-07-25 from these merged PRs only (no other files). Seal into Keep a Changelog form with user-facing bullets, full markdown links, one physical line per prose block, and updated footer compare links.\n\nMerged since 2026-05-15:\n#91 Add OAuth device-code login flow\n#92 Fix refresh token rotation race under concurrent requests\n#93 Internal: rename AuthService methods for clarity (no behavior change)\n#94 Deprecate password grant; still works with a warning",
+      "expected_output": "CHANGELOG with [2.1.0] section covering Added/Fixed/Deprecated as appropriate; #93 omitted as internal; footer links updated",
+      "files": ["evals/fixtures/empty-unreleased/CHANGELOG.md"],
+      "assertions": [
+        "New ## [2.1.0] - 2026-07-25 section exists",
+        "OAuth device-code login appears under Added (or equivalent user-facing wording)",
+        "Refresh token race fix appears under Fixed",
+        "Password grant deprecation appears under Deprecated",
+        "Internal AuthService rename (#93) has no user-facing entry",
+        "PR links are full markdown URLs to github.com/acme/authkit",
+        "No hard-wrapped prose in bullets or summary",
+        "Footer [Unreleased] points at v2.1.0...HEAD"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "mid-cycle-append",
+      "prompt": "Do not cut a release. Append a release-style [Unreleased] entry for PR #15: 'Add XLSX export with shared styles'. Full link https://github.com/acme/sheetly/pull/15. Keep existing entries. One physical line per bullet. Only edit CHANGELOG.md.",
+      "expected_output": "CHANGELOG still at [Unreleased] only for new work; new Added bullet for XLSX export with full PR link; version 0.9.0 section unchanged; no new version heading",
+      "files": ["evals/fixtures/mid-cycle-append/CHANGELOG.md"],
+      "assertions": [
+        "No new ## [x.y.z] version heading was added",
+        "### Added exists under [Unreleased] with an XLSX export bullet",
+        "New bullet includes full markdown link to pull/15",
+        "Existing Fixed entry about timezone is still present",
+        "New bullet is one physical line",
+        "Footer compare links unchanged (still v0.9.0)"
+      ]
+    }
+  ]
+}
