@@ -7,11 +7,12 @@ description: >-
   or throw a task to that other agent and bring back its result; ask it to review changes, fix
   failing tests, or refactor; route work "through opencode"; or run the same job on two outside
   models to compare their outputs. This skill runs that external agent for you (over the Agent
-  Client Protocol), in an isolated worktree by default or in-place when the user chooses.
-  It applies in any language (English, 日本語, など) and to vague or indirect phrasing. Do NOT use
-  it for Claude's own subagents (use the Agent tool instead), for plain Anthropic/LLM API scripts,
-  or for running Claude itself — the defining signal is that the work goes to a different,
-  non-Claude agent.
+  Client Protocol). Two main workspace modes: **inplace** for ordinary work handoff, **isolated**
+  (worktree) for verifying that a skill/procedure can be completed by an external model (e.g.
+  OpenCode Go). It applies in any language (English, 日本語, など) and to vague or indirect
+  phrasing. Do NOT use it for Claude's own subagents (use the Agent tool instead), for plain
+  Anthropic/LLM API scripts, or for running Claude itself — the defining signal is that the work
+  goes to a different, non-Claude agent.
 ---
 
 # Drive an external agent over ACP (safely)
@@ -19,97 +20,106 @@ description: >-
 Hand a self-contained task to an **external** agent (a different vendor's CLI/model) and get the
 result back by speaking ACP — JSON-RPC over stdio — to it. This is **one-shot delegation, not a true
 subagent**: there's no shared task list and no streaming into your own reasoning loop. Reach for it
-when the value is *a different vendor's model* (a second opinion, a cross-model comparison, cost),
+when the value is *a different vendor's model* (real work handoff, skill verification, comparison),
 since Claude's own Agent tool can only run Claude.
 
-## Workspace mode — pick before you run
+## Two product intents → two workspace modes
 
-The bundled client **auto-approves** the external agent's file edits and shell commands (ACP
-permission requests). That is powerful and unsafe if pointed at the wrong tree. Always choose a
-**workspace mode** first:
+The client **auto-approves** the external agent's file edits and shell commands. Choose mode by
+**why** you are calling the model, not only by wording:
 
-| Mode | `--cwd` points at | When to use |
-|------|-------------------|-------------|
-| **`isolated`** (default) | Disposable copy: `git worktree` or `cp -Rc` clone | Second opinions, experiments, multi-model comparison, untrusted/large refactors, anything you may discard |
-| **`inplace`** | The live working tree (repo root or a subdir the user named) | User explicitly wants edits on the current branch; small fixes; they accept risk |
+| Intent | Mode | `--cwd` | Goal |
+|--------|------|---------|------|
+| **Delegate work** — "OpenCode にこの作業をやらせて" / fix tests / review / implement | **`inplace`** | Live working tree | Edits land where the user is already working |
+| **Verify a skill/procedure** — "この SKILL を OpenCode Go で完遂できるか" / eval a checklist against an outside model | **`isolated`** | Disposable `git worktree` or `cp -Rc` clone | Measure completion without polluting the live branch; easy discard |
+
+Also use **`isolated`** for multi-model comparison and any run you expect to throw away.
 
 ### How to choose
 
-1. If the user says **isolate / worktree / sandbox / throwaway / compare models** → **`isolated`**.
-2. If the user says **in place / this repo / current branch / don't copy / edit here** → **`inplace`**.
-3. If they don't say → **default to `isolated`**, and say so briefly when you start ("running isolated
-   in a worktree; say if you want in-place instead").
+1. **Skill / procedure evaluation** (can model X complete skill Y? run this eval on GLM? dry-run a
+   checklist with OpenCode Go?) → **`isolated`**. Stage the skill (and any fixtures) into the
+   worktree; the agent must succeed from cwd + prompt alone.
+2. **Ordinary delegation** (just do the coding/review task with an outside model) → **`inplace`**.
+3. User forces the mode with **worktree / sandbox / 隔離** or **in place / そのまま / このブランチ**
+   → honor that.
+4. If still ambiguous → ask once: *検証（worktree）か、作業委任（inplace）か?* Prefer **`inplace`**
+   only when the ask is clearly "do this work"; prefer **`isolated`** when the ask is about
+   whether a skill/model combination works.
 
-Do **not** silently use `inplace` for multi-model fan-out or open-ended "fix everything" tasks.
+Do **not** use `inplace` for skill-verification runs or multi-model fan-out.
 
-### Mode: `isolated` (default)
+### Mode: `inplace` — delegate real work
 
-- Stage a disposable copy, never the live tree as the only working copy:
-  - `git worktree add <path> -b acp/<task-slug>` (or detached HEAD) — light, but **omits**
-    gitignored deps (`vendor/`, `node_modules/`).
-  - `cp -Rc <repo> <sandbox>` — heavier; **keeps** ignored deps so build/test works.
-- `--cwd` = that copy. Review `git diff` there; **promote only what you trust**.
-- Teardown: remove the worktree (`git worktree remove`) or delete the clone when done.
-- Still: no installs/network/destructive ops unless asked; **no commits** unless the user asked
-  for commits.
+- `--cwd` = the path the user wants edited (usually the session's repo root).
+- Auto-approve writes/runs shell **in that tree** — put tight constraints in the task prompt
+  (no installs/network/destructive ops/commits unless the user allowed them).
+- Review with `git diff` / `git status` there; leave uncommitted unless asked to commit.
+- OpenCode may drop `opencode.json` / `.opencode/` into `--cwd` — strip or leave per preference.
 
-### Mode: `inplace`
+### Mode: `isolated` — verify skill completion (or discardable runs)
 
-- `--cwd` = the path the user wants edited (usually the repo root of the current session).
-- **Confirm once** if the request was ambiguous: auto-approve will write and run shell in that tree.
-- Still put **no installs / no network / no destructive ops / no commits** in the task prompt unless
-  the user explicitly allowed them.
-- Review with `git diff` / `git status` in that same tree — there is no separate promote step; the
-  edits already land where the user is working. Prefer leaving uncommitted so they can revert.
-- OpenCode may drop `opencode.json` / `.opencode/` into `--cwd` — strip or leave per user preference
-  when reviewing the diff.
+Use when the question is **"can this external model finish this procedure?"**, not "please ship
+this change."
 
-Common rules for **both** modes:
+1. Create a disposable copy:
+   - `git worktree add <path> -b acp/<task-slug>` (or detached) — light; **omits** gitignored
+     deps (`vendor/`, `node_modules/`).
+   - `cp -Rc <repo> <sandbox>` — heavier; **keeps** deps so build/test works.
+2. **Stage what the skill needs inside the copy** — the `SKILL.md` (and `references/`, scripts,
+   fixtures). The external agent has no access to Claude's skill loader; tell it in the prompt to
+   read those paths and follow them.
+3. `--cwd` = that copy. Run `acp_run.py`. Judge success from `stopReason`, agent message, and
+   whether the skill's done criteria hold in the worktree (tests green, files produced, etc.).
+4. **Usually do not promote** — the product is the verification result (pass/fail + notes). Promote
+   only if the user asks to take the edits.
+5. Teardown: `git worktree remove` or delete the clone.
 
-- The agent sees only its **cwd + your prompt** (no chat memory, no Claude skills unless you stage
-  files into cwd and tell it to read them).
-- Never skip review of `result.json` (`stopReason`, **`model_verified`**) and the agent's message.
+Same constraints as inplace on installs/network/commits unless the verification scenario requires
+otherwise (state that in the prompt).
+
+### Common rules (both modes)
+
+- The agent sees only **cwd + your prompt** (no chat memory, no Claude skills unless staged).
+- Always review `result.json` (`stopReason`, **`model_verified`**) and the agent message.
 
 ## Procedure
 
-1. **Choose workspace mode** (`isolated` default / `inplace` if requested) — see above.
-2. **Stage cwd**
-   - `isolated`: create worktree or `cp -Rc` clone; put task files inside it.
-   - `inplace`: use the live path; write `task.txt` somewhere convenient (often the repo or `/tmp`).
-3. **Pick agent + model** — default agent: OpenCode. Model list:
+1. **Classify intent** → `inplace` (delegate) or `isolated` (verify skill / discardable).
+2. **Stage cwd** as above (live tree vs worktree + staged skill files).
+3. **Pick agent + model** — default OpenCode; models:
    [references/opencode.md](references/opencode.md).
-4. **Run** — one command drives the whole ACP session:
+4. **Run**:
    ```
    python <this-skill-dir>/scripts/acp_run.py --agent opencode --model <provider/model> \
      --cwd <workspace> --prompt-file <task.txt> --out <out-dir> --timeout 1200
    ```
-   `<workspace>` is the sandbox path (`isolated`) or the live tree (`inplace`). The client resolves
-   the agent command, sets the model, runs `initialize → session/new → session/prompt`, auto-approves
-   permissions, and writes `agent_message.txt`, `tool_calls.txt`, and `result.json` to `--out`.
-5. **Review** — `result.json`, agent message, and `git diff` in `--cwd`.
-   - `isolated`: promote accepted edits into the live tree, then teardown.
-   - `inplace`: keep or revert uncommitted edits as the user prefers.
-6. **Teardown** — only for `isolated` (remove worktree / delete clone). Skip for `inplace`.
+5. **Review**
+   - `inplace`: `git diff` in the live tree; keep or revert.
+   - `isolated` (skill verify): report whether the model completed the skill; quote evidence;
+     teardown unless the user wants the edits.
+6. **Teardown** only for `isolated`.
 
 ## Writing the task prompt
 
-Put everything in the prompt and as files under `--cwd`: the task, constraints (no
-install/network/commit unless allowed), and how to report results. To make the agent follow a
-procedure (a skill, a checklist), stage those files under cwd and tell it to read them by path.
+Put the task, constraints, and reporting format under `--cwd` / in the prompt.
 
-In **`inplace`**, state constraints extra clearly — there is no throwaway layer if the agent goes
-wrong.
+**Skill verification:** explicitly name the skill path in the worktree, order of steps if needed,
+and what "done" means (e.g. "follow SKILL.md end-to-end; stop when the checklist is satisfied;
+summarize what you did and what failed"). Do not assume the model knows Claude skill conventions.
+
+**Delegation:** same as usual coding handoff; constraints matter more because there is no
+throwaway layer.
 
 ## Examples
 
-- **Isolated second opinion:** "What would GLM-5.2 do about this failing test?" → `cp -Rc` or
-  worktree, `acp_run.py … --cwd <clone> …`, review diff, promote or discard.
-- **In-place fix:** "OpenCode でこのブランチの失敗テストをそのまま直して" → `--cwd` = live repo,
-  review `git diff` there, leave uncommitted unless asked to commit.
-- **Model comparison:** always **`isolated`**, two separate copies, same prompt, different
-  `--model` (e.g. `qwen3.7-max` vs `deepseek-v4-pro`). Run **sequentially, not in parallel** —
-  OpenCode serialises through one SQLite db (`database is locked`; see
-  [references/opencode.md](references/opencode.md) § Gotchas).
+- **Delegate (inplace):** "OpenCode でこのブランチの失敗テストを直して" → `--cwd` = live repo,
+  review diff there.
+- **Verify skill (isolated):** "keep-a-changelog を OpenCode Go の glm-5.2 で完遂できるか見たい"
+  → worktree, copy/link the skill into it, prompt "Read skills/keep-a-changelog/SKILL.md and seal
+  this fixture CHANGELOG…", judge pass/fail from outcomes, usually discard the tree.
+- **Compare models:** always **`isolated`**, separate copies, sequential runs (OpenCode SQLite
+  lock — [references/opencode.md](references/opencode.md) § Gotchas).
 
 ## Troubleshooting
 
@@ -117,10 +127,11 @@ wrong.
   `result.json`'s `model_verified` (read back from the agent's own session record).
 - **The agent didn't edit anything:** check `--cwd` is correct/writable and read
   `out/acp_stderr.log`; confirm auth (see references/opencode.md).
+- **Skill verify fails because files are missing:** the skill was not staged into the worktree, or
+  the prompt did not tell the model to open it.
 - **Hang or timeout:** raise `--timeout`; the last activity is in `out/acp_transcript.log`.
 - **Unwanted live-tree edits:** you used `inplace` (or pointed `--cwd` at the live repo). Revert
-  with `git checkout` / `git restore`; next time use `isolated`.
-
+  with `git checkout` / `git restore`; use `isolated` for verification runs.
 ## Other agents
 
 [references/agents.md](references/agents.md) is a catalog of ~39 ACP-compatible agents with their

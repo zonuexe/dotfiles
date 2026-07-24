@@ -6,8 +6,9 @@ auto-approving permission requests so the agent can work unattended.
 Writes agent_message.txt, tool_calls.txt, and result.json (incl. the verified model) to --out.
 
 SAFETY: this auto-approves the external agent's edits and shell commands for whatever
-directory you pass as --cwd. Prefer an isolated git worktree or `cp -Rc` clone (skill default).
-Use the live tree only when the operator explicitly chose in-place mode.
+directory you pass as --cwd. Skill policy: live tree for ordinary work delegation (inplace);
+git worktree / `cp -Rc` clone when verifying that a skill/procedure can be completed by an
+external model (isolated), or for discardable multi-model runs.
 
 Usage:
   python acp_run.py --agent opencode --model opencode-go/glm-5.2 \

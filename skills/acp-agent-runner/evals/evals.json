@@ -3,30 +3,30 @@
   "evals": [
     {
       "id": 0,
-      "name": "delegate-to-glm",
+      "name": "delegate-inplace",
       "prompt": "このリポジトリの失敗してるテストを GLM-5.2 に直させて、何をどう直したか結果を見せて。",
-      "expected_output": "Defaults to isolated mode: stages a worktree or cp -Rc clone, writes the task to a prompt file, runs scripts/acp_run.py --agent opencode --model opencode-go/glm-5.2 against that cwd, then reviews result.json + git diff before promoting — does not silently edit the live repo.",
+      "expected_output": "Ordinary work delegation → inplace: --cwd is the live working tree, acp_run.py --agent opencode --model opencode-go/glm-5.2, review git diff there; no worktree unless user asked for isolation.",
       "files": []
     },
     {
       "id": 1,
-      "name": "compare-two-models",
-      "prompt": "この関数のリファクタを Qwen3.7 Max と DeepSeek V4 Pro の両方にやらせて、出力の違いを比較したい。",
-      "expected_output": "Always isolated: two separate sandboxed acp_run.py runs with --model opencode-go/qwen3.7-max and opencode-go/deepseek-v4-pro in separate clones; sequential not parallel; then a comparison of the two outputs with model_verified for each.",
+      "name": "verify-skill-isolated",
+      "prompt": "keep-a-changelog スキルを OpenCode Go の glm-5.2 で完遂できるか検証して。ライブのブランチは汚さないで。",
+      "expected_output": "Skill verification → isolated worktree (or cp -Rc), stage keep-a-changelog skill files into the copy, prompt the model to follow SKILL.md, run acp_run.py, report pass/fail from outcomes; usually no promote; teardown worktree.",
       "files": []
     },
     {
       "id": 2,
-      "name": "second-opinion-review",
-      "prompt": "opencode 経由で別ベンダーのモデルに、いま書いたこの変更のレビューを頼みたい。",
-      "expected_output": "Resolves opencode (local or npx), runs it via ACP (isolated by default) to review the change, returns the external model's feedback. Uses the bundled client; does not hand-roll an ACP handshake.",
+      "name": "compare-two-models",
+      "prompt": "この関数のリファクタを Qwen3.7 Max と DeepSeek V4 Pro の両方にやらせて、出力の違いを比較したい。",
+      "expected_output": "Always isolated: two separate sandboxed sequential acp_run.py runs; then compare outputs with model_verified for each.",
       "files": []
     },
     {
       "id": 3,
-      "name": "inplace-when-asked",
-      "prompt": "worktree は使わず、このブランチの作業ツリーをそのまま OpenCode に渡して失敗テストを直させて。",
-      "expected_output": "Chooses inplace mode: --cwd is the live working tree (no worktree/cp sandbox), still runs acp_run.py with a task prompt that forbids commits unless asked, then reviews git diff in that same tree.",
+      "name": "second-opinion-review",
+      "prompt": "opencode 経由で別ベンダーのモデルに、いま書いたこの変更のレビューを頼みたい。",
+      "expected_output": "Delegation-style review → inplace on the live tree (or isolated only if user asked not to touch the branch); uses bundled client, returns external model feedback.",
       "files": []
     }
   ]
