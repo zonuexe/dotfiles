@@ -206,7 +206,7 @@ if (which zprof > /dev/null) ;then
     zprof | less
 fi
 
-autoload -U compinit && compinit
+# --- ツール初期化（fpath を触るもの → 最後に compinit 一回） ---
 
 if (which pyenv > /dev/null) ;then
     eval "$(pyenv init -)"
@@ -215,14 +215,33 @@ fi
 if (which zoxide > /dev/null)
 then
     eval "$(zoxide init zsh)"
-    alias cd=z
+    # Claude Code は cd を独自に扱うので alias しない
+    if [[ -z ${CLAUDECODE:-} ]]
+    then
+        alias cd=z
+    fi
 fi
 
-[ -n "$EAT_SHELL_INTEGRATION_DIR" ] && . $EAT_SHELL_INTEGRATION_DIR/zsh
+# Nix
+if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+  . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+elif [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
+  . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+fi
+[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 
-# bun completions
-[ -s "/Users/megurine/.bun/_bun" ] && source "/Users/megurine/.bun/_bun"
+[[ -n $EAT_SHELL_INTEGRATION_DIR ]] && . "$EAT_SHELL_INTEGRATION_DIR/zsh"
 
-# Added by `nodenv init` on Thu Apr  9 12:23:56 PM JST 2026
-eval "$(nodenv init - --no-rehash zsh)"
-eval "$(nodenv init - zsh)"
+# bun（bin は .zshenv の path 配列で設定済み）
+export BUN_INSTALL=${BUN_INSTALL:-$HOME/.bun}
+[[ -s $BUN_INSTALL/_bun ]] && source "$BUN_INSTALL/_bun"
+
+if (which nodenv > /dev/null); then
+    eval "$(nodenv init - --no-rehash zsh)"
+fi
+
+# grok
+path=($HOME/.grok/bin(N-/) $path)
+fpath=($HOME/.grok/completions/zsh(N-/) $fpath)
+
+autoload -Uz compinit && compinit -C

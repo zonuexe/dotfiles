@@ -3,6 +3,7 @@
 path=(
     ~/local/bin(N-/)
     ~/.local/bin(N-/)
+    ~/.local/share/mise/shims
     ~/.emacs.d/phpactor/vendor/bin(N-/)
     ~/.cargo/bin(N-/)
     ~/.symfony/bin
