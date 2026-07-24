@@ -7,10 +7,11 @@ description: >-
   or throw a task to that other agent and bring back its result; ask it to review changes, fix
   failing tests, or refactor; route work "through opencode"; or run the same job on two outside
   models to compare their outputs. This skill runs that external agent for you (over the Agent
-  Client Protocol, in a sandbox). It applies in any language (English, 日本語, など) and to vague or
-  indirect phrasing. Do NOT use it for Claude's own subagents (use the Agent tool instead), for
-  plain Anthropic/LLM API scripts, or for running Claude itself — the defining signal is that the
-  work goes to a different, non-Claude agent.
+  Client Protocol), in an isolated worktree by default or in-place when the user chooses.
+  It applies in any language (English, 日本語, など) and to vague or indirect phrasing. Do NOT use
+  it for Claude's own subagents (use the Agent tool instead), for plain Anthropic/LLM API scripts,
+  or for running Claude itself — the defining signal is that the work goes to a different,
+  non-Claude agent.
 ---
 
 # Drive an external agent over ACP (safely)
@@ -21,64 +22,104 @@ subagent**: there's no shared task list and no streaming into your own reasoning
 when the value is *a different vendor's model* (a second opinion, a cross-model comparison, cost),
 since Claude's own Agent tool can only run Claude.
 
-## Safety first — the sandbox is non-negotiable
+## Workspace mode — pick before you run
 
-To let the external agent work unattended, the bundled client **auto-approves its file edits and
-shell commands** (that's how it answers ACP permission requests). An external model running bash and
-edits unattended is dangerous *outside* a sandbox — so always run it in a disposable, isolated copy:
+The bundled client **auto-approves** the external agent's file edits and shell commands (ACP
+permission requests). That is powerful and unsafe if pointed at the wrong tree. Always choose a
+**workspace mode** first:
 
-- **Isolated working copy**, never the user's live repo — a throwaway `git worktree` or a `cp -Rc`
-  clone. (A plain `git worktree` omits gitignored deps like `vendor/` / `node_modules/`; a `cp -Rc`
-  clone keeps them, so the agent can actually build/test.)
-- **Scoped cwd** = that copy; the agent can only read/write its cwd.
-- **No installs / network / destructive ops** unless the user explicitly asked — say so in the prompt.
-- **No commits** — leave edits in the working tree so you can diff and review.
-- **Review before promoting** — nothing reaches the user's repo until you've read the diff.
+| Mode | `--cwd` points at | When to use |
+|------|-------------------|-------------|
+| **`isolated`** (default) | Disposable copy: `git worktree` or `cp -Rc` clone | Second opinions, experiments, multi-model comparison, untrusted/large refactors, anything you may discard |
+| **`inplace`** | The live working tree (repo root or a subdir the user named) | User explicitly wants edits on the current branch; small fixes; they accept risk |
 
-The client auto-approves *because* it runs inside this sandbox. Never point it at an unsandboxed dir.
+### How to choose
+
+1. If the user says **isolate / worktree / sandbox / throwaway / compare models** → **`isolated`**.
+2. If the user says **in place / this repo / current branch / don't copy / edit here** → **`inplace`**.
+3. If they don't say → **default to `isolated`**, and say so briefly when you start ("running isolated
+   in a worktree; say if you want in-place instead").
+
+Do **not** silently use `inplace` for multi-model fan-out or open-ended "fix everything" tasks.
+
+### Mode: `isolated` (default)
+
+- Stage a disposable copy, never the live tree as the only working copy:
+  - `git worktree add <path> -b acp/<task-slug>` (or detached HEAD) — light, but **omits**
+    gitignored deps (`vendor/`, `node_modules/`).
+  - `cp -Rc <repo> <sandbox>` — heavier; **keeps** ignored deps so build/test works.
+- `--cwd` = that copy. Review `git diff` there; **promote only what you trust**.
+- Teardown: remove the worktree (`git worktree remove`) or delete the clone when done.
+- Still: no installs/network/destructive ops unless asked; **no commits** unless the user asked
+  for commits.
+
+### Mode: `inplace`
+
+- `--cwd` = the path the user wants edited (usually the repo root of the current session).
+- **Confirm once** if the request was ambiguous: auto-approve will write and run shell in that tree.
+- Still put **no installs / no network / no destructive ops / no commits** in the task prompt unless
+  the user explicitly allowed them.
+- Review with `git diff` / `git status` in that same tree — there is no separate promote step; the
+  edits already land where the user is working. Prefer leaving uncommitted so they can revert.
+- OpenCode may drop `opencode.json` / `.opencode/` into `--cwd` — strip or leave per user preference
+  when reviewing the diff.
+
+Common rules for **both** modes:
+
+- The agent sees only its **cwd + your prompt** (no chat memory, no Claude skills unless you stage
+  files into cwd and tell it to read them).
+- Never skip review of `result.json` (`stopReason`, **`model_verified`**) and the agent's message.
 
 ## Procedure
 
-1. **Stage the sandbox** — make the disposable copy and put everything the agent needs *inside* it
-   (it has only its cwd and your prompt — no memory of this chat, no access to Claude skills).
-2. **Pick agent + model** — default agent: OpenCode. Model list and how selection works:
+1. **Choose workspace mode** (`isolated` default / `inplace` if requested) — see above.
+2. **Stage cwd**
+   - `isolated`: create worktree or `cp -Rc` clone; put task files inside it.
+   - `inplace`: use the live path; write `task.txt` somewhere convenient (often the repo or `/tmp`).
+3. **Pick agent + model** — default agent: OpenCode. Model list:
    [references/opencode.md](references/opencode.md).
-3. **Run** — one command drives the whole ACP session:
+4. **Run** — one command drives the whole ACP session:
    ```
    python <this-skill-dir>/scripts/acp_run.py --agent opencode --model <provider/model> \
-     --cwd <sandbox> --prompt-file <task.txt> --out <out-dir> --timeout 1200
+     --cwd <workspace> --prompt-file <task.txt> --out <out-dir> --timeout 1200
    ```
-   It resolves the agent command (local `opencode` if installed, else `npx -y opencode-ai@latest`),
-   sets the model, runs `initialize → session/new → session/prompt`, auto-approves permission
-   requests, and writes `agent_message.txt`, `tool_calls.txt`, and `result.json` to `--out`.
-4. **Review** — read `result.json` (`stopReason`, **`model_verified`**), the agent's final message,
-   and `git diff` in the sandbox. Promote only what you trust.
-5. **Teardown** — delete the sandbox copy.
+   `<workspace>` is the sandbox path (`isolated`) or the live tree (`inplace`). The client resolves
+   the agent command, sets the model, runs `initialize → session/new → session/prompt`, auto-approves
+   permissions, and writes `agent_message.txt`, `tool_calls.txt`, and `result.json` to `--out`.
+5. **Review** — `result.json`, agent message, and `git diff` in `--cwd`.
+   - `isolated`: promote accepted edits into the live tree, then teardown.
+   - `inplace`: keep or revert uncommitted edits as the user prefers.
+6. **Teardown** — only for `isolated` (remove worktree / delete clone). Skip for `inplace`.
 
 ## Writing the task prompt
 
-Put everything in the prompt and as files in the sandbox: the task, the constraints (no
-install/network/commit), and how to report results (e.g. "state the final state and what you
-changed"). To make the agent follow a procedure (a skill, a checklist), stage those files in the
-sandbox and tell it to read them by path — it won't have them otherwise.
+Put everything in the prompt and as files under `--cwd`: the task, constraints (no
+install/network/commit unless allowed), and how to report results. To make the agent follow a
+procedure (a skill, a checklist), stage those files under cwd and tell it to read them by path.
+
+In **`inplace`**, state constraints extra clearly — there is no throwaway layer if the agent goes
+wrong.
 
 ## Examples
 
-- **Second opinion:** "What would GLM-5.2 do about this failing test?" → stage a `cp -Rc` clone,
-  write the task to `task.txt`, `acp_run.py --agent opencode --model opencode-go/glm-5.2 --cwd
-  <clone> --prompt-file task.txt --out out/`, then review `out/result.json` + `git diff`.
-- **Model comparison:** run the same task twice with different `--model` (e.g. `qwen3.7-max` vs
-  `deepseek-v4-pro`) in separate clones, then diff the two results. Run them **sequentially, not in
-  parallel** — OpenCode serialises through one SQLite db, so concurrent `acp` sessions fail with
-  `database is locked` (see [references/opencode.md](references/opencode.md) § Gotchas).
+- **Isolated second opinion:** "What would GLM-5.2 do about this failing test?" → `cp -Rc` or
+  worktree, `acp_run.py … --cwd <clone> …`, review diff, promote or discard.
+- **In-place fix:** "OpenCode でこのブランチの失敗テストをそのまま直して" → `--cwd` = live repo,
+  review `git diff` there, leave uncommitted unless asked to commit.
+- **Model comparison:** always **`isolated`**, two separate copies, same prompt, different
+  `--model` (e.g. `qwen3.7-max` vs `deepseek-v4-pro`). Run **sequentially, not in parallel** —
+  OpenCode serialises through one SQLite db (`database is locked`; see
+  [references/opencode.md](references/opencode.md) § Gotchas).
 
 ## Troubleshooting
 
 - **A model misreports its identity** (e.g. claims to be Claude). Ignore the prose; trust
   `result.json`'s `model_verified` (read back from the agent's own session record).
-- **The agent didn't edit anything:** check the sandbox cwd is correct/writable and read
+- **The agent didn't edit anything:** check `--cwd` is correct/writable and read
   `out/acp_stderr.log`; confirm auth (see references/opencode.md).
 - **Hang or timeout:** raise `--timeout`; the last activity is in `out/acp_transcript.log`.
+- **Unwanted live-tree edits:** you used `inplace` (or pointed `--cwd` at the live repo). Revert
+  with `git checkout` / `git restore`; next time use `isolated`.
 
 ## Other agents
 
@@ -89,7 +130,7 @@ doc link. Treat it as a verified-as-of-research snapshot — re-check an entry b
 
 **Drive any of them right now** with `--cmd` (no code change): pick the launch command from the
 catalog and pass it through —
-`python <this-skill-dir>/scripts/acp_run.py --cmd "qwen --acp" --cwd <sandbox> --prompt-file
+`python <this-skill-dir>/scripts/acp_run.py --cmd "qwen --acp" --cwd <workspace> --prompt-file
 <task.txt> --out <out>`. Model selection and verification are skipped on this path (they're
 agent-specific), so set the model however that agent expects and confirm it yourself.
 
@@ -99,7 +140,7 @@ agent-specific), so set the model however that agent expects and confirm it your
 ```
 python <this-skill-dir>/scripts/acp_run.py \
   --cmd "grok agent -m grok-composer-2.5-fast --always-approve stdio" \
-  --cwd <sandbox> --prompt-file <task.txt> --out <out>
+  --cwd <workspace> --prompt-file <task.txt> --out <out>
 ```
 
 Full details — model ids, auth (`grok login` / `XAI_API_KEY`), the `-m`-before-`stdio` gotcha,

@@ -13,7 +13,8 @@ handles all of the below automatically; this file is for when you need to unders
   OpenCode's own ACP docs (<https://opencode.ai/docs/acp/>) and was confirmed here by a live ACP
   handshake. The directory does not publish launch commands, so this command must be kept current by
   hand against OpenCode's docs.
-- The client passes `--cwd <sandbox>`; OpenCode operates in that directory.
+- The client passes `--cwd <workspace>`; OpenCode operates in that directory
+  (isolated worktree/clone by default, or the live tree in in-place mode).
 
 ## Model selection
 
@@ -81,6 +82,7 @@ and proceeds. If sessions fail with auth errors, re-run `opencode auth login` in
 - **npx latency:** the first `npx -y opencode-ai@latest …` call downloads OpenCode; later calls are
   cached. Installing `opencode` locally avoids this.
 - **Permissions:** OpenCode requests permission for edits/bash via ACP `session/request_permission`;
-  the client auto-approves (safe only because the cwd is a sandbox).
+  the client auto-approves. Prefer an isolated `--cwd`; in-place mode edits the live tree.
 - **Session artifacts:** OpenCode may write `opencode.json` (the model file you set), a `.opencode/`
   dir, etc. into the cwd. Strip these before diffing/grading if you want only the agent's code edits.
+  In in-place mode those files appear in the user's repo — remove or gitignore as appropriate.

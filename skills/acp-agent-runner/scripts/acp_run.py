@@ -2,15 +2,16 @@
 """Drive an external coding agent over ACP (Agent Client Protocol) as a one-shot worker.
 
 Speaks JSON-RPC over stdio to an ACP agent: initialize -> session/new -> session/prompt,
-auto-approving permission requests so the agent can work unattended **inside a sandbox**.
+auto-approving permission requests so the agent can work unattended.
 Writes agent_message.txt, tool_calls.txt, and result.json (incl. the verified model) to --out.
 
-SAFETY: this auto-approves the external agent's edits/commands. Only ever point --cwd at a
-disposable, isolated working copy (a git worktree or `cp -Rc` clone) — never the live repo.
+SAFETY: this auto-approves the external agent's edits and shell commands for whatever
+directory you pass as --cwd. Prefer an isolated git worktree or `cp -Rc` clone (skill default).
+Use the live tree only when the operator explicitly chose in-place mode.
 
 Usage:
   python acp_run.py --agent opencode --model opencode-go/glm-5.2 \
-      --cwd <sandbox> --prompt-file <task.txt> --out <out-dir> [--timeout 1200]
+      --cwd <workspace> --prompt-file <task.txt> --out <out-dir> [--timeout 1200]
 
 Add new agents in the AGENTS registry below (command resolver + model setup + model verify).
 """
@@ -195,7 +196,9 @@ def main():
                          "'qwen --acp' or 'gemini --acp' — see references/agents.md. "
                          "Model setup and verification are skipped for raw commands.")
     ap.add_argument("--model", default=None)
-    ap.add_argument("--cwd", required=True)
+    ap.add_argument("--cwd", required=True,
+                    help="Working directory for the agent (isolated sandbox or live tree). "
+                         "Auto-approves edits/commands in this path.")
     ap.add_argument("--prompt-file", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--timeout", type=int, default=1200)

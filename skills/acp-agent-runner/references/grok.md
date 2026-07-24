@@ -40,8 +40,8 @@ grok agent -m grok-composer-2.5-fast --always-approve stdio
 
 Pass this whole string to `acp_run.py --cmd "..."`. `--always-approve` is Grok's
 auto-approve flag (the ACP equivalent of OpenCode's per-request auto-approval) — it is what
-makes unattended runs work, and is **safe only because the cwd is a sandbox** (same rule as
-every agent here).
+makes unattended runs work. Prefer an isolated `--cwd` (worktree/clone); in-place mode
+edits the live tree under the same auto-approve policy as every agent here.
 
 ### Model ids
 
@@ -112,8 +112,8 @@ need a single model answer and want to parse it directly.
   that forces OpenCode runs to be sequential, so a Grok run *can* overlap an OpenCode run.
   For a clean, reviewable comparison it is still simplest to run everything serially.
 - **`--always-approve` is unconditional** — it approves every tool call including shell and
-  file writes. Never point a Grok ACP run with `--always-approve` at anything but a
-  throwaway sandbox cwd.
+  file writes. Prefer a throwaway sandbox cwd; only use the live tree when the operator
+  explicitly chose in-place mode.
 - **Session artifacts:** Grok writes under `~/.grok/` (sessions, config), not into the cwd,
   so it leaves the sandbox cleaner than OpenCode (which drops `opencode.json` / `.opencode/`
   into the cwd).
