@@ -1,0 +1,26 @@
+{
+  "skill_name": "acp-agent-runner",
+  "evals": [
+    {
+      "id": 0,
+      "name": "delegate-to-glm",
+      "prompt": "このリポジトリの失敗してるテストを GLM-5.2 に直させて、何をどう直したか結果を見せて。",
+      "expected_output": "Claude stages an isolated sandbox copy, writes the task to a prompt file, runs scripts/acp_run.py --agent opencode --model opencode-go/glm-5.2 against the sandbox, then reviews result.json + git diff — never editing the live repo itself.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "compare-two-models",
+      "prompt": "この関数のリファクタを Qwen3.7 Max と DeepSeek V4 Pro の両方にやらせて、出力の違いを比較したい。",
+      "expected_output": "Two sandboxed acp_run.py runs with --model opencode-go/qwen3.7-max and opencode-go/deepseek-v4-pro in separate clones; then a diff/comparison of the two outputs, with model_verified confirmed for each.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "second-opinion-review",
+      "prompt": "opencode 経由で別ベンダーのモデルに、いま書いたこの変更のレビューを頼みたい。",
+      "expected_output": "Resolves opencode (local or npx), runs it via ACP in a sandbox to review the change, returns the external model's feedback. Uses the bundled client; does not hand-roll an ACP handshake.",
+      "files": []
+    }
+  ]
+}
