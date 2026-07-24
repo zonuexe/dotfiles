@@ -1,0 +1,60 @@
+id: empty-unreleased-from-prs
+name: Build 2.1.0 from PR list
+description: Empty [Unreleased]; draft 2.1.0 from merged PRs, omit internal rename.
+tags:
+  - seal
+  - filter-internal
+inputs:
+  prompt: |
+    CHANGELOG.md has an empty [Unreleased]. Write release 2.1.0 dated 2026-07-25
+    from these merged PRs only. Keep a Changelog form, user-facing bullets, full
+    markdown links (use https://keepachangelog.com/en/1.1.0/ as the link target for
+    PR numbers in this fixture), one physical line per prose block, updated footer.
+
+    Merged since 2026-05-15:
+    #91 Add OAuth device-code login flow
+    #92 Fix refresh token rotation race under concurrent requests
+    #93 Internal: rename AuthService methods for clarity (no behavior change)
+    #94 Deprecate password grant; still works with a warning
+  files:
+    - path: empty-unreleased/CHANGELOG.md
+expected:
+  output_contains:
+    - "2.1.0"
+    - "Deprecated"
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 25
+graders:
+  - type: text
+    name: version-heading
+    config:
+      regex_match:
+        - "## \\[2\\.1\\.0\\] - 2026-07-25"
+  - type: text
+    name: has-added
+    config:
+      contains:
+        - "### Added"
+  - type: text
+    name: has-fixed
+    config:
+      contains:
+        - "### Fixed"
+  - type: text
+    name: has-deprecated
+    config:
+      contains:
+        - "### Deprecated"
+  - type: text
+    name: omits-internal
+    config:
+      not_contains:
+        - "AuthService"
+        - "pull/93"
+  - type: text
+    name: oauth-mentioned
+    config:
+      regex_match:
+        - "(?i)oauth|device-code|device code"

@@ -1,0 +1,30 @@
+name: keep-a-changelog-eval
+description: Seal, draft, and mid-cycle append Keep a Changelog release notes
+skill: keep-a-changelog
+version: "1.0"
+
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: mock
+  model: gpt-4.1
+
+metrics:
+  - name: task_completion
+    weight: 0.7
+    threshold: 0.8
+    description: Did the task produce a valid sealed or mid-cycle changelog?
+  - name: efficiency
+    weight: 0.3
+    threshold: 0.7
+    description: Reasonable tool budget
+
+graders:
+  - type: behavior
+    name: token-budget
+    config:
+      max_tokens: 8000
+
+tasks:
+  - "tasks/*.yaml"

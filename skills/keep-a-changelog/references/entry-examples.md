@@ -1,11 +1,8 @@
 # Entry rewrite examples
 
-Load this when a bullet is ambiguous or when teaching the release-style bar by
-example. Prefer the main skill's short reject/prefer block for routine work.
-
-**All good examples keep each prose block on one physical line** (paragraphs and
-bullets). GitHub soft-wraps on render — do not hard-wrap for width. Bad examples
-that hard-wrap are called out explicitly.
+Load when a bullet is ambiguous or when teaching the release-style bar.
+Good examples keep **each prose block on one physical line** (GitHub soft-wraps
+on render).
 
 ## No hard-wrap (paragraphs and lists)
 
@@ -107,5 +104,4 @@ This release speeds up incremental analysis on large apps and tightens several d
 - …
 ```
 
-Yanked versions **keep** their notes; the heading carries ` [YANKED]` so the
-removal is loud and still parseable.
+Yanked versions **keep** their notes; the heading carries ` [YANKED]`.

@@ -1,0 +1,15 @@
+id: positive-trigger-seal
+name: "Trigger: seal Unreleased"
+description: User asks to seal release notes — skill should apply.
+tags:
+  - positive-trigger
+inputs:
+  prompt: "Seal [Unreleased] into the next version and clean up the changelog for release."
+expected:
+  should_trigger: true
+graders:
+  - type: text
+    name: changelog-language
+    config:
+      contains:
+        - "Unreleased"

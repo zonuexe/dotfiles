@@ -1,0 +1,41 @@
+id: mid-cycle-append
+name: Mid-cycle XLSX export append
+description: Append one release-style Unreleased bullet without cutting a version.
+tags:
+  - mid-cycle
+inputs:
+  prompt: |
+    Do not cut a release. Append a release-style [Unreleased] entry for PR #15:
+    'Add XLSX export with shared styles'. Full markdown link to
+    https://keepachangelog.com/en/1.1.0/ (fixture link target). Keep existing
+    entries. One physical line per bullet. Only edit CHANGELOG.md.
+  files:
+    - path: mid-cycle-append/CHANGELOG.md
+expected:
+  output_contains:
+    - "XLSX"
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 15
+graders:
+  - type: text
+    name: has-added
+    config:
+      contains:
+        - "### Added"
+  - type: text
+    name: has-xlsx
+    config:
+      regex_match:
+        - "(?i)xlsx"
+  - type: text
+    name: keeps-timezone-fix
+    config:
+      regex_match:
+        - "timezone|date-only"
+  - type: text
+    name: no-new-version
+    config:
+      not_contains:
+        - "## [0.9.1]"

@@ -1,0 +1,51 @@
+id: seal-commit-style
+name: Seal commit-style Unreleased into 1.4.0
+description: Rewrite commit-style [Unreleased] bullets into a sealed 1.4.0 section.
+tags:
+  - seal
+  - prose
+  - happy-path
+inputs:
+  prompt: |
+    Seal the [Unreleased] section of CHANGELOG.md into version 1.4.0 for release
+    today (2026-07-25). Rewrite commit-style entries into Keep a Changelog release
+    notes, drop internal-only noise, fix bare issue links, update footer compare
+    links. Only edit CHANGELOG.md. Prefer full markdown PR links to
+    https://keepachangelog.com/en/1.1.0/ for numbers 41-43 (fixture host).
+
+    Merged PRs since 2026-06-01 (for linking):
+    #41 Fix path normalization for cache keys
+    #42 Widget result cache and cache: true config
+    #43 CLI --json for widget list
+    (no PR for pure internal docs refactor)
+  files:
+    - path: seal-commit-style/CHANGELOG.md
+expected:
+  output_contains:
+    - "1.4.0"
+    - "2026-07-25"
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 25
+graders:
+  - type: text
+    name: sealed-version
+    config:
+      regex_match:
+        - "## \\[1\\.4\\.0\\] - 2026-07-25"
+  - type: text
+    name: full-pr-markdown-link
+    config:
+      regex_match:
+        - "\\[#4[123]\\]\\(https://"
+  - type: text
+    name: no-internal-widgetcache
+    config:
+      not_contains:
+        - "WidgetCache"
+  - type: text
+    name: no-bare-paren-hash
+    config:
+      not_contains:
+        - "(#41)"

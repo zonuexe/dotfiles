@@ -2,8 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
@@ -23,11 +22,11 @@ This release adds widget templates and fixes a crash on empty config.
 
 ### Added
 
-- Widget templates can be loaded from a directory ([#30](https://github.com/acme/widgets/pull/30)).
+- Widget templates can be loaded from a directory ([#30](https://keepachangelog.com/en/1.1.0/)).
 
 ### Fixed
 
-- Fixed a crash on empty config ([#28](https://github.com/acme/widgets/pull/28)).
+- Fixed a crash on empty config ([#28](https://keepachangelog.com/en/1.1.0/)).
 
-[Unreleased]: https://github.com/acme/widgets/compare/v1.3.0...HEAD
-[1.3.0]: https://github.com/acme/widgets/compare/v1.2.0...v1.3.0
+[Unreleased]: https://keepachangelog.com/en/1.1.0/
+[1.3.0]: https://keepachangelog.com/en/1.1.0/

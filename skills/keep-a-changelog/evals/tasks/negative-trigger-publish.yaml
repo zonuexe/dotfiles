@@ -1,0 +1,16 @@
+id: negative-trigger-publish
+name: "Anti-trigger: gem publish only"
+description: Pure publish/tag request should not need this skill alone.
+tags:
+  - negative-trigger
+inputs:
+  prompt: "Run rake release and push the gem to RubyGems with MFA. Do not touch CHANGELOG."
+expected:
+  should_trigger: false
+graders:
+  - type: text
+    name: stays-on-publish
+    config:
+      not_contains:
+        - "Keep a Changelog"
+        - "seal the [Unreleased]"
