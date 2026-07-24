@@ -480,7 +480,7 @@
   (setopt web-mode-enable-auto-pairing nil)
   (setopt web-mode-enable-auto-indentation nil)
   ;; (require 'smartparens)
-  (flycheck-add-mode 'typescript-tslint 'web-mode)
+  ;;(flycheck-add-mode 'typescript-tslint 'web-mode)
   (add-to-list 'web-mode-ac-sources-alist
                '("html" . (ac-source-html-tag ac-source-html-attr ac-source-html-attrv)))
   ;; (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))
