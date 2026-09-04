@@ -64,6 +64,8 @@
 ;;; Variables:
 (setq make-backup-files nil)
 (setq delete-auto-save-files t)
+;; Flycheck's emacs-lisp checker byte-compiles; Emacs 30+ requires this (CVE-2024-53920).
+(setopt trusted-content '("~/local/dotfiles/.emacs.d/" "~/repo/emacs/"))
 (defconst init-saved-file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
@@ -81,7 +83,8 @@
 (eval-and-compile
   (require 'wiz)
   (require 'wiz-key)
-  (require 'wiz-env))
+  (require 'wiz-env)
+  (require 'orderless))
 
 (eval-when-compile
   (require 'pixiv-dev nil t))
@@ -417,6 +420,7 @@
   (add-hook 'flycheck-mode-hook 'flycheck-posframe-mode)
   :init
   (require 'flycheck-posframe)
+  (setopt flycheck-global-modes '(not lisp-interaction-mode))
   (global-flycheck-mode t)
   (flycheck-package-setup)
   (with-current-buffer (get-buffer-create flycheck-posframe-buffer)
@@ -1181,6 +1185,12 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;;  ￣￣￣￣￣＼/＿＿＿＿/
 "))))
 
+(defun my/init-open-recentf ()
+  "Open recent files after startup unless `recentf-list' is empty."
+  (interactive)
+  (when (bound-and-true-p recentf-list)
+    (consult-recent-file)))
+
 ;; Pandoc-EWW
 (wiz pandoc
   :init
@@ -1189,6 +1199,8 @@ http://ergoemacs.org/emacs/elisp_datetime.html"
 ;; init-open-recentf
 (when (eval-when-compile (file-directory-p "~/repo/emacs/init-open-recentf.el/"))
   (load "~/repo/emacs/init-open-recentf.el/init-open-recentf.el"))
+(require 'init-open-recentf)
+(setopt init-open-recentf-function #'my/init-open-recentf)
 (add-hook 'init-open-recentf-before-hook #'my/insert-tetosan)
 (init-open-recentf)
 
