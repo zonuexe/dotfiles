@@ -3,16 +3,14 @@
 path=(
     ~/local/bin(N-/)
     ~/.local/bin(N-/)
-    ~/.local/share/mise/shims
     ~/.emacs.d/phpactor/vendor/bin(N-/)
     ~/.cargo/bin(N-/)
-    ~/.symfony/bin
     ~/.config/composer/vendor/bin(N-/)
-    ~/.composer/vendor/bin(N-/)
-    ~/.cargo/bin(N-/)
     ~/.deno/bin(N-/)
     ~/.bun/bin(N-/)
-    ~/.phpkg(N-/)
+    ~/.grok/bin(N-/)
+    ~/go/bin(N-/)
+    "${HOME}/Library/Application Support/JetBrains/Toolbox/scripts"(N-/)
     ~/bin(N-/)
     /opt/homebrew/bin(N-/)
     /opt/homebrew/opt/gpatch/libexec/gnubin(N-/)
@@ -21,6 +19,7 @@ path=(
     /opt/homebrew/opt/m4/bin(N-/)
     /opt/homebrew/opt/libiconv/bin(N-/)
     /opt/homebrew/opt/rustup/bin(N-/)
+    /opt/homebrew/opt/openjdk/bin(N-/)
     /usr/local/sbin(N-/)
     /usr/local/bin(N-/)
     /usr/bin(N-/)
@@ -30,32 +29,24 @@ path=(
 )
 
 manpath=(
-    /usr/local/opt/coreutils/libexec/gnuman(N-/)
+    /opt/homebrew/opt/coreutils/libexec/gnuman(N-/)
     $manpath
 )
 typeset -gxU manpath
 
-export GOPATH=$HOME/repo/go
-export XML_CATALOG_FILES=/usr/local/etc/xml/catalog
 export TEST_SERVER=${TEST_SERVER:-1}
 export DENO_INSTALL="${HOME}/.deno"
-export CLOUDSDK_PYTHON_SITEPACKAGES=1
 
-if which vim > /dev/null > /dev/null
+if command -v vim >/dev/null 2>&1
 then
    export EDITOR=vim
 fi
 
-if which lv > /dev/null
+if command -v less >/dev/null 2>&1
 then
     export PAGER='less -R'
 fi
 
-[ -z "$ld_library_path" ] && typeset -xT LD_LIBRARY_PATH ld_library_path
-[ -z "$include" ] && (typeset -xT INCLUDE include; typeset -U include)
-typeset -U path cdpath fpath manpath ld_library_path
-
-export LD_LIBRARY_PATH=$HOME/local/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig/
+typeset -U path cdpath fpath manpath
 
 MY_ZSHENV=MY_ZSHENV

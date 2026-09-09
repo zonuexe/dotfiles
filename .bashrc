@@ -1,6 +1,6 @@
-if $(which brew > /dev/null) && [ -f `brew --prefix`/etc/bash_completion ]
+if [[ -r /opt/homebrew/etc/profile.d/bash_completion.sh ]]
 then
-    . `brew --prefix`/etc/bash_completion
+    . /opt/homebrew/etc/profile.d/bash_completion.sh
 fi
 
 alias tmxu=tmux

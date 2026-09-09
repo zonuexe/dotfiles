@@ -33,7 +33,7 @@ zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'c
 
 case "${OSTYPE}" in
 freebsd*|darwin*)
-    if [ $(which ls | grep gnubin) ]
+    if command -v ls | grep -q gnubin 2>/dev/null
     then
         ls=coreutils
     else
@@ -60,7 +60,7 @@ elif ls -d --color >/dev/null 2>&1; then
   alias ls='ls --color'
 fi
 
-autoload colors && colors
+autoload -Uz colors && colors
 
 fpath=(
     $HOME/local/zsh/completions(N-/)
@@ -70,67 +70,36 @@ fpath=(
 
 case ${UID} in
 0)
-    PROMPT="%{${fg[blue]}%}%n%{${reset_color}%} %{${fg[blue]}%}#%{${reset_color}%} "
-    PROMPT2="%B%{${fg[blue]}%}%_#%{${reset_color}%}%b "
-    SPROMPT="%B%{${fg[blue]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
-    RPROMPT="%{${fg[blue]}%}[%/]%{${reset_color}%}"
+    PROMPT="%F{blue}%n%f %F{blue}#%f "
+    PROMPT2="%B%F{blue}%_#%f%b "
+    SPROMPT="%B%F{blue}%r is correct? [n,y,a,e]:%f%b "
+    RPROMPT="%F{blue}[%/]%f"
     ;;
 *)
-    PROMPT="%n %{${fg[blue]}%}%%%{${reset_color}%} "
-    PROMPT2="%B%{${fg[blue]}%}%_#%{${reset_color}%}%b "
-    SPROMPT="%B%{${fg[blue]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
-    RPROMPT="%{${fg[blue]}%}[%/]%{${reset_color}%}"
+    PROMPT="%n %F{blue}%%%f "
+    PROMPT2="%B%F{blue}%_#%f%b "
+    SPROMPT="%B%F{blue}%r is correct? [n,y,a,e]:%f%b "
+    RPROMPT="%F{blue}[%/]%f"
     ;;
 esac
 
 case "${TERM}" in
-screen)
-    TERM=xterm
-    ;;
-esac
-
-case "${TERM}" in
-xterm|xterm-color)
+xterm*)
     export LSCOLORS=exfxcxdxbxegedabagacad
     export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
     zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
     ;;
-kterm-color)
-    stty erase '^H'
-    export LSCOLORS=exfxcxdxbxegedabagacad
-    export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
-    ;;
-kterm)
-    stty erase '^H'
-    ;;
-cons25)
-    unset LANG
-    export LSCOLORS=ExFxCxdxBxegedabagacad
-    export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors 'di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
-    ;;
-jfbterm-color)
-    export LSCOLORS=gxFxCxdxBxegedabagacad
-    export LS_COLORS='di=01;36:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors 'di=;36;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
-    ;;
 esac
 
+autoload -Uz add-zsh-hook
+set-window-title() {
+    print -Pn "\e]0;%n@%m:%~\a"
+}
 case "${TERM}" in
-xterm|xterm-color|kterm|kterm-color)
-    precmd() {
-        echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-    }
+xterm*|tmux*|screen*|alacritty|wezterm|ghostty|kitty)
+    add-zsh-hook precmd set-window-title
     ;;
 esac
-
-if [[ -f /Applications/MacVim.app/Contents/MacOS/Vim ]]
-then
-  alias vim=/Applications/MacVim.app/Contents/MacOS/Vim
-fi
-
-alias Emacs=$(which emacs)
 
 if [[ -f /Applications/Emacs.app/Contents/MacOS/Emacs ]]
 then
@@ -139,15 +108,14 @@ fi
 
 if [[ -f /opt/homebrew/bin/brew ]]
 then
-    eval $(/opt/homebrew/bin/brew shellenv)
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-alias あ=ag
+alias あ=rg
 alias s=ls
 alias be="bundle exec"
 alias tmxu=tmux
 alias tumx=tmux
-alias Tree=$(which tree)
 
 tree(){
     command tree -C $* | less -R
@@ -156,29 +124,21 @@ tree(){
 
 jqless(){ cat ${1:--} | jq ${2:-.} -C | less -R }
 
-if which xsel > /dev/null
+if command -v xsel >/dev/null 2>&1
 then
     alias pbcopy='xsel --clipboard --input'
     alias pbpaste='xsel --clipboard --output'
 fi
 
-if which nproc > /dev/null
+if ! command -v nproc >/dev/null 2>&1
 then
-else
     alias nproc='sysctl -n hw.ncpu'
 fi
 
 export RAILS_ENV=development
 export MICRO_TRUECOLOR=1
 
-export PHAN_BIN=$HOME/.composer/vendor/bin/phan
-
-# iTerm2 shell integration
-[[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
-
-[[ -e "${HOME}/pixiv/dev-script/init_nodenv" ]] && eval "$("${HOME}/pixiv/dev-script/init_nodenv" -)"
-
-[[ -e "$HOME/local/dotfiles/ttcopy/ttcp_activate.sh" ]] && . "$HOME/local/dotfiles/ttcopy/ttcp_activate.sh"
+export PHAN_BIN=$HOME/.config/composer/vendor/bin/phan
 
 phpstan() {
     if [[ -f 'vendor/bin/phpstan' ]] ; then
@@ -202,23 +162,25 @@ cdiff() {
     diff -u --color=always "$@" | less -R
 }
 
-if (which zprof > /dev/null) ;then
+if command -v zprof >/dev/null 2>&1 ;then
     zprof | less
 fi
 
 # --- ツール初期化（fpath を触るもの → 最後に compinit 一回） ---
 
-if (which pyenv > /dev/null) ;then
-    eval "$(pyenv init -)"
+if command -v mise >/dev/null 2>&1
+then
+    eval "$(mise activate zsh)"
 fi
 
-if (which zoxide > /dev/null)
+if [[ -o interactive ]] && command -v zoxide >/dev/null 2>&1
 then
-    eval "$(zoxide init zsh)"
-    # Claude Code は cd を独自に扱うので alias しない
-    if [[ -z ${CLAUDECODE:-} ]]
+    if [[ -n ${CLAUDECODE:-} ]]
     then
-        alias cd=z
+        # Claude Code は cd を独自に扱うので置き換えない
+        eval "$(zoxide init zsh)"
+    else
+        eval "$(zoxide init zsh --cmd cd)"
     fi
 fi
 
@@ -228,7 +190,6 @@ if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
 elif [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
   . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
 fi
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 
 [[ -n $EAT_SHELL_INTEGRATION_DIR ]] && . "$EAT_SHELL_INTEGRATION_DIR/zsh"
 
@@ -236,12 +197,18 @@ fi
 export BUN_INSTALL=${BUN_INSTALL:-$HOME/.bun}
 [[ -s $BUN_INSTALL/_bun ]] && source "$BUN_INSTALL/_bun"
 
-if (which nodenv > /dev/null); then
-    eval "$(nodenv init - --no-rehash zsh)"
-fi
-
-# grok
-path=($HOME/.grok/bin(N-/) $path)
+# grok（bin は .zshenv の path 配列で設定済み）
 fpath=($HOME/.grok/completions/zsh(N-/) $fpath)
 
-autoload -Uz compinit && compinit -C
+autoload -Uz compinit
+# dumpが24時間より古い時だけ再生成（起動高速化と新規補完の検出を両立）
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+
+# pnpm
+export PNPM_HOME="${HOME}/Library/pnpm"
+[[ -d $PNPM_HOME ]] && path=($PNPM_HOME $path)
+# pnpm end
